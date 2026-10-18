@@ -21,6 +21,10 @@ helpers. There are no components yet; they start in Phase 2 ([PHASES.md](PHASES.
 | Icons | `QeetrixIcon`, `QeetrixIconName` (12 icons in Phase 1) | `qeetrix-icons` SVGs |
 | Accessibility | `QeetrixAccessibility.minimumTouchTarget`, `.qeetrixMinimumTouchTarget()`, `contrastRatio(_:on:)` | Apple HIG, WCAG 2.2 |
 
+API and usage documentation is in the DocC catalogue (`Sources/Qeetrix/Qeetrix.docc`): open the
+package in Xcode and choose **Product › Build Documentation**, or run `Scripts/docs.sh`. Architecture,
+decisions and standards are in [Documentation/](Documentation/).
+
 Generated coverage, including what is deliberately not generated, is listed in
 [Documentation/Foundations/TOKEN_COVERAGE.md](Documentation/Foundations/TOKEN_COVERAGE.md).
 
@@ -106,6 +110,7 @@ swift test --package-path Tools/QeetrixGen      # generator
 Scripts/verify.sh                               # snapshot matches lock; generated files current
 Scripts/lint.sh                                 # swift-format, strict
 Scripts/api-check.sh                            # public API matches Documentation/API
+Scripts/docs.sh                                 # DocC documentation, warnings as errors
 ```
 
 The showcase app, `Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj`, shows every foundation in

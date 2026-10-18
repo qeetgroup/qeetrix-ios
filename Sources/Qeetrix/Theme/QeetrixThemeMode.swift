@@ -26,7 +26,7 @@ extension View {
     /// `ThemeProvider` on `<html>`. Apply it once, near the root: the system's own chrome (status bar,
     /// sheets, alerts, keyboard) follows it, and `.system` follows the device setting live.
     ///
-    /// To draw one part of a screen in a fixed theme instead, use ``SwiftUI/View/qeetrixTheme(_:)``.
+    /// To draw one part of a screen in a fixed theme instead, use `.qeetrixTheme(_:)`.
     public func qeetrixThemeMode(_ mode: QeetrixThemeMode) -> some View {
         preferredColorScheme(mode.colorScheme)
             .environment(\.qeetrixThemeMode, mode)

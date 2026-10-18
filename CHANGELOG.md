@@ -43,8 +43,9 @@ Built from `@qeetrix/ui` 2.1.6, `@qeetrix/icons` 1.0.11 (`331cd85`), Cal Sans v2
 - **Provenance.** `QeetrixProvenance.bundled()`, backed by `Resources/Metadata/token-provenance.json`.
 - **Showcase.** `Examples/QeetrixShowcase`, an iOS app showing every foundation.
 - **Tests.**
-  - 46 library tests: token parity with upstream, brand colour values, upstream's WCAG pairs in both
-    themes, font loading and axes, rendering, theme overrides, icons and the public API.
+  - 48 library tests: token parity with upstream, brand colour values, upstream's WCAG pairs in both
+    themes, font loading and axes, rendering, theme overrides, icons, the public API and the
+    documentation examples.
   - 29 generator tests.
 - **Repository layout** (ADR 0007): the generator in `Tools/QeetrixGen`, its pinned inputs and lock in
   `Upstream/`, and the commands in `Scripts/`.
@@ -52,5 +53,9 @@ Built from `@qeetrix/ui` 2.1.6, `@qeetrix/icons` 1.0.11 (`331cd85`), Cal Sans v2
   component contract for Phase 2 in `Documentation/Standards/COMPONENT_CONTRACT.md`.
 - **Governance.** `SECURITY.md`, `.editorconfig`, `.github/CODEOWNERS`, a pull request template, and
   issue templates for bugs and design-system changes.
+- **Documentation.** The DocC catalogue `Sources/Qeetrix/Qeetrix.docc`: a landing page and guides for
+  getting started, theming, typography, spacing, shapes, sizing, elevation, motion, icons and
+  accessibility. It is built with warnings as errors (`Scripts/docs.sh`, and in CI), and its examples
+  are compiled by the tests.
 - **Checks and CI.** `Scripts/lint.sh` (swift-format), `Scripts/api-check.sh` (public API baseline) and
   `.github/workflows/ci.yml`.

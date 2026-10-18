@@ -40,6 +40,7 @@ public struct QeetrixTextMetrics: Hashable, Sendable {
     public let usesBundledFont: Bool
 
     /// - Parameters:
+    ///   - role: The typography role.
     ///   - size: The point size, typically already scaled by Dynamic Type. Defaults to the token size.
     ///   - legibilityWeight: The environment's Bold Text setting.
     public init(role: QeetrixTextRole, size: CGFloat? = nil, legibilityWeight: LegibilityWeight? = nil) {

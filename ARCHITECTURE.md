@@ -14,13 +14,14 @@ Sources/Qeetrix/
 ├── Theme/                    theme mode, theme, environment
 ├── Icons/                    QeetrixIcon and its drawing types — and Generated/ (never edited)
 ├── Internal/                 implementation details (colour storage, logging)
-└── Resources/                Fonts/ (TTF + licence), Metadata/token-provenance.json
+├── Resources/                Fonts/ (TTF + licence), Metadata/token-provenance.json
+└── Qeetrix.docc/             API and usage documentation (DocC): landing page and foundation guides
 Tests/QeetrixTests/           mirrors Sources: Tokens, Foundations/*, Theme, Icons, Integration
 Examples/QeetrixShowcase/     an iOS app that depends on the package
 Tools/QeetrixGen/             the build tool: its own Swift package (Sources/QeetrixGenCore, Tests)
 Upstream/                     pins.json (edited), upstream.lock.json (written by sync), pinned inputs
 Scripts/                      the commands people and CI run: sync-upstream, generate, verify, lint,
-                              api-check, ci-simulator — thin wrappers over Tools/QeetrixGen
+                              api-check, docs, ci-simulator
 Documentation/
 ├── Decisions/                numbered architecture decision records
 ├── Standards/                component contract, accessibility

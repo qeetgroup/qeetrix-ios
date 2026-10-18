@@ -12,6 +12,7 @@ Each box is a command that exists in this repository; CI runs the same ones.
 - [ ] `swift test`: library tests pass on the Mac
 - [ ] `xcodebuild test -scheme Qeetrix -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"`: library tests pass on iOS
 - [ ] `Scripts/api-check.sh`: public API unchanged, or updated with `--update` and noted in `CHANGELOG.md`
+- [ ] `Scripts/docs.sh`: DocC builds with no warnings
 - [ ] Documentation matches the change (`CHANGELOG.md`, DocC, `ARCHITECTURE.md` or a decision record)
 
 ## Upstream inputs

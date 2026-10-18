@@ -22,7 +22,7 @@ Open `Package.swift` in Xcode to work on the library, or
 
 ## Before you push
 
-All six must pass; CI runs the same:
+All seven must pass; CI runs the same:
 
 ```sh
 swift test --package-path Tools/QeetrixGen
@@ -31,7 +31,17 @@ Scripts/lint.sh               # Scripts/lint.sh --fix rewrites
 swift test
 Scripts/api-check.sh          # --update when an API change is intended
 xcodebuild test -scheme Qeetrix -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"
+Scripts/docs.sh               # DocC, warnings as errors
 ```
+
+## Documentation
+
+- **How to use the API:** the DocC catalogue, `Sources/Qeetrix/Qeetrix.docc`, plus doc comments on every
+  public symbol. Concrete examples in the articles are compiled and rendered by
+  `Tests/QeetrixTests/Integration/DocumentationExamplesTests.swift`; change both together.
+- **How the package is built and why:** `ARCHITECTURE.md` and `Documentation/`.
+
+Each fact lives in one place. Link to it rather than copying it.
 
 ## Conventions
 
