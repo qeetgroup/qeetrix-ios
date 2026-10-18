@@ -1,0 +1,13 @@
+# SwiftPM / Xcode build output
+.build/
+Scripts/.build/
+DerivedData/
+*.xcresult
+
+# Xcode per-user state, and the workspace Xcode creates when it opens the package
+xcuserdata/
+*.xcuserstate
+.swiftpm/
+
+# macOS
+.DS_Store

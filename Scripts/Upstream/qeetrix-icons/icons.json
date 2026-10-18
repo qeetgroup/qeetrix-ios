@@ -1,0 +1,341 @@
+[
+  {
+    "id": "bell",
+    "name": "bell",
+    "componentName": "BellIcon",
+    "category": "account",
+    "categories": [
+      "account",
+      "notifications"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "alarm",
+      "notification",
+      "sound",
+      "reminder"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "check",
+    "name": "check",
+    "componentName": "CheckIcon",
+    "category": "notifications",
+    "categories": [
+      "notifications"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "done",
+      "todo",
+      "tick",
+      "complete",
+      "task"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "database",
+    "name": "database",
+    "componentName": "DatabaseIcon",
+    "category": "devices",
+    "categories": [
+      "devices",
+      "development"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "storage",
+      "memory",
+      "container",
+      "tin",
+      "pot",
+      "bytes",
+      "servers"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "eye",
+    "name": "eye",
+    "componentName": "EyeIcon",
+    "category": "accessibility",
+    "categories": [
+      "accessibility",
+      "photography",
+      "design",
+      "security"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "view",
+      "watch",
+      "see",
+      "show",
+      "expose",
+      "reveal",
+      "display",
+      "visible",
+      "visibility",
+      "vision",
+      "preview",
+      "read"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "inbox",
+    "name": "inbox",
+    "componentName": "InboxIcon",
+    "category": "account",
+    "categories": [
+      "account",
+      "mail"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "email"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "info",
+    "name": "info",
+    "componentName": "InfoIcon",
+    "category": "accessibility",
+    "categories": [
+      "accessibility",
+      "notifications"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "about",
+      "advice",
+      "clue",
+      "details",
+      "help",
+      "hint",
+      "indicator",
+      "information",
+      "knowledge",
+      "notice",
+      "status",
+      "support",
+      "tooltip"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "lock",
+    "name": "lock",
+    "componentName": "LockIcon",
+    "category": "security",
+    "categories": [
+      "security"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "security",
+      "password",
+      "secure",
+      "admin"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "navigation",
+    "name": "navigation",
+    "componentName": "NavigationIcon",
+    "category": "navigation",
+    "categories": [
+      "navigation"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "location",
+      "travel"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "search",
+    "name": "search",
+    "componentName": "SearchIcon",
+    "category": "text",
+    "categories": [
+      "text",
+      "social"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "find",
+      "scan",
+      "magnifier",
+      "magnifying glass",
+      "lens",
+      "locate",
+      "explore",
+      "discover",
+      "enlarge",
+      "zoom"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "send",
+    "name": "send",
+    "componentName": "SendIcon",
+    "category": "mail",
+    "categories": [
+      "mail",
+      "communication",
+      "connectivity"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "mirror",
+    "tags": [
+      "email",
+      "message",
+      "mail",
+      "paper airplane",
+      "paper aeroplane",
+      "submit"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "server",
+    "name": "server",
+    "componentName": "ServerIcon",
+    "category": "development",
+    "categories": [
+      "development",
+      "devices"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "cloud",
+      "storage"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "x",
+    "name": "x",
+    "componentName": "XIcon",
+    "category": "notifications",
+    "categories": [
+      "notifications",
+      "math"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "cancel",
+      "close",
+      "cross",
+      "delete",
+      "ex",
+      "remove",
+      "times",
+      "clear",
+      "math",
+      "multiply",
+      "multiplication"
+    ],
+    "aliases": []
+  }
+]

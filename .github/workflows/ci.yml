@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+  schedule:
+    # Weekly: confirm the pinned upstream artifacts still match the lock.
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # The Xcode Phase 1 was verified with. If the runner image does not carry it, the select step
+  # fails loudly; update this pin (and re-verify locally) rather than letting the toolchain float.
+  XCODE_VERSION: "27.1"
+
+jobs:
+  package:
+    name: Generator, drift, lint, host tests, API
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: |
+          sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
+          xcodebuild -version
+          swift --version
+      - name: Generator tests
+        run: swift test --package-path Scripts
+      - name: Snapshot matches its lock; generated files are current
+        run: Scripts/verify.sh
+      - name: swift-format (strict)
+        run: Scripts/lint.sh
+      - name: Library tests on the macOS host
+        run: swift test
+      - name: Public API matches the committed baseline
+        run: Scripts/api-check.sh
+
+  ios:
+    name: iOS build, Simulator tests, showcase
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
+      - name: Pick a simulator
+        id: simulator
+        run: echo "id=$(Scripts/ci-simulator.sh)" >> "$GITHUB_OUTPUT"
+      - name: Build for iOS devices
+        run: xcodebuild build -scheme Qeetrix -destination 'generic/platform=iOS' -derivedDataPath .build/xcode
+      - name: Test on the iOS Simulator
+        run: |
+          xcodebuild test -scheme Qeetrix \
+            -destination "platform=iOS Simulator,id=${{ steps.simulator.outputs.id }}" \
+            -derivedDataPath .build/xcode
+      - name: Build the showcase app
+        run: |
+          xcodebuild build -project Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase \
+            -destination "platform=iOS Simulator,id=${{ steps.simulator.outputs.id }}" \
+            -derivedDataPath .build/showcase
+
+  upstream:
+    name: Pinned upstream still matches the lock
+    # Networked, so it runs on a schedule, on demand, and when the pins or lock change.
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
+    runs-on: macos-26
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Skip unless Scripts/Upstream changed (pull requests)
+        if: github.event_name == 'pull_request'
+        id: changed
+        run: |
+          git fetch --depth=1 origin "${{ github.base_ref }}"
+          if git diff --quiet "origin/${{ github.base_ref }}" -- Scripts/Upstream; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Select Xcode
+        if: steps.changed.outputs.run != 'false'
+        run: sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
+      - name: Fetch and compare
+        if: steps.changed.outputs.run != 'false'
+        run: Scripts/sync-upstream.sh --check
