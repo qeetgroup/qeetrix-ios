@@ -4,9 +4,9 @@ import QeetrixGenCore
 let usage = """
     usage: qeetrix-gen <command> [--root <repository>]
 
-      generate      Regenerate Swift, provenance and the coverage report from Scripts/Upstream.
+      generate      Regenerate Swift, provenance and the coverage report from Upstream/.
       verify        Fail if the snapshot does not match its lock or the generated files are stale.
-      sync          Fetch the artifacts pinned in Scripts/Upstream/pins.json and rewrite the lock.
+      sync          Fetch the artifacts pinned in Upstream/pins.json and rewrite the lock.
       sync --check  Fetch the pinned artifacts and compare them with the lock; change nothing.
       api --symbol-graphs <dir> [--update]
                     Compare the public API in the symbol graphs with Documentation/API (or rewrite it).

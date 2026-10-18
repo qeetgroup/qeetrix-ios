@@ -1,12 +1,12 @@
 {
-  "$comment": "What qeetrix-ios is built from. Edit a pin, then run Scripts/sync-upstream.sh: it fetches these exact artifacts, proves the native fonts are the files the web ships, and rewrites upstream.lock.json. Nothing else in Scripts/Upstream/ is edited by hand. Paths are relative to the repository root.",
+  "$comment": "What qeetrix-ios is built from. Edit a pin, then run Scripts/sync-upstream.sh: it fetches these exact artifacts, proves the native fonts are the files the web ships, and rewrites upstream.lock.json. Nothing else in Upstream/ is edited by hand. Paths are relative to the repository root.",
   "qeetrixUI": {
     "package": "@qeetrix/ui",
     "version": "2.1.6",
     "files": {
-      "package/dist/styles/tokens.json": "Scripts/Upstream/qeetrix-ui/tokens.json",
-      "package/dist/styles/tokens.css": "Scripts/Upstream/qeetrix-ui/tokens.css",
-      "package/dist/styles/index.css": "Scripts/Upstream/qeetrix-ui/index.css"
+      "package/dist/styles/tokens.json": "Upstream/qeetrix-ui/tokens.json",
+      "package/dist/styles/tokens.css": "Upstream/qeetrix-ui/tokens.css",
+      "package/dist/styles/index.css": "Upstream/qeetrix-ui/index.css"
     }
   },
   "fonts": [

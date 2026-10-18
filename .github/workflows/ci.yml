@@ -34,7 +34,7 @@ jobs:
           xcodebuild -version
           swift --version
       - name: Generator tests
-        run: swift test --package-path Scripts
+        run: swift test --package-path Tools/QeetrixGen
       - name: Snapshot matches its lock; generated files are current
         run: Scripts/verify.sh
       - name: swift-format (strict)
@@ -76,12 +76,12 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: Skip unless Scripts/Upstream changed (pull requests)
+      - name: Skip unless Upstream/ changed (pull requests)
         if: github.event_name == 'pull_request'
         id: changed
         run: |
           git fetch --depth=1 origin "${{ github.base_ref }}"
-          if git diff --quiet "origin/${{ github.base_ref }}" -- Scripts/Upstream; then
+          if git diff --quiet "origin/${{ github.base_ref }}" -- Upstream; then
             echo "run=false" >> "$GITHUB_OUTPUT"
           else
             echo "run=true" >> "$GITHUB_OUTPUT"

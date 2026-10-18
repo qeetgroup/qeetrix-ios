@@ -15,7 +15,7 @@ struct CoverageReport {
             "Source: `\(provenance.qeetrixUIPackage)@\(provenance.qeetrixUIVersion)` (git `\(provenance.qeetrixUIGitHead.prefix(7))`), themes \(model.themes.map { "`\($0)`" }.joined(separator: ", ")).",
             "",
             "\(model.included.count) tokens are generated as Swift; \(model.excluded.count) are not. The rule is in",
-            "[`Scripts/Sources/QeetrixGenCore/Tokens/Scope.swift`](../../Scripts/Sources/QeetrixGenCore/Tokens/Scope.swift).",
+            "[`Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift`](../../Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift).",
             "",
             "## Generated",
             "",

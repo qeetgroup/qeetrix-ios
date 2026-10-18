@@ -5,7 +5,7 @@
 Source: `@qeetrix/ui@2.1.6` (git `7d7f651`), themes `light`, `dark`.
 
 217 tokens are generated as Swift; 666 are not. The rule is in
-[`Scripts/Sources/QeetrixGenCore/Tokens/Scope.swift`](../../Scripts/Sources/QeetrixGenCore/Tokens/Scope.swift).
+[`Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift`](../../Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift).
 
 ## Generated
 

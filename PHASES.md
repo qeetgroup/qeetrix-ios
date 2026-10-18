@@ -24,6 +24,9 @@ Done, and verified:
 - **Icons.** 12 icons, with their round, sharp, outline and filled drawings where upstream has them.
 - **Tests.** 46 library tests on the Mac and on the iOS 27.1 Simulator, and 29 generator tests.
 - **Example.** The showcase app.
+- **Groundwork for Phase 2.** Decision records, and the component contract (catalogue, file set,
+  tokens rule, test matrix). The template, the snapshot target and the components themselves wait for
+  Phase 2.
 
 Not done in Phase 1, by scope:
 

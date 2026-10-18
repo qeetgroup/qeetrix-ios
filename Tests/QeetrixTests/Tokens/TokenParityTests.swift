@@ -68,7 +68,7 @@ struct TokenParityTests {
     @Test("The bundled provenance names the pinned upstream artifacts")
     func provenance() throws {
         let provenance = try QeetrixProvenance.bundled()
-        let lock = try JSONSerialization.jsonObject(with: try Repository.data("Scripts/Upstream/upstream.lock.json")) as? [String: Any]
+        let lock = try JSONSerialization.jsonObject(with: try Repository.data("Upstream/upstream.lock.json")) as? [String: Any]
         let ui = lock?["qeetrixUI"] as? [String: String]
         #expect(provenance.tokens.package == "@qeetrix/ui")
         #expect(provenance.tokens.version == ui?["version"])

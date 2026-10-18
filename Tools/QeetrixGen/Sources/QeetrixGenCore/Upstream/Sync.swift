@@ -1,7 +1,7 @@
 import CryptoKit
 import Foundation
 
-/// Fetches the artifacts pinned in `Scripts/Upstream/pins.json` and refreshes the snapshot and lock.
+/// Fetches the artifacts pinned in `Upstream/pins.json` and refreshes the snapshot and lock.
 ///
 /// - `@qeetrix/ui` comes from the npm registry: the published tarball, checked against its registry
 ///   integrity, is the output of qeetrix-ui's own Style Dictionary build.
@@ -120,14 +120,14 @@ public struct UpstreamSync {
                     let source = "icons/\(shape)-\(variant)/\(category)/\(name).svg"
                     staged.append(
                         (
-                            "Scripts/Upstream/qeetrix-icons/svg/\(shape)-\(variant)/\(name).svg",
+                            "Upstream/qeetrix-icons/svg/\(shape)-\(variant)/\(name).svg",
                             try await fetch(Self.raw(iconRepository, commit, source))
                         ))
                 }
             }
         }
-        staged.append(("Scripts/Upstream/qeetrix-icons/icons.json", Data(OrderedJSON.array(selected).serialized().utf8)))
-        staged.append(("Scripts/Upstream/qeetrix-icons/LICENSE", try await fetch(Self.raw(iconRepository, commit, "LICENSE"))))
+        staged.append(("Upstream/qeetrix-icons/icons.json", Data(OrderedJSON.array(selected).serialized().utf8)))
+        staged.append(("Upstream/qeetrix-icons/LICENSE", try await fetch(Self.raw(iconRepository, commit, "LICENSE"))))
         log("✓ \(iconRepository)@\(commit.prefix(7)) — \(names.count) icons")
 
         staged.sort { $0.path < $1.path }
@@ -149,7 +149,7 @@ public struct UpstreamSync {
             return
         }
 
-        let svgRoot = root.appendingPathComponent("Scripts/Upstream/qeetrix-icons/svg")
+        let svgRoot = root.appendingPathComponent("Upstream/qeetrix-icons/svg")
         try? FileManager.default.removeItem(at: svgRoot)  // drop drawings of icons no longer pinned
         for (path, data) in staged {
             let url = root.appendingPathComponent(path)

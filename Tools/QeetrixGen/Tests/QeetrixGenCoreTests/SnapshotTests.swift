@@ -6,12 +6,17 @@ import Testing
 /// Tests against the committed upstream snapshot: the real tokens, fonts and icons.
 @Suite("Upstream snapshot")
 struct SnapshotTests {
+    /// Tools/QeetrixGen/Tests/QeetrixGenCoreTests/SnapshotTests.swift → the repository root.
     static let root = URL(fileURLWithPath: #filePath)
-        .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        .deletingLastPathComponent()  // QeetrixGenCoreTests
+        .deletingLastPathComponent()  // Tests
+        .deletingLastPathComponent()  // QeetrixGen
+        .deletingLastPathComponent()  // Tools
+        .deletingLastPathComponent()
 
     func source() throws -> TokenSource {
         func read(_ name: String) throws -> Data {
-            try Data(contentsOf: Self.root.appendingPathComponent("Scripts/Upstream/qeetrix-ui/\(name)"))
+            try Data(contentsOf: Self.root.appendingPathComponent("Upstream/qeetrix-ui/\(name)"))
         }
         return try TokenSource(
             tokensJSON: try read("tokens.json"),

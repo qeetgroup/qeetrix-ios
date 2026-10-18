@@ -102,7 +102,7 @@ struct WelcomeCard: View {
 swift build && swift test                       # library, on the Mac host
 xcodebuild test -scheme Qeetrix \
   -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"   # library, on iOS
-swift test --package-path Scripts               # generator
+swift test --package-path Tools/QeetrixGen      # generator
 Scripts/verify.sh                               # snapshot matches lock; generated files current
 Scripts/lint.sh                                 # swift-format, strict
 Scripts/api-check.sh                            # public API matches Documentation/API
@@ -116,7 +116,7 @@ with `-section icons` (or `colours`, `typography`, `spacing`, `elevation`) to op
 
 Tokens, fonts and icons are never edited here. Change them upstream, then:
 
-1. Bump the pin in `Scripts/Upstream/pins.json`.
+1. Bump the pin in `Upstream/pins.json`.
 2. Run `Scripts/sync-upstream.sh`, which fetches, verifies and re-locks.
 3. Run `Scripts/generate.sh`, then the tests.
 
@@ -142,4 +142,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md#upstream-sync).
 
 No licence has been chosen for this package's own code yet. `@qeetrix/ui` is published as
 `UNLICENSED`, and choosing one is Qeet Group's decision. Bundled fonts and icon artwork carry their
-own licences; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+own licences; see [Documentation/THIRD_PARTY_NOTICES.md](Documentation/THIRD_PARTY_NOTICES.md).

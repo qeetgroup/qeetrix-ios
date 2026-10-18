@@ -6,9 +6,10 @@ Built from `@qeetrix/ui` 2.1.6, `@qeetrix/icons` 1.0.11 (`331cd85`), Cal Sans v2
 
 ### Added
 
-- **Token pipeline.** `Scripts/` (the `qeetrix-gen` tool) does the following:
+- **Token pipeline.** `Tools/QeetrixGen` (the `qeetrix-gen` tool, run through `Scripts/`) does the
+  following:
   - syncs the published `@qeetrix/ui` token build, the native fonts and the pinned icons into
-    `Scripts/Upstream/`, verified and locked by sha256;
+    `Upstream/`, verified and locked by sha256;
   - generates typed Swift from them;
   - verifies generated files byte-for-byte.
   It needs no dependencies and runs offline after a sync.
@@ -45,5 +46,11 @@ Built from `@qeetrix/ui` 2.1.6, `@qeetrix/icons` 1.0.11 (`331cd85`), Cal Sans v2
   - 46 library tests: token parity with upstream, brand colour values, upstream's WCAG pairs in both
     themes, font loading and axes, rendering, theme overrides, icons and the public API.
   - 29 generator tests.
+- **Repository layout** (ADR 0007): the generator in `Tools/QeetrixGen`, its pinned inputs and lock in
+  `Upstream/`, and the commands in `Scripts/`.
+- **Decision records** in `Documentation/Decisions/` (0001–0008 accepted, 0009 proposed), and the
+  component contract for Phase 2 in `Documentation/Standards/COMPONENT_CONTRACT.md`.
+- **Governance.** `SECURITY.md`, `.editorconfig`, `.github/CODEOWNERS`, a pull request template, and
+  issue templates for bugs and design-system changes.
 - **Checks and CI.** `Scripts/lint.sh` (swift-format), `Scripts/api-check.sh` (public API baseline) and
   `.github/workflows/ci.yml`.

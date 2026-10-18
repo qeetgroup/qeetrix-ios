@@ -16,13 +16,24 @@ Sources/Qeetrix/
 ├── Internal/                 implementation details (colour storage, logging)
 └── Resources/                Fonts/ (TTF + licence), Metadata/token-provenance.json
 Tests/QeetrixTests/           mirrors Sources: Tokens, Foundations/*, Theme, Icons, Integration
-Scripts/                      the build tool (a separate Swift package) and its entry scripts
-├── Upstream/                 pins.json, upstream.lock.json and the pinned artifacts
-├── Sources/QeetrixGenCore/   Shared/, Tokens/, Fonts/, Icons/, Upstream/
-└── *.sh                      sync-upstream, generate, verify, lint, api-check, ci-simulator
 Examples/QeetrixShowcase/     an iOS app that depends on the package
-Documentation/                cross-platform contract, standards, generated coverage and API baseline
+Tools/QeetrixGen/             the build tool: its own Swift package (Sources/QeetrixGenCore, Tests)
+Upstream/                     pins.json (edited), upstream.lock.json (written by sync), pinned inputs
+Scripts/                      the commands people and CI run: sync-upstream, generate, verify, lint,
+                              api-check, ci-simulator — thin wrappers over Tools/QeetrixGen
+Documentation/
+├── Decisions/                numbered architecture decision records
+├── Standards/                component contract, accessibility
+├── Foundations/ API/         generated: token coverage, public API baseline
+├── CROSS_PLATFORM_CONTRACT.md
+└── THIRD_PARTY_NOTICES.md    licences of the bundled fonts and the icon artwork
+.github/                      CI workflow, CODEOWNERS, PR and issue templates
 ```
+
+Components arrive in Phase 2 under `Sources/Qeetrix/Components/<Family>/<Component>/`, one folder per
+qeetrix-ui family. No folder exists before its first component. The rules for a component are in
+[Documentation/Standards/COMPONENT_CONTRACT.md](Documentation/Standards/COMPONENT_CONTRACT.md).
+Decisions behind this layout are in [Documentation/Decisions](Documentation/Decisions/README.md).
 
 ## Layers and dependency rules
 
@@ -47,8 +58,9 @@ Internal supports every layer; nothing depends on Theme except apps.
 - The package depends on no other package and on no Qeet product. The example app and the tests
   depend on the library, never the reverse.
 
-There is one module. Splitting into several would add no benefit until there is a distribution or
-build-time reason to, such as a component family with a heavy dependency.
+There is one module. Extracting another target or product later is a real API change, not a move: it
+brings new module names, imports and access levels, and needs compatibility work. The conditions that
+would justify it are in [ADR 0001](Documentation/Decisions/0001-one-package-one-public-module.md).
 
 ## Design-token pipeline
 
@@ -57,7 +69,7 @@ build-time reason to, such as a component family with a heavy dependency.
   tokens.json · tokens.css · index.css    native TTF + OFL                 SVGs + manifest entries
                 └───────── Scripts/sync-upstream.sh (verify, copy, lock) ─────────┘
                                          ↓
-                    Scripts/Upstream/ + Resources/Fonts + upstream.lock.json
+                    Upstream/ + Resources/Fonts + upstream.lock.json
                                          ↓   Scripts/generate.sh (offline, deterministic)
         Tokens/Generated/*.swift · Icons/Generated/*.swift · Metadata/token-provenance.json
                        Documentation/Foundations/TOKEN_COVERAGE.md
@@ -74,10 +86,14 @@ source. That keeps one compiler of record:
 The sync checks the tarball against the npm registry's integrity hash and records the version and the
 git commit it was published from.
 
-**Scope.** `Scripts/Sources/QeetrixGenCore/Tokens/Scope.swift` decides what is generated:
+**Scope.** `Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift` decides what is generated:
 
-- Included: the consumable layer, minus component tokens (Phase 2), z-indices (no SwiftUI meaning) and
+- Included: the consumable layer, minus component tokens, z-indices (no SwiftUI meaning) and
   gradients (not a Phase 1 foundation).
+- Component tokens are generated from Phase 2 onwards, only for components that have them upstream.
+  qeetrix-ui 2.1.6 defines 41 component token groups covering 40 of its 97 families; the other 57
+  use semantic tokens only
+  ([ADR 0002](Documentation/Decisions/0002-tokens-from-the-published-qeetrix-ui-build.md)).
 - Also included: the non-colour primitive scales qeetrix-ui itself exposes to code in
   `token-values.ts`, namely spacing, icon size and stroke, stroke width, font weight and font geometry.
 - Palette primitives are never generated, so product code cannot reach a raw colour.

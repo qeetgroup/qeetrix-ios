@@ -1,6 +1,5 @@
 # SwiftPM / Xcode build output
 .build/
-Scripts/.build/
 DerivedData/
 *.xcresult
 

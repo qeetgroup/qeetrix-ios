@@ -8,7 +8,7 @@ import Testing
 struct IconTests {
     @Test("Names are the pinned qeetrix-icons names")
     func names() throws {
-        let pins = try JSONSerialization.jsonObject(with: try Repository.data("Scripts/Upstream/pins.json")) as? [String: Any]
+        let pins = try JSONSerialization.jsonObject(with: try Repository.data("Upstream/pins.json")) as? [String: Any]
         let pinned = (pins?["qeetrixIcons"] as? [String: Any])?["icons"] as? [String] ?? []
         #expect(QeetrixIconName.allCases.map(\.rawValue).sorted() == pinned.sorted())
     }
@@ -16,7 +16,7 @@ struct IconTests {
     @Test("Drawings exist for every shape and variant the manifest lists")
     func drawings() throws {
         let manifest =
-            try JSONSerialization.jsonObject(with: try Repository.data("Scripts/Upstream/qeetrix-icons/icons.json")) as? [[String: Any]]
+            try JSONSerialization.jsonObject(with: try Repository.data("Upstream/qeetrix-icons/icons.json")) as? [[String: Any]]
             ?? []
         for entry in manifest {
             let name = try #require(QeetrixIconName(rawValue: entry["name"] as? String ?? ""))

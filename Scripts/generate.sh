@@ -4,4 +4,4 @@
 # Documentation/Foundations/TOKEN_COVERAGE.md. Offline and deterministic.
 set -eu
 root=$(cd "$(dirname "$0")/.." && pwd)
-exec swift run --quiet --package-path "$root/Scripts" qeetrix-gen generate --root "$root"
+exec swift run --quiet --package-path "$root/Tools/QeetrixGen" qeetrix-gen generate --root "$root"

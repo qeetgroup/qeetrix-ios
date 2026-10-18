@@ -7,8 +7,8 @@ licence texts are in this repository as listed.
 
 | Font | Version | Licence | Licence file |
 |:--|:--|:--|:--|
-| Cal Sans, variable (`CalSansVF.ttf`), used as "Qeet Sans" | v2.011, [calcom/sans](https://github.com/calcom/sans) | SIL Open Font License 1.1 | [`CalSans-OFL.txt`](Sources/Qeetrix/Resources/Fonts/CalSans-OFL.txt) |
-| Fira Code, variable (`FiraCode-VF.ttf`) | 6.2, [tonsky/FiraCode](https://github.com/tonsky/FiraCode) | SIL Open Font License 1.1 | [`FiraCode-OFL.txt`](Sources/Qeetrix/Resources/Fonts/FiraCode-OFL.txt) |
+| Cal Sans, variable (`CalSansVF.ttf`), used as "Qeet Sans" | v2.011, [calcom/sans](https://github.com/calcom/sans) | SIL Open Font License 1.1 | [`CalSans-OFL.txt`](../Sources/Qeetrix/Resources/Fonts/CalSans-OFL.txt) |
+| Fira Code, variable (`FiraCode-VF.ttf`) | 6.2, [tonsky/FiraCode](https://github.com/tonsky/FiraCode) | SIL Open Font License 1.1 | [`FiraCode-OFL.txt`](../Sources/Qeetrix/Resources/Fonts/FiraCode-OFL.txt) |
 
 The font files are bundled unmodified, each beside its licence. The licence files are copied verbatim
 from the font projects at those tags. Neither declares a Reserved Font Name.
@@ -24,7 +24,7 @@ The icon path data is converted from the SVG drawings of
   License.
 
 The complete notice, including the Lucide and Feather licences, is reproduced verbatim in
-[`Scripts/Upstream/qeetrix-icons/LICENSE`](Scripts/Upstream/qeetrix-icons/LICENSE).
+[`Upstream/qeetrix-icons/LICENSE`](../Upstream/qeetrix-icons/LICENSE).
 
 ## Design tokens
 

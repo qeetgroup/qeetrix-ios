@@ -1,7 +1,7 @@
 import CryptoKit
 import Foundation
 
-/// Where every input came from, read from `Scripts/Upstream/upstream.lock.json`.
+/// Where every input came from, read from `Upstream/upstream.lock.json`.
 public struct Provenance: Equatable, Sendable {
     public struct Font: Equatable, Sendable {
         public let family: String
@@ -36,8 +36,8 @@ public struct Provenance: Equatable, Sendable {
 }
 
 public enum Lock {
-    public static let path = "Scripts/Upstream/upstream.lock.json"
-    public static let pinsPath = "Scripts/Upstream/pins.json"
+    public static let path = "Upstream/upstream.lock.json"
+    public static let pinsPath = "Upstream/pins.json"
 
     public static func sha256(_ data: Data) -> String {
         SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
