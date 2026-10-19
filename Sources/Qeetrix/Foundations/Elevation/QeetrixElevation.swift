@@ -24,11 +24,16 @@ extension View {
     public func qeetrixElevation<S: InsettableShape>(_ elevation: QeetrixElevation, fill: QeetrixColor, in shape: S) -> some View {
         background(QeetrixElevationBackground(elevation: elevation, fill: fill, shape: shape))
     }
+
+    /// The same surface with any fill — components use it with their component colour tokens.
+    func qeetrixElevation<S: InsettableShape, F: ShapeStyle>(_ elevation: QeetrixElevation, fill: F, in shape: S) -> some View {
+        background(QeetrixElevationBackground(elevation: elevation, fill: fill, shape: shape))
+    }
 }
 
-struct QeetrixElevationBackground<S: InsettableShape>: View {
+struct QeetrixElevationBackground<S: InsettableShape, F: ShapeStyle>: View {
     let elevation: QeetrixElevation
-    let fill: QeetrixColor
+    let fill: F
     let shape: S
     @Environment(\.colorScheme) private var colorScheme
 

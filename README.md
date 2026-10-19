@@ -5,8 +5,10 @@ same tokens, typeface, themes and icons as the web's [`@qeetrix/ui`](https://git
 and [`@qeetrix/icons`](https://github.com/qeetgroup/qeetrix-icons), generated from those packages
 rather than copied from them.
 
-**Status: Phase 1 — foundations.** Tokens, theming, typography, icon infrastructure and accessibility
-helpers. There are no components yet; they start in Phase 2 ([PHASES.md](PHASES.md)).
+**Status: Phase 4 — navigation, overlays and feedback.** The foundations (tokens, theming, typography,
+icons, accessibility helpers), the core components, the form controls and patterns, and tabs, navigation
+chrome, dialogs, sheets, popovers, menus and toasts, each with tests, a DocC page and a showcase page
+([PHASES.md](PHASES.md)).
 
 ## What is in it
 
@@ -18,8 +20,48 @@ helpers. There are no components yet; they start in Phase 2 ([PHASES.md](PHASES.
 | Spacing, size, shape | `QeetrixSpacing`, `QeetrixCorner`, `QeetrixStroke`, `QeetrixFocus`, `QeetrixDensity`, `QeetrixOpacity` | `space`, `corner`, `stroke.width`, `focus`, `density`, `state` |
 | Elevation | `QeetrixElevation`, `.qeetrixElevation(_:fill:in:)` | `elevation.*` (per theme) |
 | Motion | `QeetrixDuration`, `QeetrixEasing`, `QeetrixMotion`, `.qeetrixAnimation(_:_:value:)` | `motion.*` |
-| Icons | `QeetrixIcon`, `QeetrixIconName` (12 icons in Phase 1) | `qeetrix-icons` SVGs |
+| Icons | `QeetrixIcon`, `QeetrixIconName` (29 icons), `Image(qeetrix:)` for system chrome | `qeetrix-icons` SVGs |
 | Accessibility | `QeetrixAccessibility.minimumTouchTarget`, `.qeetrixMinimumTouchTarget()`, `contrastRatio(_:on:)` | Apple HIG, WCAG 2.2 |
+
+### Components
+
+| Component | API | On the web |
+|:--|:--|:--|
+| Text | `QeetrixText` (`h1`–`h4`, `p`, `lead`, `large`, `small`, `muted`, `blockquote`, `inlineCode`) | Typography |
+| Separator | `QeetrixSeparator` | Separator |
+| Card | `QeetrixCard`, `QeetrixCardHeader`, `.buttonStyle(.qeetrixCard())` | Card |
+| Badge | `QeetrixBadge` | Badge |
+| Button | `QeetrixButton`, `.buttonStyle(.qeetrix())` | Button |
+| Icon button | `QeetrixIconButton` | Icon Button |
+| Spinner | `QeetrixSpinner` | Spinner |
+| Progress | `QeetrixProgress`, `.progressViewStyle(.qeetrix())` | Progress |
+| Avatar | `QeetrixAvatar` | Avatar |
+| Switch | `QeetrixSwitch`, `.toggleStyle(.qeetrixSwitch())` | Switch |
+| Text field | `QeetrixTextField`, `QeetrixFieldMessage` | Input and Field |
+| Field | `QeetrixField`, `QeetrixFieldSet` | Field |
+| Textarea | `QeetrixTextarea` | Textarea |
+| Password input | `QeetrixPasswordInput` | Password Input |
+| OTP input | `QeetrixOTPInput` | OTP Input |
+| Checkbox | `QeetrixCheckbox`, `.toggleStyle(.qeetrixCheckbox)` | Checkbox |
+| Radio group | `QeetrixRadioGroup`, `QeetrixOption` | Radio Group |
+| Select | `QeetrixSelect`, `QeetrixOption` | Select, Native Select |
+| Number field | `QeetrixNumberField` | Number Field |
+| Form | `QeetrixFormActions`, `QeetrixFormErrorSummary` | Form |
+| Tabs | `QeetrixTabs`, `QeetrixTab` | Tabs |
+| Navigation and tab bars | `.qeetrixNavigationBar(background:)`, `.qeetrixTabBar()`, `.qeetrixTabItem(_:icon:badge:)` | — (styles the system bars) |
+| Alert dialog | `QeetrixAlertDialog`, `.qeetrixAlertDialog(_:)`, `QeetrixDialogAction` | Alert Dialog |
+| Confirmation dialog | `QeetrixConfirmationDialog`, `.qeetrixConfirmationDialog(_:)` | — (iOS action sheet) |
+| Sheet | `.qeetrixSheet(isPresented:…)`, `.qeetrixSheet(item:…)`, `QeetrixSheetContent` | Drawer, Dialog |
+| Popover | `.qeetrixPopover(isPresented:…)` | Popover |
+| Menu | `QeetrixMenu`, `QeetrixMenuItem` | Dropdown Menu, Context Menu |
+| Toast | `QeetrixToast`, `.qeetrixToast(_:)` | Toast |
+
+Where SwiftUI has a style protocol, the style works on native controls too: `NavigationLink`,
+`ShareLink`, `Toggle`, `ProgressView`.
+
+API and usage documentation is in the DocC catalogue (`Sources/Qeetrix/Qeetrix.docc`): open the
+package in Xcode and choose **Product › Build Documentation**, or run `Scripts/docs.sh`. Architecture,
+decisions and standards are in [Documentation/](Documentation/).
 
 Generated coverage, including what is deliberately not generated, is listed in
 [Documentation/Foundations/TOKEN_COVERAGE.md](Documentation/Foundations/TOKEN_COVERAGE.md).
@@ -85,6 +127,17 @@ struct WelcomeCard: View {
 }
 ```
 
+Components are built from the same foundations:
+
+```swift
+QeetrixCard {
+    QeetrixCardHeader("Two-step sign-in", description: "A passkey on this device")
+    QeetrixSwitch("Require a passkey", isOn: $requirePasskey)
+} footer: {
+    QeetrixButton("Save", isLoading: isSaving) { save() }
+}
+```
+
 - **Colours** resolve from the view's colour scheme. Use `.qeetrixThemeMode(_:)` once, at the root;
   use `.qeetrixTheme(.dark)` to draw one part of a screen in a fixed theme. Where an API needs a
   `Color`, read `@Environment(\.qeetrixTheme) var theme` and call `theme.color(.borderDefault)`.
@@ -102,21 +155,40 @@ struct WelcomeCard: View {
 swift build && swift test                       # library, on the Mac host
 xcodebuild test -scheme Qeetrix \
   -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"   # library, on iOS
-swift test --package-path Scripts               # generator
+swift test --package-path Tools/QeetrixGen      # generator
 Scripts/verify.sh                               # snapshot matches lock; generated files current
 Scripts/lint.sh                                 # swift-format, strict
 Scripts/api-check.sh                            # public API matches Documentation/API
+Scripts/docs.sh                                 # DocC documentation, warnings as errors
+Scripts/check.sh                                # all of the above that runs without a simulator, and more
 ```
 
-The showcase app, `Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj`, shows every foundation in
-both themes and at any text size. It depends on this package through a local reference. Launch it
-with `-section icons` (or `colours`, `typography`, `spacing`, `elevation`) to open at a section.
+Component snapshots and the showcase's UI tests run on the iOS Simulator. Snapshot baselines are
+recorded on your machine and never committed (ADR 0013): record them on a commit you trust, then run
+the snapshots on your change to compare.
+
+```sh
+TEST_RUNNER_SNAPSHOT_TESTING_RECORD=all xcodebuild test -scheme Qeetrix -only-testing:QeetrixSnapshotTests \
+  -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"   # record the baselines
+xcodebuild test -scheme Qeetrix -only-testing:QeetrixSnapshotTests \
+  -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"   # compare with them
+xcodebuild test -project Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase \
+  -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"   # UI tests
+```
+
+The showcase app, `Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj`, shows every foundation and
+component in both themes and at any text size, grouped as ui.qeet.in groups them. It depends on this
+package through a local reference. Launch it with `-page switch` (any page's identifier) to open that
+page, or `-page foundations -section icons` to open the foundations at a section.
+
+To start a new component, run `Scripts/new-component.sh <Family> <Component> --category "<docs
+category>"`; see [Templates/Component/README.md](Templates/Component/README.md).
 
 ## Updating from upstream
 
 Tokens, fonts and icons are never edited here. Change them upstream, then:
 
-1. Bump the pin in `Scripts/Upstream/pins.json`.
+1. Bump the pin in `Upstream/pins.json`.
 2. Run `Scripts/sync-upstream.sh`, which fetches, verifies and re-locks.
 3. Run `Scripts/generate.sh`, then the tests.
 
@@ -124,22 +196,34 @@ See [CONTRIBUTING.md](CONTRIBUTING.md#upstream-sync).
 
 ## Known limitations
 
-- **Phase 1 scope.** There are no components, the 216 component tokens are not generated, and only 12
-  icons are included. Logos are not included.
+- **Scope.** Thirty components and patterns. Component tokens are generated for the ten groups they use
+  (avatar, badge, button, card, dialog, input, popover, progress, switch, typography) of the 41 upstream
+  defines. 29 icons are included, and no logos.
+- **System-drawn overlays.** Alerts, confirmation dialogs and menus are drawn by iOS: only the tint is
+  Qeetrix's. One toast shows at a time, and there is no snackbar, separate centred dialog or inline alert
+  yet (ADR 0014).
+- **Snapshots are local.** Baselines are not committed, so CI does not compare snapshots (ADR 0013).
 - **Increased contrast.** Qeetrix defines no contrast theme yet, so colours are the same under
   Increased Contrast. Every semantic text pair already meets WCAG 2.2 AA in both themes, and the
   tests check this.
 - **Line height.** SwiftUI cannot set lines tighter than a font's natural height, so a role's line
   height is a minimum. Unlike CSS, there is no half-leading above the first line.
 - **Sizes are the web's.** Body text is 14 pt, where iOS defaults to 17 pt, and control densities are
-  28–36 pt high, below the 44 pt touch target. Both are recorded for design review in
+  28–36 pt high. Components keep the drawn size and extend their touch target to 44 pt without moving
+  layout. Both choices are recorded for design review in
   [ARCHITECTURE.md](ARCHITECTURE.md#open-design-questions).
-- **Verification.** Simulator tests ran on iOS 27.1 only. No iOS 17 runtime was available, so behaviour
-  on iOS 17 itself is compiled against but not yet run. VoiceOver and Bold Text have not been checked
-  on a device.
+- **Component geometry is not a token.** Heights, padding and type steps come from Tailwind utility
+  classes on the web, restated once in the package (ADR 0011); the drift check cannot see a change to
+  them.
+- **Verification.** Simulator tests ran on iOS 27.1 only, on the one device type that runtime offers.
+  No iOS 17 runtime was available, so behaviour on iOS 17 itself is compiled against but not yet run.
+  No iPad simulator was available either: regular-width behaviour (popovers, form sheets) was checked
+  through an iPhone in landscape.
+  VoiceOver, Bold Text and Full Keyboard Access have been checked through their semantics in tests and
+  UI tests, not by a person on a device.
 
 ## Licence
 
 No licence has been chosen for this package's own code yet. `@qeetrix/ui` is published as
 `UNLICENSED`, and choosing one is Qeet Group's decision. Bundled fonts and icon artwork carry their
-own licences; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+own licences; see [Documentation/THIRD_PARTY_NOTICES.md](Documentation/THIRD_PARTY_NOTICES.md).

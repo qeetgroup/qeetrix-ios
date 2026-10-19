@@ -12,9 +12,9 @@
 ```sh
 git clone https://github.com/qeetgroup/qeetrix-ios.git
 cd qeetrix-ios
-swift test                         # library tests on the Mac
-swift test --package-path Scripts  # generator tests
-Scripts/verify.sh                  # snapshot and generated files are consistent
+swift test                                   # library tests on the Mac
+swift test --package-path Tools/QeetrixGen   # generator tests
+Scripts/verify.sh                            # snapshot and generated files are consistent
 ```
 
 Open `Package.swift` in Xcode to work on the library, or
@@ -22,16 +22,29 @@ Open `Package.swift` in Xcode to work on the library, or
 
 ## Before you push
 
-All six must pass; CI runs the same:
+All of these must pass; CI runs the same:
 
 ```sh
-swift test --package-path Scripts
-Scripts/verify.sh
-Scripts/lint.sh                    # Scripts/lint.sh --fix rewrites
-swift test
-Scripts/api-check.sh               # --update when an API change is intended
-xcodebuild test -scheme Qeetrix -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"
+Scripts/check.sh              # generator tests, drift, format, warnings, dependencies, resources,
+                              # host tests, public API — stops at the first failure
+sim="platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"
+xcodebuild test -scheme Qeetrix -destination "$sim"     # unit and snapshot tests on iOS
+xcodebuild test -project Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj \
+  -scheme QeetrixShowcase -destination "$sim"           # UI tests
+Scripts/docs.sh               # DocC, warnings as errors
 ```
+
+`Scripts/lint.sh --fix` rewrites formatting; `Scripts/api-check.sh --update` accepts an intended API
+change, which then needs a CHANGELOG entry.
+
+## Documentation
+
+- **How to use the API:** the DocC catalogue, `Sources/Qeetrix/Qeetrix.docc`, plus doc comments on every
+  public symbol. Concrete examples in the articles and component pages are compiled and rendered by the
+  `*DocumentationExamplesTests.swift` files in `Tests/QeetrixTests/Integration`; change both together.
+- **How the package is built and why:** `ARCHITECTURE.md` and `Documentation/`.
+
+Each fact lives in one place. Link to it rather than copying it.
 
 ## Conventions
 
@@ -43,7 +56,8 @@ xcodebuild test -scheme Qeetrix -destination "platform=iOS Simulator,id=$(Script
   drawings and logging stay internal. A public API change shows up in `Scripts/api-check.sh`; note it in
   `CHANGELOG.md`.
 - **Concurrency.** Swift 6 language mode, strict. No global mutable state. Shared caches are `static
-  let`s of `Sendable` values.
+  let`s of `Sendable` values. The one exception is a cache of rendered images, which is main-actor
+  isolated and bounded (`QeetrixIconImageCache`, for `Image(qeetrix:)`).
 - **Comments.** Say why: the token, the platform rule or the upstream fact behind a decision.
 
 ## Tests
@@ -59,12 +73,20 @@ something independent of the code under test:
 A test that only restates a constant is not a test. Test files mirror `Sources`; anything that must use
 only the public API goes in `Tests/QeetrixTests/Integration`, without `@testable`.
 
+- **Snapshots** (`Tests/QeetrixSnapshotTests`, iOS only) compare component specimens with baselines in
+  four configurations (ADR 0009). Baselines live only on your machine — screenshots are never committed
+  (ADR 0013): record them with `TEST_RUNNER_SNAPSHOT_TESTING_RECORD=all` on a commit you trust, run the
+  snapshots on your change, look at every image that differs, and describe visual changes in the pull
+  request.
+- **UI tests** (`Examples/QeetrixShowcase/QeetrixShowcaseUITests`, XCTest) drive the showcase: taps,
+  typing, toggles, touch-target size and what VoiceOver is given.
+
 ## Upstream sync
 
 Tokens, fonts and icons come from upstream and are never edited here.
 
 1. Make the change upstream (qeetrix-ui or qeetrix-icons) and release it.
-2. Update `Scripts/Upstream/pins.json`: the `@qeetrix/ui` version, the qeetrix-icons commit and icon
+2. Update `Upstream/pins.json`: the `@qeetrix/ui` version, the qeetrix-icons commit and icon
    list, or a font tag.
 3. Run `Scripts/sync-upstream.sh`. It fetches, verifies (npm integrity, and that each TTF's WOFF2
    sibling is byte-identical to the web's), copies, and rewrites `upstream.lock.json`.
@@ -76,7 +98,7 @@ Tokens, fonts and icons come from upstream and are never edited here.
 Generation fails, by design, when upstream adds something iOS has no decision for:
 
 - a consumable token group with no rule in
-  [`Scope.swift`](Scripts/Sources/QeetrixGenCore/Tokens/Scope.swift);
+  [`Scope.swift`](Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift);
 - a new theme;
 - CSS syntax the evaluator does not know;
 - a typography role on a font that is not bundled;
@@ -84,12 +106,32 @@ Generation fails, by design, when upstream adds something iOS has no decision fo
 
 Make the decision in the generator, not by editing generated files.
 
-## Adding a component (Phase 2 onwards)
+## Recording a decision
 
-- Put it in `Sources/Qeetrix/Components/<Family>/`, using the qeetrix-ui family names (Actions,
-  Inputs, …) so the platforms stay aligned.
-- Read colours, type, spacing, elevation and motion from the foundations, never literals. Generate the
-  component's `component.<name>.*` tokens by adding a scope rule.
-- Hit areas are at least 44 pt (`qeetrixMinimumTouchTarget()`). Support Dynamic Type up to the
-  accessibility sizes, VoiceOver labels and traits, Reduce Motion, and right-to-left layout. Test each.
-- Show it in the showcase app.
+A choice that shapes the package for the long term gets a numbered record in
+[`Documentation/Decisions/`](Documentation/Decisions/README.md): a new dependency, a new target, a
+change to how tokens, fonts or icons arrive, or a testing approach.
+
+## Adding a component
+
+Start with the scaffold, then follow
+[`Documentation/Standards/COMPONENT_CONTRACT.md`](Documentation/Standards/COMPONENT_CONTRACT.md):
+
+```sh
+Scripts/new-component.sh Checkbox Checkbox --category "Forms & inputs" --dry-run   # see what it will do
+Scripts/new-component.sh Checkbox Checkbox --category "Forms & inputs"
+```
+
+In short:
+
+- **Location.** `Sources/Qeetrix/Components/<Family>/<Component>/`, where `<Family>` is the qeetrix-ui
+  family identifier from its `component-map.json` (`Button`, `DropdownMenu`, …). The ui.qeet.in
+  categories, such as Actions or Forms & inputs, are for documentation and the showcase, not folders.
+- **Tokens.** Semantic tokens by default. Component tokens only where qeetrix-ui defines
+  `component.<name>.*` (the scaffold adopts them). Web utility values through `QeetrixWebScale`. Never
+  add iOS-only design values.
+- **Accessibility.** Hit areas of at least 44 pt (`qeetrixHitArea()`), Dynamic Type up to the
+  accessibility sizes, VoiceOver labels and traits, Reduce Motion, and right-to-left layout. Test
+  each.
+- **The rest of the file set.** Behaviour tests, visual regression tests (ADR 0009), a DocC page and a
+  showcase page.

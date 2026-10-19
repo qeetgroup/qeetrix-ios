@@ -1,0 +1,8 @@
+# Reviewers GitHub requests automatically. Only accounts verified to have write access to this
+# repository are listed. qeetgroup has no teams yet; when a maintainers team exists, list it here
+# instead of individuals.
+#
+# Requesting reviews is automatic. *Requiring* a code owner's approval needs a branch protection
+# rule on main, which is not configured here.
+
+* @msboffl

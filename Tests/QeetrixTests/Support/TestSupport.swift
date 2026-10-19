@@ -14,7 +14,7 @@ enum Repository {
 
     /// `tokens.json` from the pinned `@qeetrix/ui`, flattened per theme: `"color.text.primary" → "oklch(…)"`.
     static func upstreamTokens() throws -> [String: [String: String]] {
-        let json = try JSONSerialization.jsonObject(with: try data("Scripts/Upstream/qeetrix-ui/tokens.json")) as? [String: Any] ?? [:]
+        let json = try JSONSerialization.jsonObject(with: try data("Upstream/qeetrix-ui/tokens.json")) as? [String: Any] ?? [:]
         var result: [String: [String: String]] = [:]
         for theme in ["light", "dark"] {
             var flat: [String: String] = [:]
@@ -33,7 +33,7 @@ enum Repository {
 
     /// The `--qx-*` names `tokens.css` declares on `:root` — upstream's consumable layer.
     static func consumableNames() throws -> Set<String> {
-        let css = String(decoding: try data("Scripts/Upstream/qeetrix-ui/tokens.css"), as: UTF8.self)
+        let css = String(decoding: try data("Upstream/qeetrix-ui/tokens.css"), as: UTF8.self)
         let regex = try NSRegularExpression(pattern: "(--qx-[a-z0-9-]+):")
         var names: Set<String> = []
         for block in css.components(separatedBy: ":root {").dropFirst() {

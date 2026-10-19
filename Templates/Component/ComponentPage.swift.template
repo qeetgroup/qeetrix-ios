@@ -1,0 +1,21 @@
+import Qeetrix
+import SwiftUI
+
+#error("{{Component}}Page is a scaffold: show every variant and state of Qeetrix{{Component}}, then delete this line.")
+
+struct {{Component}}Page: View {
+    var body: some View {
+        ComponentPage(
+            title: "{{title}}",
+            summary: "{{description}}"
+        ) {
+            DemoSection("Variants") {
+                Qeetrix{{Component}}()
+            }
+        }
+    }
+}
+
+#Preview {
+    NavigationStack { {{Component}}Page() }
+}

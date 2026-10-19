@@ -1,6 +1,5 @@
 # SwiftPM / Xcode build output
 .build/
-Scripts/.build/
 DerivedData/
 *.xcresult
 
@@ -11,3 +10,12 @@ xcuserdata/
 
 # macOS
 .DS_Store
+
+# Screenshots are never committed: snapshot-test baselines are recorded and kept locally (ADR 0009),
+# and simulator or device screenshots stay out of the repository.
+Tests/QeetrixSnapshotTests/__Snapshots__/**
+!Tests/QeetrixSnapshotTests/__Snapshots__/README.md
+*.png
+*.jpg
+*.jpeg
+*.heic

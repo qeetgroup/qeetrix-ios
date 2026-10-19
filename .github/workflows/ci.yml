@@ -17,15 +17,15 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # The Xcode Phase 1 was verified with. If the runner image does not carry it, the select step
+  # The Xcode this package was verified with. If the runner image does not carry it, the select step
   # fails loudly; update this pin (and re-verify locally) rather than letting the toolchain float.
   XCODE_VERSION: "27.1"
 
 jobs:
   package:
-    name: Generator, drift, lint, host tests, API
+    name: Generator, drift, format, warnings, dependencies, resources, host tests, API
     runs-on: macos-26
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - name: Select Xcode
@@ -34,20 +34,26 @@ jobs:
           xcodebuild -version
           swift --version
       - name: Generator tests
-        run: swift test --package-path Scripts
+        run: swift test --package-path Tools/QeetrixGen
       - name: Snapshot matches its lock; generated files are current
         run: Scripts/verify.sh
       - name: swift-format (strict)
         run: Scripts/lint.sh
+      - name: No compiler warnings (static analysis)
+        run: Scripts/warnings.sh
+      - name: Dependencies are reviewed, test-only and licensed as recorded
+        run: Scripts/dependencies.sh
+      - name: Built-in strings and snapshot baselines are consistent
+        run: Scripts/resources.sh
       - name: Library tests on the macOS host
         run: swift test
       - name: Public API matches the committed baseline
         run: Scripts/api-check.sh
 
   ios:
-    name: iOS build, Simulator tests, showcase
+    name: iOS build, unit tests, docs
     runs-on: macos-26
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - name: Select Xcode
@@ -57,14 +63,35 @@ jobs:
         run: echo "id=$(Scripts/ci-simulator.sh)" >> "$GITHUB_OUTPUT"
       - name: Build for iOS devices
         run: xcodebuild build -scheme Qeetrix -destination 'generic/platform=iOS' -derivedDataPath .build/xcode
-      - name: Test on the iOS Simulator
+      - name: Unit tests on the iOS Simulator
         run: |
-          xcodebuild test -scheme Qeetrix \
+          xcodebuild test -scheme Qeetrix -only-testing:QeetrixTests \
             -destination "platform=iOS Simulator,id=${{ steps.simulator.outputs.id }}" \
             -derivedDataPath .build/xcode
-      - name: Build the showcase app
+      # Snapshot baselines are recorded locally and never committed (ADR 0009), so CI cannot compare
+      # images; the step above builds the snapshot target, so it still compiles.
+      - name: Build the DocC documentation (warnings are errors)
+        run: Scripts/docs.sh
+
+  showcase:
+    name: Showcase build and UI tests
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
+      - name: Pick a simulator
+        id: simulator
+        run: echo "id=$(Scripts/ci-simulator.sh)" >> "$GITHUB_OUTPUT"
+      - name: Build the showcase with warnings as errors
         run: |
           xcodebuild build -project Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase \
+            -destination "platform=iOS Simulator,id=${{ steps.simulator.outputs.id }}" \
+            -derivedDataPath .build/showcase SWIFT_TREAT_WARNINGS_AS_ERRORS=YES
+      - name: UI tests (interaction and accessibility semantics)
+        run: |
+          xcodebuild test -project Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase \
             -destination "platform=iOS Simulator,id=${{ steps.simulator.outputs.id }}" \
             -derivedDataPath .build/showcase
 
@@ -76,12 +103,12 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: Skip unless Scripts/Upstream changed (pull requests)
+      - name: Skip unless Upstream/ changed (pull requests)
         if: github.event_name == 'pull_request'
         id: changed
         run: |
           git fetch --depth=1 origin "${{ github.base_ref }}"
-          if git diff --quiet "origin/${{ github.base_ref }}" -- Scripts/Upstream; then
+          if git diff --quiet "origin/${{ github.base_ref }}" -- Upstream; then
             echo "run=false" >> "$GITHUB_OUTPUT"
           else
             echo "run=true" >> "$GITHUB_OUTPUT"

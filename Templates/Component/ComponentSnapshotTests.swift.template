@@ -1,0 +1,21 @@
+#if os(iOS)
+    import Qeetrix
+    import SwiftUI
+    import Testing
+
+    @MainActor
+    @Suite("{{title}} snapshots")
+    struct {{Component}}SnapshotTests {
+        /// One specimen showing every variant and state side by side, recorded in the baseline matrix
+        /// (ADR 0009). Record it locally with TEST_RUNNER_SNAPSHOT_TESTING_RECORD=all once the component
+        /// is built; baselines are never committed (ADR 0013).
+        @Test("Variants and states")
+        func variants() {
+            assertSpecimen(
+                VStack(alignment: .leading, spacing: 12) {
+                    Qeetrix{{Component}}()
+                }
+            )
+        }
+    }
+#endif

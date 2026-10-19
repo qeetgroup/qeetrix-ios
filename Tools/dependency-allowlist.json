@@ -1,0 +1,41 @@
+{
+  "$comment": "Every package Package.resolved may pin, at the version and licence reviewed. The Qeetrix library has no dependencies: these are test-only (ADR 0009) and never reach an app. Adding or bumping one is a reviewed change: update this file, Documentation/THIRD_PARTY_NOTICES.md and, for a new package, a decision record. Checked by Scripts/dependencies.sh.",
+  "packages": [
+    {
+      "identity": "swift-snapshot-testing",
+      "location": "https://github.com/pointfreeco/swift-snapshot-testing",
+      "version": "1.19.6",
+      "licence": "MIT",
+      "licenceFile": "LICENSE",
+      "licenceText": "MIT License",
+      "reason": "Visual regression tests (QeetrixSnapshotTests), ADR 0009"
+    },
+    {
+      "identity": "swift-custom-dump",
+      "location": "https://github.com/pointfreeco/swift-custom-dump",
+      "version": "1.7.3",
+      "licence": "MIT",
+      "licenceFile": "LICENSE",
+      "licenceText": "MIT License",
+      "reason": "Required by swift-snapshot-testing"
+    },
+    {
+      "identity": "swift-issue-reporting",
+      "location": "https://github.com/pointfreeco/swift-issue-reporting",
+      "version": "2.1.2",
+      "licence": "MIT",
+      "licenceFile": "LICENSE",
+      "licenceText": "MIT License",
+      "reason": "Required by swift-custom-dump"
+    },
+    {
+      "identity": "swift-syntax",
+      "location": "https://github.com/swiftlang/swift-syntax",
+      "version": "604.0.0",
+      "licence": "Apache-2.0 WITH Swift-exception",
+      "licenceFile": "LICENSE.txt",
+      "licenceText": "Runtime Library Exception",
+      "reason": "Macro support for swift-custom-dump and swift-snapshot-testing"
+    }
+  ]
+}

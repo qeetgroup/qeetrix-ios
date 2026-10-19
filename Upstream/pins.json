@@ -1,0 +1,89 @@
+{
+  "$comment": "What qeetrix-ios is built from. Edit a pin, then run Scripts/sync-upstream.sh: it fetches these exact artifacts, proves the native fonts are the files the web ships, and rewrites upstream.lock.json. Nothing else in Upstream/ is edited by hand. Paths are relative to the repository root.",
+  "qeetrixUI": {
+    "package": "@qeetrix/ui",
+    "version": "2.1.6",
+    "files": {
+      "package/dist/styles/tokens.json": "Upstream/qeetrix-ui/tokens.json",
+      "package/dist/styles/tokens.css": "Upstream/qeetrix-ui/tokens.css",
+      "package/dist/styles/index.css": "Upstream/qeetrix-ui/index.css",
+      "package/dist/component-manifest.json": "Upstream/qeetrix-ui/component-manifest.json"
+    },
+    "componentTokens": [
+      "avatar",
+      "badge",
+      "button",
+      "card",
+      "dialog",
+      "input",
+      "popover",
+      "progress",
+      "switch",
+      "typography"
+    ]
+  },
+  "fonts": [
+    {
+      "family": "sans",
+      "webFamily": "Qeet Sans",
+      "webFile": "package/dist/fonts/QeetSans.woff2",
+      "repository": "calcom/sans",
+      "tag": "v2.011",
+      "ttf": "fonts/calsans-var-full/CalSansVF.ttf",
+      "woff2": "fonts/calsans-var-full/CalSansVF.woff2",
+      "license": "OFL.txt",
+      "destination": "Sources/Qeetrix/Resources/Fonts/CalSansVF.ttf",
+      "licenseDestination": "Sources/Qeetrix/Resources/Fonts/CalSans-OFL.txt"
+    },
+    {
+      "family": "mono",
+      "webFamily": "Fira Code",
+      "webFile": "package/dist/fonts/FiraCode-VF.woff2",
+      "repository": "tonsky/FiraCode",
+      "tag": "6.2",
+      "releaseAsset": "Fira_Code_v6.2.zip",
+      "ttf": "variable_ttf/FiraCode-VF.ttf",
+      "woff2": "woff2/FiraCode-VF.woff2",
+      "license": "LICENSE",
+      "destination": "Sources/Qeetrix/Resources/Fonts/FiraCode-VF.ttf",
+      "licenseDestination": "Sources/Qeetrix/Resources/Fonts/FiraCode-OFL.txt"
+    }
+  ],
+  "qeetrixIcons": {
+    "repository": "qeetgroup/qeetrix-icons",
+    "package": "@qeetrix/icons",
+    "version": "1.0.11",
+    "commit": "331cd858d0ff19537753dd8928ed033ff6dfac33",
+    "icons": [
+      "bell",
+      "check",
+      "chevron-down",
+      "circle-alert",
+      "circle-check",
+      "circle-x",
+      "copy",
+      "database",
+      "ellipsis",
+      "eye",
+      "eye-off",
+      "house",
+      "inbox",
+      "info",
+      "loader-circle",
+      "lock",
+      "minus",
+      "navigation",
+      "pencil",
+      "plus",
+      "search",
+      "send",
+      "server",
+      "settings",
+      "share-2",
+      "trash",
+      "triangle-alert",
+      "user-round",
+      "x"
+    ]
+  }
+}

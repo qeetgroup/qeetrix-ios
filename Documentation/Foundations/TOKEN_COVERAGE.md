@@ -4,8 +4,8 @@
 
 Source: `@qeetrix/ui@2.1.6` (git `7d7f651`), themes `light`, `dark`.
 
-217 tokens are generated as Swift; 666 are not. The rule is in
-[`Scripts/Sources/QeetrixGenCore/Tokens/Scope.swift`](../../Scripts/Sources/QeetrixGenCore/Tokens/Scope.swift).
+290 tokens are generated as Swift; 593 are not. The rule is in
+[`Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift`](../../Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift).
 
 ## Generated
 
@@ -25,6 +25,16 @@ Source: `@qeetrix/ui@2.1.6` (git `7d7f651`), themes `light`, `dark`.
 | `icon.stroke` | 2 | `QeetrixIconStroke` |
 | `density` | 12 | `QeetrixDensity` |
 | `motion` | 12 | `QeetrixDuration`, `QeetrixEasing`, `QeetrixMotion` |
+| `component.avatar` | 6 | internal `QeetrixAvatarTokens` |
+| `component.badge` | 8 | internal `QeetrixBadgeTokens` |
+| `component.button` | 11 | internal `QeetrixButtonTokens` |
+| `component.card` | 11 | internal `QeetrixCardTokens` |
+| `component.dialog` | 6 | internal `QeetrixDialogTokens` |
+| `component.input` | 13 | internal `QeetrixInputTokens` |
+| `component.popover` | 5 | internal `QeetrixPopoverTokens` |
+| `component.progress` | 2 | internal `QeetrixProgressTokens` |
+| `component.switch` | 6 | internal `QeetrixSwitchTokens` |
+| `component.typography` | 5 | internal `QeetrixTypographyTokens` |
 
 ## Not generated
 
@@ -36,7 +46,7 @@ Source: `@qeetrix/ui@2.1.6` (git `7d7f651`), themes `light`, `dark`.
 | 50% is a shape, not a length — use Circle or Capsule. | 1 | `corner.circle` |
 | A CSS border-style keyword; SwiftUI strokes are solid unless dashed explicitly. | 1 | `focus.ring-style` |
 | Web stacking order. SwiftUI zIndex only orders siblings, so a global scale has no meaning. | 15 | `z.base`, `z.dropdown`, `z.sticky`, … |
-| Component layer — arrives in Phase 2 with the components that consume it. | 216 | `component.accordion.trigger-padding-block`, `component.accordion.divider`, `component.accordion.focus-bleed`, … |
+| Component tokens for a component iOS does not implement yet. Adopted groups are listed in Upstream/pins.json. | 143 | `component.accordion.trigger-padding-block`, `component.accordion.divider`, `component.accordion.focus-bleed`, … |
 
 ## Colours outside sRGB
 

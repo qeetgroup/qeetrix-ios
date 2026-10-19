@@ -3,6 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "Qeetrix",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v17),
         // Development host only: lets `swift build` and `swift test` run on a Mac. iOS is the
@@ -12,6 +13,11 @@ let package = Package(
     products: [
         .library(name: "Qeetrix", targets: ["Qeetrix"])
     ],
+    dependencies: [
+        // Test-only: used by QeetrixSnapshotTests and nothing else, so an app that depends on Qeetrix
+        // never resolves it (ADR 0009). Exact, so a baseline image never changes under a dependency bump.
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", exact: "1.19.6")
+    ],
     targets: [
         .target(
             name: "Qeetrix",
@@ -19,11 +25,20 @@ let package = Package(
                 // Copied as folders so the bundle keeps each font beside its licence.
                 .copy("Resources/Fonts"),
                 .copy("Resources/Metadata"),
+                .process("Resources/Localization"),
             ]
         ),
         .testTarget(
             name: "QeetrixTests",
             dependencies: ["Qeetrix"]
+        ),
+        .testTarget(
+            name: "QeetrixSnapshotTests",
+            dependencies: [
+                "Qeetrix",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+            ],
+            exclude: ["__Snapshots__"]
         ),
     ]
 )

@@ -8,7 +8,7 @@ import Testing
 struct IconTests {
     @Test("Names are the pinned qeetrix-icons names")
     func names() throws {
-        let pins = try JSONSerialization.jsonObject(with: try Repository.data("Scripts/Upstream/pins.json")) as? [String: Any]
+        let pins = try JSONSerialization.jsonObject(with: try Repository.data("Upstream/pins.json")) as? [String: Any]
         let pinned = (pins?["qeetrixIcons"] as? [String: Any])?["icons"] as? [String] ?? []
         #expect(QeetrixIconName.allCases.map(\.rawValue).sorted() == pinned.sorted())
     }
@@ -16,7 +16,7 @@ struct IconTests {
     @Test("Drawings exist for every shape and variant the manifest lists")
     func drawings() throws {
         let manifest =
-            try JSONSerialization.jsonObject(with: try Repository.data("Scripts/Upstream/qeetrix-icons/icons.json")) as? [[String: Any]]
+            try JSONSerialization.jsonObject(with: try Repository.data("Upstream/qeetrix-icons/icons.json")) as? [[String: Any]]
             ?? []
         for entry in manifest {
             let name = try #require(QeetrixIconName(rawValue: entry["name"] as? String ?? ""))
@@ -50,12 +50,14 @@ struct IconTests {
     }
 
     @Test("A missing variant falls back to the outline")
+    @MainActor
     func fallback() {
         let icon = QeetrixIcon(.x, variant: .filled)
         #expect(icon.drawing.elements.first?.stroke != nil)
     }
 
     @Test("Icons are decorative unless labelled")
+    @MainActor
     func accessibility() {
         guard case .hidden = QeetrixIcon(.search).accessibility else {
             Issue.record("an unlabelled icon must be hidden from VoiceOver")
