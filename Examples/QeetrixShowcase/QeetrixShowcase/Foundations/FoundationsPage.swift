@@ -1,10 +1,10 @@
 import Qeetrix
 import SwiftUI
 
-/// The Phase 1 foundations on one screen: theme switching, colours in both themes, typography roles
-/// with Dynamic Type, spacing, corners, elevation and icons. Built only from the public Qeetrix API,
-/// and laid out to stay readable at every text size: rows fall back to stacks when they do not fit.
-struct ContentView: View {
+/// The foundations on one page: theme switching, colours in both themes, typography roles with Dynamic
+/// Type, spacing, corners, elevation and icons. Built only from the public Qeetrix API, and laid out to
+/// stay readable at every text size: rows fall back to stacks when they do not fit.
+struct FoundationsPage: View {
     @Binding var mode: QeetrixThemeMode
     @State private var typeSize: DynamicTypeSize = .large
     @ScaledMetric(relativeTo: .body) private var iconCell: CGFloat = 32
@@ -25,6 +25,8 @@ struct ContentView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .background(QeetrixColor.surfaceCanvas)
+            .navigationTitle("Foundations")
+            .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 // `-section icons` at launch opens at that section, for screenshots of each foundation.
                 if let section = UserDefaults.standard.string(forKey: "section") {
@@ -216,9 +218,9 @@ struct ContentView: View {
 }
 
 #Preview("Light") {
-    ContentView(mode: .constant(.light)).qeetrixTheme(.light)
+    FoundationsPage(mode: .constant(.light)).qeetrixTheme(.light)
 }
 
 #Preview("Dark, large text") {
-    ContentView(mode: .constant(.dark)).qeetrixTheme(.dark).dynamicTypeSize(.accessibility2)
+    FoundationsPage(mode: .constant(.dark)).qeetrixTheme(.dark).dynamicTypeSize(.accessibility2)
 }

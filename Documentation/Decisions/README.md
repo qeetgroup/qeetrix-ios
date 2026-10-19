@@ -14,6 +14,11 @@ and the old one's status says so.
 | [0006](0006-theming-through-the-swiftui-environment.md) | Theming goes through the SwiftUI environment | Accepted |
 | [0007](0007-repository-layout.md) | Repository layout | Accepted |
 | [0008](0008-public-api-baseline.md) | The public API has a reviewed baseline | Accepted |
-| [0009](0009-visual-regression-testing.md) | Visual regression testing for components | Proposed (Phase 2) |
+| [0009](0009-visual-regression-testing.md) | Visual regression testing for components | Accepted, amended by 0013 |
+| [0010](0010-component-api-conventions.md) | Component API conventions | Accepted |
+| [0011](0011-component-tokens-and-web-metrics.md) | Component tokens, and web metrics that are not tokens | Accepted |
+| [0012](0012-form-components.md) | Form components: one field, native inputs, the app's validation | Accepted |
+| [0013](0013-snapshot-baselines-stay-local.md) | Snapshot baselines stay local | Accepted |
+| [0014](0014-navigation-overlays-and-feedback.md) | Navigation, overlays and feedback: native presentation, state owned by the app | Accepted |
 
 To add one, copy the shape of an existing record, take the next number, and link it here.

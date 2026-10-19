@@ -47,7 +47,8 @@ public struct TokenEmitter {
         guard model.themes == ["light", "dark"] else {
             throw GeneratorError("Qeetrix iOS maps the light and dark themes; upstream registers \(model.themes).")
         }
-        return [try foundation()] + (try model.themes.map(themeFile))
+        let components = try componentTokens()
+        return [try foundation()] + (try model.themes.map(themeFile)) + (components.map { [$0] } ?? [])
     }
 
     static func themeTypeName(_ theme: String) -> String {
@@ -404,6 +405,102 @@ public struct TokenEmitter {
             """
     }
 
+    // MARK: Component tokens
+
+    /// `QeetrixComponentTokens.swift`: one internal enum per adopted `component.<group>`, so a
+    /// component reads `QeetrixButtonTokens.corner` instead of a literal. References stay
+    /// references — a colour that upstream writes as `var(--qx-color-…)` becomes that
+    /// `QeetrixColor`, an elevation stays a `QeetrixElevation`, a density-following size becomes a
+    /// function of `QeetrixDensity` — so the component follows the semantic token in every theme.
+    func componentTokens() throws -> GeneratedFile? {
+        let tokens = model.tokens(under: ["component"])
+        guard !tokens.isEmpty else { return nil }
+        var groups: [String] = []
+        for token in tokens where !groups.contains(token.path[1]) { groups.append(token.path[1]) }
+
+        var sections: [String] = []
+        for group in groups {
+            let typeName = "Qeetrix" + (try SwiftNames.identifier([group], context: "component.\(group)")).capitalizedFirst + "Tokens"
+            let members = model.tokens(under: ["component", group])
+            let body = try self.members(members, dropping: 2, scope: typeName) { name, token in
+                doc(token, try componentSummary(token)) + "    " + (try componentDeclaration(name, token)) + "\n"
+            }
+            sections.append(
+                """
+                /// `component.\(group).*` — the \(group) component's own tokens.
+                enum \(typeName) {
+                \(body)}
+
+                """)
+        }
+        return GeneratedFile(
+            path: "\(Self.directory)/QeetrixComponentTokens.swift",
+            contents: header + "import CoreGraphics\n\n" + sections.joined(separator: "\n"))
+    }
+
+    func colorSource(_ value: TokenValue, _ token: ResolvedToken) throws -> String {
+        switch value {
+        case let .colorReference(path):
+            return ".semantic(.\(try SwiftNames.identifier(Array(path.dropFirst()), context: token.dotted)))"
+        case let .color(color):
+            return ".rgba(\(rgba(color)))"
+        default:
+            throw GeneratorError("\(token.dotted): expected a colour in every theme.")
+        }
+    }
+
+    func componentDeclaration(_ name: String, _ token: ResolvedToken) throws -> String {
+        let light = token.values[model.themes[0]]!
+        let dark = token.values[model.themes[1]]!
+        switch light {
+        case .colorReference, .color:
+            if case let .colorReference(path) = light, light == dark {
+                let color = try SwiftNames.identifier(Array(path.dropFirst()), context: token.dotted)
+                return "static let \(name) = QeetrixComponentColor(.\(color))"
+            }
+            return
+                "static let \(name) = QeetrixComponentColor(light: \(try colorSource(light, token)), dark: \(try colorSource(dark, token)))"
+        default:
+            break
+        }
+        guard light == dark else {
+            throw GeneratorError("\(token.dotted): varies by theme, but only colours may.")
+        }
+        switch light {
+        case let .dimension(points):
+            return "static let \(name): CGFloat = \(swiftNumber(points))"
+        case let .fraction(fraction):
+            return "static let \(name): CGFloat = \(swiftNumber(fraction))"
+        case let .em(em):
+            return "static let \(name): CGFloat = \(swiftNumber(em))"
+        case let .densityReference(metric):
+            let property = try SwiftNames.identifier([metric], context: token.dotted)
+            return "static func \(name)(_ density: QeetrixDensity) -> CGFloat { density.\(property) }"
+        case let .elevationReference(path):
+            return "static let \(name) = QeetrixElevation.\(try SwiftNames.identifier(Array(path.dropFirst()), context: token.dotted))"
+        default:
+            throw GeneratorError("\(token.dotted): no Swift mapping for this component token.")
+        }
+    }
+
+    func componentSummary(_ token: ResolvedToken) throws -> String {
+        let light = token.values[model.themes[0]]!
+        let dark = token.values[model.themes[1]]!
+        func describeValue(_ value: TokenValue) -> String {
+            switch value {
+            case let .colorReference(path): return "`\(path.joined(separator: "."))`"
+            case let .color(color): return describe(color)
+            case let .dimension(points): return "\(swiftNumber(points)) pt"
+            case let .fraction(fraction): return "\(swiftNumber(fraction * 100))% of the component's size"
+            case let .em(em): return "\(swiftNumber(em)) em"
+            case let .densityReference(metric): return "the active density's `\(metric)`"
+            case let .elevationReference(path): return "`\(path.joined(separator: "."))`"
+            default: return "\(value)"
+            }
+        }
+        return light == dark ? describeValue(light) : "Light \(describeValue(light)) · Dark \(describeValue(dark))"
+    }
+
     // MARK: Theme files
 
     func themeFile(_ theme: String) throws -> GeneratedFile {
@@ -457,4 +554,9 @@ public struct TokenEmitter {
 
                 """)
     }
+}
+
+extension String {
+    /// The string with its first character upper-cased: `button` → `Button`.
+    var capitalizedFirst: String { prefix(1).uppercased() + dropFirst() }
 }

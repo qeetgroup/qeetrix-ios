@@ -51,6 +51,148 @@
     "aliases": []
   },
   {
+    "id": "chevron-down",
+    "name": "chevron-down",
+    "componentName": "ChevronDownIcon",
+    "category": "arrows",
+    "categories": [
+      "arrows",
+      "gaming"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "backwards",
+      "reverse",
+      "slow",
+      "dropdown"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "circle-alert",
+    "name": "circle-alert",
+    "componentName": "CircleAlertIcon",
+    "category": "notifications",
+    "categories": [
+      "notifications"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "warning",
+      "alert",
+      "danger",
+      "exclamation mark"
+    ],
+    "aliases": [
+      "alert-circle"
+    ]
+  },
+  {
+    "id": "circle-check",
+    "name": "circle-check",
+    "componentName": "CircleCheckIcon",
+    "category": "notifications",
+    "categories": [
+      "notifications"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "done",
+      "todo",
+      "tick",
+      "complete",
+      "task"
+    ],
+    "aliases": [
+      "check-circle-2"
+    ]
+  },
+  {
+    "id": "circle-x",
+    "name": "circle-x",
+    "componentName": "CircleXIcon",
+    "category": "math",
+    "categories": [
+      "math",
+      "development"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "cancel",
+      "close",
+      "delete",
+      "remove",
+      "times",
+      "clear",
+      "error",
+      "incorrect",
+      "wrong",
+      "mistake",
+      "failure",
+      "linter",
+      "multiply",
+      "multiplication"
+    ],
+    "aliases": [
+      "x-circle"
+    ]
+  },
+  {
+    "id": "copy",
+    "name": "copy",
+    "componentName": "CopyIcon",
+    "category": "text",
+    "categories": [
+      "text"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "clone",
+      "duplicate",
+      "multiple"
+    ],
+    "aliases": []
+  },
+  {
     "id": "database",
     "name": "database",
     "componentName": "DatabaseIcon",
@@ -78,6 +220,50 @@
       "servers"
     ],
     "aliases": []
+  },
+  {
+    "id": "ellipsis",
+    "name": "ellipsis",
+    "componentName": "EllipsisIcon",
+    "category": "layout",
+    "categories": [
+      "layout",
+      "development"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "et cetera",
+      "etc",
+      "loader",
+      "loading",
+      "progress",
+      "pending",
+      "throbber",
+      "menu",
+      "options",
+      "operator",
+      "code",
+      "coding",
+      "spread",
+      "rest",
+      "more",
+      "further",
+      "extra",
+      "overflow",
+      "dots",
+      "…",
+      "..."
+    ],
+    "aliases": [
+      "more-horizontal"
+    ]
   },
   {
     "id": "eye",
@@ -114,6 +300,69 @@
       "read"
     ],
     "aliases": []
+  },
+  {
+    "id": "eye-off",
+    "name": "eye-off",
+    "componentName": "EyeOffIcon",
+    "category": "accessibility",
+    "categories": [
+      "accessibility",
+      "photography",
+      "design",
+      "security"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "view",
+      "watch",
+      "see",
+      "hide",
+      "conceal",
+      "mask",
+      "hidden",
+      "visibility",
+      "vision"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "house",
+    "name": "house",
+    "componentName": "HouseIcon",
+    "category": "buildings",
+    "categories": [
+      "buildings",
+      "home",
+      "navigation"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "home",
+      "living",
+      "building",
+      "residence",
+      "architecture"
+    ],
+    "aliases": [
+      "home"
+    ]
   },
   {
     "id": "inbox",
@@ -174,6 +423,38 @@
     "aliases": []
   },
   {
+    "id": "loader-circle",
+    "name": "loader-circle",
+    "componentName": "LoaderCircleIcon",
+    "category": "cursors",
+    "categories": [
+      "cursors",
+      "multimedia",
+      "layout"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "loading",
+      "wait",
+      "busy",
+      "progress",
+      "spinner",
+      "spinning",
+      "throbber",
+      "circle"
+    ],
+    "aliases": [
+      "loader-2"
+    ]
+  },
+  {
     "id": "lock",
     "name": "lock",
     "componentName": "LockIcon",
@@ -199,6 +480,51 @@
     "aliases": []
   },
   {
+    "id": "minus",
+    "name": "minus",
+    "componentName": "MinusIcon",
+    "category": "math",
+    "categories": [
+      "math",
+      "development",
+      "text",
+      "tools"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "subtract",
+      "remove",
+      "decrease",
+      "decrement",
+      "reduce",
+      "negative",
+      "calculate",
+      "line",
+      "divider",
+      "separator",
+      "horizontal rule",
+      "hr",
+      "html",
+      "markup",
+      "markdown",
+      "---",
+      "toolbar",
+      "operator",
+      "code",
+      "coding",
+      "minimum",
+      "downgrade"
+    ],
+    "aliases": []
+  },
+  {
     "id": "navigation",
     "name": "navigation",
     "componentName": "NavigationIcon",
@@ -218,6 +544,82 @@
     "tags": [
       "location",
       "travel"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "pencil",
+    "name": "pencil",
+    "componentName": "PencilIcon",
+    "category": "design",
+    "categories": [
+      "design",
+      "cursors",
+      "tools",
+      "text"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "rubber",
+      "edit",
+      "create",
+      "draw",
+      "sketch",
+      "draft",
+      "writer",
+      "writing",
+      "stationery",
+      "artist"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "plus",
+    "name": "plus",
+    "componentName": "PlusIcon",
+    "category": "math",
+    "categories": [
+      "math",
+      "tools",
+      "development",
+      "text",
+      "cursors",
+      "gaming"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "add",
+      "new",
+      "increase",
+      "increment",
+      "positive",
+      "calculate",
+      "toolbar",
+      "crosshair",
+      "aim",
+      "target",
+      "scope",
+      "sight",
+      "reticule",
+      "maximum",
+      "upgrade",
+      "extra",
+      "+"
     ],
     "aliases": []
   },
@@ -305,6 +707,149 @@
       "storage"
     ],
     "aliases": []
+  },
+  {
+    "id": "settings",
+    "name": "settings",
+    "componentName": "SettingsIcon",
+    "category": "account",
+    "categories": [
+      "account"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "cog",
+      "edit",
+      "gear",
+      "preferences"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "share-2",
+    "name": "share-2",
+    "componentName": "Share2Icon",
+    "category": "account",
+    "categories": [
+      "account",
+      "social"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "network",
+      "connections"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "trash",
+    "name": "trash",
+    "componentName": "TrashIcon",
+    "category": "files",
+    "categories": [
+      "files",
+      "mail"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "empty",
+      "deletion",
+      "cleanup",
+      "junk",
+      "clear",
+      "garbage",
+      "delete",
+      "remove",
+      "bin",
+      "waste",
+      "recycle",
+      "discard",
+      "binoculars",
+      "rubbish"
+    ],
+    "aliases": [
+      "trash-2"
+    ]
+  },
+  {
+    "id": "triangle-alert",
+    "name": "triangle-alert",
+    "componentName": "TriangleAlertIcon",
+    "category": "notifications",
+    "categories": [
+      "notifications",
+      "shapes",
+      "development"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "warning",
+      "alert",
+      "danger",
+      "exclamation mark",
+      "linter"
+    ],
+    "aliases": [
+      "alert-triangle"
+    ]
+  },
+  {
+    "id": "user-round",
+    "name": "user-round",
+    "componentName": "UserRoundIcon",
+    "category": "account",
+    "categories": [
+      "account"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "person",
+      "account",
+      "contact"
+    ],
+    "aliases": [
+      "user-2"
+    ]
   },
   {
     "id": "x",

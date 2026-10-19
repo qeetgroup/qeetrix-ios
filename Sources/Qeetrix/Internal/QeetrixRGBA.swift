@@ -34,3 +34,8 @@ struct QeetrixRGBA: Hashable, Sendable {
         Color.Resolved(colorSpace: swiftUISpace, red: Float(red), green: Float(green), blue: Float(blue), opacity: Float(alpha))
     }
 }
+
+extension QeetrixRGBA {
+    /// CSS `transparent`.
+    static let clear = QeetrixRGBA(.sRGB, 0, 0, 0, 0)
+}

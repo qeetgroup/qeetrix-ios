@@ -17,6 +17,9 @@ public enum TokenKind: String, Sendable {
     case easing
     case shadow
     case fontFamily
+    /// A `component.<group>.*` token: a reference to a semantic colour, elevation or density
+    /// metric where upstream writes one, otherwise a resolved colour, length or fraction.
+    case component
 }
 
 public enum ScopeDecision: Equatable, Sendable {
@@ -62,9 +65,6 @@ public enum Scope {
         Rule(
             pattern: ["gradient", "**"],
             decision: .exclude("Not in the Phase 1 foundation set.")),
-        Rule(
-            pattern: ["component", "**"],
-            decision: .exclude("Component layer — arrives in Phase 2 with the components that consume it.")),
     ]
 
     static let primitiveAllowList: [Rule] = [
@@ -79,7 +79,15 @@ public enum Scope {
     public static let primitiveReason =
         "Primitive — not exposed. Semantic tokens carry the decision; product code never reads a raw scale or palette value."
 
-    public static func decide(path: [String], consumable: Bool) throws -> ScopeDecision {
+    public static let unadoptedComponentReason =
+        "Component tokens for a component iOS does not implement yet. Adopted groups are listed in Upstream/pins.json."
+
+    /// - Parameter adoptedComponents: the `component.<group>` names iOS implements
+    ///   (`qeetrixUI.componentTokens` in Upstream/pins.json).
+    public static func decide(path: [String], consumable: Bool, adoptedComponents: Set<String> = []) throws -> ScopeDecision {
+        if consumable, path.first == "component", path.count > 2 {
+            return adoptedComponents.contains(path[1]) ? .include(.component) : .exclude(unadoptedComponentReason)
+        }
         let rules = consumable ? consumableRules : primitiveAllowList
         if let rule = rules.first(where: { matches($0.pattern, path) }) {
             return rule.decision

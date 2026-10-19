@@ -36,7 +36,12 @@ public struct Generator {
             tokensJSON: try read("Upstream/qeetrix-ui/tokens.json"),
             tokensCSS: String(decoding: try read("Upstream/qeetrix-ui/tokens.css"), as: UTF8.self),
             indexCSS: String(decoding: try read("Upstream/qeetrix-ui/index.css"), as: UTF8.self))
-        let model = try TokenModel(source: source)
+        let adopted = try Self.adoptedComponents(try read(Lock.pinsPath))
+        let available = Set(source.paths.filter { $0.first == "component" && $0.count > 2 }.map { $0[1] })
+        for group in adopted where !available.contains(group) {
+            throw GeneratorError("Upstream/pins.json adopts component tokens \"\(group)\", but tokens.json has no component.\(group).")
+        }
+        let model = try TokenModel(source: source, adoptedComponents: adopted)
 
         let fonts = try provenance.fonts.map { font in
             FontSpec(
@@ -54,6 +59,12 @@ public struct Generator {
                 GeneratedFile(path: Self.provenancePath, contents: Self.provenanceJSON(provenance, model: model, fonts: fonts)),
                 GeneratedFile(path: Self.coveragePath, contents: CoverageReport(model: model, provenance: provenance).markdown()),
             ]
+    }
+
+    /// The `component.<group>` token groups iOS implements: `qeetrixUI.componentTokens` in pins.json.
+    static func adoptedComponents(_ pins: Data) throws -> Set<String> {
+        let json = try OrderedJSON.parse(pins, context: Lock.pinsPath)
+        return Set((json["qeetrixUI"]?["componentTokens"]?.arrayValue ?? []).compactMap(\.stringValue))
     }
 
     /// Writes the outputs, removing stale files from the owned directories. Returns the changed paths.

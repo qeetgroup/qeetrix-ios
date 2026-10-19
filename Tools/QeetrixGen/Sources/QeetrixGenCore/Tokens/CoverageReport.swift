@@ -38,8 +38,16 @@ struct CoverageReport {
             (["density"], "`QeetrixDensity`"),
             (["motion"], "`QeetrixDuration`, `QeetrixEasing`, `QeetrixMotion`"),
         ]
+        var componentGroups: [String] = []
+        for token in model.tokens(under: ["component"]) where !componentGroups.contains(token.path[1]) {
+            componentGroups.append(token.path[1])
+        }
+        let componentRows: [([String], String)] = componentGroups.map { group in
+            let name = ((try? SwiftNames.identifier([group], context: group)) ?? group).capitalizedFirst
+            return (["component", group], "internal `Qeetrix\(name)Tokens`")
+        }
         var counted = 0
-        for (prefix, swift) in groups {
+        for (prefix, swift) in groups + componentRows {
             let count = model.tokens(under: prefix).count
             counted += count
             lines.append("| `\(prefix.joined(separator: "."))` | \(count) | \(swift) |")

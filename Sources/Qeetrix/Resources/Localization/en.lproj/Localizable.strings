@@ -1,0 +1,41 @@
+/* The built-in English strings, as in qeetrix-ui's message catalogue (src/lib/messages.ts at 7d7f651).
+   Translate by adding a <language>.lproj folder beside this one; every component that shows one of
+   these strings also takes a parameter that replaces it. */
+
+/* Accessible name of a spinner, and the value a busy button reports. qeetrix-ui spinnerMessages.label. */
+"qeetrix.spinner.label" = "Loading";
+
+/* Read by VoiceOver after a required text field's label. iOS only: on the web the browser announces
+   the native `required` attribute, so qeetrix-ui has no string for it. */
+"qeetrix.field.required" = "Required";
+
+/* Shown after a field's label when the field is optional. qeetrix-ui labelMessages.optional. */
+"qeetrix.label.optional" = "(optional)";
+
+/* The name under which VoiceOver reads a field's message with its control. iOS only: the web relates the
+   message with aria-errormessage / aria-describedby and needs no name. */
+"qeetrix.field.error" = "Error";
+"qeetrix.field.warning" = "Warning";
+"qeetrix.field.success" = "Success";
+
+/* The password reveal toggle, named for its action. qeetrix-ui passwordInputMessages.show / .hide. */
+"qeetrix.password.show" = "Show password";
+"qeetrix.password.hide" = "Hide password";
+
+/* A one-time-code input's name when no field label names it. qeetrix-ui otpInputMessages.label. */
+"qeetrix.otp.label" = "One-time code";
+
+/* The number field's stepper buttons. qeetrix-ui numberFieldMessages.decrease / .increase. */
+"qeetrix.number-field.decrease" = "Decrease";
+"qeetrix.number-field.increase" = "Increase";
+
+/* Heading of a form's error summary. qeetrix-ui formMessages.errorSummaryTitle. */
+"qeetrix.form.error-summary-title" = "There is a problem";
+
+/* The close button every dismissible overlay has — sheet headers, toasts. qeetrix-ui overlayMessages.close
+   and toastMessages.close. */
+"qeetrix.overlay.close" = "Close";
+
+/* The cancel action added to an alert or confirmation dialog whose actions include a destructive one but
+   no cancel. iOS only: the web's AlertDialogCancel is always written by the app. */
+"qeetrix.dialog.cancel" = "Cancel";

@@ -50,12 +50,14 @@ struct IconTests {
     }
 
     @Test("A missing variant falls back to the outline")
+    @MainActor
     func fallback() {
         let icon = QeetrixIcon(.x, variant: .filled)
         #expect(icon.drawing.elements.first?.stroke != nil)
     }
 
     @Test("Icons are decorative unless labelled")
+    @MainActor
     func accessibility() {
         guard case .hidden = QeetrixIcon(.search).accessibility else {
             Issue.record("an unlabelled icon must be hidden from VoiceOver")

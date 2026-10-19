@@ -6,8 +6,21 @@
     "files": {
       "package/dist/styles/tokens.json": "Upstream/qeetrix-ui/tokens.json",
       "package/dist/styles/tokens.css": "Upstream/qeetrix-ui/tokens.css",
-      "package/dist/styles/index.css": "Upstream/qeetrix-ui/index.css"
-    }
+      "package/dist/styles/index.css": "Upstream/qeetrix-ui/index.css",
+      "package/dist/component-manifest.json": "Upstream/qeetrix-ui/component-manifest.json"
+    },
+    "componentTokens": [
+      "avatar",
+      "badge",
+      "button",
+      "card",
+      "dialog",
+      "input",
+      "popover",
+      "progress",
+      "switch",
+      "typography"
+    ]
   },
   "fonts": [
     {
@@ -44,15 +57,32 @@
     "icons": [
       "bell",
       "check",
+      "chevron-down",
+      "circle-alert",
+      "circle-check",
+      "circle-x",
+      "copy",
       "database",
+      "ellipsis",
       "eye",
+      "eye-off",
+      "house",
       "inbox",
       "info",
+      "loader-circle",
       "lock",
+      "minus",
       "navigation",
+      "pencil",
+      "plus",
       "search",
       "send",
       "server",
+      "settings",
+      "share-2",
+      "trash",
+      "triangle-alert",
+      "user-round",
       "x"
     ]
   }

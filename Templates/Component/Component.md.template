@@ -1,0 +1,20 @@
+# ``Qeetrix/Qeetrix{{Component}}``
+
+## Overview
+
+{{description}}
+
+```swift
+Qeetrix{{Component}}()
+```
+
+### Accessibility
+
+What VoiceOver reads, the touch target, Dynamic Type, Bold Text, Reduce Motion and right-to-left
+behaviour.
+
+### Platform adaptations
+
+Where this component differs from the web, and why. Write "None." when it does not.
+
+On the web: [{{name}} on ui.qeet.in](https://ui.qeet.in/docs/components/{{slug}}).

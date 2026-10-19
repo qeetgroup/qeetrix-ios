@@ -10,7 +10,19 @@ let usage = """
       sync --check  Fetch the pinned artifacts and compare them with the lock; change nothing.
       api --symbol-graphs <dir> [--update]
                     Compare the public API in the symbol graphs with Documentation/API (or rewrite it).
+      dependencies --manifest <dump-package.json> [--checkouts <dir>]
+                    Check Package.resolved against Tools/dependency-allowlist.json, with licences.
+      resources     Check the built-in strings and the snapshot baselines.
+      new-component <Family> <Component> --category <docs category> [--slug <web slug>] [--dry-run]
+                    Scaffold a component from Templates/Component. Never overwrites; --dry-run only
+                    lists the changes.
     """
+
+/// The value after `flag`, if present.
+func option(_ flag: String, in arguments: [String]) -> String? {
+    guard let index = arguments.firstIndex(of: flag), index + 1 < arguments.count else { return nil }
+    return arguments[index + 1]
+}
 
 /// The repository root: --root, or the nearest ancestor of the working directory holding the pins.
 func repositoryRoot(_ arguments: [String]) throws -> URL {
@@ -75,6 +87,43 @@ do {
                         + "\nIf intended, run Scripts/api-check.sh --update and note it in CHANGELOG.md.")
             }
             print("✓ Public API matches \(APISnapshot.path).")
+        }
+    case "dependencies":
+        guard let manifest = option("--manifest", in: arguments) else {
+            fail("dependencies needs --manifest <file with swift package dump-package output>.")
+        }
+        let problems = try DependencyReview.problems(
+            allowlist: try Data(contentsOf: root.appendingPathComponent(DependencyReview.allowlistPath)),
+            resolved: FileManager.default.contents(atPath: root.appendingPathComponent(DependencyReview.resolvedPath).path),
+            manifest: try Data(contentsOf: URL(fileURLWithPath: manifest)),
+            checkouts: URL(fileURLWithPath: option("--checkouts", in: arguments) ?? root.appendingPathComponent(".build/checkouts").path))
+        if !problems.isEmpty {
+            fail("Dependency review failed:\n  " + problems.joined(separator: "\n  "))
+        }
+        print("✓ Every dependency is test-only, allowlisted at its reviewed version, with the reviewed licence.")
+    case "resources":
+        let problems = try ResourceCheck(root: root).problems()
+        if !problems.isEmpty {
+            fail("Resource check failed:\n  " + problems.joined(separator: "\n  "))
+        }
+        print("✓ Built-in strings and snapshot baselines are complete and consistent.")
+    case "new-component":
+        let positional = Array(arguments.dropFirst().prefix { !$0.hasPrefix("--") })
+        guard positional.count == 2, let category = option("--category", in: arguments) else {
+            fail("new-component needs <Family> <Component> --category <category>.\n\(usage)")
+        }
+        let scaffold = ComponentScaffold(root: root)
+        let changes = try scaffold.plan(
+            ComponentScaffold.Request(
+                family: positional[0], component: positional[1], slug: option("--slug", in: arguments), category: category))
+        if arguments.contains("--dry-run") {
+            print(changes.map { "• would \($0.kind.rawValue) \($0.path)" }.joined(separator: "\n"))
+        } else {
+            try scaffold.apply(changes)
+            print(changes.map { "✓ \($0.kind == .create ? "created" : "updated") \($0.path)" }.joined(separator: "\n"))
+            if changes.contains(where: { $0.path == Lock.pinsPath }) {
+                print("Next: run Scripts/generate.sh for the component's tokens.")
+            }
         }
     default:
         print(usage)

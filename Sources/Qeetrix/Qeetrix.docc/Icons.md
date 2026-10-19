@@ -22,6 +22,20 @@ back to the outline.
 The names are the `qeetrix-icons` names, which are Lucide's. This release includes a representative
 set (``QeetrixIconName``); the full catalogue comes later.
 
+## In system chrome
+
+Tab items, toolbar buttons and menu items accept only an `Image`. `Image(qeetrix:size:shape:variant:stroke:)`
+renders an icon into a template image, which takes the bar's or menu's tint as an SF Symbol does:
+
+```swift
+Button { share() } label: {
+    Label { Text("Share") } icon: { Image(qeetrix: .share2) }
+}
+```
+
+The system sizes these images, and they don't mirror in right-to-left layouts, so keep the directional
+icons for your own views. Inside your own views, use ``QeetrixIcon``, which scales with Dynamic Type.
+
 ## Accessibility
 
 An icon is decorative unless you label it. Decorative icons are hidden from VoiceOver, because the text

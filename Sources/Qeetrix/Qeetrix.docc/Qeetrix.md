@@ -9,8 +9,9 @@ and the `qeetrix-icons` drawings. Colours, type, spacing, elevation, motion and 
 Qeetrix on the web, adapted to iOS where the platform needs it: Dynamic Type, Bold Text, Reduce Motion,
 right-to-left layout and 44-point touch targets.
 
-This release provides the foundations. Components come in later phases and are built from these same
-foundations.
+It provides the foundations and the first components, built from them. Each component follows its web
+counterpart's variants, sizes and states, and adapts to the platform where iOS needs it; its page says
+where and why.
 
 ```swift
 import Qeetrix
@@ -43,6 +44,59 @@ struct Greeting: View {
 - <doc:Motion>
 - <doc:Icons>
 - <doc:Accessibility>
+
+### Actions
+
+- ``QeetrixButton``
+- ``QeetrixIconButton``
+
+### Forms & inputs
+
+- <doc:Forms>
+- ``QeetrixField``
+- ``QeetrixFieldSet``
+- ``QeetrixTextField``
+- ``QeetrixTextarea``
+- ``QeetrixPasswordInput``
+- ``QeetrixOTPInput``
+- ``QeetrixCheckbox``
+- ``QeetrixRadioGroup``
+- ``QeetrixSelect``
+- ``QeetrixNumberField``
+- ``QeetrixSwitch``
+- ``QeetrixFormActions``
+- ``QeetrixFormErrorSummary``
+
+### Data display
+
+- ``QeetrixAvatar``
+- ``QeetrixBadge``
+- ``QeetrixText``
+
+### Feedback
+
+- ``QeetrixToast``
+- ``QeetrixProgress``
+- ``QeetrixSpinner``
+
+### Overlays
+
+- <doc:Overlays>
+- ``QeetrixAlertDialog``
+- ``QeetrixConfirmationDialog``
+- ``QeetrixSheetContent``
+- <doc:Popover>
+- ``QeetrixMenu``
+
+### Navigation
+
+- ``QeetrixTabs``
+- <doc:NavigationBars>
+
+### Layout
+
+- ``QeetrixCard``
+- ``QeetrixSeparator``
 
 ### Theme
 

@@ -13,7 +13,7 @@ struct QeetrixShowcaseApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(mode: $mode)
+            ShowcaseRoot(mode: $mode)
                 .qeetrixThemeMode(mode)
         }
     }

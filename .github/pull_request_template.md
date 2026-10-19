@@ -6,13 +6,17 @@
 
 Each box is a command that exists in this repository; CI runs the same ones.
 
-- [ ] `swift test --package-path Tools/QeetrixGen`: generator tests pass
-- [ ] `Scripts/verify.sh`: the snapshot matches its lock and generated files are current
-- [ ] `Scripts/lint.sh`: swift-format, strict
-- [ ] `swift test`: library tests pass on the Mac
-- [ ] `xcodebuild test -scheme Qeetrix -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"`: library tests pass on iOS
-- [ ] `Scripts/api-check.sh`: public API unchanged, or updated with `--update` and noted in `CHANGELOG.md`
+- [ ] `Scripts/check.sh`: generator tests, drift, format, warnings, dependencies, resources, host tests
+      and public API (an API change is updated with `Scripts/api-check.sh --update` and noted in
+      `CHANGELOG.md`)
+- [ ] `xcodebuild test -scheme Qeetrix -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"`: unit and snapshot tests pass on iOS
+- [ ] Showcase UI tests pass: `xcodebuild test -project Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase -destination …`
 - [ ] `Scripts/docs.sh`: DocC builds with no warnings
+- [ ] Snapshots compared locally against baselines recorded before the change (they are never committed,
+      ADR 0013); any visual change is described above
+- [ ] No screenshots or other images are added to the repository
+- [ ] A new overlay or navigation component follows ADR 0014: the system presentation, state in a
+      binding the app owns, and a UI test that presents and dismisses it
 - [ ] Documentation matches the change (`CHANGELOG.md`, DocC, `ARCHITECTURE.md` or a decision record)
 
 ## Upstream inputs

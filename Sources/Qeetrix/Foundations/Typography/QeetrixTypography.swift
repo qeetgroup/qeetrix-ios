@@ -44,13 +44,61 @@ public struct QeetrixTextMetrics: Hashable, Sendable {
     ///   - size: The point size, typically already scaled by Dynamic Type. Defaults to the token size.
     ///   - legibilityWeight: The environment's Bold Text setting.
     public init(role: QeetrixTextRole, size: CGFloat? = nil, legibilityWeight: LegibilityWeight? = nil) {
-        let tokens = role.tokens
+        let resolved = QeetrixResolvedType(tokens: role.tokens, size: size, legibilityWeight: legibilityWeight)
+        self.role = role
+        pointSize = resolved.pointSize
+        weight = resolved.weight
+        font = resolved.font
+        lineSpacing = resolved.lineSpacing
+        tracking = resolved.tracking
+        usesBundledFont = resolved.usesBundledFont
+    }
+
+    static func systemWeight(_ weight: QeetrixFontWeight) -> Font.Weight {
+        QeetrixResolvedType.systemWeight(weight)
+    }
+}
+
+/// A type specification — the typography values plus the Dynamic Type curve it scales along. Roles
+/// are specifications; so are the component text styles the web sets with utility classes rather
+/// than a role (`QeetrixComponentType`).
+struct QeetrixTypeSpec: Hashable, Sendable {
+    let tokens: QeetrixTextRoleTokens
+    /// The curve the size scales along; `nil` for text inside a fixed-size graphic (avatar
+    /// initials), which must not outgrow its frame.
+    let textStyle: Font.TextStyle?
+
+    init(_ tokens: QeetrixTextRoleTokens, scalesLike textStyle: Font.TextStyle?) {
+        self.tokens = tokens
+        self.textStyle = textStyle
+    }
+
+    init(_ role: QeetrixTextRole) {
+        self.init(role.tokens, scalesLike: role.textStyle)
+    }
+
+    /// The same style at its token size whatever the Dynamic Type setting.
+    var fixedSize: QeetrixTypeSpec {
+        QeetrixTypeSpec(tokens, scalesLike: nil)
+    }
+}
+
+/// A specification resolved at a point size: the one place fonts, line spacing and tracking are
+/// computed, for roles and component text alike.
+struct QeetrixResolvedType: Sendable {
+    let pointSize: CGFloat
+    let weight: QeetrixFontWeight
+    let font: Font
+    let lineSpacing: CGFloat
+    let tracking: CGFloat
+    let usesBundledFont: Bool
+
+    init(tokens: QeetrixTextRoleTokens, size: CGFloat?, legibilityWeight: LegibilityWeight?) {
         let pointSize = size ?? tokens.size
         var weight = tokens.weight
         if legibilityWeight == .bold, let heavier = QeetrixFontWeight.scale.first(where: { $0 > tokens.weight }) {
             weight = heavier
         }
-        self.role = role
         self.pointSize = pointSize
         self.weight = weight
         tracking = tokens.letterSpacing * pointSize
@@ -83,21 +131,22 @@ public struct QeetrixTextMetrics: Hashable, Sendable {
 }
 
 struct QeetrixTextStyleModifier: ViewModifier {
-    let role: QeetrixTextRole
+    let spec: QeetrixTypeSpec
     @ScaledMetric private var size: CGFloat
     @Environment(\.legibilityWeight) private var legibilityWeight
 
-    init(role: QeetrixTextRole) {
-        self.role = role
-        _size = ScaledMetric(wrappedValue: role.tokens.size, relativeTo: role.textStyle)
+    init(spec: QeetrixTypeSpec) {
+        self.spec = spec
+        _size = ScaledMetric(wrappedValue: spec.tokens.size, relativeTo: spec.textStyle ?? .body)
     }
 
     func body(content: Content) -> some View {
-        let metrics = QeetrixTextMetrics(role: role, size: size, legibilityWeight: legibilityWeight)
+        let resolved = QeetrixResolvedType(
+            tokens: spec.tokens, size: spec.textStyle == nil ? spec.tokens.size : size, legibilityWeight: legibilityWeight)
         content
-            .font(metrics.font)
-            .lineSpacing(metrics.lineSpacing)
-            .tracking(metrics.tracking)
+            .font(resolved.font)
+            .lineSpacing(resolved.lineSpacing)
+            .tracking(resolved.tracking)
     }
 }
 
@@ -110,6 +159,11 @@ extension View {
     /// Text("Welcome back").qeetrixTextStyle(.title)
     /// ```
     public func qeetrixTextStyle(_ role: QeetrixTextRole) -> some View {
-        modifier(QeetrixTextStyleModifier(role: role))
+        modifier(QeetrixTextStyleModifier(spec: QeetrixTypeSpec(role)))
+    }
+
+    /// Sets text in a type specification — a role, or a component text style.
+    func qeetrixType(_ spec: QeetrixTypeSpec) -> some View {
+        modifier(QeetrixTextStyleModifier(spec: spec))
     }
 }

@@ -26,6 +26,26 @@ The icon path data is converted from the SVG drawings of
 The complete notice, including the Lucide and Feather licences, is reproduced verbatim in
 [`Upstream/qeetrix-icons/LICENSE`](../Upstream/qeetrix-icons/LICENSE).
 
+## Test-only dependencies (not distributed)
+
+Used only by the `QeetrixSnapshotTests` target. They are never linked into the `Qeetrix` library, and an
+app that depends on Qeetrix does not resolve them (ADR 0009). Reviewed versions and licences are in
+[`Tools/dependency-allowlist.json`](../Tools/dependency-allowlist.json), checked by
+`Scripts/dependencies.sh`.
+
+| Package | Version | Licence |
+|:--|:--|:--|
+| [swift-snapshot-testing](https://github.com/pointfreeco/swift-snapshot-testing) | 1.19.6 | MIT |
+| [swift-custom-dump](https://github.com/pointfreeco/swift-custom-dump) | 1.7.3 | MIT |
+| [swift-issue-reporting](https://github.com/pointfreeco/swift-issue-reporting) | 2.1.2 | MIT |
+| [swift-syntax](https://github.com/swiftlang/swift-syntax) | 604.0.0 | Apache 2.0 with Runtime Library Exception |
+
+## Tailwind CSS default values
+
+`QeetrixWebScale` restates, as numbers, the default spacing step, type steps, line heights and spin
+duration of [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss) 4.3.3 (MIT), which qeetrix-ui's
+components use. No Tailwind code is included.
+
 ## Design tokens
 
 Token values are generated from [`@qeetrix/ui`](https://www.npmjs.com/package/@qeetrix/ui) 2.1.6, Qeet
