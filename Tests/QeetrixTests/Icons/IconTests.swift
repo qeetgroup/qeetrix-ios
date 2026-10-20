@@ -97,4 +97,17 @@ struct IconTests {
         #expect(ltr != rtl)
         #expect(ltr == Array(rtl.reversed()))
     }
+
+    /// Phase 7: the icon artwork's notice travels in the library's bundle, as the fonts' licences do, so an
+    /// app that ships the icons ships the MIT, Lucide (ISC) and Feather (MIT) notices with them.
+    @Test("The icons' licence is in the library's bundle, byte for byte the pinned upstream licence")
+    func licence() throws {
+        let url = try #require(Bundle.module.url(forResource: "qeetrix-icons-LICENSE", withExtension: "txt", subdirectory: "Licenses"))
+        let bundled = try Data(contentsOf: url)
+        #expect(bundled == (try Repository.data("Upstream/qeetrix-icons/LICENSE")))
+        let text = String(decoding: bundled, as: UTF8.self)
+        for notice in ["MIT License", "Lucide", "ISC License", "Feather"] {
+            #expect(text.contains(notice), "The notice names \(notice)")
+        }
+    }
 }

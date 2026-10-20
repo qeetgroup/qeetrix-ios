@@ -127,7 +127,13 @@ public struct UpstreamSync {
             }
         }
         staged.append(("Upstream/qeetrix-icons/icons.json", Data(OrderedJSON.array(selected).serialized().utf8)))
-        staged.append(("Upstream/qeetrix-icons/LICENSE", try await fetch(Self.raw(iconRepository, commit, "LICENSE"))))
+        let iconLicense = try await fetch(Self.raw(iconRepository, commit, "LICENSE"))
+        staged.append(("Upstream/qeetrix-icons/LICENSE", iconLicense))
+        if let destination = icons["licenseDestination"]?.stringValue {
+            // Into the library's bundle, beside the fonts' licences: an app that ships the icons ships
+            // their notice (MIT, with Lucide's ISC and Feather's MIT).
+            staged.append((destination, iconLicense))
+        }
         log("✓ \(iconRepository)@\(commit.prefix(7)) — \(names.count) icons")
 
         staged.sort { $0.path < $1.path }

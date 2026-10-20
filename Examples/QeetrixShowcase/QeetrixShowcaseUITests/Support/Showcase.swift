@@ -33,6 +33,17 @@ extension XCUIElement {
 }
 
 extension XCUIElement {
+    var hasKeyboardFocus: Bool {
+        (value(forKey: "hasKeyboardFocus") as? Bool) ?? false
+    }
+
+    /// Waits until this element has the keyboard focus. Focus set from a tap gesture lands a moment
+    /// after the tap, on a busy simulator up to a few seconds.
+    func waitForKeyboardFocus(timeout: TimeInterval = 5) -> Bool {
+        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hasKeyboardFocus == true"), object: self)
+        return XCTWaiter().wait(for: [expectation], timeout: timeout) == .completed
+    }
+
     /// Waits until this element's label is `label`. A system dialog runs its action after its dismissal
     /// animation, so what the action changes appears a moment after the tap.
     func waitForLabel(_ label: String, timeout: TimeInterval = 5) -> Bool {
@@ -58,6 +69,12 @@ extension XCUIApplication {
         } else {
             coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.08)).tap()
         }
+    }
+
+    /// Ends a search: the search bar's Cancel button, which iOS 27 shows as Close.
+    func endSearch() {
+        let cancel = buttons["Cancel"]
+        if cancel.exists { cancel.tap() } else { buttons["Close"].tap() }
     }
 
     /// Goes back one page with the system's edge swipe, which every navigation stack supports — the back

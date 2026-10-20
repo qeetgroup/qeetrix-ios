@@ -112,7 +112,8 @@ public struct QeetrixAvatar: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
         } else {
-            QeetrixIcon(.userRound, size: QeetrixIconSize(side * 0.55))  // [&>svg]:size-[55%]
+            // Sized to the avatar, which doesn't scale with Dynamic Type, as the initials are.
+            QeetrixIcon(.userRound, size: QeetrixIconSize(side * 0.55), relativeTo: nil)  // [&>svg]:size-[55%]
         }
     }
 

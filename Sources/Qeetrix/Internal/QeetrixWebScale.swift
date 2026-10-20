@@ -35,6 +35,9 @@ enum QeetrixWebScale {
     /// `--text-2xl: 1.5rem`, `--text-2xl--line-height: calc(2 / 1.5)`.
     static let text2XL = TextStep(size: 24, lineHeight: 2 / 1.5)
 
+    /// `--container-sm: 24rem` — the width of `max-w-sm`.
+    static let containerSM: CGFloat = 384
+
     /// `--leading-snug: 1.375`.
     static let leadingSnug: Double = 1.375
     /// `--leading-relaxed: 1.625`.

@@ -32,6 +32,9 @@ struct Greeting: View {
 ### Essentials
 
 - <doc:GettingStarted>
+- <doc:Installing>
+- <doc:Migrating>
+- <doc:Troubleshooting>
 
 ### Foundations
 
@@ -69,6 +72,12 @@ struct Greeting: View {
 
 ### Data display
 
+- <doc:Collections>
+- <doc:Searching>
+- ``QeetrixListItem``
+- ``QeetrixDescriptionList``
+- ``QeetrixChip``
+- ``QeetrixTimeline``
 - ``QeetrixAvatar``
 - ``QeetrixBadge``
 - ``QeetrixText``
@@ -76,6 +85,9 @@ struct Greeting: View {
 ### Feedback
 
 - ``QeetrixToast``
+- ``QeetrixEmptyState``
+- ``QeetrixDataState``
+- ``QeetrixSkeleton``
 - ``QeetrixProgress``
 - ``QeetrixSpinner``
 
@@ -96,6 +108,7 @@ struct Greeting: View {
 ### Layout
 
 - ``QeetrixCard``
+- ``QeetrixAccordion``
 - ``QeetrixSeparator``
 
 ### Theme

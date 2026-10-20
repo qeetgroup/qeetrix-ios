@@ -16,29 +16,37 @@ Sources/Qeetrix/
 │                             Generated/ (never edited)
 ├── Components/<Family>/<Component>/   the components, one folder per qeetrix-ui family; Shared/ for
 │                             what several families use (component text styles, hit area, spinning,
-│                             text-input traits, the option model, dialog actions); Input/Field/ for
-│                             the field layer every input builds on
+│                             text-input traits, the option model, dialog actions, rules between
+│                             stacked items, the wrapping row layout); Input/Field/ for the field layer
+│                             every input builds on; List/ for the iOS-only list row and section header
 ├── Internal/                 implementation details (colour storage, component colours, the web
 │                             scale, built-in strings, logging)
-├── Resources/                Fonts/ (TTF + licence), Metadata/token-provenance.json,
-│                             Localization/<language>.lproj (built-in strings)
+├── Resources/                Fonts/ (TTF + licence), Licenses/ (the icon artwork's notice),
+│                             Metadata/token-provenance.json, Localization/<language>.lproj (built-in strings)
 └── Qeetrix.docc/             API and usage documentation (DocC): landing page, foundation guides,
                               Components/ (one page per component)
 Tests/QeetrixTests/           mirrors Sources: Tokens, Foundations/*, Theme, Icons, Components/*, Integration
 Tests/QeetrixSnapshotTests/   component specimens in the ADR 0009 matrix; __Snapshots__/ holds the baselines
 Templates/Component/          what Scripts/new-component.sh renders for a new component
 Examples/QeetrixShowcase/     an iOS app that depends on the package, and its XCUITests
+Examples/QeetrixConsumer/     an independent app using the public API only, as a Qeet Group app would;
+                              Scripts/consumer-check.sh installs the package into it by version
 Tools/QeetrixGen/             the build tool: its own Swift package (Sources/QeetrixGenCore, Tests)
 Tools/dependency-allowlist.json   the reviewed test-only dependencies, versions and licences
 Upstream/                     pins.json (edited), upstream.lock.json (written by sync), pinned inputs
 Scripts/                      the commands people and CI run: sync-upstream, generate, verify, lint,
-                              warnings, dependencies, resources, api-check, docs, check,
-                              new-component, ci-simulator
+                              warnings, dependencies, resources, api-check, api-compat, docs,
+                              check, new-component, ci-simulator, consumer-check, release-check, sbom
 Documentation/
 ├── Decisions/                numbered architecture decision records
 ├── Standards/                component contract, accessibility
 ├── Website/                  handoffs to the ui.qeet.in documentation
-├── Foundations/ API/         generated: token coverage, public API baseline
+├── Releases/                 distribution, versioning, support, checklist and rollback; the candidate's
+│                             report, release notes, compatibility matrix and bill of materials
+├── Quality/                  the Phase 6 audit and its reports: maturity, accessibility,
+│                             localization, performance, security, API compatibility, coverage, gaps
+├── Foundations/ API/         generated: token coverage, public API baseline; API/ also holds the
+│                             accepted source breaks (breaking-changes-allowlist.txt)
 ├── CROSS_PLATFORM_CONTRACT.md
 └── THIRD_PARTY_NOTICES.md    licences of the bundled fonts and the icon artwork
 .github/                      CI workflow, CODEOWNERS, PR and issue templates
@@ -81,6 +89,9 @@ Internal supports every layer; nothing depends on Theme except apps.
   owns, which they reset when the presentation ends (ADR 0014). There is no presentation manager,
   router or global state; the toast host's lifecycle is a value type (`QeetrixToastState`) with a
   view-scoped timer.
+- **Data display** presents what the app passes and keeps nothing: rows, details, accordions, chips,
+  timelines and the empty, loading and failure states go inside SwiftUI's own `List`, `Section`,
+  `DisclosureGroup` and `searchable`, which are not wrapped (ADR 0015).
 - **Components** are built from semantic and component tokens, the foundations' modifiers and icons.
   Their type comes from `QeetrixTypeSpec` — a role, or a component text style the web sets with
   utility classes — resolved by the same code as `qeetrixTextStyle(_:)`, so Dynamic Type and Bold Text
@@ -198,6 +209,9 @@ drift check, the determinism check, and the guard against hand edits.
   `ital` 0.
 - **Failure.** A failed registration is logged and reported by `register()`. Text then falls back to
   the system font at the same weight, never silently.
+- **Caching.** Building a font from a variation descriptor is the costly part of drawing text, and
+  SwiftUI asks for it on every update. `QeetrixResolvedType` caches the result by role tokens, size and
+  Bold Text, behind a lock, up to 512 entries (`Documentation/Quality/PERFORMANCE_REPORT.md`).
 - **Other scripts.** Scripts the fonts do not cover, such as the Indic scripts, fall back through
   CoreText's system cascade, as browsers do.
 
@@ -214,6 +228,9 @@ The pinned SVGs are parsed at generation time, not at run time.
   colour is the inherited foreground style.
 - **Why not an asset catalogue.** Generated paths keep vectors exact, let the stroke token apply at
   run time, need no asset compiler, and can be tested on any host.
+- **Names.** `QeetrixIconName` is a generated struct with one static property per icon, not an enum, so
+  adding an icon is not a breaking change (ADR 0016). Drawings are looked up in a generated table keyed
+  by name, shape and variant.
 
 ## Public API principles
 
@@ -225,6 +242,11 @@ The pinned SVGs are parsed at generation time, not at run time.
 - Implementation types are internal: colour storage, per-theme tables, icon drawings and logging.
 - `Documentation/API/Qeetrix.public-api.txt` lists the public API. `Scripts/api-check.sh` fails when it
   changes, so an API change is always a decision, recorded in `CHANGELOG.md`.
+- `Scripts/api-compat.sh` runs Swift's source-compatibility checker against another revision; CI runs it
+  against a pull request's target branch. A break passes only if a decision record accepted it
+  (`Documentation/Quality/API_COMPATIBILITY.md`).
+- A set that grows, like icon names, is a struct of static members; a public enum is for options that
+  follow the web's variants and rarely change.
 
 ## Upstream observations
 
@@ -276,5 +298,9 @@ These are not decided here, because they are design decisions:
   product needs a short stack on iPad is open.
 - **A centred dialog on iPhone.** The sheet stands in for the web `Dialog` everywhere; a centred,
   non-sheet modal is deferred until a product needs one.
+- **List rows on iPhone.** Rows use the density's row height (40 / 52) with a 44 pt minimum, and the
+  web's `text-sm` type; native iOS rows are 44 pt with 17 pt body text.
+- **Density in component tokens.** Tokens built on `control.*` (accordion padding, timeline gaps) resolve
+  at the default density, so a compact subtree doesn't tighten them as it does on the web.
 - **System menu surfaces.** Menus, alerts and confirmation dialogs keep the system's font and material,
   so the `component.menu` tokens have no iOS use yet.

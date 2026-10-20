@@ -6,11 +6,18 @@ import SwiftUI
 ///
 /// Decorative: the button reports that it is busy, so the indicator is hidden from VoiceOver, as the
 /// web hides it from the accessibility tree rather than nest a status region in the button's name.
+///
+/// It scales with Dynamic Type exactly as the icon it replaces does — the same scaled metric — so a busy
+/// button keeps its size.
 struct QeetrixButtonBusyIndicator: View {
-    let size: QeetrixIconSize
+    @ScaledMetric private var side: CGFloat
+
+    init(size: QeetrixIconSize) {
+        _side = ScaledMetric(wrappedValue: size.points, relativeTo: .body)
+    }
 
     var body: some View {
-        let scale = size.points / 16
+        let scale = side / 16
         ZStack {
             Circle()
                 .inset(by: (8 - 6.25) * scale)
@@ -19,7 +26,7 @@ struct QeetrixButtonBusyIndicator: View {
             QeetrixBusyArc()
                 .stroke(style: StrokeStyle(lineWidth: 1.5 * scale, lineCap: .round))
         }
-        .frame(width: size.points, height: size.points)
+        .frame(width: side, height: side)
         .qeetrixSpinning()
         .accessibilityHidden(true)
     }

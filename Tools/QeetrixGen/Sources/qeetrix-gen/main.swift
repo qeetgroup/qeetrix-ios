@@ -13,6 +13,8 @@ let usage = """
       dependencies --manifest <dump-package.json> [--checkouts <dir>]
                     Check Package.resolved against Tools/dependency-allowlist.json, with licences.
       resources     Check the built-in strings and the snapshot baselines.
+      sbom --version <version> [--output <file>]
+                    Write the release's CycloneDX bill of materials from the pins, lock and Package.resolved.
       new-component <Family> <Component> --category <docs category> [--slug <web slug>] [--dry-run]
                     Scaffold a component from Templates/Component. Never overwrites; --dry-run only
                     lists the changes.
@@ -107,6 +109,15 @@ do {
             fail("Resource check failed:\n  " + problems.joined(separator: "\n  "))
         }
         print("✓ Built-in strings and snapshot baselines are complete and consistent.")
+    case "sbom":
+        guard let version = option("--version", in: arguments) else { fail("sbom needs --version <version>.") }
+        let sbom = try SBOM.render(root: root, version: version)
+        if let output = option("--output", in: arguments) {
+            try Data(sbom.utf8).write(to: URL(fileURLWithPath: output))
+            print("✓ wrote \(output)")
+        } else {
+            print(sbom, terminator: "")
+        }
     case "new-component":
         let positional = Array(arguments.dropFirst().prefix { !$0.hasPrefix("--") })
         guard positional.count == 2, let category = option("--category", in: arguments) else {

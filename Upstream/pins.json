@@ -1,7 +1,8 @@
 {
-  "$comment": "What qeetrix-ios is built from. Edit a pin, then run Scripts/sync-upstream.sh: it fetches these exact artifacts, proves the native fonts are the files the web ships, and rewrites upstream.lock.json. Nothing else in Upstream/ is edited by hand. Paths are relative to the repository root.",
+  "$comment": "What qeetrix-ios is built from. Edit a pin, then run Scripts/sync-upstream.sh: it fetches these exact artifacts, proves the native fonts are the files the web ships, and rewrites upstream.lock.json. Nothing else in Upstream/ is edited by hand. Paths are relative to the repository root. Each licence is the reviewed licence of what is taken — an SPDX expression, or UNLICENSED as @qeetrix/ui publishes it — and goes into the release SBOM (qeetrix-gen sbom).",
   "qeetrixUI": {
     "package": "@qeetrix/ui",
+    "licence": "UNLICENSED",
     "version": "2.1.6",
     "files": {
       "package/dist/styles/tokens.json": "Upstream/qeetrix-ui/tokens.json",
@@ -10,6 +11,7 @@
       "package/dist/component-manifest.json": "Upstream/qeetrix-ui/component-manifest.json"
     },
     "componentTokens": [
+      "accordion",
       "avatar",
       "badge",
       "button",
@@ -18,7 +20,9 @@
       "input",
       "popover",
       "progress",
+      "skeleton",
       "switch",
+      "timeline",
       "typography"
     ]
   },
@@ -32,6 +36,7 @@
       "ttf": "fonts/calsans-var-full/CalSansVF.ttf",
       "woff2": "fonts/calsans-var-full/CalSansVF.woff2",
       "license": "OFL.txt",
+      "licence": "OFL-1.1",
       "destination": "Sources/Qeetrix/Resources/Fonts/CalSansVF.ttf",
       "licenseDestination": "Sources/Qeetrix/Resources/Fonts/CalSans-OFL.txt"
     },
@@ -45,6 +50,7 @@
       "ttf": "variable_ttf/FiraCode-VF.ttf",
       "woff2": "woff2/FiraCode-VF.woff2",
       "license": "LICENSE",
+      "licence": "OFL-1.1",
       "destination": "Sources/Qeetrix/Resources/Fonts/FiraCode-VF.ttf",
       "licenseDestination": "Sources/Qeetrix/Resources/Fonts/FiraCode-OFL.txt"
     }
@@ -52,30 +58,39 @@
   "qeetrixIcons": {
     "repository": "qeetgroup/qeetrix-icons",
     "package": "@qeetrix/icons",
+    "licence": "MIT AND ISC",
     "version": "1.0.11",
     "commit": "331cd858d0ff19537753dd8928ed033ff6dfac33",
+    "licenseDestination": "Sources/Qeetrix/Resources/Licenses/qeetrix-icons-LICENSE.txt",
     "icons": [
       "bell",
+      "calendar",
       "check",
       "chevron-down",
       "circle-alert",
       "circle-check",
       "circle-x",
+      "clock",
       "copy",
       "database",
       "ellipsis",
       "eye",
       "eye-off",
+      "file-text",
+      "folder",
       "house",
       "inbox",
       "info",
       "loader-circle",
       "lock",
+      "mail",
       "minus",
       "navigation",
       "pencil",
       "plus",
+      "refresh-cw",
       "search",
+      "search-x",
       "send",
       "server",
       "settings",
@@ -83,6 +98,7 @@
       "trash",
       "triangle-alert",
       "user-round",
+      "users",
       "x"
     ]
   }

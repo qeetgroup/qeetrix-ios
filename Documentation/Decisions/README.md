@@ -20,5 +20,8 @@ and the old one's status says so.
 | [0012](0012-form-components.md) | Form components: one field, native inputs, the app's validation | Accepted |
 | [0013](0013-snapshot-baselines-stay-local.md) | Snapshot baselines stay local | Accepted |
 | [0014](0014-navigation-overlays-and-feedback.md) | Navigation, overlays and feedback: native presentation, state owned by the app | Accepted |
+| [0015](0015-data-display-and-content-states.md) | Data display and content states: native containers, the app's data | Accepted |
+| [0016](0016-icon-names-are-an-open-set.md) | Icon names are an open set | Accepted |
+| [0017](0017-releases-source-package-semver-from-0-1.md) | Releases: a source package, SemVer from 0.1 | Accepted |
 
 To add one, copy the shape of an existing record, take the next number, and link it here.

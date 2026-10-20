@@ -5,10 +5,14 @@ same tokens, typeface, themes and icons as the web's [`@qeetrix/ui`](https://git
 and [`@qeetrix/icons`](https://github.com/qeetgroup/qeetrix-icons), generated from those packages
 rather than copied from them.
 
-**Status: Phase 4 — navigation, overlays and feedback.** The foundations (tokens, theming, typography,
-icons, accessibility helpers), the core components, the form controls and patterns, and tabs, navigation
-chrome, dialogs, sheets, popovers, menus and toasts, each with tests, a DocC page and a showcase page
-([PHASES.md](PHASES.md)).
+**Status: Phase 7 — release candidate 0.1.0-rc.1, prepared and not released.** No version is tagged
+yet; see [the candidate report](Documentation/Releases/RELEASE_CANDIDATE_REPORT.md). The foundations (tokens, theming,
+typography, icons, accessibility helpers), the core components, the form controls and patterns, navigation
+and overlays, and list rows, details, accordions, chips, timelines and the empty, loading and failure
+states, each with tests, a DocC page and a showcase page ([PHASES.md](PHASES.md)). Every component is
+**Beta**: tested and audited by machine, not yet checked on a device or released — see
+[the maturity matrix](Documentation/Quality/COMPONENT_MATURITY_MATRIX.md) and
+[the release-readiness gaps](Documentation/Quality/RELEASE_READINESS_GAPS.md).
 
 ## What is in it
 
@@ -20,7 +24,7 @@ chrome, dialogs, sheets, popovers, menus and toasts, each with tests, a DocC pag
 | Spacing, size, shape | `QeetrixSpacing`, `QeetrixCorner`, `QeetrixStroke`, `QeetrixFocus`, `QeetrixDensity`, `QeetrixOpacity` | `space`, `corner`, `stroke.width`, `focus`, `density`, `state` |
 | Elevation | `QeetrixElevation`, `.qeetrixElevation(_:fill:in:)` | `elevation.*` (per theme) |
 | Motion | `QeetrixDuration`, `QeetrixEasing`, `QeetrixMotion`, `.qeetrixAnimation(_:_:value:)` | `motion.*` |
-| Icons | `QeetrixIcon`, `QeetrixIconName` (29 icons), `Image(qeetrix:)` for system chrome | `qeetrix-icons` SVGs |
+| Icons | `QeetrixIcon`, `QeetrixIconName` (37 icons), `Image(qeetrix:)` for system chrome | `qeetrix-icons` SVGs |
 | Accessibility | `QeetrixAccessibility.minimumTouchTarget`, `.qeetrixMinimumTouchTarget()`, `contrastRatio(_:on:)` | Apple HIG, WCAG 2.2 |
 
 ### Components
@@ -55,6 +59,15 @@ chrome, dialogs, sheets, popovers, menus and toasts, each with tests, a DocC pag
 | Popover | `.qeetrixPopover(isPresented:…)` | Popover |
 | Menu | `QeetrixMenu`, `QeetrixMenuItem` | Dropdown Menu, Context Menu |
 | Toast | `QeetrixToast`, `.qeetrixToast(_:)` | Toast |
+| List item | `QeetrixListItem`, `QeetrixListItemIcon`, `.qeetrixListRow()`, `.buttonStyle(.qeetrixListItem)`, `QeetrixSectionHeader` | — (iOS list rows) |
+| Description list | `QeetrixDescriptionList`, `QeetrixDescriptionItem` | Description List |
+| Accordion | `QeetrixAccordion`, `QeetrixAccordionItem`, `.disclosureGroupStyle(.qeetrix)` | Accordion, Collapsible |
+| Empty state | `QeetrixEmptyState` | Empty State |
+| Data state | `QeetrixDataState`, `QeetrixDataFailure`, `QeetrixDataLoadingRows` | Data State |
+| Skeleton | `QeetrixSkeleton`, `QeetrixSkeletonText` | Skeleton |
+| Chip | `QeetrixChip`, `QeetrixChipGroup` | Chip |
+| Timeline | `QeetrixTimeline`, `QeetrixTimelineItem` | Timeline |
+| Search | native `.searchable` with `QeetrixEmptyState` and `QeetrixChipGroup` | — |
 
 Where SwiftUI has a style protocol, the style works on native controls too: `NavigationLink`,
 `ShareLink`, `Toggle`, `ProgressView`.
@@ -77,14 +90,17 @@ Mac during development; macOS is not a supported product platform.
 ## Install
 
 In Xcode, choose **File › Add Package Dependencies…** and enter the repository URL. In a package
-manifest:
+manifest, once a version is tagged:
 
 ```swift
-.package(url: "https://github.com/qeetgroup/qeetrix-ios.git", branch: "main")
+// Before 1.0 a minor version may break source, so take patches only.
+.package(url: "https://github.com/qeetgroup/qeetrix-ios.git", .upToNextMinor(from: "0.1.0"))
 ```
 
-Then add `Qeetrix` to your target's dependencies. Nothing else is needed at build time; the package
-does not need the web repositories.
+Then add the `Qeetrix` product to your target. Nothing else is needed at build time: no web
+repositories, Node.js or generator. Until the first tag, only a branch or revision can be used, for
+evaluation. Versions, requirements and access to the private repository:
+[Documentation/Releases/DISTRIBUTION.md](Documentation/Releases/DISTRIBUTION.md).
 
 ## Use
 
@@ -159,6 +175,9 @@ swift test --package-path Tools/QeetrixGen      # generator
 Scripts/verify.sh                               # snapshot matches lock; generated files current
 Scripts/lint.sh                                 # swift-format, strict
 Scripts/api-check.sh                            # public API matches Documentation/API
+Scripts/api-compat.sh origin/main               # no source-breaking change against main
+Scripts/consumer-check.sh                       # an independent app installs the package by version
+Scripts/release-check.sh 0.1.0-rc.1             # every release gate, with evidence (publishes nothing)
 Scripts/docs.sh                                 # DocC documentation, warnings as errors
 Scripts/check.sh                                # all of the above that runs without a simulator, and more
 ```
@@ -173,8 +192,13 @@ TEST_RUNNER_SNAPSHOT_TESTING_RECORD=all xcodebuild test -scheme Qeetrix -only-te
 xcodebuild test -scheme Qeetrix -only-testing:QeetrixSnapshotTests \
   -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"   # compare with them
 xcodebuild test -project Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase \
-  -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"   # UI tests
+  -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"   # UI tests and the accessibility audit
 ```
+
+The UI tests include `AccessibilityAuditUITests`, Apple's accessibility audit over every showcase page,
+which fails on any issue it doesn't exclude with a reason. Quality reports — accessibility,
+localization, performance, security and privacy, API compatibility, test coverage — are in
+[Documentation/Quality](Documentation/Quality/PHASE_6_AUDIT.md).
 
 The showcase app, `Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj`, shows every foundation and
 component in both themes and at any text size, grouped as ui.qeet.in groups them. It depends on this
@@ -196,13 +220,19 @@ See [CONTRIBUTING.md](CONTRIBUTING.md#upstream-sync).
 
 ## Known limitations
 
-- **Scope.** Thirty components and patterns. Component tokens are generated for the ten groups they use
-  (avatar, badge, button, card, dialog, input, popover, progress, switch, typography) of the 41 upstream
-  defines. 29 icons are included, and no logos.
+- **Scope.** Forty components and patterns. Component tokens are generated for the thirteen groups they
+  use (accordion, avatar, badge, button, card, dialog, input, popover, progress, skeleton, switch,
+  timeline, typography) of the 41 upstream defines. 37 icons are included, and no logos. There is no
+  data table or image component (ADR 0015).
 - **System-drawn overlays.** Alerts, confirmation dialogs and menus are drawn by iOS: only the tint is
   Qeetrix's. One toast shows at a time, and there is no snackbar, separate centred dialog or inline alert
   yet (ADR 0014).
 - **Snapshots are local.** Baselines are not committed, so CI does not compare snapshots (ADR 0013).
+  The snapshot host measures at the default text size and draws at AX3, so components that reflow at
+  the accessibility sizes overlap in their AX3 images; UI tests check that reflow in the app instead.
+- **Built-in strings are English.** The library's 19 strings ("Loading", "Required", "Close"…) have no
+  translations yet, so a localised app hears them in English
+  ([localization report](Documentation/Quality/LOCALIZATION_REPORT.md)).
 - **Increased contrast.** Qeetrix defines no contrast theme yet, so colours are the same under
   Increased Contrast. Every semantic text pair already meets WCAG 2.2 AA in both themes, and the
   tests check this.

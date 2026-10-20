@@ -377,7 +377,7 @@ private struct QeetrixToastActionBody: View {
 
 enum QeetrixToastMetrics {
     /// `max-w-sm`.
-    static let maximumWidth: CGFloat = 384
+    static let maximumWidth = QeetrixWebScale.containerSM
     static let accentWidth: CGFloat = 3
     /// `font-heading text-sm font-medium`.
     static let titleType = QeetrixComponentType.heading(QeetrixWebScale.textSM, .medium, scalesLike: .subheadline)

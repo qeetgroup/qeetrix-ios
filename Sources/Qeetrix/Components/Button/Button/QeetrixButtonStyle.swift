@@ -248,7 +248,7 @@ struct QeetrixButtonStyleBody: View {
     private func sized(_ label: some View, metrics: QeetrixButtonMetrics) -> some View {
         switch style.layout {
         case .icon:
-            label.frame(width: metrics.height, height: metrics.height)  // size-*
+            label.qeetrixIconSquare(metrics.height, icon: QeetrixIconButton.iconSize(style.size).points)  // size-*
         case .text(let leadingIcon, let trailingIcon):
             label
                 .multilineTextAlignment(.center)

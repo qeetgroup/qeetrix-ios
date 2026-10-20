@@ -79,7 +79,11 @@ For example, IconButton belongs to the Button family: `Components/Button/IconBut
    driven by a binding the app owns — an optional value or a `Bool` — and sets it back however the
    presentation ends. A chosen action runs once, after the overlay is dismissed. It keeps no global state:
    no router, manager or singleton. What the system draws is not restyled.
-7. **Accessibility.**
+7. **Data.** A component that shows data takes values and views and keeps none: no store, fetching,
+   caching, filtering, pagination or selection of its own. The app passes its data with its stable
+   identity, and its state as bindings; native containers (`List`, `Section`, `DisclosureGroup`,
+   `searchable`) are used, not wrapped (ADR 0015).
+8. **Accessibility.**
    - Hit area of at least 44 pt — extended without moving layout (`qeetrixHitArea()`) where the web
      control is drawn smaller and has room around it; a full 44 pt row where controls are stacked closer
      than that, because extended targets would overlap.
@@ -90,19 +94,20 @@ For example, IconButton belongs to the Button family: `Components/Button/IconBut
    - Right-to-left layout.
    - 4.5:1 text contrast and 3:1 for boundaries and icons.
    - See [ACCESSIBILITY.md](ACCESSIBILITY.md).
-8. **Native platform adaptations**, where iOS behaviour differs from the web, for example sheets
+9. **Native platform adaptations**, where iOS behaviour differs from the web, for example sheets
    instead of dialogs on compact width, haptics, or swipe actions. Each one is written down in the
    component's DocC page, with the reason.
-9. **Behaviour tests.** Variants, states, accessibility semantics and token use, in Swift Testing.
+10. **Behaviour tests.** Variants, states, accessibility semantics and token use, in Swift Testing.
    Interaction that needs a real touch — a tap, typing, a 44 pt target — goes in the showcase's UI
    tests (`Examples/QeetrixShowcase/QeetrixShowcaseUITests`).
-10. **Visual regression tests.** One specimen of every variant and state Qeetrix draws, in the matrix of
+11. **Visual regression tests.** One specimen of every variant and state Qeetrix draws, in the matrix of
    ADR 0009. Surfaces the system draws — alerts, confirmation dialogs, menus — are covered by UI tests
    instead.
-11. **DocC page.** Purpose, usage, variants, accessibility notes and platform adaptations, linking the
+12. **DocC page.** Purpose, usage, variants, accessibility notes and platform adaptations, linking the
    web component's page on ui.qeet.in. API details come from doc comments, not a second copy. Every
    example on the page is compiled by a documentation-examples test in `Tests/QeetrixTests/Integration`.
-12. **Showcase page and previews.** Every variant and state, in both themes and at a large text size.
+13. **Showcase page and previews.** Every variant and state, in both themes and at a large text size.
+   The page is added to the accessibility audit gate (`AccessibilityAuditUITests.pages`), and passes it.
 
 ## Tooling
 

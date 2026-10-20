@@ -39,3 +39,18 @@
 /* The cancel action added to an alert or confirmation dialog whose actions include a destructive one but
    no cancel. iOS only: the web's AlertDialogCancel is always written by the app. */
 "qeetrix.dialog.cancel" = "Cancel";
+
+/* The remove button of a removable chip. qeetrix-ui chipMessages.remove. */
+"qeetrix.chip.remove" = "Remove";
+
+/* A data state's error message when the app gives none. qeetrix-ui dataStateMessages.error. */
+"qeetrix.data-state.error" = "Something went wrong while loading this data.";
+
+/* The button that asks the app to load again after a failure. iOS only: the web DataState has no retry
+   action. */
+"qeetrix.data-state.retry" = "Try again";
+
+/* The state VoiceOver reads on an accordion or disclosure header. iOS only: the web sets aria-expanded and
+   the screen reader words it; a SwiftUI disclosure style has to supply the words itself. */
+"qeetrix.accordion.expanded" = "Expanded";
+"qeetrix.accordion.collapsed" = "Collapsed";

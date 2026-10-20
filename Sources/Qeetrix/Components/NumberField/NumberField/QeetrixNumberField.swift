@@ -266,7 +266,7 @@ struct QeetrixNumberInput: View {
             text = display(next)
         } label: {
             QeetrixIcon(direction == .increase ? .plus : .minus, size: QeetrixIconSize(QeetrixWebScale.spacing(4)))  // [&_svg]:size-4
-                .frame(width: height, height: height)  // w-(--qx-component-input-height)
+                .qeetrixIconSquare(height, icon: QeetrixWebScale.spacing(4))  // w-(--qx-component-input-height)
                 .contentShape(Rectangle())
         }
         .buttonStyle(
