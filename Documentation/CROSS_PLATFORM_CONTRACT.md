@@ -25,6 +25,8 @@ snapshot are never edited in this repository.
 - Typography roles, theme modes and icon names keep their upstream spelling as raw values
   (`label-compact`, `system`, `send`), so stored values and analytics read the same on both
   platforms.
+- Icon names are an open set of static members rather than an enum on iOS (ADR 0016), so the catalogue
+  can grow toward upstream's without breaking apps; the raw values are still the upstream names.
 
 ## Units and values
 
@@ -108,6 +110,42 @@ The rules both platforms keep:
 - **Toast timing.** Hover and focus hold a toast on screen.
 - **Strings.** "Close" is the close button's name (`overlayMessages.close`, `toastMessages.close`).
 
+## Data display and content states (Phase 5)
+
+The iOS contract (ADR 0015), compared with what exists on each side on 2026-10-19. Android has none of
+these components yet (its working tree is at Phase 4), so no parity is claimed for it.
+
+| Web (`@qeetrix/ui` 2.1.6) | iOS | Mapping |
+|:--|:--|:--|
+| — (a table or listbox row) | `QeetrixListItem`, `QeetrixListItemIcon`, `qeetrixListRow()` | iOS only: the list row, from the notification row's composition and the table's selected-row colours. |
+| — | `QeetrixSectionHeader` in a native `Section` | iOS only: a group title with an action slot. |
+| `DescriptionList` (`horizontal`, `vertical`, `grid`, `divided`) | `QeetrixDescriptionList`, `QeetrixDescriptionItem` | The same layouts. Columns switch on the size class, not the `sm` breakpoint. |
+| `Accordion`, `Collapsible` | `QeetrixAccordion`, `QeetrixAccordionItem`, `.disclosureGroupStyle(.qeetrix)` | Native `DisclosureGroup`; `component.accordion` tokens; expansion read as a value. |
+| `EmptyState` (5 variants, 3 sizes) | `QeetrixEmptyState` | The same variants, sizes, tiles and default glyphs. |
+| `DataState` | `QeetrixDataState`, `QeetrixDataFailure`, `QeetrixDataLoadingRows` | The same order. iOS takes a message for the person instead of an error object, and adds a retry. |
+| `Skeleton` | `QeetrixSkeleton`, `QeetrixSkeletonText` | `component.skeleton` tint; the same 1.6 s sweep, still under Reduce Motion. |
+| `Chip`, `ChipGroup` | `QeetrixChip`, `QeetrixChipGroup` | The same sizes, selected vocabulary, check mark and remove button. iOS gives each chip its own focus stop. |
+| `Timeline` | `QeetrixTimeline`, `QeetrixTimelineItem` | The same tones, emphasis, icon markers and connector; `component.timeline` tokens. |
+| — (search lives in `FilterBar`, `CommandPalette`) | `searchable`, unwrapped | Native search field; Qeetrix adds the no-results state and chips. |
+| `Table`, `DataTable`, `AspectRatio` | — | Deferred: native `Table` on iPad; `Image` and `AsyncImage` for images. |
+
+## Verified against Android (2026-10-20)
+
+Compared read-only with `qeetrix-android` at `5b4cb5b` (branch `phase-4-navigation-overlays-feedback`):
+
+- **The same canonical inputs.** Both pin `@qeetrix/ui` 2.1.6, `qeetrix-icons` 1.0.11 at `331cd85`, Cal
+  Sans v2.011 and Fira Code 6.2. Their `tokens.json`, `tokens.css` and `index.css` are byte-identical,
+  so token identity, semantic colours and typography roles come from the same file.
+- **Icons.** The iOS catalogue (37) is a subset of Android's (39), which also has `arrow-left` and
+  `ellipsis-vertical`. Names are the same upstream names on both.
+- **Component tokens.** Each platform adopts the groups its components use: both adopt accordion, avatar,
+  badge, button, card, dialog, input, progress, skeleton, switch, timeline and typography. Only iOS adopts
+  popover. Only Android adopts menu (iOS menus are system-drawn, ADR 0014) and sidebar (no iOS sidebar).
+- **Licences.** Both bundle the fonts' licences and the icon notice under the same file name,
+  `qeetrix-icons-LICENSE.txt`.
+
+No contradiction in tokens or component contracts was found. Coordinated upstream work: none required.
+
 ## Checking parity
 
 - `Tests/QeetrixTests/Tokens` compares the generated Swift with the snapshot: every consumable colour
@@ -116,3 +154,7 @@ The rules both platforms keep:
   iOS colours.
 - `Resources/Metadata/token-provenance.json`, read with `QeetrixProvenance.bundled()`, names the exact
   upstream versions, so a web and an iOS build can be checked for the same release.
+- Phase 6 added checks of the contract in the running app: Apple's accessibility audit over every
+  showcase page (`AccessibilityAuditUITests`), the timeline dots' 3:1 contrast on every surface
+  (`TimelineContrastTests`), and the timeline drawn right to left (`TimelineTests`). Results are in
+  `Documentation/Quality/`.

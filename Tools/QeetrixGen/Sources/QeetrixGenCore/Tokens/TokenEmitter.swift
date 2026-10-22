@@ -473,6 +473,8 @@ public struct TokenEmitter {
             return "static let \(name): CGFloat = \(swiftNumber(fraction))"
         case let .em(em):
             return "static let \(name): CGFloat = \(swiftNumber(em))"
+        case let .duration(seconds):
+            return "static let \(name) = QeetrixDuration(seconds: \(swiftNumber(seconds)))"
         case let .densityReference(metric):
             let property = try SwiftNames.identifier([metric], context: token.dotted)
             return "static func \(name)(_ density: QeetrixDensity) -> CGFloat { density.\(property) }"
@@ -493,6 +495,7 @@ public struct TokenEmitter {
             case let .dimension(points): return "\(swiftNumber(points)) pt"
             case let .fraction(fraction): return "\(swiftNumber(fraction * 100))% of the component's size"
             case let .em(em): return "\(swiftNumber(em)) em"
+            case let .duration(seconds): return "\(swiftNumber(seconds * 1000)) ms"
             case let .densityReference(metric): return "the active density's `\(metric)`"
             case let .elevationReference(path): return "`\(path.joined(separator: "."))`"
             default: return "\(value)"

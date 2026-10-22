@@ -140,6 +140,15 @@ struct QeetrixPasswordField: View {
                 .padding(.leading, QeetrixWebScale.spacing(2.5))  // px-2.5
                 .padding(.trailing, showsToggle ? QeetrixWebScale.spacing(1) : QeetrixWebScale.spacing(2.5))
                 .padding(.vertical, QeetrixWebScale.spacing(1))  // py-1
+                // A 44 pt target: a tap on the padding, or just outside a short field, focuses it — as for a
+                // text field. The reveal button keeps its own.
+                .contentShape(Rectangle())
+                .qeetrixHitArea()
+                .simultaneousGesture(
+                    TapGesture().onEnded {
+                        if isEnabled { isFocused = true }
+                    }
+                )
             if showsToggle {
                 toggle(height: height)
                     .padding(.trailing, QeetrixWebScale.spacing(1))  // inset-e-1
@@ -165,7 +174,8 @@ struct QeetrixPasswordField: View {
     }
 
     /// `fieldAction`: a square of the field height less 8 pt (at least 24 pt), inside the field's corner,
-    /// a 16 pt eye in the tertiary colour, a 44 pt target.
+    /// a 16 pt eye in the tertiary colour, a 44 pt target. The square grows with the eye at larger text
+    /// sizes.
     private func toggle(height: CGFloat) -> some View {
         let side = max(QeetrixWebScale.spacing(6), height - QeetrixWebScale.spacing(2))
         return Button {
@@ -177,7 +187,7 @@ struct QeetrixPasswordField: View {
             }
         } label: {
             QeetrixIcon(isRevealed ? .eyeOff : .eye, size: QeetrixIconSize(QeetrixWebScale.spacing(4)))
-                .frame(width: side, height: side)
+                .qeetrixIconSquare(side, icon: QeetrixWebScale.spacing(4))
                 .contentShape(Rectangle())
         }
         .buttonStyle(QeetrixFieldActionStyle(cornerRadius: max(0, QeetrixInputTokens.corner - 2)))

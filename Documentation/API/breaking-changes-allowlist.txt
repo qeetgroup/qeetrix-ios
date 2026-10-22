@@ -1,0 +1,59 @@
+API breakage: enum QeetrixIconName has been changed to a struct
+API breakage: enumelement QeetrixIconName.bell has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.bell is now static
+API breakage: enumelement QeetrixIconName.check has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.check is now static
+API breakage: enumelement QeetrixIconName.chevronDown has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.chevronDown is now static
+API breakage: enumelement QeetrixIconName.circleAlert has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.circleAlert is now static
+API breakage: enumelement QeetrixIconName.circleCheck has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.circleCheck is now static
+API breakage: enumelement QeetrixIconName.circleX has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.circleX is now static
+API breakage: enumelement QeetrixIconName.copy has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.copy is now static
+API breakage: enumelement QeetrixIconName.database has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.database is now static
+API breakage: enumelement QeetrixIconName.ellipsis has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.ellipsis is now static
+API breakage: enumelement QeetrixIconName.eye has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.eye is now static
+API breakage: enumelement QeetrixIconName.eyeOff has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.eyeOff is now static
+API breakage: enumelement QeetrixIconName.house has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.house is now static
+API breakage: enumelement QeetrixIconName.inbox has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.inbox is now static
+API breakage: enumelement QeetrixIconName.info has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.info is now static
+API breakage: enumelement QeetrixIconName.loaderCircle has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.loaderCircle is now static
+API breakage: enumelement QeetrixIconName.lock has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.lock is now static
+API breakage: enumelement QeetrixIconName.minus has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.minus is now static
+API breakage: enumelement QeetrixIconName.navigation has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.navigation is now static
+API breakage: enumelement QeetrixIconName.pencil has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.pencil is now static
+API breakage: enumelement QeetrixIconName.plus has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.plus is now static
+API breakage: enumelement QeetrixIconName.search has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.search is now static
+API breakage: enumelement QeetrixIconName.send has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.send is now static
+API breakage: enumelement QeetrixIconName.server has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.server is now static
+API breakage: enumelement QeetrixIconName.settings has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.settings is now static
+API breakage: enumelement QeetrixIconName.share2 has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.share2 is now static
+API breakage: enumelement QeetrixIconName.trash has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.trash is now static
+API breakage: enumelement QeetrixIconName.triangleAlert has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.triangleAlert is now static
+API breakage: enumelement QeetrixIconName.userRound has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.userRound is now static
+API breakage: enumelement QeetrixIconName.x has declared type change from (Qeetrix.QeetrixIconName.Type) -> Qeetrix.QeetrixIconName to Qeetrix.QeetrixIconName
+API breakage: enumelement QeetrixIconName.x is now static

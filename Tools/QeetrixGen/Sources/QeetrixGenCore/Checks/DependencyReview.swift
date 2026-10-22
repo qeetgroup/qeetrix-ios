@@ -15,6 +15,7 @@ public struct DependencyReview {
         let licence: String
         let licenceFile: String
         let licenceText: String
+        let reason: String?
     }
 
     struct Allowlist: Decodable {

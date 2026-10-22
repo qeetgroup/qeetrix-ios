@@ -32,4 +32,18 @@ enum QeetrixStrings {
     static var close: Text { Text("qeetrix.overlay.close", bundle: .module) }
     /// "Cancel".
     static var cancel: Text { Text("qeetrix.dialog.cancel", bundle: .module) }
+    /// "Remove".
+    static var remove: Text { Text("qeetrix.chip.remove", bundle: .module) }
+    /// "Something went wrong while loading this data.".
+    static var dataStateError: Text { Text("qeetrix.data-state.error", bundle: .module) }
+    /// "Something went wrong while loading this data.", for an announcement.
+    static var dataStateErrorString: String { String(localized: "qeetrix.data-state.error", bundle: .module) }
+    /// "Try again".
+    static var retry: Text { Text("qeetrix.data-state.retry", bundle: .module) }
+    /// "Loading", for an announcement or a label that takes a `String`.
+    static var loadingString: String { String(localized: "qeetrix.spinner.label", bundle: .module) }
+    /// "Expanded".
+    static var expanded: Text { Text("qeetrix.accordion.expanded", bundle: .module) }
+    /// "Collapsed".
+    static var collapsed: Text { Text("qeetrix.accordion.collapsed", bundle: .module) }
 }

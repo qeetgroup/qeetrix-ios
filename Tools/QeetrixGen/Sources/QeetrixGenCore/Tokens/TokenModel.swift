@@ -78,7 +78,7 @@ public struct TokenModel: Sendable {
 
     /// A component token keeps a reference when upstream writes one — `var(--qx-color-…)`, an
     /// elevation, a density metric — so the component follows the semantic token (and any future
-    /// theme of it). Anything else is resolved to a concrete colour, length or fraction.
+    /// theme of it). Anything else is resolved to a concrete colour, length, fraction or duration.
     static func componentValue(
         _ raw: String, resolver: CSSVariableResolver, pathsByCSSName: [String: [String]], context: String
     ) throws -> TokenValue {
@@ -99,6 +99,8 @@ public struct TokenModel: Sendable {
             return .fraction(fraction / 100)
         case .number(_, "em"):
             return .em(try CSSValues.em(components, context: context))
+        case .number(_, "ms"), .number(_, "s"):
+            return .duration(try CSSValues.duration(components, context: context))
         case .function("oklch", _), .function("rgb", _), .function("rgba", _), .function("color-mix", _), .ident("transparent"):
             return .color(ColorMath.encode(try ColorValues.color(components, context: context)))
         default:

@@ -26,6 +26,33 @@
     "aliases": []
   },
   {
+    "id": "calendar",
+    "name": "calendar",
+    "componentName": "CalendarIcon",
+    "category": "time",
+    "categories": [
+      "time"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "date",
+      "month",
+      "year",
+      "event",
+      "birthday",
+      "birthdate"
+    ],
+    "aliases": []
+  },
+  {
     "id": "check",
     "name": "check",
     "componentName": "CheckIcon",
@@ -167,6 +194,30 @@
     "aliases": [
       "x-circle"
     ]
+  },
+  {
+    "id": "clock",
+    "name": "clock",
+    "componentName": "ClockIcon",
+    "category": "time",
+    "categories": [
+      "time"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "time",
+      "watch",
+      "alarm"
+    ],
+    "aliases": []
   },
   {
     "id": "copy",
@@ -335,6 +386,54 @@
     "aliases": []
   },
   {
+    "id": "file-text",
+    "name": "file-text",
+    "componentName": "FileTextIcon",
+    "category": "files",
+    "categories": [
+      "files",
+      "text"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "data",
+      "txt",
+      "pdf",
+      "document"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "folder",
+    "name": "folder",
+    "componentName": "FolderIcon",
+    "category": "files",
+    "categories": [
+      "files"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "directory"
+    ],
+    "aliases": []
+  },
+  {
     "id": "house",
     "name": "house",
     "componentName": "HouseIcon",
@@ -476,6 +575,33 @@
       "password",
       "secure",
       "admin"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "mail",
+    "name": "mail",
+    "componentName": "MailIcon",
+    "category": "text",
+    "categories": [
+      "text",
+      "account",
+      "mail"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "email",
+      "message",
+      "letter",
+      "unread"
     ],
     "aliases": []
   },
@@ -624,6 +750,34 @@
     "aliases": []
   },
   {
+    "id": "refresh-cw",
+    "name": "refresh-cw",
+    "componentName": "RefreshCwIcon",
+    "category": "arrows",
+    "categories": [
+      "arrows"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "rotate",
+      "reload",
+      "rerun",
+      "synchronise",
+      "synchronize",
+      "arrows",
+      "circular",
+      "cycle"
+    ],
+    "aliases": []
+  },
+  {
     "id": "search",
     "name": "search",
     "componentName": "SearchIcon",
@@ -646,6 +800,42 @@
       "scan",
       "magnifier",
       "magnifying glass",
+      "lens",
+      "locate",
+      "explore",
+      "discover",
+      "enlarge",
+      "zoom"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "search-x",
+    "name": "search-x",
+    "componentName": "SearchXIcon",
+    "category": "text",
+    "categories": [
+      "text",
+      "social"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "find",
+      "scan",
+      "magnifier",
+      "magnifying glass",
+      "stop",
+      "clear",
+      "cancel",
+      "abort",
       "lens",
       "locate",
       "explore",
@@ -850,6 +1040,29 @@
     "aliases": [
       "user-2"
     ]
+  },
+  {
+    "id": "users",
+    "name": "users",
+    "componentName": "UsersIcon",
+    "category": "account",
+    "categories": [
+      "account"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "group",
+      "people"
+    ],
+    "aliases": []
   },
   {
     "id": "x",

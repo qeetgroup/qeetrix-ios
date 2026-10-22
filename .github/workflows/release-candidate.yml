@@ -1,0 +1,49 @@
+name: Release candidate verification
+
+# Verifies a release candidate and keeps the evidence. It is run by hand, for a version, on the commit to
+# be released; it publishes nothing. Tagging and announcing a release are the owner's steps, after
+# approval, in Documentation/Releases/RELEASE_CHECKLIST.md: this workflow has no step that writes to the
+# repository, and no credentials.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Candidate version, MAJOR.MINOR.PATCH[-rc.N], for example 0.1.0-rc.1"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-candidate-${{ inputs.version }}
+  cancel-in-progress: false
+
+env:
+  XCODE_VERSION: "27.1"
+
+jobs:
+  verify:
+    name: Verify ${{ inputs.version }}
+    runs-on: macos-26
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0, pinned by commit
+        with:
+          fetch-depth: 0  # tags and main, for the source-compatibility baseline
+      - name: Select Xcode
+        run: sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
+      - name: Every release gate
+        env:
+          VERSION: ${{ inputs.version }}
+        # Snapshot baselines are local (ADR 0013), so that gate reports NOT RUN here: a candidate's
+        # snapshots are compared on the releasing machine, and that evidence is attached to the approval.
+        run: Scripts/release-check.sh "$VERSION"
+      - name: Keep the evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2, pinned by commit
+        with:
+          name: release-evidence-${{ inputs.version }}
+          path: .build/release-evidence/${{ inputs.version }}/
+          if-no-files-found: error
+          retention-days: 90

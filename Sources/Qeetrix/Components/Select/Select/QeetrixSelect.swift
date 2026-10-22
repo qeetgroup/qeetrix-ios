@@ -97,6 +97,7 @@ struct QeetrixSelectTrigger<Value: Hashable>: View {
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.qeetrixDensity) private var density
     @Environment(\.qeetrixFieldContext) private var context
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         let selected = options.first { $0.value == selection.wrappedValue }
@@ -122,7 +123,9 @@ struct QeetrixSelectTrigger<Value: Hashable>: View {
             HStack(spacing: QeetrixWebScale.spacing(1.5)) {  // gap-1.5
                 (selected?.title ?? placeholder ?? Text(verbatim: ""))
                     .foregroundStyle(selected == nil ? QeetrixInputTokens.placeholder : QeetrixInputTokens.foreground)
-                    .lineLimit(1)
+                    // line-clamp-1, except at the accessibility sizes, where one line would cut the value
+                    // short: there it wraps and the trigger grows.
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 QeetrixIcon(.chevronDown, size: QeetrixIconSize(QeetrixWebScale.spacing(4)))  // size-4
                     .foregroundStyle(QeetrixColor.textTertiary)  // text-muted-foreground

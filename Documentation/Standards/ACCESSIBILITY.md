@@ -23,7 +23,8 @@ settings in mind.
 
 | Need | How | Automated check |
 |:--|:--|:--|
-| 44 pt touch targets | `qeetrixHitArea()` extends the hit area without moving layout; a switch row is at least 44 pt tall | `ComponentFoundationTests`; UI tests tap outside a button's and a field's drawn frame |
+| 44 pt touch targets | `qeetrixHitArea()` extends the hit area without moving layout; a switch row is at least 44 pt tall; a text field, password field or textarea is focused from anywhere in its box | `ComponentFoundationTests`; UI tests tap outside a button's and a field's drawn frame, the password field's padding and the textarea's box |
+| Apple's audit | Contrast, hit regions, labels, traits, element detection and Dynamic Type on every showcase page, in light and dark; text clipping and hit regions at the largest accessibility size | `AccessibilityAuditUITests`, with each exclusion named and explained (`Documentation/Quality/ACCESSIBILITY_REPORT.md`) |
 | Native semantics | Native `Button`, `Toggle`, `TextField`, `ProgressView`; custom styles keep them through `accessibilityRepresentation` | UI tests find each as a button, switch, text field or progress indicator |
 | Names | Icon-only buttons require a label; avatars read the name and the badge's status; spinners default to "Loading" | UI tests |
 | State | Disabled from `disabled(_:)`; a busy button reports "Loading"; a selected card button is selected; a required field says "Required" | UI tests |
@@ -37,6 +38,11 @@ settings in mind.
 | Tabs | The strip has the tab-bar trait, each tab the selected trait; disabled tabs are dimmed and skipped; a wide strip scrolls instead of truncating | UI tests: tab bar, selection, disabled, scrolling |
 | Overlays | Alerts, confirmation dialogs, sheets, popovers and menus are the system presentations, modal to VoiceOver; destructive actions carry the destructive role and always come with a cancel; sheet titles are headings and Close is labelled | UI tests: roles, cancel, guarded dismissal, Close, landscape popover |
 | Toasts | Announced once (errors at high priority), not again for a repeat; a toast with an action stays while VoiceOver runs; VoiceOver focus or a pointer holds a toast past its time | Unit tests of the lifecycle; UI tests: replace, close, action, timeout |
+| Rows | A list item's title, description and metadata are one element, in that order; a wrapped row is one button with the selected trait; trailing controls stay reachable; the trailing view moves below the text at the accessibility sizes | UI tests: labels, selection, reflow at an accessibility size |
+| Details and histories | A description item reads term and value together; a timeline event reads as one element with its marker's meaning as its value | UI tests |
+| Expandable content | An accordion header is one button with the heading trait and "Expanded" or "Collapsed" as its value | UI tests: values, one-at-a-time, nested |
+| Content states | Skeletons are hidden; the data state's loading branch is one "Loading" element; a failure is announced once, at high priority; an empty state's title is a heading | UI tests: one loading element, no placeholder images, retry |
+| Filters | A chip is a button with the selected trait and a check mark; a group is named; a remove button names what it removes | UI tests |
 
 ## Rules for components
 
@@ -45,12 +51,19 @@ settings in mind.
 - Text uses a typography role or a component text style (`QeetrixTypeSpec`), never a fixed `Font`, so
   Dynamic Type and Bold Text apply. Layouts are tested at the accessibility sizes and reflow (stack,
   wrap) rather than truncate or overflow. The showcase uses `ViewThatFits` and a wrapping layout.
+- An icon scales with Dynamic Type, so whatever holds it must too. A control's square around an icon
+  grows with it (`qeetrixIconSquare(_:icon:)`); a mark inside a box that keeps its web size (a
+  checkbox, an avatar) is drawn at a fixed size (`relativeTo: nil`). A single-line value wraps at the
+  accessibility sizes rather than truncate.
 - Colour never carries meaning alone. Status pairs a colour with an icon or text.
 - Motion goes through `qeetrixAnimation`. Nothing moves when Reduce Motion is on unless the movement
   carries meaning, and then it has a reduced alternative.
 - Decorative images and icons are hidden from VoiceOver. Meaningful ones are labelled by what they
   mean ("Locked"), not what they show ("padlock").
-- Use leading/trailing, never left/right. Icons with a direction come from the mirrored set.
+- Use leading/trailing, never left/right. Icons with a direction come from the mirrored set. Don't place
+  views at a measured x with `position`: in right-to-left layout an anchor's x and `position` disagree.
+- A new component's showcase page joins `AccessibilityAuditUITests`. A new issue is fixed; an exclusion
+  is only for an audit that misreads the component, and says why.
 
 ## Verified on a device — still to do
 
@@ -74,5 +87,8 @@ component is called accessible:
   toast — a UI test can't move VoiceOver focus.
 - VoiceOver on `QeetrixTabs`: "tab, n of m" in context, and the rotor.
 - Full Keyboard Access in alerts, confirmation dialogs, sheets and menus, including Escape.
+- VoiceOver hearing a data state's failure announcement and finding one "Loading" element, and the
+  accordion header's expanded state, on a device.
+- VoiceOver rotor headings across a list's section headers.
 - Sheets and popovers on a real iPad, where they are a form sheet and an arrowed popover: the iPad
   simulator isn't installed here, so regular width was checked only through an iPhone in landscape.

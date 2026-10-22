@@ -155,8 +155,10 @@ struct QeetrixCheckboxBox: View {
             shape.fill(mark == .unchecked ? QeetrixInputTokens.background : QeetrixComponentColor(.actionPrimary))
             shape.strokeBorder(border, lineWidth: QeetrixStroke.hairline)
             if mark != .unchecked {
+                // A fixed size, as the box's: a mark that scaled with Dynamic Type would spill out of it.
                 QeetrixIcon(
-                    mark == .mixed ? .minus : .check, size: QeetrixIconSize(QeetrixWebScale.spacing(3)), stroke: QeetrixIconStroke(3)
+                    mark == .mixed ? .minus : .check, size: QeetrixIconSize(QeetrixWebScale.spacing(3)), stroke: QeetrixIconStroke(3),
+                    relativeTo: nil
                 )
                 .foregroundStyle(QeetrixColor.textOnBrand)  // text-primary-foreground
             }

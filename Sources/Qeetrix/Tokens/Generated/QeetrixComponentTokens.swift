@@ -3,6 +3,29 @@
 
 import CoreGraphics
 
+/// `component.accordion.*` — the accordion component's own tokens.
+enum QeetrixAccordionTokens {
+    /// `component.accordion.trigger-padding-block` · `--qx-component-accordion-trigger-padding-block`
+    ///
+    /// 16 pt
+    static let triggerPaddingBlock: CGFloat = 16
+
+    /// `component.accordion.divider` · `--qx-component-accordion-divider`
+    ///
+    /// `color.border.default`
+    static let divider = QeetrixComponentColor(.borderDefault)
+
+    /// `component.accordion.focus-bleed` · `--qx-component-accordion-focus-bleed`
+    ///
+    /// 4 pt
+    static let focusBleed: CGFloat = 4
+
+    /// `component.accordion.duration` · `--qx-component-accordion-duration`
+    ///
+    /// 200 ms
+    static let duration = QeetrixDuration(seconds: 0.2)
+}
+
 /// `component.avatar.*` — the avatar component's own tokens.
 enum QeetrixAvatarTokens {
     /// `component.avatar.fallback.background` · `--qx-component-avatar-fallback-background`
@@ -337,6 +360,14 @@ enum QeetrixProgressTokens {
     static let indicator = QeetrixComponentColor(.borderBrand)
 }
 
+/// `component.skeleton.*` — the skeleton component's own tokens.
+enum QeetrixSkeletonTokens {
+    /// `component.skeleton.background` · `--qx-component-skeleton-background`
+    ///
+    /// Light #0E0D0D1A · Dark #F3F1EF1A
+    static let background = QeetrixComponentColor(light: .rgba(QeetrixRGBA(.sRGB, 0.053134, 0.051443, 0.050159, 0.1)), dark: .rgba(QeetrixRGBA(.sRGB, 0.95138, 0.943436, 0.937412, 0.1)))
+}
+
 /// `component.switch.*` — the switch component's own tokens.
 enum QeetrixSwitchTokens {
     /// `component.switch.thumb-size` · `--qx-component-switch-thumb-size`
@@ -368,6 +399,24 @@ enum QeetrixSwitchTokens {
     ///
     /// Light `color.surface.default` · Dark `color.surface.inverse`
     static let thumb = QeetrixComponentColor(light: .semantic(.surfaceDefault), dark: .semantic(.surfaceInverse))
+}
+
+/// `component.timeline.*` — the timeline component's own tokens.
+enum QeetrixTimelineTokens {
+    /// `component.timeline.gap` · `--qx-component-timeline-gap`
+    ///
+    /// 24 pt
+    static let gap: CGFloat = 24
+
+    /// `component.timeline.gap-minor` · `--qx-component-timeline-gap-minor`
+    ///
+    /// 12 pt
+    static let gapMinor: CGFloat = 12
+
+    /// `component.timeline.marker-size` · `--qx-component-timeline-marker-size`
+    ///
+    /// 24 pt
+    static let markerSize: CGFloat = 24
 }
 
 /// `component.typography.*` — the typography component's own tokens.

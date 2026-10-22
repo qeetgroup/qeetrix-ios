@@ -50,11 +50,20 @@ struct ComponentTokenTests {
         #expect(metric == "control-height")
     }
 
+    @Test("A component duration becomes a QeetrixDuration")
+    func duration() throws {
+        let model = try TokenModel(source: try source(), adoptedComponents: ["accordion"])
+        let token = try #require(model.included.first { $0.path == ["component", "accordion", "duration"] })
+        #expect(token.values["light"] == .duration(0.2))
+        #expect(token.values["dark"] == .duration(0.2))
+    }
+
     @Test("Pins naming a group upstream does not define stop the generator")
     func unknownGroup() throws {
         let fixture = FileManager.default.temporaryDirectory.appendingPathComponent("qeetrix-pins-\(UUID().uuidString)")
         defer { try? FileManager.default.removeItem(at: fixture) }
-        for path in ["Upstream", "Sources/Qeetrix/Resources/Fonts"] {
+        // Every locked path: the snapshot, and the fonts and notices it pins into the library's bundle.
+        for path in ["Upstream", "Sources/Qeetrix/Resources/Fonts", "Sources/Qeetrix/Resources/Licenses"] {
             let target = fixture.appendingPathComponent(path)
             try FileManager.default.createDirectory(at: target.deletingLastPathComponent(), withIntermediateDirectories: true)
             try FileManager.default.copyItem(at: SnapshotTests.root.appendingPathComponent(path), to: target)

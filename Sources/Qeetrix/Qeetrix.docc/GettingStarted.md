@@ -5,13 +5,14 @@ Add Qeetrix to an app, set its theme, and draw your first view with Qeetrix foun
 ## Add the package
 
 In Xcode, choose **File › Add Package Dependencies…**, enter the repository URL, and add the `Qeetrix`
-library to your app target. In a package manifest:
+library to your app target. In a package manifest, take a version and its patches:
 
 ```swift
-.package(url: "https://github.com/qeetgroup/qeetrix-ios.git", branch: "main")
+.package(url: "https://github.com/qeetgroup/qeetrix-ios.git", .upToNextMinor(from: "0.1.0"))
 ```
 
-Qeetrix requires iOS 17 and has no dependencies of its own.
+Qeetrix requires iOS 17 and has no dependencies of its own. <doc:Installing> covers versions,
+requirements and access to the private repository.
 
 ## Set the theme once, at the root
 
