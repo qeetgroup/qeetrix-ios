@@ -1,6 +1,9 @@
 # 0015 — Data display and content states: native containers, the app's data
 
-**Status:** Accepted (Phase 5, 2026-10-19). Builds on ADRs 0010, 0011 and 0014.
+**Status:** Accepted (Phase 5, 2026-10-19). Builds on ADRs 0010, 0011 and 0014. Amended by ADR 0018
+(2026-11-02): the components are re-specified from `@qeetrix/react` 0.4.0 by the iOS component tickets,
+decision 6 gains `QeetrixSearchField` (QTRX-96), and decision 9's helpers are gone with the Phase 5
+implementations.
 
 ## Context
 

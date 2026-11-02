@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// The Qeetrix theme a view is drawn in: which token set applies — the upstream `light` or `dark`
-/// theme — and the contrast setting it was resolved under.
+/// The Qeetrix theme a view is drawn in: which colour scheme of `@qeetrix/tokens` applies — `light` or
+/// `dark` — and the contrast setting it was resolved under.
 ///
 /// A theme is derived from the SwiftUI environment, never stored globally, so it follows the view
 /// hierarchy, nested overrides and live appearance changes. Read it with
@@ -33,8 +33,8 @@ public struct QeetrixTheme: Hashable, Sendable {
         color.rgba(for: colorScheme).resolved
     }
 
-    /// An elevation's shadow layers in this theme.
-    public func layers(_ elevation: QeetrixElevation) -> [QeetrixShadowLayer] {
-        elevation.layers(for: colorScheme)
+    /// A shadow's layers in this theme.
+    public func layers(_ shadow: QeetrixShadow) -> [QeetrixShadowLayer] {
+        shadow.layers(for: colorScheme)
     }
 }

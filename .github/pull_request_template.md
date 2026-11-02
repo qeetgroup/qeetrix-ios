@@ -1,6 +1,6 @@
 ## What and why
 
-<!-- What changes, and the reason. Link the issue or the upstream qeetrix-ui / qeetrix-icons change. -->
+<!-- What changes, and the reason. Link the issue or the upstream @qeetrix/tokens, @qeetrix/icons or @qeetrix/react release. -->
 
 ## Checklist
 

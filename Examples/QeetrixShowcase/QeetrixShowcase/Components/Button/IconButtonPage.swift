@@ -7,7 +7,7 @@ struct IconButtonPage: View {
     var body: some View {
         ComponentPage(
             title: "Icon button",
-            summary: "A square button holding one icon. Its label is what VoiceOver reads."
+            summary: "A square button holding one sharp icon. Its label is what VoiceOver reads, and a tooltip with a pointer."
         ) {
             DemoSection("Variants") {
                 FlowLayout {
@@ -16,20 +16,27 @@ struct IconButtonPage: View {
                     }
                 }
             }
+            DemoSection("Tones") {
+                FlowLayout {
+                    ForEach(QeetrixButtonTone.allCases, id: \.self) { tone in
+                        QeetrixIconButton(.ellipsis, label: "More, \(tone.rawValue)", tone: tone) {}
+                    }
+                }
+            }
             DemoSection("Sizes") {
                 FlowLayout {
-                    ForEach(QeetrixButtonSize.allCases, id: \.self) { size in
-                        QeetrixIconButton(.search, label: "Search, \(size.rawValue)", variant: .outline, size: size) {}
+                    ForEach(QeetrixControlSize.allCases, id: \.self) { size in
+                        QeetrixIconButton(.search, label: "Search, \(size.rawValue)", tone: .neutral, size: size) {}
                     }
                 }
             }
             DemoSection("Action, loading and disabled") {
                 FlowLayout {
-                    QeetrixIconButton(.x, label: "Close") { dismissals += 1 }
-                    QeetrixIconButton(.send, label: "Send", variant: .default, isLoading: true) {}
-                    QeetrixIconButton(.lock, label: "Lock", variant: .outline) {}.disabled(true)
+                    QeetrixIconButton(.x, label: "Close", tone: .neutral) { dismissals += 1 }
+                    QeetrixIconButton(.send, label: "Send", variant: .solid, isLoading: true) {}
+                    QeetrixIconButton(.lock, label: "Lock", variant: .soft) {}.disabled(true)
                 }
-                QeetrixText("Closed \(dismissals) times", variant: .muted)
+                QeetrixText("Closed \(dismissals) times", size: .sm, tone: .subtle)
                     .accessibilityIdentifier("close-count")
             }
         }

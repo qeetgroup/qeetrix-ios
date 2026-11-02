@@ -1,0 +1,18 @@
+@layer qx.base, qx.components, qx.state;
+@import "../base.css";
+@import "../state.css";
+
+@layer qx.components {
+  .qx-qr-code {
+    --lightningcss-light: initial;
+    --lightningcss-dark: ;
+    color-scheme: light;
+    border-radius: var(--qx-radius-control);
+    background: var(--qx-color-surface-default);
+    box-shadow: inset 0 0 0 var(--qx-border-width-default) var(--qx-color-border-subtle);
+    fill: var(--qx-color-text-default);
+    forced-color-adjust: none;
+    flex: none;
+    display: block;
+  }
+}

@@ -1,0 +1,160 @@
+@layer qx.base, qx.components, qx.state;
+@import "./base.css";
+@import "./state.css";
+@import "./button.css";
+
+@layer qx.components {
+  .qx-dialog-backdrop {
+    z-index: var(--qx-z-overlay);
+    background: var(--qx-color-overlay-scrim);
+    transition-property: opacity;
+    transition-duration: var(--qx-motion-duration-slow);
+    transition-timing-function: var(--qx-motion-easing-enter);
+    position: fixed;
+    inset: 0;
+  }
+  
+  .qx-dialog-backdrop[data-starting-style], .qx-dialog-backdrop[data-ending-style] {
+    opacity: 0;
+  }
+  
+  .qx-dialog-backdrop[data-ending-style] {
+    transition-duration: var(--qx-motion-duration-normal);
+    transition-timing-function: var(--qx-motion-easing-exit);
+  }
+  
+  .qx-dialog-viewport {
+    z-index: var(--qx-z-modal);
+    padding: var(--qx-space-inset-xl);
+    place-items: center;
+    display: grid;
+    position: fixed;
+    inset: 0;
+  }
+  
+  .qx-dialog-viewport[data-size="fullscreen"] {
+    padding: 0;
+  }
+  
+  .qx-dialog {
+    border-block-start: var(--qx-border-width-accent) solid var(--qx-color-border-brand);
+    border-radius: var(--qx-radius-modal);
+    background: var(--qx-color-surface-overlay);
+    max-block-size: 85vh;
+    inline-size: min(100%, 560px);
+    box-shadow: var(--qx-shadow-modal);
+    color: var(--qx-color-text-default);
+    font: var(--qx-typography-body-md);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    transition-property: opacity, translate;
+    transition-duration: var(--qx-motion-duration-slow);
+    transition-timing-function: var(--qx-motion-easing-enter);
+    outline: 0;
+    flex-direction: column;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .qx-dialog[data-size="sm"] {
+    inline-size: min(100%, 400px);
+  }
+  
+  .qx-dialog[data-size="lg"] {
+    inline-size: min(100%, 800px);
+  }
+  
+  .qx-dialog[data-size="xl"] {
+    inline-size: min(100%, 1120px);
+  }
+  
+  .qx-dialog[data-size="fullscreen"] {
+    border-radius: var(--qx-radius-none);
+    block-size: 100%;
+    max-block-size: none;
+    inline-size: 100%;
+  }
+  
+  .qx-dialog[data-intent="danger"] {
+    border-block-start-color: var(--qx-color-border-danger);
+  }
+  
+  .qx-dialog[data-intent="warning"] {
+    border-block-start-color: var(--qx-color-icon-warning);
+  }
+  
+  .qx-dialog[data-starting-style], .qx-dialog[data-ending-style] {
+    opacity: 0;
+    translate: 0 8px;
+  }
+  
+  .qx-dialog[data-ending-style] {
+    transition-duration: var(--qx-motion-duration-normal);
+    transition-timing-function: var(--qx-motion-easing-exit);
+  }
+  
+  .qx-dialog-header {
+    gap: var(--qx-space-gap-xs);
+    padding: var(--qx-space-inset-xl);
+    flex-direction: column;
+    display: flex;
+  }
+  
+  .qx-dialog[data-dismissible] .qx-dialog-header {
+    padding-inline-end: 56px;
+  }
+  
+  .qx-dialog-title {
+    font: var(--qx-typography-title-md);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-heading);
+    margin: 0;
+  }
+  
+  .qx-dialog-description {
+    color: var(--qx-color-text-subtle);
+    margin: 0;
+  }
+  
+  .qx-dialog-body {
+    min-block-size: 0;
+    padding: 0 var(--qx-space-inset-xl) var(--qx-space-inset-xl);
+    outline: 0;
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  .qx-dialog-body:focus-visible {
+    outline: var(--qx-focus-ring-width) solid var(--qx-color-border-focus);
+    outline-offset: calc(-1 * var(--qx-focus-ring-width));
+  }
+  
+  .qx-dialog-footer {
+    justify-content: flex-end;
+    gap: var(--qx-space-gap-sm);
+    padding: 0 var(--qx-space-inset-xl) var(--qx-space-inset-xl);
+    flex-wrap: wrap;
+    display: flex;
+  }
+  
+  .qx-dialog-footer-start {
+    min-inline-size: 0;
+    color: var(--qx-color-text-subtle);
+    font: var(--qx-typography-body-sm);
+    align-items: center;
+    margin-inline-end: auto;
+    display: flex;
+  }
+  
+  .qx-dialog-close {
+    position: absolute;
+    inset-block-start: 12px;
+    inset-inline-end: 12px;
+  }
+  
+  @media (forced-colors: active) {
+    .qx-dialog {
+      border: var(--qx-border-width-default) solid CanvasText;
+      border-block-start-width: var(--qx-border-width-accent);
+    }
+  }
+}

@@ -1,0 +1,164 @@
+@layer qx.base, qx.components, qx.state;
+@import "../base.css";
+@import "../state.css";
+@import "../button.css";
+@import "../progress.css";
+
+@layer qx.components {
+  .qx-file-upload {
+    gap: var(--qx-space-gap-sm);
+    inline-size: 100%;
+    min-inline-size: 0;
+    display: grid;
+  }
+  
+  .qx-file-upload-zone {
+    justify-items: center;
+    gap: var(--qx-space-gap-xs);
+    padding-block: var(--qx-space-inset-xl);
+    padding-inline: var(--qx-space-inset-md);
+    border: var(--qx-border-width-default) dashed var(--qx-color-border-strong);
+    border-radius: var(--qx-radius-control);
+    background: var(--qx-color-bg-neutral-subtle);
+    color: var(--qx-color-text-default);
+    font: var(--qx-typography-body-md);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    text-align: center;
+    cursor: pointer;
+    transition-property: background-color, border-color;
+    transition-duration: var(--qx-motion-duration-fast);
+    transition-timing-function: var(--qx-motion-easing-standard);
+    display: grid;
+    position: relative;
+  }
+  
+  .qx-file-upload-zone:hover {
+    background: var(--qx-color-bg-neutral-subtle-hover);
+  }
+  
+  .qx-file-upload-zone[data-dragging] {
+    border-color: var(--qx-color-border-brand);
+    background: var(--qx-color-bg-selected);
+  }
+  
+  .qx-file-upload-zone:has(.qx-file-upload-input:focus-visible) {
+    outline: var(--qx-focus-ring-width) solid var(--qx-color-border-focus);
+    outline-offset: var(--qx-focus-ring-width);
+  }
+  
+  .qx-file-upload-zone:has(.qx-file-upload-input[data-invalid]) {
+    border-color: var(--qx-color-border-danger);
+  }
+  
+  .qx-file-upload-zone:has(.qx-file-upload-input:disabled) {
+    border-color: var(--qx-color-border-disabled);
+    background: var(--qx-color-bg-disabled);
+    color: var(--qx-color-text-disabled);
+    cursor: not-allowed;
+  }
+  
+  .qx-file-upload-input {
+    clip-path: inset(50%);
+    white-space: nowrap;
+    block-size: 1px;
+    inline-size: 1px;
+    position: absolute;
+    overflow: hidden;
+  }
+  
+  .qx-file-upload-icon {
+    color: var(--qx-color-icon-subtle);
+  }
+  
+  [data-dragging] > .qx-file-upload-icon {
+    color: var(--qx-color-icon-brand);
+  }
+  
+  .qx-file-upload-browse {
+    color: var(--qx-color-text-link);
+    text-underline-offset: .2em;
+    text-decoration-line: underline;
+  }
+  
+  [data-disabled] .qx-file-upload-browse {
+    color: inherit;
+  }
+  
+  .qx-file-upload-hint {
+    font: var(--qx-typography-body-sm);
+    color: var(--qx-color-text-subtle);
+  }
+  
+  .qx-file-upload-list {
+    border: var(--qx-border-width-default) solid var(--qx-color-border-subtle);
+    border-radius: var(--qx-radius-control);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  
+  .qx-file-upload-item {
+    align-items: center;
+    gap: var(--qx-space-gap-sm);
+    min-block-size: var(--qx-size-row);
+    padding-block: var(--qx-space-gap-xs);
+    padding-inline: var(--qx-space-inset-sm) var(--qx-space-gap-xs);
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    display: grid;
+  }
+  
+  .qx-file-upload-item + .qx-file-upload-item {
+    border-block-start: var(--qx-border-width-default) solid var(--qx-color-border-subtle);
+  }
+  
+  .qx-file-upload-file-icon {
+    color: var(--qx-color-icon-subtle);
+  }
+  
+  .qx-file-upload-file {
+    min-inline-size: 0;
+    display: grid;
+  }
+  
+  .qx-file-upload-name {
+    color: var(--qx-color-text-default);
+    font: var(--qx-typography-label-md);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  
+  .qx-file-upload-meta {
+    color: var(--qx-color-text-subtle);
+    font: var(--qx-typography-body-sm);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+  }
+  
+  .qx-file-upload-status {
+    align-items: center;
+    gap: var(--qx-space-gap-xs);
+    font: var(--qx-typography-label-sm);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    white-space: nowrap;
+    display: inline-flex;
+  }
+  
+  [data-status="done"] > .qx-file-upload-status {
+    color: var(--qx-color-text-success);
+  }
+  
+  [data-status="error"] > .qx-file-upload-status {
+    color: var(--qx-color-text-danger);
+  }
+  
+  .qx-file-upload-progress {
+    inline-size: 7.5rem;
+  }
+  
+  @media (forced-colors: active) {
+    .qx-file-upload-zone[data-dragging] {
+      border-color: highlight;
+    }
+  }
+}

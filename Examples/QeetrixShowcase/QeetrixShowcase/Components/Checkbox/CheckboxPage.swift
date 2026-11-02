@@ -14,23 +14,27 @@ struct CheckboxPage: View {
     var body: some View {
         ComponentPage(
             title: "Checkbox",
-            summary: "On, off or mixed. The glyph carries the state; the whole row is the target."
+            summary:
+                "A 16 pt square: Ember with a white tick when on, a dash when mixed. The label follows it and the whole row is the target."
         ) {
             DemoSection("Single") {
                 QeetrixCheckbox("Accept the terms", isOn: $terms, description: Text("You can read them at any time."))
                 QeetrixCheckbox("Managed by your organisation", isOn: .constant(true)).disabled(true)
+                QeetrixCheckbox("Not available on your plan", isOn: .constant(false)).disabled(true)
             }
-            DemoSection("A group with a mixed parent") {
-                QeetrixFieldSet(
+            DemoSection("A question with a mixed parent") {
+                QeetrixField(
                     "Notifications", description: Text("Choose how we reach you."),
-                    message: channels.allSatisfy { !$0.isOn } ? .error("Choose at least one channel.") : nil
+                    error: channels.allSatisfy { !$0.isOn } ? "Choose at least one channel." : nil
                 ) {
-                    QeetrixCheckbox("All channels", sources: $channels, isOn: \.isOn)
-                    ForEach($channels) { $channel in
-                        QeetrixCheckbox(channel.id, isOn: $channel.isOn)
+                    VStack(alignment: .leading, spacing: 0) {
+                        QeetrixCheckbox("All channels", sources: $channels, isOn: \.isOn)
+                        ForEach($channels) { $channel in
+                            QeetrixCheckbox(channel.id, isOn: $channel.isOn)
+                        }
                     }
                 }
-                QeetrixText("On: \(channels.filter(\.isOn).map(\.id).joined(separator: ", "))", variant: .muted)
+                QeetrixText("On: \(channels.filter(\.isOn).map(\.id).joined(separator: ", "))", size: .sm, tone: .subtle)
                     .accessibilityIdentifier("channels-on")
             }
             DemoSection("The style on a native Toggle") {

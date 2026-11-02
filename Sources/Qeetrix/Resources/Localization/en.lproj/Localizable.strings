@@ -1,56 +1,249 @@
-/* The built-in English strings, as in qeetrix-ui's message catalogue (src/lib/messages.ts at 7d7f651).
-   Translate by adding a <language>.lproj folder beside this one; every component that shows one of
-   these strings also takes a parameter that replaces it. */
+/* The built-in English strings: @qeetrix/react 0.2.2's message catalogue (src/internal/messages.ts),
+   plus the few iOS needs that the web gets from the browser. Translate by adding a <language>.lproj
+   folder beside this one; every component that shows one of these strings also takes a parameter that
+   replaces it. */
 
-/* Accessible name of a spinner, and the value a busy button reports. qeetrix-ui spinnerMessages.label. */
+/* Accessible name of a spinner, and the value a busy button reports. spinner.label. */
 "qeetrix.spinner.label" = "Loading";
 
-/* Read by VoiceOver after a required text field's label. iOS only: on the web the browser announces
-   the native `required` attribute, so qeetrix-ui has no string for it. */
+/* Read by VoiceOver after a required field's label. iOS only: on the web the browser announces the
+   native `required` attribute, so the catalogue has no string for it. */
 "qeetrix.field.required" = "Required";
 
-/* Shown after a field's label when the field is optional. qeetrix-ui labelMessages.optional. */
-"qeetrix.label.optional" = "(optional)";
+/* Shown after a field's label when the field is optional. field.optional. */
+"qeetrix.field.optional" = "(optional)";
 
-/* The name under which VoiceOver reads a field's message with its control. iOS only: the web relates the
-   message with aria-errormessage / aria-describedby and needs no name. */
+/* The name under which VoiceOver reads a field's error with its control. iOS only: the web links the
+   error with aria-describedby and needs no name. */
 "qeetrix.field.error" = "Error";
-"qeetrix.field.warning" = "Warning";
-"qeetrix.field.success" = "Success";
 
-/* The password reveal toggle, named for its action. qeetrix-ui passwordInputMessages.show / .hide. */
-"qeetrix.password.show" = "Show password";
-"qeetrix.password.hide" = "Hide password";
+/* The password toggle's name, and what is announced when it is used. passwordInput.show, .shown,
+   .hidden. */
+"qeetrix.password-input.show" = "Show password";
+"qeetrix.password-input.shown" = "Password shown";
+"qeetrix.password-input.hidden" = "Password hidden";
 
-/* A one-time-code input's name when no field label names it. qeetrix-ui otpInputMessages.label. */
-"qeetrix.otp.label" = "One-time code";
+/* A one-time-code input's name when no field label names it. iOS only: the web names each slot
+   "Character {index} of {length}" (otpInput.character); iOS reads one text field. */
+"qeetrix.otp-input.label" = "One-time code";
 
-/* The number field's stepper buttons. qeetrix-ui numberFieldMessages.decrease / .increase. */
-"qeetrix.number-field.decrease" = "Decrease";
-"qeetrix.number-field.increase" = "Increase";
+/* The number field's steppers. numberField.decrement / .increment. */
+"qeetrix.number-field.decrement" = "Decrease";
+"qeetrix.number-field.increment" = "Increase";
 
-/* Heading of a form's error summary. qeetrix-ui formMessages.errorSummaryTitle. */
-"qeetrix.form.error-summary-title" = "There is a problem";
+/* Heading of a form's error summary. errorSummary.title. */
+"qeetrix.error-summary.title" = "Fix these to continue";
 
-/* The close button every dismissible overlay has — sheet headers, toasts. qeetrix-ui overlayMessages.close
-   and toastMessages.close. */
+/* The close button of a dismissible overlay (sheet headers). overlay.close. */
 "qeetrix.overlay.close" = "Close";
 
+/* A toast's close button. toast.close. */
+"qeetrix.toast.close" = "Dismiss";
+
 /* The cancel action added to an alert or confirmation dialog whose actions include a destructive one but
-   no cancel. iOS only: the web's AlertDialogCancel is always written by the app. */
+   no cancel. iOS only: the web's dialog footer is always written by the app. */
 "qeetrix.dialog.cancel" = "Cancel";
 
-/* The remove button of a removable chip. qeetrix-ui chipMessages.remove. */
-"qeetrix.chip.remove" = "Remove";
+/* A removable chip's remove button, named for the chip. chip.remove. */
+"qeetrix.chip.remove" = "Remove %@";
 
-/* A data state's error message when the app gives none. qeetrix-ui dataStateMessages.error. */
-"qeetrix.data-state.error" = "Something went wrong while loading this data.";
+/* An avatar group's spoken name: how many people, then their names. avatarGroup.label. */
+"qeetrix.avatar-group.label" = "%1$lld people: %2$@";
 
-/* The button that asks the app to load again after a failure. iOS only: the web DataState has no retry
-   action. */
-"qeetrix.data-state.retry" = "Try again";
+/* The +N mark after an avatar group's last avatar, spoken. avatarGroup.more. */
+"qeetrix.avatar-group.more" = "%lld more";
 
-/* The state VoiceOver reads on an accordion or disclosure header. iOS only: the web sets aria-expanded and
-   the screen reader words it; a SwiftUI disclosure style has to supply the words itself. */
+/* An accordion item's state, read by VoiceOver as its value. iOS only: the web uses aria-expanded. */
 "qeetrix.accordion.expanded" = "Expanded";
 "qeetrix.accordion.collapsed" = "Collapsed";
+
+/* A page indicator's value, read by VoiceOver. iOS only: the web has no page indicator. */
+"qeetrix.page-indicator.value" = "Page %1$lld of %2$lld";
+
+/* The name of a search field with no label. iOS only (Android: qx_search); the web's catalogue has none. */
+"qeetrix.search-field.label" = "Search";
+
+/* A search field's clear button. searchField.clear. */
+"qeetrix.search-field.clear" = "Clear search";
+
+/* The confirmation before a full-screen form throws away its changes: the question and its two answers.
+   iOS only: the web's dialog footer is always written by the app. */
+"qeetrix.full-screen-form.discard-title" = "Discard your changes?";
+"qeetrix.full-screen-form.discard" = "Discard changes";
+"qeetrix.full-screen-form.keep-editing" = "Keep editing";
+
+/* The word an alert's tone adds before its title for VoiceOver ("Warning: …"). alert.info, alert.success,
+   alert.warning, alert.danger. */
+"qeetrix.alert.info" = "Information";
+"qeetrix.alert.success" = "Success";
+"qeetrix.alert.warning" = "Warning";
+"qeetrix.alert.danger" = "Error";
+
+/* A data state's standard failure: its title, its line and the retry button. dataState.errorTitle,
+   dataState.errorDescription, dataState.retry. */
+"qeetrix.data-state.error-title" = "Couldn't load this";
+"qeetrix.data-state.error-description" = "Try again, or check your connection.";
+"qeetrix.data-state.retry" = "Try again";
+
+/* Steps: the list's name and each step's state, read by VoiceOver. steps.label, steps.done,
+   steps.upcoming, steps.failed, steps.attention. */
+"qeetrix.steps.label" = "Progress";
+"qeetrix.steps.done" = "Completed";
+"qeetrix.steps.upcoming" = "Not started";
+"qeetrix.steps.failed" = "Failed";
+"qeetrix.steps.attention" = "Needs attention";
+
+/* The current step, and a step's position, read by VoiceOver. iOS only: the web uses aria-current and the
+   list's own numbering. */
+"qeetrix.steps.current" = "Current step";
+"qeetrix.steps.position" = "Step %1$lld of %2$lld";
+
+/* A description list's empty value ("—"), read by VoiceOver. descriptionList.empty. */
+"qeetrix.description-list.empty" = "Not set";
+
+/* A check list item's status, shown and read. checkList.passed, checkList.failed, checkList.pending,
+   checkList.running. */
+"qeetrix.check-list.passed" = "Passed";
+"qeetrix.check-list.failed" = "Failed";
+"qeetrix.check-list.pending" = "Not run";
+"qeetrix.check-list.running" = "Running";
+
+/* A permission primer's buttons. iOS only: the web asks for no device permissions. */
+"qeetrix.permission-primer.continue" = "Continue";
+"qeetrix.permission-primer.not-now" = "Not now";
+"qeetrix.permission-primer.open-settings" = "Open Settings";
+
+/* The QR scanner: its guidance line, the torch toggle, the typed-key fallback, and the camera's
+   permission states. iOS only: the web has no scanner. */
+"qeetrix.qr-scanner.guidance" = "Point the camera at the QR code";
+"qeetrix.qr-scanner.torch" = "Torch";
+"qeetrix.qr-scanner.type-key" = "Type the key instead";
+"qeetrix.qr-scanner.not-determined-title" = "Scan the QR code";
+"qeetrix.qr-scanner.not-determined-message" = "The camera reads the code, so you don't have to type the key.";
+"qeetrix.qr-scanner.denied-title" = "Camera access is off";
+"qeetrix.qr-scanner.denied-message" = "To scan the QR code, turn on Camera for this app in Settings.";
+"qeetrix.qr-scanner.unavailable-title" = "No camera";
+"qeetrix.qr-scanner.unavailable-message" = "This device has no camera that can scan the QR code.";
+
+/* A copy button's name when nothing labels it, and what it says after a copy: its tooltip, the
+   announcement and the confirming toast's title. copyButton.copy, .copied, .failed. */
+"qeetrix.copy-button.copy" = "Copy";
+"qeetrix.copy-button.copied" = "Copied";
+"qeetrix.copy-button.failed" = "Couldn't copy";
+
+/* The second line of the "Copied" toast after copying a secret: how long it stays on the clipboard, a
+   duration in words ("1 minute"). iOS only: a browser can't make a clipboard entry expire. */
+"qeetrix.copy-button.expiry" = "Clears from the clipboard after %@";
+
+/* A copy field's Copy button, named for the field's label. copyField.copy. */
+"qeetrix.copy-field.copy" = "Copy %@";
+
+/* An OTP code, read by VoiceOver: the time left (a duration in words, "12 seconds"), the code while
+   it's hidden, and what a tap does. iOS only: @qeetrix/react has no OTP code. */
+"qeetrix.otp-code.time-left" = "%@ left";
+"qeetrix.otp-code.hidden" = "Code hidden";
+"qeetrix.otp-code.copy-hint" = "Copies the code";
+"qeetrix.otp-code.reveal-hint" = "Shows the code";
+/* What VoiceOver hears when a pull to refresh finishes. iOS only: the web has no pull to refresh
+   (qeetrix-android's qx_refresh_finished). */
+"qeetrix.refresh.updated" = "Updated";
+/* A combobox's sheet when nothing matches what's typed, and while a search is on its way. combobox.empty,
+   combobox.loading. */
+"qeetrix.combobox.empty" = "No matches";
+"qeetrix.combobox.loading" = "Searching…";
+
+/* A combobox's value with several options chosen. combobox.selected (its first sentence: the rest tells
+   the web's keyboard users how to reach the pills). */
+"qeetrix.combobox.selected" = "%lld selected";
+
+/* The button that closes a combobox's sheet of several choices. iOS only: the web's list closes when
+   focus leaves it. */
+"qeetrix.combobox.done" = "Done";
+
+/* A file upload's pickers: the photo library, the camera and the Files browser. iOS only (Android:
+   qx_attach_photos, qx_attach_camera, qx_attach_files): the web has one file input. */
+"qeetrix.file-upload.photos" = "Photos";
+"qeetrix.file-upload.camera" = "Camera";
+"qeetrix.file-upload.files" = "Files";
+
+/* A file upload while a file is dragged over it. fileUpload.drop. */
+"qeetrix.file-upload.drop" = "Drop to upload";
+
+/* The line under a file upload's pickers: the allowed types and the largest size, or the size alone.
+   fileUpload.hint, fileUpload.hintSize. */
+"qeetrix.file-upload.hint" = "%1$@, up to %2$@";
+"qeetrix.file-upload.hint-size" = "Up to %@";
+
+/* A file's state: the progress bar's name while it uploads, then how it ended. fileUpload.uploading,
+   fileUpload.uploaded, fileUpload.failed. */
+"qeetrix.file-upload.uploading" = "Uploading %@";
+"qeetrix.file-upload.uploaded" = "Uploaded";
+"qeetrix.file-upload.failed" = "Not uploaded";
+
+/* A file's remove button, named for the file. fileUpload.remove. */
+"qeetrix.file-upload.remove" = "Remove %@";
+
+/* Why a chosen file was refused. fileUpload.wrongType, fileUpload.notAllowed, fileUpload.tooBig,
+   fileUpload.tooMany. */
+"qeetrix.file-upload.wrong-type" = "Only %@ files can be used here";
+"qeetrix.file-upload.not-allowed" = "This kind of file can't be used here";
+"qeetrix.file-upload.too-big" = "Larger than %@";
+"qeetrix.file-upload.too-many" = "Choose one file at a time";
+/* A calendar's arrows, by what they move: a month, a year or ten years. calendar.previousMonth,
+   calendar.nextMonth, calendar.previousYear, calendar.nextYear, calendar.previousYears,
+   calendar.nextYears. */
+"qeetrix.calendar.previous-month" = "Previous month";
+"qeetrix.calendar.next-month" = "Next month";
+"qeetrix.calendar.previous-year" = "Previous year";
+"qeetrix.calendar.next-year" = "Next year";
+"qeetrix.calendar.previous-years" = "Previous 10 years";
+"qeetrix.calendar.next-years" = "Next 10 years";
+
+/* A calendar's title button, read with the month or year it shows ("October 2026, choose year").
+   calendar.chooseYear. */
+"qeetrix.calendar.choose-year" = "%@, choose year";
+
+/* Today in a calendar, read with its full date ("Today, Sunday, 25 October 2026"). calendar.today. */
+"qeetrix.calendar.today" = "Today, %@";
+
+/* What a range calendar announces as a range is chosen: the first day, then both ends (also the range
+   picker's value). calendar.rangeStart, calendar.rangeSelected. */
+"qeetrix.calendar.range-start" = "Starts %@. Now choose the end date.";
+"qeetrix.calendar.range-selected" = "%1$@ to %2$@";
+
+/* A date picker's pointer tooltip. datePicker.choose. */
+"qeetrix.date-picker.choose" = "Choose date";
+
+/* A date or time picker's actions: setting what the system's picker shows, and emptying the field. iOS
+   only: the web's field is typed into and cleared like any input, and its calendar sets a day as soon as
+   it is chosen. */
+"qeetrix.date-picker.done" = "Done";
+"qeetrix.date-picker.clear" = "Clear";
+
+/* A date range picker's pointer tooltip. dateRangePicker.choose. */
+"qeetrix.date-range-picker.choose" = "Choose dates";
+
+/* A date range picker's presets: the group's name and the ready-made ranges. dateRangePicker.presets,
+   dateRangePicker.today, dateRangePicker.lastDays, dateRangePicker.thisMonth,
+   dateRangePicker.lastMonth. */
+"qeetrix.date-range-picker.presets" = "Quick ranges";
+"qeetrix.date-range-picker.today" = "Today";
+"qeetrix.date-range-picker.last-days" = "Last %lld days";
+"qeetrix.date-range-picker.this-month" = "This month";
+"qeetrix.date-range-picker.last-month" = "Last month";
+
+/* A time picker's pointer tooltip. iOS only: the web has no time field yet. */
+"qeetrix.time-picker.choose" = "Choose time";
+
+/* A loading stat's value, read by VoiceOver. stat.loading. */
+"qeetrix.stat.loading" = "Loading";
+
+/* A stat's change, read by VoiceOver with its direction in words ("Up 3.2%"). iOS only: the web's note
+   is written by the app. */
+"qeetrix.stat.up" = "Up %@";
+"qeetrix.stat.down" = "Down %@";
+
+/* A range slider's thumbs, named after its label ("Budget, minimum"). slider.minimumOf,
+   slider.maximumOf. */
+"qeetrix.slider.minimum-of" = "%@, minimum";
+"qeetrix.slider.maximum-of" = "%@, maximum";

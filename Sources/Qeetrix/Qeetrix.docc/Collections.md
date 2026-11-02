@@ -17,21 +17,20 @@ struct Members: View {
         List {
             Section {
                 ForEach(members) { member in
-                    Button { selected = member.id } label: {
-                        QeetrixListItem(member.name, description: Text(member.email), isSelected: selected == member.id) {
-                            QeetrixBadge(member.role, variant: .secondary)
-                        } leading: {
-                            QeetrixAvatar(name: member.name)
-                        }
+                    QeetrixListItem(member.name, description: Text(verbatim: member.email), isSelected: selected == member.id) {
+                        selected = member.id
+                    } leading: {
+                        QeetrixAvatar(name: member.name, isDecorative: true)
+                    } trailing: {
+                        QeetrixBadge(member.role)
                     }
-                    .qeetrixListRow()
                 }
             } header: {
-                QeetrixSectionHeader("Members")
+                QeetrixSectionHeader("Members", isRuled: false)
             }
+            .listSectionSeparator(.hidden)
         }
-        .scrollContentBackground(.hidden)
-        .background(QeetrixColor.surfaceCanvas)
+        .qeetrixListStyle()
     }
 }
 ```
@@ -40,11 +39,12 @@ struct Members: View {
 
 - **`List`** for rows that the person scrolls, selects, swipes or reorders: it is lazy, reuses rows, draws
   separators and gives swipe actions, edit mode, context menus and keyboard navigation.
+  `qeetrixListStyle()` makes it plain — square and ruled — on the page's `color.surface.canvas`.
 - **`LazyVStack` in a `ScrollView`** for a feed of cards, where rows aren't separated and the list's
   chrome isn't wanted.
 - **`VStack`** for a handful of rows in a card or a sheet, with ``QeetrixSeparator`` between them.
 
-Prefer the native containers. Qeetrix doesn't wrap `List`, `Section`, `DisclosureGroup`, `Table` or
+Prefer the native containers. Qeetrix doesn't wrap `List`, `Section`, `Table` or
 `ContentUnavailableView` where they already do the job; use them directly and style their contents.
 
 ## Identity and performance
@@ -53,14 +53,20 @@ Prefer the native containers. Qeetrix doesn't wrap `List`, `Section`, `Disclosur
   selection — while the collection changes around it.
 - Rows are plain views: they keep no state objects, load nothing and animate nothing at rest. The showcase
   scrolls 5,000 of them in a `List`; see `LargeListPerformanceUITests` for what was measured, and on what.
-- Keep work out of a row's body: format dates and sizes once, in your model, rather than on every render.
+- Keep work out of a row's body: format dates and sizes once, in your model (``QeetrixFormat``), rather
+  than on every render.
 - Images: use `AsyncImage` or your app's image loader in the row's leading view, sized with `frame`.
   Qeetrix has no image loading, caching or authenticated requests of its own.
+- Show people's data verbatim: `Text(verbatim:)` for a name, an email or a phone number, so iOS doesn't
+  read it as Markdown and turn it into a link.
 
 ## Actions on rows
 
-- **Tap**: a `NavigationLink` or a `Button` around the row, with `qeetrixListRow()`.
-- **Swipe**: `swipeActions` on the row, with `Label`s whose icons are `Image(qeetrix:)`.
+- **Tap**: the row's `action`, or its `value` for a `NavigationLink`; ``QeetrixListItemButtonStyle``
+  gives the row's look to a `Button`, `ShareLink` or `Menu` of your own.
+- **Swipe**: ``QeetrixSwipeAction``s with `qeetrixSwipeActions(edge:allowsFullSwipe:actions:)`. The same
+  actions reach VoiceOver and the row's context menu, and a danger action can ask first.
+- **Pull to refresh**: `qeetrixRefreshable(action:)` on the list (<doc:PullToRefresh>).
 - **Touch and hold**: `contextMenu` with ``QeetrixMenuItem``s — the same items as a ``QeetrixMenu``.
 - **A destructive action** confirms with a ``QeetrixConfirmationDialog``, then offers undo with a
   ``QeetrixToast``.

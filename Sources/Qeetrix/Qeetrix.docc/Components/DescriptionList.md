@@ -2,44 +2,85 @@
 
 ## Overview
 
-The properties of one thing — a plan, a device, a document — as terms and values.
+Facts about one record, as term and value pairs — `@qeetrix/react`'s DescriptionList: an approval
+request's app, place, device and time; a user's email and ID; an audit event's actor and address.
 
 ```swift
-QeetrixDescriptionList(isDivided: true) {
-    QeetrixDescriptionItem("Plan", value: Text("Team"))
-    QeetrixDescriptionItem("Created", value: Text(createdAt, style: .date))
-    QeetrixDescriptionItem("Status") { QeetrixBadge("Active", variant: .success) }
+QeetrixDescriptionList {
+    QeetrixDescriptionItem("App", value: "Qeet Pay console")
+    QeetrixDescriptionItem("Place", value: "Bengaluru, India")
+    QeetrixDescriptionItem("Device", value: "MacBook Pro · Safari")
+    QeetrixDescriptionItem("Status") { QeetrixBadge("Pending", tone: .warning) }
+    QeetrixDescriptionItem("Phone", value: nil)
 }
 ```
 
-- **Layouts.** `horizontal` puts a 192 pt term column beside the values in a regular-width window and
-  stacks each term over its value in compact width; `vertical` always stacks; `grid` fills the width
-  with term-over-value cells at least 192 pt wide.
-- **Divided** draws a `border-subtle` rule between pairs, never above the first.
-- **Values** are any view, set in primary `text-sm`; long identifiers wrap instead of overflowing.
-- **Density.** Pairs are the density's cell padding apart.
+- **Reading.** Terms are `label.sm` in `color.text.subtle`; values `body.md` in `color.text.default`,
+  wrapping rather than truncating. A value can be any content — a badge, a link, a copy button — whose
+  pieces sit `space.gap.xs` apart and wrap. An empty value (`nil` or `""`) shows "—" in
+  `color.text.subtlest`.
+- **`rows`** (the default): the term column is 30 % of the row and at least 8 rem, beside the value
+  and on its first baseline; rows are at least the density's `size.row` with `space.gap.sm` above and
+  below, and a 1-point `color.border.subtle` rule between them. Narrower than 24 rem the term moves
+  above its value.
+- **`columns`**: terms above values, in at most `columns` columns (1 to 4, default 2) of at least
+  8 rem — fewer where there isn't room — `space.gap.lg` between rows and `space.gap.xl` between
+  columns.
 
-The values are yours: format dates, amounts and identifiers before you pass them, and decide whether a
-value is safe to show. The list doesn't copy, log or announce anything you haven't displayed — a copy
-action, where you want one, is a button you put beside the item.
+```swift
+QeetrixDescriptionList(layout: .columns, columns: 3) {
+    QeetrixDescriptionItem("Actor", value: "priya@acme.in")
+    QeetrixDescriptionItem("Event", value: "Signed in")
+    QeetrixDescriptionItem("IP address", value: "203.0.113.24")
+}
+```
 
-In a `List`, use one ``QeetrixDescriptionItem`` per row: the list draws the separators.
+### Items
+
+``QeetrixDescriptionItem`` takes a term and a text value, or a term and any content. A `description`
+puts a sentence under the value; an `action` puts a control on the fact — a settings row:
+
+```swift
+QeetrixDescriptionItem("Display name", value: "Acme", description: Text("Shown in the top bar and in invitations.")) {
+    QeetrixButton("Change", variant: .ghost, size: .sm) { editName() }
+}
+```
+
+In `rows` the action is a third column at the row's end and the row centres on it; narrower than
+24 rem it moves under the value, at the start; in `columns` it sits under the value, at the end.
+
+**Values are what you pass.** Format dates, amounts and identifiers first, and never pass a secret: the
+list logs, copies and announces nothing.
 
 ### Accessibility
 
-Each item is one element — "Plan, Team" — so the term is read with its value. A value that holds a
-control should sit outside the item, where it is reachable on its own.
+- VoiceOver reads each pair as one element — "App, Qeet Pay console" — and the description with it. An
+  item's action is its own control, after the pair; a control inside the value (a copy button) is
+  offered as an action of the pair.
+- An empty value is read as "Not set", or as `emptyLabel`.
+- A text value takes its own direction, so an email, a phone number or an amount reads left to right in
+  a right-to-left layout, at the layout's start.
+- A rem is 16 points at the default text size and grows with Dynamic Type, so at the accessibility
+  sizes the term column widens and the rows stack sooner — reflow, never truncation.
 
 ### Platform differences
 
-The web switches to columns at its `sm` breakpoint (640 px); iOS switches on the horizontal size class,
-so an iPad in a narrow split or sheet stacks too.
+- **The container query** is the width the list is given, as on the web: on an iPhone in portrait —
+  compact width — a `rows` list stacks each term above its value; on an iPad or in landscape — regular
+  width, or more than 24 rem — the term sits beside it.
+- **Semantics.** iOS has no `dl`, `dt` and `dd`: each pair is one accessibility element drawn over the
+  term and the value, and the action a second one.
+- **In a card** the list keeps the card's padding: `QeetrixCard` has no edge-to-edge body yet, so the
+  web's full-width rules stop at the padding.
+- **Strings.** The web's `messages.empty` is `emptyLabel`.
+- **`divided`** (qeetrix-android before its move to `@qeetrix/react`) is gone there too: `rows` are
+  always ruled, `columns` never.
 
-On the web: [Description List on ui.qeet.in](https://ui.qeet.in/docs/components/description-list).
+On the web: [Description list on ui.qeet.in](https://ui.qeet.in/components/description-list/).
 
 ## Topics
 
-### Items
+### Items and layout
 
 - ``QeetrixDescriptionItem``
 - ``QeetrixDescriptionListLayout``

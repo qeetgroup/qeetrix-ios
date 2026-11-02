@@ -1,0 +1,70 @@
+{
+  "component": {
+    "$type": "dimension",
+    "$description": "Component decisions that have no semantic equivalent and must match on more than one platform. Everything else a component needs, it takes from the semantic tokens directly.",
+    "sidebar": {
+      "width": {
+        "$description": "Sidebar widths: expanded, collapsed to icons, and the mobile sheet.",
+        "expanded": {
+          "$value": {
+            "value": 16,
+            "unit": "rem"
+          }
+        },
+        "collapsed": {
+          "$value": {
+            "value": 3,
+            "unit": "rem"
+          }
+        },
+        "mobile": {
+          "$value": {
+            "value": 18,
+            "unit": "rem"
+          }
+        }
+      }
+    },
+    "tour": {
+      "card-width": {
+        "$value": {
+          "value": 18,
+          "unit": "rem"
+        },
+        "$description": "The guided-tour card."
+      },
+      "offset": {
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        },
+        "$description": "Distance between a tour card and its target."
+      },
+      "spotlight-padding": {
+        "$value": {
+          "value": 6,
+          "unit": "px"
+        },
+        "$description": "Space the spotlight leaves around its target."
+      }
+    },
+    "command-palette": {
+      "width": {
+        "$value": {
+          "value": 36,
+          "unit": "rem"
+        },
+        "$description": "The command palette's width."
+      }
+    },
+    "timeline": {
+      "marker-size": {
+        "$value": {
+          "value": 28,
+          "unit": "px"
+        },
+        "$description": "Timeline event markers: a 28px square around a 16px icon (size.icon.sm). In px like the icon sizes, so the marker and its icon keep their proportions when the root font size changes."
+      }
+    }
+  }
+}

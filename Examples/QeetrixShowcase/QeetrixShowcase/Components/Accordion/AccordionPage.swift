@@ -2,52 +2,49 @@ import Qeetrix
 import SwiftUI
 
 struct AccordionPage: View {
-    enum Topic: Hashable { case plan, people, security }
+    private enum Section: String { case tax, numbering, reminders, export }
 
-    @State private var open: Topic? = .plan
+    @State private var open: Section? = .tax
+    @State private var several: Set<Section> = [.tax, .numbering]
     @State private var showsAdvanced = false
+    @State private var retries = true
 
     var body: some View {
         ComponentPage(
             title: "Accordion",
-            summary: "Sections whose headers show and hide their content — native DisclosureGroups in the Qeetrix style."
+            summary:
+                "Stacked sections that show and hide, ruled between. The chevron turns and the content opens by height; nothing moves under Reduce Motion."
         ) {
-            DemoSection("Several open at once") {
-                QeetrixAccordion {
-                    QeetrixAccordionItem("Billing", description: Text("Invoices and payment method"), icon: .fileText) {
-                        QeetrixText("Invoices are sent on the first of each month.")
-                    }
-                    QeetrixAccordionItem("Members", icon: .users) {
-                        QeetrixText("Twelve people have access.")
-                    }
-                }
-            }
             DemoSection("One at a time") {
-                QeetrixAccordion {
-                    item("Plan", .plan) { QeetrixText("Team plan, billed monthly.") }
-                    item("People", .people) { QeetrixText("Twelve members, two admins.") }
-                    item("Security", .security) {
-                        DisclosureGroup("Advanced", isExpanded: $showsAdvanced) {
-                            QeetrixText("Session length and sign-in rules.")
-                        }
+                QeetrixAccordion(expanded: $open) {
+                    QeetrixAccordionItem("Tax settings", value: Section.tax) {
+                        QeetrixText("GST is added at 18% to every invoice for customers in India.")
+                    }
+                    QeetrixAccordionItem("Invoice numbering", value: Section.numbering) {
+                        QeetrixText("INV-YYYY-NNNN, starting again each financial year.")
+                    }
+                    QeetrixAccordionItem("Payment reminders", value: Section.reminders) {
+                        QeetrixText("Available on the Growth plan.")
+                    }
+                    .disabled(true)
+                }
+                QeetrixText("Open: \(open?.rawValue ?? "none")", size: .sm, tone: .subtle)
+                    .accessibilityIdentifier("accordion-open")
+            }
+            DemoSection("Any number") {
+                QeetrixAccordion(expanded: $several) {
+                    QeetrixAccordionItem("Tax settings", value: Section.tax) { QeetrixText("GST is added at 18%.") }
+                    QeetrixAccordionItem("Invoice numbering", value: Section.numbering) { QeetrixText("INV-YYYY-NNNN") }
+                    QeetrixAccordionItem("What happens to unpaid invoices at the end of the financial year?", value: Section.export) {
+                        QeetrixText("They carry over to the next year, with their original dates.")
                     }
                 }
-                QeetrixText("Open: \(name(open))", variant: .muted).accessibilityIdentifier("accordion-open")
             }
-        }
-    }
-
-    /// One item of the one-at-a-time group: open when `open` is its topic.
-    private func item(_ title: String, _ topic: Topic, @ViewBuilder content: () -> some View) -> some View {
-        QeetrixAccordionItem(title, isExpanded: Binding(get: { open == topic }, set: { open = $0 ? topic : nil }), content: content)
-    }
-
-    private func name(_ topic: Topic?) -> String {
-        switch topic {
-        case .plan: "plan"
-        case .people: "people"
-        case .security: "security"
-        case nil: "none"
+            DemoSection("A single section") {
+                QeetrixAccordionItem("Advanced options", isExpanded: $showsAdvanced) {
+                    QeetrixSwitch("Retry failed webhooks", isOn: $retries)
+                }
+            }
         }
     }
 }

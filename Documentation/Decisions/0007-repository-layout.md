@@ -1,6 +1,6 @@
 # 0007 — Repository layout
 
-**Status:** Accepted, 2026-10-18
+**Status:** Accepted, 2026-10-18. Amended by ADR 0018: component folders follow `@qeetrix/react`'s families.
 
 ## Context
 

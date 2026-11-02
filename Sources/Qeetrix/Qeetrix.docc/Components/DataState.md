@@ -2,44 +2,61 @@
 
 ## Overview
 
-The loading, failure and empty branches of a surface that shows loaded data, in one place — so none is
-forgotten.
+The four states of loaded content in one place, as `@qeetrix/react`'s DataState: loading, then a
+failure, then empty, then the content — in that order, so none is forgotten.
 
 ```swift
-QeetrixDataState(isLoading: model.isLoading, isEmpty: model.members.isEmpty,
-                 failure: model.failed ? QeetrixDataFailure("Couldn't load members.") { model.reload() } : nil) {
-    MemberList(members: model.members)
-} empty: {
-    QeetrixEmptyState("No members yet", description: Text("Invite people to this workspace."))
+QeetrixDataState(isLoading: model.isLoading, error: model.error, isEmpty: model.accounts.isEmpty, onRetry: model.reload) {
+    AccountList(accounts: model.accounts)
+} emptyState: {
+    QeetrixEmptyState("No accounts yet", description: "Add an account to sign in with this phone.", icon: .userPlus)
 }
 ```
 
-- **Order.** Loading, then a failure, then empty, then the content — as the web's `DataState`.
-- **Loading** shows six skeleton rows (``QeetrixDataLoadingRows``), or your own `loading` view in the
-  shape of the content.
-- **A failure** shows an error ``QeetrixEmptyState`` with your message, and "Try again" when you pass a
-  retry action.
-- **Transitions** fade in the standard easing, or switch at once with Reduce Motion on.
+- **Loading** shows an `lg` ``QeetrixSpinner``, centred over the failure state, which is laid out but
+  not drawn, so the screen doesn't jump when a load fails.
+- **A failure** — any `error` — shows a `section` ``QeetrixEmptyState`` in the danger tone: by
+  default `circle-alert`, "Couldn't load this" and "Try again, or check your connection.", and, with
+  `onRetry`, a soft "Try again" button. The error itself is never shown: it may hold internals, so log
+  it in the app.
+- **Empty** shows `emptyState`, usually a ``QeetrixEmptyState`` with your words.
+- **The content** is shown as it is, with no wrapper, so a list keeps its place.
 
-The state is yours: nothing is fetched, retried or cached here. While refreshing content that is already
-on screen, keep it visible (`refreshable(action:)`) and leave `isLoading` false.
+The failure can say the app's own words with a ``QeetrixDataStateFailure`` — for example when the
+phone is offline:
+
+```swift
+let offline = QeetrixDataStateFailure(
+    title: "You're offline", description: "Connect to the internet to see your approvals.", icon: .wifiOff)
+
+QeetrixDataState(isLoading: false, error: loadError, failure: isOffline ? offline : .standard, onRetry: reload) {
+    ApprovalList()
+}
+```
+
+The state is the app's: this view loads, retries and caches nothing. Keep showing the content while
+you refresh it, and set `isLoading` only when there is nothing to show yet.
 
 ### Accessibility
 
-The loading branch is one element, "Loading", however many placeholders it draws, and it announces
-nothing while it waits. A failure is announced when it appears, at high priority, as the web's
-`role="alert"`.
+- While loading, VoiceOver finds one element, "Loading"; the failure laid out under the spinner is
+  hidden from it and takes no touches.
+- A failure is announced as it appears, at high priority, as the web's `role="alert"` is: its title,
+  then its description.
 
 ### Platform differences
 
-The web's default error slot shows the error object's message. On iOS the failure takes a message you
-write for the person — a raw error is never shown — and an optional retry.
+- **Pull to refresh** is the system's control: put `qeetrixRefreshable(announcement:action:)` on the
+  content (<doc:PullToRefresh>), which also says when it's done. The data state's retry is for a load
+  that failed.
+- **The failure's words and icon** are one value, ``QeetrixDataStateFailure``, where the web takes
+  `messages`; `icon` lets an offline failure show `wifi-off`.
 
-On the web: [Data State on ui.qeet.in](https://ui.qeet.in/docs/components/data-state).
+On the web: [Empty state on ui.qeet.in](https://ui.qeet.in/components/empty-state/), which documents
+DataState.
 
 ## Topics
 
-### Branches
+### The failure
 
-- ``QeetrixDataFailure``
-- ``QeetrixDataLoadingRows``
+- ``QeetrixDataStateFailure``

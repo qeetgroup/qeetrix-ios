@@ -4,83 +4,86 @@ import Testing
 @testable import Qeetrix
 
 @MainActor
-@Suite("Empty state and data state")
+@Suite("Empty state")
 struct EmptyStateTests {
-    @Test("Each variant's default glyph and tone, as on the web")
-    func variants() {
-        #expect(QeetrixEmptyStateMetrics.defaultIcon(.default) == nil)
-        #expect(QeetrixEmptyStateMetrics.defaultIcon(.firstUse) == nil)
-        #expect(QeetrixEmptyStateMetrics.defaultIcon(.noResults) == .searchX)
-        #expect(QeetrixEmptyStateMetrics.defaultIcon(.noPermission) == .lock)
-        #expect(QeetrixEmptyStateMetrics.defaultIcon(.error) == .triangleAlert)
-        #expect(QeetrixEmptyStateMetrics.tone(.firstUse) == (.surfaceBrandSubtle, .textBrand))
-        #expect(QeetrixEmptyStateMetrics.tone(.error) == (.feedbackErrorSubtle, .textDanger))
-        #expect(QeetrixEmptyStateMetrics.tone(.noResults) == (.surfaceSunken, .textTertiary))
-        #expect(QeetrixEmptyStateVariant.firstUse.rawValue == "first-use")
+    @Test("Sizes and tones are @qeetrix/react's: page and section; neutral and danger")
+    func names() {
+        #expect(QeetrixEmptyStateSize.allCases.map(\.rawValue) == ["page", "section"])
+        #expect(QeetrixEmptyStateSize.allCases.map(\.titleRole) == [.titleMd, .titleSm])
+        #expect(QeetrixEmptyStateSize.allCases.map(\.paddingBlock) == [48, 24])
+        #expect(QeetrixEmptyStateTone.allCases.map(\.rawValue) == ["neutral", "danger"])
+        #expect(QeetrixEmptyStateTone.allCases.map(\.iconColor) == [.iconSubtle, .iconDanger])
+        #expect(QeetrixEmptyStateMetrics.maximumWidth == 480)
     }
 
-    @Test("Sizes: tile 36, 44, 48; icon 16, 20, 24; vertical padding 24, 48, 64")
-    func sizes() {
-        let metrics = QeetrixEmptyStateSize.allCases.map(QeetrixEmptyStateMetrics.init)
-        #expect(metrics.map(\.tileSize) == [36, 44, 48])
-        #expect(metrics.map(\.iconSize) == [16, 20, 24])
-        #expect(metrics.map(\.paddingY) == [24, 48, 64])
-        #expect(metrics.map(\.titleType.tokens.size) == [14, 16, 18])
+    @Test("A page has 48 pt above and below, a section 24; the title's line is 24 pt in both")
+    func sizes() throws {
+        let page = try #require(Rendered(QeetrixEmptyState("No accounts yet").frame(width: 390)))
+        let section = try #require(Rendered(QeetrixEmptyState("No accounts yet", size: .section).frame(width: 390)))
+        // iOS rounds each text block up to the screen's pixel grid (20.33 pt on a 3× screen) and the 1× image to
+        // whole points: allow a point per text block. The lines themselves are exact.
+        #expect(abs(page.height - (48 + 24 + 48)) <= 1)
+        #expect(abs(section.height - (24 + 24 + 24)) <= 1)
     }
 
-    @Test("Every variant and size renders, light and dark; without actions it takes no room for them")
-    func renders() throws {
-        for scheme in [ColorScheme.light, .dark] {
-            for variant in QeetrixEmptyStateVariant.allCases {
-                for size in QeetrixEmptyStateSize.allCases {
-                    let view = QeetrixEmptyState("Nothing here", description: Text("Try again later."), variant: variant, size: size) {
-                        QeetrixButton("Retry") {}
-                    }
-                    #expect(ImageRenderer(content: view.frame(width: 360).environment(\.colorScheme, scheme)).cgImage != nil)
-                }
-            }
+    @Test("The parts are 8 pt apart, the icon 4 pt more, the actions 8 pt more")
+    func spacing() throws {
+        func height(_ view: some View) throws -> Int {
+            try #require(Rendered(view.frame(width: 390))).height
         }
-        let bare = try #require(Rendered(QeetrixEmptyState("Nothing here").frame(width: 300)))
-        let titleOnly = QeetrixEmptyStateMetrics(size: .default)
-        #expect(bare.height < Int(titleOnly.paddingY * 2 + 40), "Padding and a title, no action row")
+        let title = try height(QeetrixEmptyState("No accounts yet", size: .section))
+        // The 24 pt icon, 4 pt under it, and the 8 pt gap.
+        #expect(try height(QeetrixEmptyState("No accounts yet", icon: .userPlus, size: .section)) == title + 24 + 4 + 8)
+        // body.md's 20 pt line, 8 pt under the title.
+        #expect(abs(try height(QeetrixEmptyState("No accounts yet", description: "Add one.", size: .section)) - (title + 8 + 20)) <= 1)
+        let actions = QeetrixEmptyState("No accounts yet", size: .section) { Color.blue.frame(width: 80, height: 32) }
+        #expect(try height(actions) == title + 8 + 8 + 32)
     }
 
-    @Test("The data state's branch: loading, then failure, then empty, then content")
-    func phases() {
-        #expect(QeetrixDataPhase(isLoading: true, isFailed: true, isEmpty: true) == .loading)
-        #expect(QeetrixDataPhase(isLoading: false, isFailed: true, isEmpty: true) == .failed)
-        #expect(QeetrixDataPhase(isLoading: false, isFailed: false, isEmpty: true) == .empty)
-        #expect(QeetrixDataPhase(isLoading: false, isFailed: false, isEmpty: false) == .content)
+    @Test("The icon is drawn sharp at 24 pt in the tone's colour")
+    func icon() throws {
+        let danger = QeetrixEmptyState("Couldn't load", icon: .circleAlert, size: .section, tone: .danger)
+            .frame(width: 100).environment(\.colorScheme, .light)
+        let image = try #require(Rendered(danger))
+        // The circle's stroke crosses the icon's top centre, 24 pt down from the section's edge.
+        let ink = (0..<6).map { image.pixel(50, 24 + $0) }
+        #expect(ink.contains { close(QeetrixTheme.light.resolve(.iconDanger).bytes, $0, tolerance: 40) })
     }
 
-    @Test("Each branch renders; the default loading rows are six, 40 pt tall, 12 pt apart in a 16 pt inset")
-    func dataState() throws {
-        func state(loading: Bool = false, failure: QeetrixDataFailure? = nil, empty: Bool = false) -> some View {
-            QeetrixDataState(isLoading: loading, isEmpty: empty, failure: failure) {
-                Text("Content")
-            } empty: {
-                QeetrixEmptyState("No invoices yet")
-            }
-            .frame(width: 320)
+    @Test("A level makes the title a heading, clamped to 1–6")
+    func levels() {
+        #expect(QeetrixEmptyState("No accounts yet").level == nil)
+        #expect(QeetrixEmptyState("No accounts yet", level: 2).level == 2)
+        #expect(QeetrixEmptyState("No accounts yet", level: 9).level == 6)
+        #expect(QeetrixEmptyState("No accounts yet", level: 0).level == 1)
+        #expect(ImageRenderer(content: QeetrixEmptyState("No accounts yet", level: 2).frame(width: 390)).cgImage != nil)
+    }
+
+    @Test("Actions are centred in rows that wrap, 8 pt apart")
+    func actionsLayout() throws {
+        let row = QeetrixFeedbackActionsLayout(spacing: 8, alignment: .center) {
+            Color.blue.frame(width: 30, height: 20)
+            Color.red.frame(width: 30, height: 20)
         }
-        #expect(ImageRenderer(content: state(loading: true)).cgImage != nil)
-        #expect(ImageRenderer(content: state(failure: QeetrixDataFailure("Couldn't load invoices.") {})).cgImage != nil)
-        #expect(ImageRenderer(content: state(failure: QeetrixDataFailure())).cgImage != nil)
-        #expect(ImageRenderer(content: state(empty: true)).cgImage != nil)
-        #expect(ImageRenderer(content: state()).cgImage != nil)
-        let rows = try #require(Rendered(QeetrixDataLoadingRows().frame(width: 320)))
-        #expect(rows.height == 6 * 40 + 5 * 12 + 2 * 16)
-        #expect(try #require(Rendered(QeetrixDataLoadingRows(rows: 0).frame(width: 320))).height == 40 + 2 * 16, "At least one row")
+        let one = try #require(Rendered(row.frame(width: 100)))
+        #expect(one.height == 20)
+        #expect(one.pixel(10, 10).a == 0, "Space at the start")
+        #expect(one.pixel(90, 10).a == 0, "and at the end")
+        #expect(one.pixel(25, 10).b > 200)
+        #expect(one.pixel(70, 10).r > 200)
+        let wrapped = try #require(Rendered(row.frame(width: 50)))
+        #expect(wrapped.height == 20 + 8 + 20)
     }
 
-    @Test("A failure keeps its message and retry; without a message the default is used")
-    func failure() {
-        var retries = 0
-        let failure = QeetrixDataFailure("Couldn't load invoices.") { retries += 1 }
-        failure.retry?()
-        #expect(retries == 1)
-        #expect(failure.message == "Couldn't load invoices.")
-        #expect(QeetrixDataFailure().message == nil)
-        #expect(QeetrixDataFailure().retry == nil)
+    @Test("Footer and actions together, and all three title forms, render")
+    func renders() {
+        let footer = QeetrixEmptyState("No accounts yet", description: "Add one to sign in.", icon: .userPlus) {
+            QeetrixButton("Add account") {}
+        } footer: {
+            Text(verbatim: "Or scan a code")
+        }
+        #expect(ImageRenderer(content: footer.frame(width: 390)).cgImage != nil)
+        #expect(ImageRenderer(content: QeetrixEmptyState(title: Text("No accounts yet")).frame(width: 390)).cgImage != nil)
+        #expect(ImageRenderer(content: QeetrixEmptyState(String("No accounts yet")).frame(width: 390)).cgImage != nil)
     }
 }

@@ -2,37 +2,39 @@
 
 ## Overview
 
-An indeterminate busy indicator: the `loader-circle` icon, turning once a second in the tertiary text
-colour.
+An indeterminate wait — `@qeetrix/react`'s Spinner: a 2-point ring with a quarter gap, turning once
+every 800 ms (2 × `motion.duration.slower`, `motion.easing.linear`).
 
 ```swift
 HStack {
     QeetrixSpinner()
-    QeetrixSpinner(size: .lg, label: Text("Loading invoices"))
+    QeetrixSpinner(size: .lg, tone: .brand, label: Text("Loading invoices"))
 }
 ```
 
-Sizes are `sm` 16 pt, `default` 20 pt, `lg` 24 pt and `xl` 32 pt. Inside a button, use the button's
-`isLoading` instead, which reports the busy state on the button itself.
+- **Size**: `sm` 14, `md` 16 (default), `lg` 20 or `xl` 24 points.
+- **Tone**: `neutral` (default), the surrounding foreground colour as the web's `currentColor`; or
+  `brand`, `color.icon.brand`.
+
+Inside a button use ``QeetrixButton``'s `isLoading` instead, which puts the spinner in its icon zone and
+reports the busy state on the button itself.
 
 ### Accessibility
 
-- VoiceOver reads the label: "Loading" unless you give one. When a screen has more than one spinner,
-  name what each is loading.
-- With Reduce Motion on, the spinner stands still.
+- VoiceOver reads its label — "Loading" unless you give one. Name what is loading when the screen has
+  more than one spinner. `isDecorative` hides it where something else reports the wait.
+- Under Reduce Motion it stops turning, closes the ring and pulses its opacity every 1.6 seconds, so the
+  wait stays visible.
 
-### Platform adaptations
+### Platform differences
 
-The web spinner is a `role="status"` region. A new spinner is not announced on either platform; when
-the wait matters, announce it from the screen that starts it.
+None in the look.
 
-The default label is localised from the package's strings (`Localizable.strings`), the counterpart of
-the web's message catalogue.
-
-On the web: [Spinner on ui.qeet.in](https://ui.qeet.in/docs/components/spinner).
+On the web: [Spinner on ui.qeet.in](https://ui.qeet.in/components/spinner/).
 
 ## Topics
 
-### Sizes
+### Styling
 
 - ``QeetrixSpinnerSize``
+- ``QeetrixSpinnerTone``

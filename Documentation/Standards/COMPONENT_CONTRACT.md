@@ -1,43 +1,35 @@
 # Component contract
 
 What every Qeetrix iOS component must provide, so the first component and the hundredth have the same
-shape. Written before Phase 2 and revised with its first eleven components, which follow it; the
-template and `Scripts/new-component.sh` produce its file set.
+shape. Written before Phase 2, revised with its first eleven components and again for the move to
+`@qeetrix/react` (ADR 0018); the template and `Scripts/new-component.sh` produce its file set.
 
 ## The catalogue it follows
 
-Verified on 2026-10-18 against `@qeetrix/ui` 2.1.6 (git `7d7f651`), the version this package is pinned
-to:
+`@qeetrix/react` 0.4.0's published component manifest (`dist/manifest.json`, kept as
+`Upstream/qeetrix-react/component-manifest.json`), checked on 2026-10-30:
 
 | Source | Count |
 |:--|:--|
-| Published `component-manifest.json` | 137 components |
-| qeetrix-ui `scripts/config/component-map.json` (family → components) | 97 families, 137 components |
-| qeetrix-ui `src/components/<Family>/` folders | 97 |
-| ui.qeet.in component pages (qeetrix-docs `main`, `ede2ea7`) | 137 pages in 9 categories |
+| Manifest families | 89: 87 components and 2 utilities (`format`, `provider`) |
+| Their exported parts | 172 |
+| Status | 39 stable, 50 experimental |
+| ui.qeet.in component pages (`qeetrix-docs`, `src/qeetrix/components/`) | 70 |
 
-The three agree exactly: every manifest slug has a docs page, and every page has a manifest entry.
+- **Families, not pages, are the folders.** A family can hold several parts (`button`: Button,
+  IconButton, LinkButton) and a page can cover a part (`icon-button`) or a pattern (`form`), so folders
+  follow families and pages are used only for documentation links and the showcase (ADR 0007, 0018).
+- **The design documents** (`qeetrix-files/qeetrix-react/05-design-rules.md`, `06-component-specs.md`,
+  `07-components.md`) give each component's parts, sizes, states and API; the family's CSS is what
+  ships. Where they disagree, iOS follows the CSS and the disagreement is reported upstream
+  ([MIGRATION_QEETRIX_REACT.md](../MIGRATION_QEETRIX_REACT.md#upstream-gaps-and-bugs-found)).
 
-- **Docs categories.** Actions (11), Forms & inputs (34), Date & time (9), Data display (30),
-  Feedback (12), Overlays (14), Navigation (11), Layout (13), Utilities (3).
-- **Status.** 74 stable, 62 beta, 1 deprecated.
-
-**Discrepancies.**
-
-- **Categories don't map onto families.** The Button family spans Actions and Overlays, and
-  DropdownMenu spans Navigation and Overlays. Folders therefore follow families, and categories are
-  used only for documentation and the showcase (ADR 0007).
-- **The older 145-component / 103-family count.** qeetrix-ui had 103 family folders until
-  2026-10-06; the 2026-10-07 cleanup left 97.
-- **Stale README.** qeetrix-ui's README at 2.1.6 has the right counts (137 modules, 97 families), but
-  its status line still reads "1.0.3".
-
-Re-run this check whenever the `@qeetrix/ui` pin moves.
+Re-run this check whenever the `@qeetrix/react` pin moves.
 
 ## Where a component lives
 
 ```text
-Sources/Qeetrix/Components/<Family>/<Component>/     <Family> = the qeetrix-ui family identifier
+Sources/Qeetrix/Components/<Family>/<Component>/     <Family> = the @qeetrix/react family, UpperCamelCase
 Tests/QeetrixTests/Components/<Family>/<Component>Tests.swift
 Tests/QeetrixSnapshotTests/<Family>/<Component>SnapshotTests.swift      (ADR 0009)
 Tests/QeetrixSnapshotTests/__Snapshots__/<Family>/<Component>SnapshotTests/   its baselines — local, never committed (ADR 0013)
@@ -45,7 +37,8 @@ Sources/Qeetrix/Qeetrix.docc/Components/<Component>.md
 Examples/QeetrixShowcase/QeetrixShowcase/Components/<Family>/<Component>Page.swift
 ```
 
-For example, IconButton belongs to the Button family: `Components/Button/IconButton/`.
+For example, IconButton belongs to the `button` family: `Components/Button/IconButton/`; RadioGroup to
+`radio`: `Components/Radio/RadioGroup/`.
 
 ## What every component defines
 
@@ -53,28 +46,29 @@ For example, IconButton belongs to the Button family: `Components/Button/IconBut
    - Named `Qeetrix<Component>` (`QeetrixButton`, `QeetrixIconButton`).
    - Where SwiftUI has a matching style protocol, Qeetrix provides a style (`.buttonStyle(.qeetrix())`,
      `.toggleStyle(.qeetrixSwitch())`, `.progressViewStyle(.qeetrix())`), and the named view is built on
-     it, adding only what a style cannot (a button's loading state). See ADR 0010 for the naming,
+     it, adding only what a style cannot (a button's icon zone and loading state). See ADR 0010 for the naming,
      text-parameter and evolution rules.
-   - Parameters use typed Swift: enums and option sets, not strings. The meaning matches the web
-     component; the syntax is native. A web `variant="destructive"` becomes a typed `.destructive`, not
-     a string.
+   - Parameters use typed Swift: enums and option sets, not strings. The names are the web component's
+     props; the syntax is native. A web `tone="danger"` becomes a typed `tone: .danger`, a boolean
+     `loading` becomes `isLoading`.
 2. **Variants and states.**
-   - The variants are the web component's variants, by the same names.
+   - The variants, tones and sizes are the `@qeetrix/react` component's, by the same names.
    - States — enabled, disabled, pressed, focused, selected, error, loading — come from SwiftUI's
      environment and gestures where SwiftUI has them (`isEnabled`, `isFocused`). They are never
      tracked twice.
-3. **Style customisation.** Limited to what the design system allows: variant, size and density.
+3. **Style customisation.** Limited to what the design system allows: variant, tone, size and density.
    There are no arbitrary colour or font parameters; Qeetrix has one brand.
 4. **Tokens.**
-   - Semantic tokens by default.
-   - Component tokens only where qeetrix-ui defines `component.<name>.*` (41 groups covering 40 of 97
-     families today), adopted by listing the group in `Upstream/pins.json` (ADR 0011).
-   - Geometry the web takes from Tailwind utility classes comes from `QeetrixWebScale`, with the web
-     class beside each use (ADR 0011). No other literal colours, sizes or durations in component code.
+   - Semantic tokens only: `@qeetrix/react`'s CSS uses no component tokens for the components iOS has.
+   - A length the family's CSS writes as a literal (`padding-inline: 14px`) is restated in the component,
+     with the CSS rule beside it; the compiled CSS is pinned in `Upstream/qeetrix-react/css/` so a
+     version bump shows what changed (ADR 0018). No literal colours or durations in component code.
+   - Colour use follows design rules §4: Ember only for the primary action, focus, the current item,
+     checked controls and links; shadows only on floating layers.
 5. **Fields.** An input — anything a person types into or chooses with in a form — takes a label,
-   `description`, `message`, `isRequired` and `isOptional`, and builds itself on `QeetrixField`, whose
-   environment gives its native control the VoiceOver name, hint and message (ADR 0012). It never lays
-   out its own label or message, and never validates.
+   `description`, `error`, `isRequired` and `isOptional`, and builds itself on `QeetrixField`, whose
+   environment gives its native control the VoiceOver name, hint and error (ADR 0012). It never lays
+   out its own label or error, and never validates.
 6. **Presentations.** An overlay or navigation component wraps the system presentation (ADR 0014). It is
    driven by a binding the app owns — an optional value or a `Bool` — and sets it back however the
    presentation ends. A chosen action runs once, after the overlay is dismissed. It keeps no global state:
@@ -113,9 +107,9 @@ For example, IconButton belongs to the Button family: `Components/Button/IconBut
 
 - **`Scripts/new-component.sh <Family> <Component> --category "<docs category>" [--slug <web slug>]`**
   renders `Templates/Component/` into the file set above, lists the component in the DocC landing page
-  under its category, adds its page to the showcase catalogue, and adopts its component tokens when
-  qeetrix-ui defines them. It checks the names, and the family and slug against the pinned
-  `component-manifest.json`; it never overwrites, and a run that finds the component already there
+  under its category, adds its page to the showcase catalogue, and names its component tokens when
+  `@qeetrix/tokens` defines them. It checks the names, and that the family exports the part, against the
+  pinned `@qeetrix/react` manifest; it never overwrites, and a run that finds the component already there
   changes nothing. `--dry-run` lists the changes. The scaffold carries `#error`s until it is
   implemented, so it cannot be committed half-done by accident.
 - **Snapshot tests**, as ADR 0009, with `assertSpecimen` from `Tests/QeetrixSnapshotTests/Support`.

@@ -2,40 +2,45 @@
 
 ## Overview
 
-One choice from a few options that should all stay visible. For a long list use ``QeetrixSelect``;
-for independent choices, ``QeetrixCheckbox``.
+Pick one of a set — `@qeetrix/react`'s RadioGroup: the question as the legend, then a radio per option
+(design rules §9).
 
 ```swift
 QeetrixRadioGroup(
-    "Plan", selection: $plan,
+    "Billing cycle", selection: $cycle,
     options: [
-        QeetrixOption("Starter", value: Plan.starter),
-        QeetrixOption("Team", value: Plan.team, description: Text("Up to 25 members")),
+        QeetrixOption("Monthly", value: Plan.monthly),
+        QeetrixOption("Yearly", value: Plan.yearly, description: Text("Two months free")),
     ])
+QeetrixRadioGroup(
+    "Billing cycle", selection: $cycle,
+    options: [QeetrixOption("Monthly", value: Plan.monthly), QeetrixOption("Yearly", value: Plan.yearly)],
+    orientation: .horizontal)
 ```
 
-- **Selection.** Typed by the options' values: an option can only select a value the binding can hold.
-  Exactly one is selected once chosen — choosing another moves the selection, choosing the selected one
-  changes nothing. For "nothing chosen yet", make the selection optional (`Plan?`): a value no option has
-  shows nothing selected.
-- **Disabled options** are shown but cannot be chosen; `disabled(_:)` disables the group.
-- **Validation.** A message under the group colours the discs' boundaries.
+- **Legend** in the field-label style, so every form row's label looks the same; the description or
+  error under the options, as for a field.
+- **Radio**: a 16-point circle with a 1-point `color.border.strong` edge on `color.bg.input`; selected,
+  the edge becomes a 5-point Ember ring around the centre.
+- **Orientation**: `vertical` (default) or `horizontal` for short options, 16 points apart, wrapping.
+- **States**: with an error every radio takes the danger edge, and the chosen one a danger ring; a
+  disabled option is dimmed.
 
 ### Accessibility
 
-Each option is a native button, a 44 pt row: VoiceOver reads its title, "Selected" on the chosen one, and
-its description as the hint. The group is a container named by its label, and its message is read with
-each option.
+VoiceOver reads each option as a button that is selected or not, with its description as the hint, and
+the group's error with each.
 
 ### Platform differences
 
-The web radio group is one tab stop with arrow keys between options. On iOS a choice is a tap; with a
-hardware keyboard each option is its own Full Keyboard Access stop.
+- **Rows** are 44-point targets, flush (ADR 0012); the web's are 24 points, 4 apart.
+- **Keyboard.** The web moves the selection with the arrow keys; iOS moves focus between the options.
 
-On the web: [Radio Group on ui.qeet.in](https://ui.qeet.in/docs/components/radio-group).
+On the web: [Radio on ui.qeet.in](https://ui.qeet.in/components/radio/).
 
 ## Topics
 
 ### Options
 
 - ``QeetrixOption``
+- ``QeetrixChoiceOrientation``

@@ -3,7 +3,7 @@ import SwiftUI
 // Scaffolded by Scripts/new-component.sh from Templates/Component. Implement the component from its web
 // contract, then delete the #error line. Documentation/Standards/COMPONENT_CONTRACT.md lists what it
 // must provide; its component tokens: {{tokens}}.
-#error("Qeetrix{{Component}} is a scaffold: implement it from https://ui.qeet.in/docs/components/{{slug}}, then delete this line.")
+#error("Qeetrix{{Component}} is a scaffold: implement it from https://ui.qeet.in/components/{{slug}}, then delete this line.")
 
 /// {{description}}
 ///

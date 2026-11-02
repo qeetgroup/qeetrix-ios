@@ -1,63 +1,68 @@
 # Qeetrix for iOS
 
 The native SwiftUI implementation of **Qeetrix**, the Qeet Group design system. It gives iOS apps the
-same tokens, typeface, themes and icons as the web's [`@qeetrix/ui`](https://github.com/qeetgroup/qeetrix-ui)
-and [`@qeetrix/icons`](https://github.com/qeetgroup/qeetrix-icons), generated from those packages
-rather than copied from them.
+same tokens, typeface, themes and icons as the web's
+[`@qeetrix/tokens`](https://github.com/qeetgroup/qeetrix-tokens) and
+[`@qeetrix/icons`](https://github.com/qeetgroup/qeetrix-icons), generated from those npm packages rather
+than copied from them, and components that look and behave like
+[`@qeetrix/react`](https://github.com/qeetgroup/qeetrix-react)'s (ADR 0018).
 
-**Status: Phase 7 — release candidate 0.1.0-rc.1, prepared and not released.** No version is tagged
-yet; see [the candidate report](Documentation/Releases/RELEASE_CANDIDATE_REPORT.md). The foundations (tokens, theming,
-typography, icons, accessibility helpers), the core components, the form controls and patterns, navigation
-and overlays, and list rows, details, accordions, chips, timelines and the empty, loading and failure
-states, each with tests, a DocC page and a showcase page ([PHASES.md](PHASES.md)). Every component is
-**Beta**: tested and audited by machine, not yet checked on a device or released — see
-[the maturity matrix](Documentation/Quality/COMPONENT_MATURITY_MATRIX.md) and
-[the release-readiness gaps](Documentation/Quality/RELEASE_READINESS_GAPS.md).
+**Status: migrated to `@qeetrix/react` 0.4.0, with the iOS component tickets built; release candidate
+0.1.0-rc.1 prepared and not released.** No version is tagged yet; the
+[candidate report](Documentation/Releases/RELEASE_CANDIDATE_REPORT.md) predates this merge and is redone
+before a tag. The foundations (tokens, theming, typography, icons, accessibility helpers), the core
+components, the form controls and patterns, navigation and overlays, and list rows, states, chips,
+pickers and the Qeet Auth pieces, each with tests, a DocC page and a showcase page
+([PHASES.md](PHASES.md)). Every component is **Beta**: tested and audited by machine, not yet checked on a
+device or released ([the release-readiness gaps](Documentation/Quality/RELEASE_READINESS_GAPS.md)). Every
+old name and its new one: [Documentation/MIGRATION_QEETRIX_REACT.md](Documentation/MIGRATION_QEETRIX_REACT.md).
 
 ## What is in it
 
 | Area | API | Source |
 |:--|:--|:--|
-| Colour | `QeetrixColor` — 84 semantic colours, a `ShapeStyle` that resolves light/dark from the environment | `@qeetrix/ui` consumable `color.*` |
-| Theme | `QeetrixThemeMode` (`light` / `dark` / `system`), `.qeetrixThemeMode(_:)`, `.qeetrixTheme(_:)`, `@Environment(\.qeetrixTheme)` | `ThemeProvider` modes |
-| Typography | `QeetrixTextRole` (9 roles), `.qeetrixTextStyle(_:)`, `QeetrixFontRegistry` | `typography.*`, Qeet Sans (Cal Sans VF) and Fira Code |
-| Spacing, size, shape | `QeetrixSpacing`, `QeetrixCorner`, `QeetrixStroke`, `QeetrixFocus`, `QeetrixDensity`, `QeetrixOpacity` | `space`, `corner`, `stroke.width`, `focus`, `density`, `state` |
-| Elevation | `QeetrixElevation`, `.qeetrixElevation(_:fill:in:)` | `elevation.*` (per theme) |
-| Motion | `QeetrixDuration`, `QeetrixEasing`, `QeetrixMotion`, `.qeetrixAnimation(_:_:value:)` | `motion.*` |
-| Icons | `QeetrixIcon`, `QeetrixIconName` (37 icons), `Image(qeetrix:)` for system chrome | `qeetrix-icons` SVGs |
+| Colour | `QeetrixColor` — 109 semantic colours, a `ShapeStyle` that resolves light/dark from the environment | `@qeetrix/tokens` `color.*` |
+| Theme | `QeetrixThemeMode` (`light` / `dark` / `system`), `.qeetrixThemeMode(_:)`, `.qeetrixTheme(_:)`, `@Environment(\.qeetrixTheme)` | the resolver's colour schemes, `QeetrixProvider` modes |
+| Typography | `QeetrixTextRole` (18 roles), `.qeetrixTextStyle(_:)`, `QeetrixFontRegistry` | `typography.*`, `font.geometry.*`; Qeet Sans and Fira Code TTFs |
+| Spacing, size, shape | `QeetrixSpace`, `QeetrixRadius`, `QeetrixBorderWidth`, `QeetrixFocus`, `QeetrixSize`, `QeetrixDensity`, `QeetrixControlSize`, `QeetrixOpacity` | `space`, `radius`, `border.width`, `focus.ring`, `size`, the density modifier, `opacity` |
+| Shadow | `QeetrixShadow`, `.qeetrixShadow(_:fill:in:)` | `shadow.*` (per scheme) |
+| Motion | `QeetrixDuration`, `QeetrixEasing`, `QeetrixSpring`, `QeetrixMotion`, `.qeetrixAnimation(_:_:value:)` | `motion.*`, tokens.css's reduced motion |
+| Icons | `QeetrixIcon`, `QeetrixIconName` (68 icons), `Image(qeetrix:)` for system chrome | `@qeetrix/icons` 2.1.0 |
 | Accessibility | `QeetrixAccessibility.minimumTouchTarget`, `.qeetrixMinimumTouchTarget()`, `contrastRatio(_:on:)` | Apple HIG, WCAG 2.2 |
 
 ### Components
 
-| Component | API | On the web |
+| Component | API | `@qeetrix/react` |
 |:--|:--|:--|
-| Text | `QeetrixText` (`h1`–`h4`, `p`, `lead`, `large`, `small`, `muted`, `blockquote`, `inlineCode`) | Typography |
+| Text | `QeetrixText` (`size`, `weight`, `tone`, `mono`, `truncate`) | Text |
+| Heading | `QeetrixHeading` (`level`, `size`, `tone`) | Heading |
 | Separator | `QeetrixSeparator` | Separator |
-| Card | `QeetrixCard`, `QeetrixCardHeader`, `.buttonStyle(.qeetrixCard())` | Card |
+| Card | `QeetrixCard`, `.buttonStyle(.qeetrixCard())` | Card |
 | Badge | `QeetrixBadge` | Badge |
 | Button | `QeetrixButton`, `.buttonStyle(.qeetrix())` | Button |
-| Icon button | `QeetrixIconButton` | Icon Button |
+| Icon button | `QeetrixIconButton` | IconButton |
 | Spinner | `QeetrixSpinner` | Spinner |
 | Progress | `QeetrixProgress`, `.progressViewStyle(.qeetrix())` | Progress |
 | Avatar | `QeetrixAvatar` | Avatar |
-| Switch | `QeetrixSwitch`, `.toggleStyle(.qeetrixSwitch())` | Switch |
-| Text field | `QeetrixTextField`, `QeetrixFieldMessage` | Input and Field |
-| Field | `QeetrixField`, `QeetrixFieldSet` | Field |
+| Switch | `QeetrixSwitch`, `.toggleStyle(.qeetrixSwitch)` | Switch |
+| Field | `QeetrixField` | Field |
+| Fieldset | `QeetrixFieldset` | Fieldset |
+| Text field | `QeetrixTextField` | TextField, Input |
 | Textarea | `QeetrixTextarea` | Textarea |
-| Password input | `QeetrixPasswordInput` | Password Input |
-| OTP input | `QeetrixOTPInput` | OTP Input |
+| Password input | `QeetrixPasswordInput` | PasswordInput |
+| OTP input | `QeetrixOTPInput` | OTPInput |
 | Checkbox | `QeetrixCheckbox`, `.toggleStyle(.qeetrixCheckbox)` | Checkbox |
-| Radio group | `QeetrixRadioGroup`, `QeetrixOption` | Radio Group |
-| Select | `QeetrixSelect`, `QeetrixOption` | Select, Native Select |
-| Number field | `QeetrixNumberField` | Number Field |
-| Form | `QeetrixFormActions`, `QeetrixFormErrorSummary` | Form |
+| Radio group | `QeetrixRadioGroup`, `QeetrixOption` | RadioGroup |
+| Select | `QeetrixSelect`, `QeetrixOption` | Select |
+| Number field | `QeetrixNumberField` | NumberField |
+| Form | `QeetrixErrorSummary`, `QeetrixFormActions` | Form, ErrorSummary |
 | Tabs | `QeetrixTabs`, `QeetrixTab` | Tabs |
 | Navigation and tab bars | `.qeetrixNavigationBar(background:)`, `.qeetrixTabBar()`, `.qeetrixTabItem(_:icon:badge:)` | — (styles the system bars) |
-| Alert dialog | `QeetrixAlertDialog`, `.qeetrixAlertDialog(_:)`, `QeetrixDialogAction` | Alert Dialog |
+| Alert dialog | `QeetrixAlertDialog`, `.qeetrixAlertDialog(_:)`, `QeetrixDialogAction` | Dialog (`intent` danger) |
 | Confirmation dialog | `QeetrixConfirmationDialog`, `.qeetrixConfirmationDialog(_:)` | — (iOS action sheet) |
 | Sheet | `.qeetrixSheet(isPresented:…)`, `.qeetrixSheet(item:…)`, `QeetrixSheetContent` | Drawer, Dialog |
 | Popover | `.qeetrixPopover(isPresented:…)` | Popover |
-| Menu | `QeetrixMenu`, `QeetrixMenuItem` | Dropdown Menu, Context Menu |
+| Menu | `QeetrixMenu`, `QeetrixMenuItem` | Menu, ContextMenu |
 | Toast | `QeetrixToast`, `.qeetrixToast(_:)` | Toast |
 | List item | `QeetrixListItem`, `QeetrixListItemIcon`, `.qeetrixListRow()`, `.buttonStyle(.qeetrixListItem)`, `QeetrixSectionHeader` | — (iOS list rows) |
 | Description list | `QeetrixDescriptionList`, `QeetrixDescriptionItem` | Description List |
@@ -68,6 +73,47 @@ states, each with tests, a DocC page and a showcase page ([PHASES.md](PHASES.md)
 | Chip | `QeetrixChip`, `QeetrixChipGroup` | Chip |
 | Timeline | `QeetrixTimeline`, `QeetrixTimelineItem` | Timeline |
 | Search | native `.searchable` with `QeetrixEmptyState` and `QeetrixChipGroup` | — |
+
+#### Added for the iOS component tickets (QTRX-95 to QTRX-155)
+
+| Component | API | `@qeetrix/react` |
+|:--|:--|:--|
+| Haptics | `QeetrixFeedback`, `.qeetrixFeedback(_:trigger:)` | — (iOS only) |
+| Format | `QeetrixFormat` (numbers, currency, percent, sizes, durations, dates, times, ranges, relative time) | format |
+| Relative time | `QeetrixRelativeTime` | RelativeTime |
+| List item | `QeetrixListItem`, `QeetrixListItemIcon`, `.buttonStyle(.qeetrixListItem())`, `.qeetrixListStyle()` | — (iOS only) |
+| Section header | `QeetrixSectionHeader` | — (iOS only) |
+| Description list | `QeetrixDescriptionList`, `QeetrixDescriptionItem` | DescriptionList |
+| Check list | `QeetrixCheckList`, `QeetrixCheckItem` | CheckList |
+| Alert | `QeetrixAlert` | Alert |
+| Empty and data state | `QeetrixEmptyState`, `QeetrixDataState` | EmptyState, DataState |
+| Skeleton | `QeetrixSkeleton`, `.qeetrixSkeletonGroup(label:)` | Skeleton |
+| Timeline | `QeetrixTimeline`, `QeetrixTimelineGroup`, `QeetrixTimelineItem` | Timeline |
+| Steps | `QeetrixSteps`, `QeetrixStep` | Steps |
+| Chip | `QeetrixChip`, `QeetrixChipGroup`, `.toggleStyle(.qeetrixChip())` | Chip, ChipGroup |
+| Segmented control | `QeetrixSegmentedControl` | ToggleGroup (segmented) |
+| Accordion | `QeetrixAccordion`, `QeetrixAccordionItem`, `.disclosureGroupStyle(.qeetrixAccordion())` | Accordion, Collapsible |
+| Page indicator | `QeetrixPageIndicator` | — (iOS only) |
+| Avatar group | `QeetrixAvatarGroup` | AvatarGroup |
+| Circular progress | `QeetrixCircularProgress`, `.progressViewStyle(.qeetrixCircular())` | — (Progress's track and tones) |
+| QR code | `QeetrixQRCode` | QRCode |
+| QR scanner | `QeetrixQRScanner` | — (iOS only) |
+| Permission primer | `QeetrixPermissionPrimer` | — (iOS only) |
+| Bottom action bar | `.qeetrixBottomActionBar(primary:secondary:)`, `QeetrixScreenAction` | — (iOS only) |
+| Full-screen form | `QeetrixFullScreenForm`, `.qeetrixFullScreenForm(isPresented:…)` | Dialog (`size="fullscreen"`) |
+| Large title | `.qeetrixNavigationBar(background:title:)` | — (styles the system bar) |
+| Sidebar and detail | `QeetrixSidebar`, `QeetrixNavigationScaffold`, `QeetrixNavigationItem` | Sidebar, AppShell |
+| Search field | `QeetrixSearchField`, `.qeetrixSearchable(text:…)` | SearchField |
+| Copy button and field | `QeetrixCopyButton`, `QeetrixCopyField` | CopyButton, CopyField |
+| OTP code | `QeetrixOTPCode` | — (iOS and Android) |
+| Swipe actions | `QeetrixSwipeAction`, `.qeetrixSwipeActions(…)` | — (iOS only) |
+| Pull to refresh | `.qeetrixRefreshable(…)`, `QeetrixRefreshResult` | — (iOS only) |
+| Date picker and range | `QeetrixDatePicker`, `QeetrixDateRangePicker`, `QeetrixCalendar`, `QeetrixRangeCalendar` | DatePicker, DateRangePicker, Calendar, RangeCalendar |
+| Time picker | `QeetrixTimePicker` | — (iOS only) |
+| Stat | `QeetrixStat`, `QeetrixStatGroup` | Stat, StatGroup |
+| Slider | `QeetrixSlider` | Slider |
+| Searchable picker | `QeetrixCombobox` | Combobox |
+| Attachments | `QeetrixFileUpload`, `QeetrixFileRow`, `QeetrixFileLimits` | FileUpload |
 
 Where SwiftUI has a style protocol, the style works on native controls too: `NavigationLink`,
 `ShareLink`, `Toggle`, `ProgressView`.
@@ -126,19 +172,20 @@ struct MyApp: App {
 
 struct WelcomeCard: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: QeetrixSpacing.s) {
+        VStack(alignment: .leading, spacing: QeetrixSpace.gapSm) {
             Text("Welcome back")
-                .qeetrixTextStyle(.title)
-                .foregroundStyle(QeetrixColor.textPrimary)
+                .qeetrixTextStyle(.headingSm)
+                .foregroundStyle(QeetrixColor.textDefault)
             Label {
-                Text("Your account is protected").qeetrixTextStyle(.body)
+                Text("Your account is protected").qeetrixTextStyle(.bodyMd)
             } icon: {
-                QeetrixIcon(.lock, variant: .filled)  // decorative: the text says what it means
+                QeetrixIcon(.lock, size: .sm, shape: .sharp)  // decorative: the text says what it means
             }
-            .foregroundStyle(QeetrixColor.textSecondary)
+            .foregroundStyle(QeetrixColor.textSubtle)
         }
-        .padding(QeetrixSpacing.l)
-        .qeetrixElevation(.raised, fill: .surfaceElevated, in: RoundedRectangle(cornerRadius: QeetrixCorner.surface))
+        .padding(QeetrixSpace.insetLg)
+        .background(QeetrixColor.surfaceRaised, in: RoundedRectangle(cornerRadius: QeetrixRadius.surface))
+        .overlay { RoundedRectangle(cornerRadius: QeetrixRadius.surface).strokeBorder(QeetrixColor.borderDefault) }
     }
 }
 ```
@@ -146,11 +193,10 @@ struct WelcomeCard: View {
 Components are built from the same foundations:
 
 ```swift
-QeetrixCard {
-    QeetrixCardHeader("Two-step sign-in", description: "A passkey on this device")
+QeetrixCard(title: Text("Two-step sign-in"), description: Text("A passkey on this device")) {
     QeetrixSwitch("Require a passkey", isOn: $requirePasskey)
 } footer: {
-    QeetrixButton("Save", isLoading: isSaving) { save() }
+    QeetrixButton("Save", size: .lg, isLoading: isSaving) { save() }
 }
 ```
 
@@ -158,8 +204,8 @@ QeetrixCard {
   use `.qeetrixTheme(.dark)` to draw one part of a screen in a fixed theme. Where an API needs a
   `Color`, read `@Environment(\.qeetrixTheme) var theme` and call `theme.color(.borderDefault)`.
 - **Typography** roles scale with Dynamic Type along a matching system text style, set the
-  typeface's weight, letter-style (`GEOM`) and optical-size axes the way the web does, and step one
-  weight heavier when Bold Text is on.
+  typeface's weight, letter-style (`GEOM`) and optical-size axes the way `@qeetrix/react` does, keep
+  the role's line height on every line, and step one weight heavier when Bold Text is on.
 - **Icons** are decorative unless you pass `label:`. They scale with Dynamic Type relative to `.body`
   (pass `relativeTo: nil` for a fixed size) and mirror in right-to-left layouts when their meaning
   has a direction.
@@ -210,50 +256,49 @@ category>"`; see [Templates/Component/README.md](Templates/Component/README.md).
 
 ## Updating from upstream
 
-Tokens, fonts and icons are never edited here. Change them upstream, then:
+Tokens, fonts, icons and the component reference CSS are never edited here. Change them upstream,
+publish to npm, then:
 
-1. Bump the pin in `Upstream/pins.json`.
-2. Run `Scripts/sync-upstream.sh`, which fetches, verifies and re-locks.
-3. Run `Scripts/generate.sh`, then the tests.
+1. Bump the pin in `Upstream/pins.json` (`@qeetrix/tokens`, `@qeetrix/icons`, `@qeetrix/react`).
+2. Run `Scripts/sync-upstream.sh`, which fetches from npm, verifies and re-locks.
+3. Run `Scripts/generate.sh`, read the diff of `Upstream/qeetrix-react/css/` and of the generated files,
+   then run the tests.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md#upstream-sync).
 
 ## Known limitations
 
-- **Scope.** Forty components and patterns. Component tokens are generated for the thirteen groups they
-  use (accordion, avatar, badge, button, card, dialog, input, popover, progress, skeleton, switch,
-  timeline, typography) of the 41 upstream defines. 37 icons are included, and no logos. There is no
-  data table or image component (ADR 0015).
-- **System-drawn overlays.** Alerts, confirmation dialogs and menus are drawn by iOS: only the tint is
-  Qeetrix's. One toast shows at a time, and there is no snackbar, separate centred dialog or inline alert
-  yet (ADR 0014).
+- **Scope.** 71 components and patterns with a DocC page each (77 showcase pages), against
+  `@qeetrix/react`'s 87 component families. 68 icons are included, and no logos. Some components are partial — the select has no multiple choice, tabs are
+  horizontal only, the password field has no Caps Lock warning; the
+  [migration notes](Documentation/MIGRATION_QEETRIX_REACT.md#components) list each gap.
+- **System-drawn overlays.** Alerts, confirmation dialogs, sheets, popovers and menus are drawn by iOS:
+  their material and font are the system's (ADR 0014). One toast shows at a time, and there is no
+  separate centred dialog or inline alert yet.
 - **Snapshots are local.** Baselines are not committed, so CI does not compare snapshots (ADR 0013).
-  The snapshot host measures at the default text size and draws at AX3, so components that reflow at
-  the accessibility sizes overlap in their AX3 images; UI tests check that reflow in the app instead.
-- **Built-in strings are English.** The library's 19 strings ("Loading", "Required", "Close"…) have no
+- **Built-in strings are English.** The library's 109 strings ("Loading", "Required", "Close"…) have no
   translations yet, so a localised app hears them in English
   ([localization report](Documentation/Quality/LOCALIZATION_REPORT.md)).
-- **Increased contrast.** Qeetrix defines no contrast theme yet, so colours are the same under
-  Increased Contrast. Every semantic text pair already meets WCAG 2.2 AA in both themes, and the
-  tests check this.
-- **Line height.** SwiftUI cannot set lines tighter than a font's natural height, so a role's line
-  height is a minimum. Unlike CSS, there is no half-leading above the first line.
-- **Sizes are the web's.** Body text is 14 pt, where iOS defaults to 17 pt, and control densities are
-  28–36 pt high. Components keep the drawn size and extend their touch target to 44 pt without moving
-  layout. Both choices are recorded for design review in
+- **Increased contrast.** `@qeetrix/tokens` defines no contrast context yet, so colours are the same
+  under Increased Contrast. Every designed pair meets WCAG 2.2 AA in both schemes, and the tests check
+  this.
+- **Line height.** A role's line height applies to every line, with CSS half-leading; where a role's
+  line is shorter than Qeet Sans's natural line, SwiftUI can't tighten the space between lines of
+  wrapped text, so only the first and last lines take it exactly.
+- **Sizes are the web's.** Body text is 14 pt, where iOS defaults to 17 pt, and the default density's
+  controls are 28–40 pt high. Components keep the drawn size and extend their touch target to 44 pt
+  without moving layout. Both choices are recorded for design review in
   [ARCHITECTURE.md](ARCHITECTURE.md#open-design-questions).
-- **Component geometry is not a token.** Heights, padding and type steps come from Tailwind utility
-  classes on the web, restated once in the package (ADR 0011); the drift check cannot see a change to
-  them.
-- **Verification.** Simulator tests ran on iOS 27.1 only, on the one device type that runtime offers.
-  No iOS 17 runtime was available, so behaviour on iOS 17 itself is compiled against but not yet run.
-  No iPad simulator was available either: regular-width behaviour (popovers, form sheets) was checked
-  through an iPhone in landscape.
-  VoiceOver, Bold Text and Full Keyboard Access have been checked through their semantics in tests and
-  UI tests, not by a person on a device.
+- **Component geometry is not a token.** Padding, gaps and corner details come from `@qeetrix/react`'s
+  CSS, restated in each component; the drift check can't see a change to them, but a version bump
+  shows the CSS diff in `Upstream/qeetrix-react/css/`.
+- **Verification.** Simulator tests ran on iOS 27.1 (the iPhone Duo). The move to `@qeetrix/react` also
+  ran on iOS 26.5 (iPhone 17, iPad (A16), iPhone SE, iPhone 16e), before the component tickets; the
+  device pass of the merged library is still to do. No iOS 17 runtime was available, so behaviour on iOS 17 is
+  compiled against but not run. VoiceOver, Bold Text and Full Keyboard Access have been checked through
+  their semantics in tests and UI tests, not by a person on a device.
 
 ## Licence
 
-No licence has been chosen for this package's own code yet. `@qeetrix/ui` is published as
-`UNLICENSED`, and choosing one is Qeet Group's decision. Bundled fonts and icon artwork carry their
+No licence has been chosen for this package's own code yet; choosing one is Qeet Group's decision. Bundled fonts and icon artwork carry their
 own licences; see [Documentation/THIRD_PARTY_NOTICES.md](Documentation/THIRD_PARTY_NOTICES.md).

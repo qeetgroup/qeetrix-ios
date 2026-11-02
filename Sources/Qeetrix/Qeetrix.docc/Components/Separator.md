@@ -2,34 +2,34 @@
 
 ## Overview
 
-A 1 pt rule between groups of content. `default` divides sections, groups and toolbars; `muted` divides
-items inside a section, such as rows of a list.
+A 1-point line between groups of content — `@qeetrix/react`'s Separator.
 
 ```swift
-VStack(alignment: .leading, spacing: QeetrixSpacing.m) {
-    QeetrixText("Profile", variant: .h3)
+VStack(alignment: .leading, spacing: QeetrixSpace.gapMd) {
+    QeetrixHeading("Profile", level: 3)
     QeetrixSeparator()
     QeetrixText("Your name and photo are visible to your team.")
 }
 ```
 
-A vertical separator fills the height its container proposes; inside an `HStack`, give the stack a
-height or let its content set one.
+- **Orientation**: horizontal (default), or vertical, which stretches to its row.
+- **Tone**: `subtle` (`color.border.subtle`, default), `default` or `strong`.
+- `border.width.default` thick.
 
 ### Accessibility
 
-A separator never carries meaning on its own: grouping comes from spacing and headings. Both variants
-are below 3:1 by design.
+Decorative by default — hidden from VoiceOver, the web's `decorative` — since spacing and headings
+already group the content. Pass `isDecorative: false` where the boundary itself carries meaning.
 
-### Platform adaptations
+### Platform differences
 
-The web separator has `role="separator"`. VoiceOver has no separator trait, so the rule is hidden from
-VoiceOver, like the system's own list separators.
+None in the look. A vertical separator — `QeetrixSeparator(.vertical)` — needs its row to have a
+height, so give an `HStack` a fixed vertical size.
 
-On the web: [Separator on ui.qeet.in](https://ui.qeet.in/docs/components/separator).
+On the web: [Separator on ui.qeet.in](https://ui.qeet.in/components/separator/).
 
 ## Topics
 
-### Variants
+### Styling
 
-- ``QeetrixSeparatorVariant``
+- ``QeetrixSeparatorTone``

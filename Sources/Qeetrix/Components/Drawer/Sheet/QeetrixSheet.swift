@@ -1,31 +1,32 @@
 import SwiftUI
 
+/// A dialog's intent, as `@qeetrix/react`'s Dialog `intent`: the 3 pt line across its top.
+public enum QeetrixDialogIntent: String, CaseIterable, Sendable {
+    /// Ember (`color.border.brand`).
+    case standard
+    /// A destructive confirmation (`color.border.danger`).
+    case danger
+    /// A warning (`color.icon.warning`).
+    case warning
+
+    var color: QeetrixColor {
+        switch self {
+        case .standard: .borderBrand
+        case .danger: .borderDanger
+        case .warning: .iconWarning
+        }
+    }
+}
+
 extension View {
-    /// Presents a sheet while `isPresented` is true — the web's `Drawer` and `Dialog`, as the system sheet.
+    /// Presents a Qeetrix sheet while `isPresented` is true — the system sheet, with the drawer's
+    /// overlay surface (`color.surface.overlay`) and 4 pt corners. Put a ``QeetrixSheetContent`` in it.
     ///
-    /// ```swift
-    /// .qeetrixSheet(isPresented: $isEditing, detents: [.medium, .large], isDismissDisabled: hasChanges) {
-    ///     QeetrixSheetContent("Edit profile", description: Text("Your team sees these details.")) {
-    ///         QeetrixTextField("Display name", text: $name)
-    ///     } actions: {
-    ///         QeetrixButton("Cancel", variant: .outline) { isEditing = false }
-    ///         QeetrixButton("Save") { save() }
-    ///     }
-    /// }
-    /// ```
-    ///
-    /// On iPhone the sheet rises from the bottom, to the heights in `detents`, with a grab handle when there
-    /// is more than one; on iPad, in a regular-width window, it is the centred form sheet — the web Dialog's
-    /// shape. It draws the dialog surface and corner from the design tokens; motion, dimming and the
-    /// gestures are the system's.
-    ///
-    /// - Parameters:
-    ///   - isPresented: Whether the sheet is shown; set back to `false` however it is dismissed.
-    ///   - detents: The heights it can rest at. `[.large]` by default, the web drawer's full height.
-    ///   - isDismissDisabled: Stops a swipe or a tap outside from dismissing it — while a form has unsaved
-    ///     changes, say. Your own buttons still dismiss it. The decision is yours.
-    ///   - onDismiss: Runs once after the sheet is dismissed, however that happened.
-    ///   - content: The sheet's content, typically a ``QeetrixSheetContent``.
+    /// On iOS the sheet stands in for both `@qeetrix/react`'s Drawer and its Dialog (ADR 0014): it
+    /// keeps the system's presentation, swipe to dismiss, detents and VoiceOver focus handling.
+    /// `isDismissDisabled` turns off the swipe, as the web's `dismissible={false}` turns off Escape and
+    /// an outside click; pair it with `isDismissible: false` on the content, which then has no close
+    /// button.
     public func qeetrixSheet<Content: View>(
         isPresented: Binding<Bool>,
         detents: Set<PresentationDetent> = [.large],
@@ -38,8 +39,7 @@ extension View {
         }
     }
 
-    /// Presents a sheet for `item` while it is not `nil` — for a sheet about one thing, such as the row
-    /// that was tapped.
+    /// Presents a Qeetrix sheet for `item` while it is not `nil`.
     public func qeetrixSheet<Item: Identifiable, Content: View>(
         item: Binding<Item?>,
         detents: Set<PresentationDetent> = [.large],
@@ -53,123 +53,144 @@ extension View {
     }
 }
 
-/// The Qeetrix sheet surface: the dialog background and corner from `component.dialog.*`, the detents,
-/// and a grab handle when there is more than one detent to move between.
 struct QeetrixSheetPresentation: ViewModifier {
     let detents: Set<PresentationDetent>
     let isDismissDisabled: Bool
 
     func body(content: Content) -> some View {
         content
-            .foregroundStyle(QeetrixDialogTokens.foreground)
+            .foregroundStyle(QeetrixColor.textDefault)
             .presentationDetents(detents)
             .presentationDragIndicator(detents.count > 1 ? .visible : .hidden)
-            .presentationBackground(QeetrixDialogTokens.background)
-            .presentationCornerRadius(QeetrixDialogTokens.corner)
+            .presentationBackground(QeetrixColor.surfaceOverlay)
+            .presentationCornerRadius(QeetrixRadius.modal)
             .interactiveDismissDisabled(isDismissDisabled)
     }
 }
 
-/// The layout of a sheet — the web `Dialog`'s parts: a header with the title, an optional description and
-/// a Close button; the content, which scrolls; and the actions, pinned below it.
+/// A sheet's layout, as `@qeetrix/react`'s Drawer: a ruled header with the title (`title.md`), an
+/// optional description and the close button at its end; the body, which scrolls; and a ruled footer
+/// with the actions, end-aligned, tertiary first.
 ///
-/// The title is a heading and names the sheet for VoiceOver. Close dismisses the sheet with the
-/// environment's `dismiss` — or, when you pass `onClose`, runs that instead, so a sheet with unsaved
-/// changes can ask before discarding them. The actions are placed as ``QeetrixFormActions`` places them —
-/// stacked full-width with the primary on top on iPhone, a trailing row on iPad — and stay above the
-/// keyboard while a field is focused, so the primary action never scrolls out of reach.
+/// ```swift
+/// .qeetrixSheet(isPresented: $isEditing) {
+///     QeetrixSheetContent("Edit address", description: Text("Used on every invoice.")) {
+///         QeetrixTextField("Street", text: $street)
+///     } actions: {
+///         QeetrixButton("Cancel", variant: .ghost, size: .lg) { isEditing = false }
+///         QeetrixButton("Save", size: .lg) { save() }
+///     }
+/// }
+/// ```
+///
+/// 24 pt padding (`space.inset.xl`) and 1 pt `color.border.subtle` rules; the header and footer stay
+/// put while the body scrolls. Where the sheet is the web's Dialog — a decision that interrupts — give
+/// it an `intent`, which draws the Dialog's 3 pt line across its top: Ember for a standard dialog, red
+/// for a destructive one, amber for a warning. The close button is a neutral ghost ``QeetrixIconButton``
+/// named "Close"; it calls `onClose`, or dismisses the sheet. With `isDismissible: false` there is no
+/// close button, as for an unsaved form: only the actions close it.
 public struct QeetrixSheetContent<Content: View, Actions: View>: View {
     let title: Text
     let description: Text?
+    let intent: QeetrixDialogIntent?
+    let isDismissible: Bool
     let onClose: (@MainActor () -> Void)?
     let content: Content
     let actions: Actions
     @Environment(\.dismiss) private var dismiss
 
-    /// A sheet layout with a localised title.
     public init(
-        _ titleKey: LocalizedStringKey, description: Text? = nil, onClose: (@MainActor () -> Void)? = nil,
-        @ViewBuilder content: () -> Content, @ViewBuilder actions: () -> Actions
+        _ titleKey: LocalizedStringKey, description: Text? = nil, intent: QeetrixDialogIntent? = nil, isDismissible: Bool = true,
+        onClose: (@MainActor () -> Void)? = nil, @ViewBuilder content: () -> Content, @ViewBuilder actions: () -> Actions
     ) {
-        self.init(title: Text(titleKey), description: description, onClose: onClose, content: content, actions: actions)
+        self.init(
+            title: Text(titleKey), description: description, intent: intent, isDismissible: isDismissible, onClose: onClose,
+            content: content, actions: actions)
     }
 
-    /// A sheet layout with a title shown as given, without localisation.
     public init<S: StringProtocol>(
-        _ title: S, description: Text? = nil, onClose: (@MainActor () -> Void)? = nil,
-        @ViewBuilder content: () -> Content, @ViewBuilder actions: () -> Actions
+        _ title: S, description: Text? = nil, intent: QeetrixDialogIntent? = nil, isDismissible: Bool = true,
+        onClose: (@MainActor () -> Void)? = nil, @ViewBuilder content: () -> Content, @ViewBuilder actions: () -> Actions
     ) {
-        self.init(title: Text(title), description: description, onClose: onClose, content: content, actions: actions)
+        self.init(
+            title: Text(title), description: description, intent: intent, isDismissible: isDismissible, onClose: onClose,
+            content: content, actions: actions)
     }
 
-    /// A sheet layout with a `Text` title.
-    ///
-    /// - Parameters:
-    ///   - title: The heading, which names the sheet for VoiceOver.
-    ///   - description: A line under the title.
-    ///   - onClose: What Close does instead of dismissing — to confirm discarding changes, say.
-    ///   - content: The body; it scrolls when taller than the sheet.
-    ///   - actions: The buttons, in reading order, primary last.
     public init(
-        title: Text, description: Text? = nil, onClose: (@MainActor () -> Void)? = nil,
-        @ViewBuilder content: () -> Content, @ViewBuilder actions: () -> Actions
+        title: Text, description: Text? = nil, intent: QeetrixDialogIntent? = nil, isDismissible: Bool = true,
+        onClose: (@MainActor () -> Void)? = nil, @ViewBuilder content: () -> Content, @ViewBuilder actions: () -> Actions
     ) {
         self.title = title
         self.description = description
+        self.intent = intent
+        self.isDismissible = isDismissible
         self.onClose = onClose
         self.content = content()
         self.actions = actions()
     }
 
     public var body: some View {
-        let padding = QeetrixWebScale.spacing(6)  // p-6
+        let padding = QeetrixSpace.insetXl
         ScrollView {
-            VStack(alignment: .leading, spacing: QeetrixWebScale.spacing(4)) {  // gap-4
+            VStack(alignment: .leading, spacing: QeetrixSpace.gapLg) {
                 content
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, padding)
-            .padding(.bottom, padding)
+            .padding(padding)
         }
         .scrollBounceBehavior(.basedOnSize)
-        // The header and actions stay put; the content scrolls beneath them, so they carry the surface.
+        // The header and footer stay put; the body scrolls beneath them, so they carry the surface.
         .safeAreaInset(edge: .top, spacing: 0) {
-            header.padding(padding).background(QeetrixDialogTokens.background)
+            VStack(spacing: 0) {
+                if let intent {
+                    Rectangle().fill(intent.color).frame(height: QeetrixBorderWidth.accent).accessibilityHidden(true)
+                }
+                header.padding(padding)
+                QeetrixSheetRule()
+            }
+            .background(QeetrixColor.surfaceOverlay)
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            QeetrixFormActions { actions }
-                .padding(.horizontal, padding)
-                .padding(.bottom, padding)
-                .background(QeetrixDialogTokens.background)
+            VStack(spacing: 0) {
+                QeetrixSheetRule()
+                QeetrixFormActions { actions }
+                    .padding(.horizontal, padding)
+                    .padding(.vertical, QeetrixSpace.insetLg)
+            }
+            .background(QeetrixColor.surfaceOverlay)
         }
-        .qeetrixType(QeetrixSheetMetrics.bodyType)
+        .qeetrixTypeEnvironment(QeetrixTypeSpec(.bodyMd))
     }
 
     private var header: some View {
-        HStack(alignment: .top, spacing: QeetrixWebScale.spacing(2)) {
-            VStack(alignment: .leading, spacing: QeetrixWebScale.spacing(1.5)) {  // gap-1.5
+        HStack(alignment: .top, spacing: QeetrixSpace.gapSm) {
+            VStack(alignment: .leading, spacing: QeetrixSpace.gapXs) {
                 title
-                    .qeetrixType(QeetrixSheetMetrics.titleType)
-                    .foregroundStyle(QeetrixColor.textPrimary)
+                    .qeetrixTextStyle(.titleMd)
+                    .foregroundStyle(QeetrixColor.textDefault)
                     .accessibilityAddTraits(.isHeader)
                 if let description {
                     description
-                        .qeetrixType(QeetrixSheetMetrics.bodyType)
-                        .foregroundStyle(QeetrixColor.textTertiary)  // text-muted-foreground
+                        .qeetrixTextStyle(.bodyMd)
+                        .foregroundStyle(QeetrixColor.textSubtle)
                 }
             }
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, alignment: .leading)
-            QeetrixIconButton(.x, label: QeetrixStrings.close, variant: .ghost, size: .sm) {
-                if let onClose { onClose() } else { dismiss() }
+            if isDismissible {
+                QeetrixIconButton(.x, label: QeetrixStrings.close, tone: .neutral, size: .sm) {
+                    if let onClose { onClose() } else { dismiss() }
+                }
+                .padding(.top, -4)
             }
         }
     }
 }
 
-enum QeetrixSheetMetrics {
-    /// `font-heading text-heading font-semibold`: the heading role.
-    static let titleType = QeetrixTypeSpec(.heading)
-    /// `text-sm`.
-    static let bodyType = QeetrixComponentType.sans(QeetrixWebScale.textSM, .regular, scalesLike: .body)
+/// A drawer section's 1 pt `color.border.subtle` rule.
+struct QeetrixSheetRule: View {
+    var body: some View {
+        Rectangle().fill(QeetrixColor.borderSubtle).frame(height: QeetrixBorderWidth.default).accessibilityHidden(true)
+    }
 }

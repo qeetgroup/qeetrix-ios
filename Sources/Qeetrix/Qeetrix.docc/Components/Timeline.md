@@ -2,36 +2,74 @@
 
 ## Overview
 
-A vertical history of events — activity on a document, the life of an invoice.
+What happened, newest first — a person's sign-in activity, the critical events of an audit trail — as
+`@qeetrix/react`'s Timeline.
 
 ```swift
 QeetrixTimeline {
-    QeetrixTimelineItem("Invoice paid", time: Text("09:41"), tone: .success, icon: .check)
-    QeetrixTimelineItem("Reminder sent", time: Text("Yesterday"), tone: .info)
-    QeetrixTimelineItem("Synced", emphasis: .minor)
+    QeetrixTimelineGroup("Today") {
+        QeetrixTimelineItem(
+            "Signed in with a passkey", description: "Bengaluru · Safari on iPhone", time: Text("2 min ago"), icon: .keyRound)
+        QeetrixTimelineItem(
+            "Sign-in refused", description: "Unknown device", time: Text("1 h ago"), icon: .circleX, tone: .danger)
+    }
+    QeetrixTimelineGroup("Yesterday") {
+        QeetrixTimelineItem("Phone linked", time: Text("18:02"), icon: .smartphone, tone: .success)
+    }
 }
 ```
 
-- **Three levels.** A `minor` event is a small neutral dot with a muted title; a default event a toned
-  dot; an event with an `icon` a tinted marker — for the few that matter most.
-- **Tone** is a second channel: the title says what happened.
-- **Rhythm.** Markers sit on a 24 pt rail joined by a connector; events are 24 pt apart, minor ones 12.
-- **Times** sit at the end of the title line, and move below it at the accessibility sizes.
+- **Events** (``QeetrixTimelineItem``): what happened (the title, `body.md` at weight 500), where, by
+  whom or how (the description, `body.sm`, `color.text.subtle`) and when (the time, `body.sm`,
+  `color.text.subtle`, at the end on one line). Pass the time formatted — `Text("2 min ago")`, or
+  `Text(date, style: .relative)`.
+- **Markers**: a 28-point square (`component.timeline.marker-size`) of `color.bg.neutral.subtle` with
+  a 1-point `color.border.subtle` edge and 4-point corners, holding the event's sharp 16-point icon. A
+  1-point `color.border.subtle` line runs from 4 points under it to 4 points above the next event.
+- **Tone**: `neutral` (the default), `brand`, `info`, `success`, `warning` or `danger` colours the
+  icon (`color.icon.<tone>`); `danger`, for a failure such as a refused sign-in, colours the title too.
+- **Groups** (``QeetrixTimelineGroup``), such as one per day: a label in `label.caps`,
+  `color.text.subtle`, 8 points above its events. Groups are 12 points apart, and the line breaks
+  between them.
+- **Compact**: `variant: .compact` draws minor events — a side panel, a short summary — with a 6-point
+  dot centred on the title's first line and no line; events are 8 points apart, and titles take the
+  regular weight.
 
-Your app orders, words, times and fetches the events; the timeline classifies nothing. It lays out in a
-`ScrollView`, a card or a sheet — in a `List` the connectors can't join across rows.
+```swift
+QeetrixTimeline(variant: .compact) {
+    QeetrixTimelineItem("Approved on iPhone", time: Text("2 min ago"), tone: .success)
+    QeetrixTimelineItem("Approval requested", time: Text("3 min ago"))
+}
+```
+
+The events, their order, their wording and their times are the app's. The full audit log stays a
+list; a timeline is the short summary on a detail screen.
 
 ### Accessibility
 
-Each event is one element: title, time, description. When a marker conveys something the text doesn't,
-pass `label` ("Failed") and VoiceOver reads it as the event's value.
+- VoiceOver reads each event as one element — title, description, time — and the marker not at all:
+  the title says what happened, so the tone is a second channel, never the only one.
+- At the accessibility text sizes the time moves under the description, and the marker grows with its
+  icon; where the title's line outgrows the marker, the marker moves down to its centre.
+- In right-to-left layouts the markers and the line move to the right.
 
-On the web: [Timeline on ui.qeet.in](https://ui.qeet.in/docs/components/timeline).
+### Platform differences
+
+- **Times** are `Text`, so an app can pass a date that updates itself (`Text(date, style: .relative)`);
+  the web takes a node and a machine-readable `dateTime`.
+- **Long histories.** The line joins the events of one timeline. For a long or growing history in a
+  lazy list, use list rows instead.
+
+On the web: [Timeline on ui.qeet.in](https://ui.qeet.in/components/timeline/).
 
 ## Topics
 
-### Events
+### Parts
 
 - ``QeetrixTimelineItem``
+- ``QeetrixTimelineGroup``
+
+### Variants and tones
+
+- ``QeetrixTimelineVariant``
 - ``QeetrixTimelineTone``
-- ``QeetrixTimelineEmphasis``

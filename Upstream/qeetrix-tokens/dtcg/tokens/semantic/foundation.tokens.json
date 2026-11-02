@@ -1,0 +1,768 @@
+{
+  "font": {
+    "family": {
+      "$type": "fontFamily",
+      "$description": "Font families by role.",
+      "heading": {
+        "$value": "{primitive.font.family.qeet-sans}"
+      },
+      "sans": {
+        "$value": "{primitive.font.family.qeet-sans}"
+      },
+      "mono": {
+        "$value": "{primitive.font.family.fira-code}"
+      },
+      "indic": {
+        "$value": "{primitive.font.family.noto-indic}"
+      }
+    },
+    "geometry": {
+      "$type": "number",
+      "$description": "The GEOM axis value per role: display headlines in Qeet Sans's Geo letter style, headings in Base, and body and interface text in A11y, its most legible forms. Each typography role names the one it uses ($extensions[\"in.qeet.qeetrix\"].fontGeometry).",
+      "display": {
+        "$value": "{primitive.font.geometry.geo}"
+      },
+      "heading": {
+        "$value": "{primitive.font.geometry.base}"
+      },
+      "body": {
+        "$value": 0,
+        "$description": "A11y (0), Qeet Sans's most legible letter style. Authored as a value, not an alias: Terrazzo leaves an alias to a 0 unresolved."
+      }
+    }
+  },
+  "typography": {
+    "$type": "typography",
+    "$description": "Type roles. Every line height lands exactly on the 4px grid: $extensions[\"in.qeet.qeetrix\"].lineHeight is the line height as a length, and lineHeight, the ratio DTCG requires, is that length divided by fontSize at full precision, so fontSize × lineHeight is exactly the length (bun run derive writes it). Letter spacing stays 0 because Qeet Sans spaces each optical size itself, except in label.caps, where small capitals need room to read. $extensions[\"in.qeet.qeetrix\"].fontGeometry is the font.geometry token a role sets on Qeet Sans's GEOM axis: display the display geometry, heading and title the heading geometry, body, label and code the body geometry. A face with no GEOM axis, such as Fira Code, ignores it.",
+    "display": {
+      "lg": {
+        "$value": {
+          "fontFamily": "{font.family.heading}",
+          "fontSize": "{primitive.font.size.56}",
+          "fontWeight": "{primitive.font.weight.semibold}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": 1.1428571428571428
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.display}",
+            "lineHeight": {
+              "value": 4,
+              "unit": "rem"
+            }
+          }
+        }
+      },
+      "md": {
+        "$value": {
+          "fontFamily": "{font.family.heading}",
+          "fontSize": "{primitive.font.size.48}",
+          "fontWeight": "{primitive.font.weight.semibold}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": 1.1666666666666667
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.display}",
+            "lineHeight": {
+              "value": 3.5,
+              "unit": "rem"
+            }
+          }
+        }
+      },
+      "sm": {
+        "$value": {
+          "fontFamily": "{font.family.heading}",
+          "fontSize": "{primitive.font.size.40}",
+          "fontWeight": "{primitive.font.weight.semibold}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": 1.2
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.display}",
+            "lineHeight": {
+              "value": 3,
+              "unit": "rem"
+            }
+          }
+        }
+      }
+    },
+    "heading": {
+      "lg": {
+        "$value": {
+          "fontFamily": "{font.family.heading}",
+          "fontSize": "{primitive.font.size.32}",
+          "fontWeight": "{primitive.font.weight.semibold}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": 1.25
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.heading}",
+            "lineHeight": {
+              "value": 2.5,
+              "unit": "rem"
+            }
+          }
+        }
+      },
+      "md": {
+        "$value": {
+          "fontFamily": "{font.family.heading}",
+          "fontSize": "{primitive.font.size.28}",
+          "fontWeight": "{primitive.font.weight.semibold}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": 1.2857142857142858
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.heading}",
+            "lineHeight": {
+              "value": 2.25,
+              "unit": "rem"
+            }
+          }
+        }
+      },
+      "sm": {
+        "$value": {
+          "fontFamily": "{font.family.heading}",
+          "fontSize": "{primitive.font.size.24}",
+          "fontWeight": "{primitive.font.weight.semibold}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": 1.3333333333333333
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.heading}",
+            "lineHeight": {
+              "value": 2,
+              "unit": "rem"
+            }
+          }
+        }
+      }
+    },
+    "title": {
+      "lg": {
+        "$value": {
+          "fontFamily": "{font.family.heading}",
+          "fontSize": "{primitive.font.size.20}",
+          "fontWeight": "{primitive.font.weight.semibold}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": 1.4
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.heading}",
+            "lineHeight": {
+              "value": 1.75,
+              "unit": "rem"
+            }
+          }
+        }
+      },
+      "md": {
+        "$value": {
+          "fontFamily": "{font.family.heading}",
+          "fontSize": "{primitive.font.size.18}",
+          "fontWeight": "{primitive.font.weight.semibold}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": 1.3333333333333333
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.heading}",
+            "lineHeight": {
+              "value": 1.5,
+              "unit": "rem"
+            }
+          }
+        }
+      },
+      "sm": {
+        "$value": {
+          "fontFamily": "{font.family.heading}",
+          "fontSize": "{primitive.font.size.16}",
+          "fontWeight": "{primitive.font.weight.semibold}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": 1.5
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.heading}",
+            "lineHeight": {
+              "value": 1.5,
+              "unit": "rem"
+            }
+          }
+        }
+      }
+    },
+    "body": {
+      "lg": {
+        "$value": {
+          "fontFamily": "{font.family.sans}",
+          "fontSize": "{primitive.font.size.16}",
+          "fontWeight": "{primitive.font.weight.regular}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": 1.5
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.body}",
+            "lineHeight": {
+              "value": 1.5,
+              "unit": "rem"
+            }
+          }
+        }
+      },
+      "md": {
+        "$value": {
+          "fontFamily": "{font.family.sans}",
+          "fontSize": "{primitive.font.size.14}",
+          "fontWeight": "{primitive.font.weight.regular}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": 1.4285714285714286
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.body}",
+            "lineHeight": {
+              "value": 1.25,
+              "unit": "rem"
+            }
+          }
+        }
+      },
+      "sm": {
+        "$value": {
+          "fontFamily": "{font.family.sans}",
+          "fontSize": "{primitive.font.size.12}",
+          "fontWeight": "{primitive.font.weight.regular}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": 1.3333333333333333
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.body}",
+            "lineHeight": {
+              "value": 1,
+              "unit": "rem"
+            }
+          }
+        }
+      }
+    },
+    "label": {
+      "lg": {
+        "$value": {
+          "fontFamily": "{font.family.sans}",
+          "fontSize": "{primitive.font.size.16}",
+          "fontWeight": "{primitive.font.weight.medium}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": 1.5
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.body}",
+            "lineHeight": {
+              "value": 1.5,
+              "unit": "rem"
+            }
+          }
+        }
+      },
+      "md": {
+        "$value": {
+          "fontFamily": "{font.family.sans}",
+          "fontSize": "{primitive.font.size.14}",
+          "fontWeight": "{primitive.font.weight.medium}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": 1.4285714285714286
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.body}",
+            "lineHeight": {
+              "value": 1.25,
+              "unit": "rem"
+            }
+          }
+        }
+      },
+      "sm": {
+        "$value": {
+          "fontFamily": "{font.family.sans}",
+          "fontSize": "{primitive.font.size.12}",
+          "fontWeight": "{primitive.font.weight.medium}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": 1.3333333333333333
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.body}",
+            "lineHeight": {
+              "value": 1,
+              "unit": "rem"
+            }
+          }
+        }
+      },
+      "caps": {
+        "$description": "Small capitals that label a group: navigation sections, table column groups, panel sections. The component sets text-transform: uppercase, which isn't a token. Tracked +6% (0.66px at 11px) so the capitals don't crowd.",
+        "$value": {
+          "fontFamily": "{font.family.sans}",
+          "fontSize": "{primitive.font.size.11}",
+          "fontWeight": "{primitive.font.weight.semibold}",
+          "letterSpacing": {
+            "value": 0.66,
+            "unit": "px"
+          },
+          "lineHeight": 1.4545454545454546
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.body}",
+            "lineHeight": {
+              "value": 1,
+              "unit": "rem"
+            }
+          }
+        }
+      }
+    },
+    "code": {
+      "md": {
+        "$value": {
+          "fontFamily": "{font.family.mono}",
+          "fontSize": "{primitive.font.size.14}",
+          "fontWeight": "{primitive.font.weight.regular}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": 1.4285714285714286
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.body}",
+            "lineHeight": {
+              "value": 1.25,
+              "unit": "rem"
+            }
+          }
+        }
+      },
+      "sm": {
+        "$value": {
+          "fontFamily": "{font.family.mono}",
+          "fontSize": "{primitive.font.size.12}",
+          "fontWeight": "{primitive.font.weight.regular}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": 1.3333333333333333
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "fontGeometry": "{font.geometry.body}",
+            "lineHeight": {
+              "value": 1,
+              "unit": "rem"
+            }
+          }
+        }
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "inset": {
+      "$description": "Padding inside a container, by size.",
+      "xs": {
+        "$value": "{primitive.space.100}"
+      },
+      "sm": {
+        "$value": "{primitive.space.200}"
+      },
+      "md": {
+        "$value": "{primitive.space.300}"
+      },
+      "lg": {
+        "$value": "{primitive.space.400}"
+      },
+      "xl": {
+        "$value": "{primitive.space.600}"
+      }
+    },
+    "gap": {
+      "$description": "Space between sibling elements, by size.",
+      "xs": {
+        "$value": "{primitive.space.100}"
+      },
+      "sm": {
+        "$value": "{primitive.space.200}"
+      },
+      "md": {
+        "$value": "{primitive.space.300}"
+      },
+      "lg": {
+        "$value": "{primitive.space.400}"
+      },
+      "xl": {
+        "$value": "{primitive.space.600}"
+      }
+    },
+    "layout": {
+      "$description": "Space between page sections and regions.",
+      "sm": {
+        "$value": "{primitive.space.600}"
+      },
+      "md": {
+        "$value": "{primitive.space.800}"
+      },
+      "lg": {
+        "$value": "{primitive.space.1200}"
+      },
+      "xl": {
+        "$value": "{primitive.space.1600}"
+      }
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "icon": {
+      "$description": "Icon box sizes, in px: icons are drawn on a pixel grid.",
+      "2xs": {
+        "$description": "Marks inside 16–20px chips: Badge, filter tags.",
+        "$value": {
+          "value": 12,
+          "unit": "px"
+        }
+      },
+      "xs": {
+        "$value": {
+          "value": 14,
+          "unit": "px"
+        }
+      },
+      "sm": {
+        "$value": {
+          "value": 16,
+          "unit": "px"
+        }
+      },
+      "md": {
+        "$value": {
+          "value": 20,
+          "unit": "px"
+        }
+      },
+      "lg": {
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        }
+      }
+    },
+    "target": {
+      "min": {
+        "$value": {
+          "value": 24,
+          "unit": "px"
+        },
+        "$description": "The smallest pointer target any control may have (WCAG 2.2, 2.5.8 Target Size, Minimum)."
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "$description": "Corner roles.",
+    "none": {
+      "$value": "{primitive.radius.0}"
+    },
+    "sm": {
+      "$value": "{primitive.radius.50}",
+      "$description": "Small marks that stay square: a checkbox, a switch track, a keyboard key."
+    },
+    "tooltip": {
+      "$value": "{primitive.radius.50}"
+    },
+    "control": {
+      "$value": "{primitive.radius.100}",
+      "$description": "Buttons, fields, selects: every control. Fields round only their top corners."
+    },
+    "surface": {
+      "$value": "{primitive.radius.100}",
+      "$description": "Cards, panels and other containers."
+    },
+    "overlay": {
+      "$value": "{primitive.radius.100}",
+      "$description": "Menus, popovers and other floating surfaces."
+    },
+    "modal": {
+      "$value": "{primitive.radius.100}",
+      "$description": "Dialogs and drawers."
+    },
+    "chip": {
+      "$value": "{primitive.radius.full}",
+      "$description": "Status tags: full pills."
+    },
+    "full": {
+      "$value": "{primitive.radius.full}",
+      "$description": "People and choices that must read round: avatars, radios, presence dots."
+    }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "$description": "Border widths.",
+      "default": {
+        "$value": {
+          "value": 1,
+          "unit": "px"
+        }
+      },
+      "strong": {
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        }
+      },
+      "accent": {
+        "$value": {
+          "value": 3,
+          "unit": "px"
+        },
+        "$description": "The Ember bar that marks the current item, and the intent line on top of a dialog."
+      }
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "dimension",
+      "$description": "The focus ring: drawn outside the control, in color.border.focus.",
+      "width": {
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        }
+      },
+      "offset": {
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        }
+      }
+    }
+  },
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "$description": "Durations by role. Under prefers-reduced-motion the web stylesheet sets every one of them to 0ms; native platforms honour the system setting the same way.",
+      "instant": {
+        "$value": "{primitive.duration.0}"
+      },
+      "fast": {
+        "$value": "{primitive.duration.100}",
+        "$description": "Hover and press feedback."
+      },
+      "normal": {
+        "$value": "{primitive.duration.200}",
+        "$description": "Small surfaces: tooltips, menus, toggles."
+      },
+      "slow": {
+        "$value": "{primitive.duration.300}",
+        "$description": "Dialogs, drawers, sheets."
+      },
+      "slower": {
+        "$value": "{primitive.duration.400}",
+        "$description": "Large or full-screen transitions."
+      }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "$description": "Easing by role.",
+      "standard": {
+        "$value": "{primitive.easing.in-out-cubic}",
+        "$description": "Something that stays on screen changes: a size, a position, a colour."
+      },
+      "enter": {
+        "$value": "{primitive.easing.out-quart}",
+        "$description": "Something arrives: decelerates to rest."
+      },
+      "exit": {
+        "$value": "{primitive.easing.in-cubic}",
+        "$description": "Something leaves: accelerates away."
+      },
+      "emphasized": {
+        "$value": "{primitive.easing.out-expo}",
+        "$description": "Large movements — drawers, page-level transitions."
+      },
+      "linear": {
+        "$value": "{primitive.easing.linear}",
+        "$description": "Progress and other continuous motion."
+      }
+    },
+    "spring": {
+      "$type": "number",
+      "$description": "Springs for native platforms, in Jetpack Compose's terms (stiffness, damping ratio; mass 1). SwiftUI: response = 2π / √stiffness, dampingFraction = the damping ratio.",
+      "snappy": {
+        "stiffness": {
+          "$value": 400
+        },
+        "damping-ratio": {
+          "$value": 0.9
+        }
+      },
+      "gentle": {
+        "stiffness": {
+          "$value": 200
+        },
+        "damping-ratio": {
+          "$value": 1
+        }
+      }
+    }
+  },
+  "opacity": {
+    "disabled": {
+      "$type": "number",
+      "$value": 0.4,
+      "$description": "For disabled content that has no disabled colour of its own — an image, a whole illustration."
+    }
+  },
+  "icon": {
+    "stroke": {
+      "$type": "number",
+      "$description": "Icon stroke widths, in px at the icon's drawn size.",
+      "thin": {
+        "$value": 1.5
+      },
+      "regular": {
+        "$value": 2
+      }
+    }
+  },
+  "z": {
+    "$type": "number",
+    "$description": "The stacking ladder. Web only: native platforms stack by view hierarchy.",
+    "$extensions": {
+      "in.qeet.qeetrix": {
+        "platforms": ["web"]
+      }
+    },
+    "base": {
+      "$value": 0
+    },
+    "sticky": {
+      "$value": 100
+    },
+    "dropdown": {
+      "$value": 1000
+    },
+    "overlay": {
+      "$value": 1300,
+      "$description": "Scrims and backdrops."
+    },
+    "modal": {
+      "$value": 1400
+    },
+    "popover": {
+      "$value": 1500,
+      "$description": "Above modals, so a popover opened from a dialog shows."
+    },
+    "toast": {
+      "$value": 1600
+    },
+    "tooltip": {
+      "$value": 1700
+    },
+    "spotlight": {
+      "$value": 1800,
+      "$description": "Guided tours."
+    },
+    "skip-link": {
+      "$value": 1900
+    }
+  },
+  "breakpoint": {
+    "$type": "dimension",
+    "$description": "Window size classes, the same on web and Android: compact below medium, then medium, expanded, large and extra-large. The web stylesheet publishes them as @custom-media --qx-viewport-*.",
+    "medium": {
+      "$value": {
+        "value": 600,
+        "unit": "px"
+      }
+    },
+    "expanded": {
+      "$value": {
+        "value": 840,
+        "unit": "px"
+      }
+    },
+    "large": {
+      "$value": {
+        "value": 1200,
+        "unit": "px"
+      }
+    },
+    "xlarge": {
+      "$value": {
+        "value": 1600,
+        "unit": "px"
+      }
+    }
+  }
+}

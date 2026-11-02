@@ -1,32 +1,32 @@
 #if os(iOS)
-    import Qeetrix
     import SwiftUI
     import Testing
 
-    private struct Item: Identifiable, Sendable {
-        let id: Int
-        let isOn: Bool
-    }
+    @testable import Qeetrix
 
     @MainActor
     @Suite("Checkbox snapshots")
     struct CheckboxSnapshotTests {
-        @Test("Unchecked, checked, mixed, with a description, disabled, and an invalid group")
+        @Test("Unchecked, checked, mixed, with a description, disabled, focus and an invalid group")
         func states() {
-            let items = [Binding.constant(true), Binding.constant(false)]
+            let mixed: [Binding<Bool>] = [.constant(true), .constant(false)]
             assertSpecimen(
-                VStack(alignment: .leading, spacing: 16) {
-                    VStack(spacing: 0) {
-                        QeetrixCheckbox("Unchecked", isOn: .constant(false))
-                        QeetrixCheckbox("Checked", isOn: .constant(true))
-                        QeetrixCheckbox("Mixed", sources: items, isOn: \.self)
-                        QeetrixCheckbox("With a description", isOn: .constant(true), description: Text("Shown under the label."))
-                        QeetrixCheckbox("Disabled", isOn: .constant(true)).disabled(true)
+                VStack(alignment: .leading, spacing: 0) {
+                    QeetrixCheckbox("Email me receipts", isOn: .constant(false))
+                    QeetrixCheckbox("Email me receipts", isOn: .constant(true))
+                    QeetrixCheckbox("Select all", sources: mixed, isOn: \.self)
+                    QeetrixCheckbox("Weekly summary", isOn: .constant(true), description: Text("Every Monday at 9 am."))
+                    QeetrixCheckbox("Locked off", isOn: .constant(false)).disabled(true)
+                    QeetrixCheckbox("Locked on", isOn: .constant(true), description: Text("Your admin turned this on.")).disabled(true)
+                    QeetrixChoiceRow(description: nil, isEnabled: true) {
+                        QeetrixCheckboxBox(mark: .checked, isHovered: false, isEnabled: true, isInvalid: false, isFocused: true)
+                    } label: {
+                        Text("Focused")
                     }
-                    QeetrixFieldSet("Notifications", message: QeetrixFieldMessage(.error, text: "Choose at least one.")) {
-                        QeetrixCheckbox("Email", isOn: .constant(false))
-                        QeetrixCheckbox("Push", isOn: .constant(false))
+                    VStack(alignment: .leading, spacing: 0) {
+                        QeetrixCheckbox("I accept the terms", isOn: .constant(false))
                     }
+                    .environment(\.qeetrixGroupIsInvalid, true)
                 }
             )
         }

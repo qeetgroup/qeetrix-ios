@@ -1,136 +1,150 @@
 import SwiftUI
 
-/// The sizes of ``QeetrixSwitch``, as on the web.
-public enum QeetrixSwitchSize: String, CaseIterable, Sendable {
-    /// A 24 × 14 pt track with a 12 pt thumb.
-    case sm
-    /// A 32 × 18.4 pt track with a 16 pt thumb.
-    case `default`
-}
-
-/// An on/off control: a label, and the Qeetrix switch at the trailing edge.
+/// A setting that applies at once, as `@qeetrix/react`'s Switch: a square 32 × 18 pt track with a
+/// 12 pt square thumb (design rules §9).
 ///
 /// ```swift
-/// QeetrixSwitch("Email notifications", isOn: $emailNotifications)
+/// QeetrixSwitch("Auto-renew", isOn: $autoRenew)
+/// QeetrixSwitch("Two-step sign-in", isOn: $twoStep, description: Text("A code by SMS at each sign-in."))
 /// ```
 ///
-/// The state never rests on colour alone: the thumb moves to the trailing edge when on (the leading
-/// edge in right-to-left layouts), and it is a light disc on both tracks. Tapping anywhere on the row
-/// toggles it, as a web label does, and the row is a 44 pt target. VoiceOver reads it as a native
-/// switch with its label and value.
-///
-/// It is a `Toggle` with ``QeetrixSwitchToggleStyle``; use the style directly for any other toggle.
+/// Off: the `color.bg.input` track with a `color.border.strong` edge and the graphite thumb on the start
+/// side. On: the Ember track and edge, and the white thumb on the end side; it slides over
+/// `motion.duration.normal`, not at all under Reduce Motion. The label follows the switch, 8 pt away,
+/// and the whole row toggles it, with ``QeetrixFeedback/selection`` feedback. VoiceOver reads it as the
+/// system's switch. A setting that waits for a Save step is a ``QeetrixCheckbox`` instead.
 public struct QeetrixSwitch<Label: View>: View {
     let isOn: Binding<Bool>
-    let size: QeetrixSwitchSize
+    let description: Text?
     let label: Label
 
-    public init(isOn: Binding<Bool>, size: QeetrixSwitchSize = .default, @ViewBuilder label: () -> Label) {
+    public init(isOn: Binding<Bool>, description: Text? = nil, @ViewBuilder label: () -> Label) {
         self.isOn = isOn
-        self.size = size
+        self.description = description
         self.label = label()
     }
 
     public var body: some View {
         Toggle(isOn: isOn) { label }
-            .toggleStyle(QeetrixSwitchToggleStyle(size: size))
+            .toggleStyle(QeetrixSwitchToggleStyle(description: description))
             .layoutValue(key: QeetrixSelectionRowKey.self, value: true)
     }
 }
 
 extension QeetrixSwitch where Label == Text {
-    /// A switch with a localised label.
-    public init(_ titleKey: LocalizedStringKey, isOn: Binding<Bool>, size: QeetrixSwitchSize = .default) {
-        self.init(isOn: isOn, size: size) { Text(titleKey) }
+    public init(_ titleKey: LocalizedStringKey, isOn: Binding<Bool>, description: Text? = nil) {
+        self.init(isOn: isOn, description: description) { Text(titleKey) }
     }
 
-    /// A switch with a label shown as given, without localisation.
-    public init<S: StringProtocol>(_ title: S, isOn: Binding<Bool>, size: QeetrixSwitchSize = .default) {
-        self.init(isOn: isOn, size: size) { Text(title) }
+    public init<S: StringProtocol>(_ title: S, isOn: Binding<Bool>, description: Text? = nil) {
+        self.init(isOn: isOn, description: description) { Text(title) }
     }
 }
 
-/// The Qeetrix switch for any `Toggle`.
-///
-/// ```swift
-/// Toggle("Wi-Fi", isOn: $wifi)
-///     .toggleStyle(.qeetrixSwitch(size: .sm))
-/// ```
+/// The Qeetrix switch look for any `Toggle`.
 public struct QeetrixSwitchToggleStyle: ToggleStyle {
-    let size: QeetrixSwitchSize
+    let description: Text?
 
-    public init(size: QeetrixSwitchSize = .default) {
-        self.size = size
+    public init() {
+        description = nil
+    }
+
+    init(description: Text?) {
+        self.description = description
     }
 
     public func makeBody(configuration: Configuration) -> some View {
-        QeetrixSwitchBody(configuration: configuration, size: size)
+        QeetrixSwitchBody(configuration: configuration, description: description)
     }
 }
 
 extension ToggleStyle where Self == QeetrixSwitchToggleStyle {
-    /// The Qeetrix switch.
-    public static func qeetrixSwitch(size: QeetrixSwitchSize = .default) -> QeetrixSwitchToggleStyle {
-        QeetrixSwitchToggleStyle(size: size)
-    }
+    /// The Qeetrix switch style.
+    public static var qeetrixSwitch: QeetrixSwitchToggleStyle { QeetrixSwitchToggleStyle() }
 }
 
 struct QeetrixSwitchBody: View {
     let configuration: ToggleStyleConfiguration
-    let size: QeetrixSwitchSize
+    let description: Text?
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.isFocused) private var isFocused
+    @Environment(\.qeetrixGroupIsInvalid) private var isInvalid
     @State private var isHovered = false
+    /// The person's changes: each plays the selection feedback, and a change the app makes doesn't.
+    @State private var changes = 0
 
     var body: some View {
-        HStack(alignment: .center, spacing: QeetrixWebScale.spacing(3)) {
+        QeetrixChoiceRow(description: description, isEnabled: isEnabled) {
+            QeetrixSwitchTrack(
+                isOn: configuration.isOn, isHovered: isHovered, isEnabled: isEnabled, isInvalid: isInvalid, isFocused: isFocused)
+        } label: {
             configuration.label
-                .qeetrixType(QeetrixFieldMetrics.labelType)
-                .foregroundStyle(QeetrixColor.textPrimary)
-                .fixedSize(horizontal: false, vertical: true)
-            Spacer(minLength: 0)
-            QeetrixSwitchTrack(isOn: configuration.isOn, size: size, isHovered: isHovered && isEnabled)
         }
-        .opacity(isEnabled ? 1 : QeetrixOpacity.disabled)
-        .frame(minHeight: QeetrixAccessibility.minimumTouchTarget)
-        .contentShape(Rectangle())
         .onTapGesture {
             guard isEnabled else { return }
             configuration.isOn.toggle()
+            changes += 1
         }
         .onHover { isHovered = $0 }
         .accessibilityRepresentation {
-            Toggle(isOn: configuration.$isOn) { configuration.label }
+            Toggle(isOn: QeetrixFeedback.counting(configuration.$isOn, in: $changes)) { configuration.label }
         }
+        .accessibilityHint(description ?? Text(verbatim: ""))
+        .qeetrixFeedback(.selection, trigger: changes)
     }
 }
 
+/// The track and thumb (switch.css): 32 × 18 pt, 2 pt corners, a 1 pt edge; the 12 pt thumb with 1 pt
+/// corners sits 2 pt in from the start edge, or 16 pt when on.
 struct QeetrixSwitchTrack: View {
     let isOn: Bool
-    let size: QeetrixSwitchSize
     let isHovered: Bool
+    let isEnabled: Bool
+    var isInvalid = false
+    var isFocused = false
+
+    static let width: CGFloat = 32
+    static let height: CGFloat = 18
+    static let thumb: CGFloat = 12
+    static let thumbInsetOff: CGFloat = 2
+    static let thumbInsetOn: CGFloat = 16
 
     var body: some View {
-        let metrics = Self.metrics(size)
-        let border = QeetrixStroke.hairline  // border border-transparent
-        Capsule()
-            .fill(isOn ? (isHovered ? QeetrixSwitchTokens.trackCheckedHover : QeetrixSwitchTokens.trackChecked) : QeetrixSwitchTokens.track)
-            .frame(width: metrics.width, height: metrics.height)
-            .overlay(alignment: isOn ? .trailing : .leading) {
-                // On, the thumb travels 100% − 2 pt: from the leading border to the trailing one. It
-                // carries the web's shadow-xs.
-                Color.clear
-                    .frame(width: metrics.thumb, height: metrics.thumb)
-                    .qeetrixElevation(.rampXs, fill: isOn ? QeetrixSwitchTokens.thumbChecked : QeetrixSwitchTokens.thumb, in: Circle())
-                    .padding(.horizontal, border)
-            }
-            .qeetrixAnimation(.standard, .fast, value: isOn)  // duration-fast ease-standard
+        let shape = RoundedRectangle(cornerRadius: QeetrixRadius.sm)
+        let border = QeetrixBorderWidth.default
+        ZStack(alignment: .leading) {
+            shape.fill(track)
+            shape.strokeBorder(edge, lineWidth: border)
+            RoundedRectangle(cornerRadius: QeetrixRadius.sm / 2)
+                .fill(thumbColor)
+                .frame(width: Self.thumb, height: Self.thumb)
+                .offset(x: border + (isOn ? Self.thumbInsetOn : Self.thumbInsetOff))
+                .qeetrixAnimation(.standard, .normal, value: isOn)
+        }
+        .frame(width: Self.width, height: Self.height)
+        .overlay { if isFocused { QeetrixOuterFocusFrame(shape: shape) } }
+        .qeetrixAnimation(.standard, .fast, value: isHovered)
     }
 
-    /// `w-8 h-(thumb size)` with a `size-4` thumb; `w-6 h-3.5` with a `size-3` thumb at `sm`.
-    static func metrics(_ size: QeetrixSwitchSize) -> (width: CGFloat, height: CGFloat, thumb: CGFloat) {
-        switch size {
-        case .default: (QeetrixWebScale.spacing(8), QeetrixSwitchTokens.thumbSize, QeetrixWebScale.spacing(4))
-        case .sm: (QeetrixWebScale.spacing(6), QeetrixWebScale.spacing(3.5), QeetrixWebScale.spacing(3))
-        }
+    var track: QeetrixColor {
+        if !isEnabled { return .bgDisabled }
+        if isOn { return isHovered ? .bgBrandBoldHover : .bgBrandBold }
+        return .bgInput
+    }
+
+    var edge: QeetrixColor {
+        if !isEnabled { return .borderDisabled }
+        // `.qx-switch[data-invalid]` follows the checked and hover rules: an invalid switch keeps the
+        // danger edge on and hovered, round its Ember track (QTRX-161).
+        if isInvalid { return .borderDanger }
+        if isOn { return isHovered ? .bgBrandBoldHover : .bgBrandBold }
+        return isHovered ? .borderStrongHover : .borderStrong
+    }
+
+    var thumbColor: QeetrixColor {
+        if !isEnabled { return .iconDisabled }
+        // `.qx-switch-thumb[data-checked]`: `color.icon.on-brand`, white on Ember in both schemes, as
+        // the checkbox's tick (QTRX-162).
+        return isOn ? .iconOnBrand : .iconSubtle
     }
 }

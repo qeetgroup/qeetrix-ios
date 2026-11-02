@@ -1,0 +1,56 @@
+@layer qx.base, qx.components, qx.state;
+@import "./base.css";
+@import "./state.css";
+@import "./field.css";
+
+@layer qx.components {
+  .qx-radio {
+    border: var(--qx-border-width-default) solid var(--qx-color-border-strong);
+    border-radius: var(--qx-radius-full);
+    background: var(--qx-color-bg-input);
+    cursor: pointer;
+    block-size: 16px;
+    inline-size: 16px;
+    transition-property: border-color, border-width;
+    transition-duration: var(--qx-motion-duration-fast);
+    transition-timing-function: var(--qx-motion-easing-standard);
+    flex: none;
+    display: inline-block;
+  }
+  
+  .qx-radio:hover:not([data-disabled], [data-readonly], [data-invalid]) {
+    border-color: var(--qx-color-border-strong-hover);
+  }
+  
+  .qx-radio[data-checked] {
+    border-width: 5px;
+    border-color: var(--qx-color-bg-brand-bold);
+  }
+  
+  .qx-radio[data-checked]:hover:not([data-disabled], [data-readonly], [data-invalid]) {
+    border-color: var(--qx-color-bg-brand-bold-hover);
+  }
+  
+  .qx-radio[data-invalid] {
+    border-color: var(--qx-color-border-danger);
+  }
+  
+  .qx-radio[data-disabled] {
+    border-color: var(--qx-color-border-disabled);
+    background: var(--qx-color-bg-disabled);
+    cursor: not-allowed;
+  }
+  
+  .qx-radio[data-disabled][data-checked] {
+    border-color: var(--qx-color-icon-disabled);
+  }
+  
+  .qx-radio[data-readonly] {
+    cursor: default;
+  }
+  
+  .qx-radio:focus-visible {
+    outline: var(--qx-focus-ring-width) solid var(--qx-color-border-focus);
+    outline-offset: var(--qx-focus-ring-offset);
+  }
+}

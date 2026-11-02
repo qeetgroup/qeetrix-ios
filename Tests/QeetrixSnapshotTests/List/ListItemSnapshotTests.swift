@@ -1,41 +1,88 @@
 #if os(iOS)
-    import Qeetrix
     import SwiftUI
     import Testing
+
+    @testable import Qeetrix
 
     @MainActor
     @Suite("List item snapshots")
     struct ListItemSnapshotTests {
-        // The AX3 image shows the snapshot host's limit, not the row: the host measures the specimen at the
-        // default text size and draws it at AX3, so rows that reflow at the accessibility sizes overlap there.
-        // In the app they don't — ListItemUITests checks the reflow at an accessibility size.
-        @Test("Rows: plain, icon and metadata, avatar and badge, selected, disabled; a section header")
-        func rows() {
+        @Test("Content, value, icon tile, avatar, chevron, switch on and off, destructive, selected and disabled rows")
+        func variants() {
             assertSpecimen(
-                VStack(alignment: .leading, spacing: 0) {
-                    QeetrixSectionHeader("Documents", description: Text("Shared with the team")) {
-                        QeetrixButton("See all", variant: .link, size: .sm) {}
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 8)
-                    QeetrixListItem("Q3 summary")
-                    QeetrixSeparator()
-                    QeetrixListItem(
-                        "Design review", description: Text("Edited by Ravi Kumar"), metadata: Text(verbatim: "860 KB"), icon: .fileText
-                    ) {
-                        QeetrixBadge("Draft", variant: .secondary)
+                VStack(spacing: 0) {
+                    QeetrixListItem("Storage", description: Text("Used this month"), metadata: Text("2.4 GB")) {
+                        QeetrixListItemIcon(.database)
+                    } trailing: {
+                        QeetrixBadge("Pro", tone: .brand)
                     }
                     QeetrixSeparator()
-                    QeetrixListItem("Asha Rao", description: Text(verbatim: "asha@example.com")) {
-                        QeetrixBadge("Owner", variant: .brand)
-                    } leading: {
-                        QeetrixAvatar(name: "Asha Rao")
+                    QeetrixListItem("Priya Sharma", description: Text(verbatim: "priya@acme.in"), accessory: .chevron) {
+                        QeetrixAvatar(name: "Priya Sharma", isDecorative: true)
                     }
                     QeetrixSeparator()
-                    QeetrixListItem("Roadmap", description: Text("Meera Iyer"), icon: .fileText, isSelected: true)
+                    QeetrixListItem("Face ID", description: Text("Unlock Qeet Auth with your face"), isOn: .constant(true)) {
+                        QeetrixListItemIcon(.scanLine)
+                    }
                     QeetrixSeparator()
-                    QeetrixListItem("Archived workspace", description: Text("Read-only"), icon: .folder).disabled(true)
+                    QeetrixListItem("Notifications", isOn: .constant(false)) { QeetrixListItemIcon(.bell) }
+                    QeetrixSeparator()
+                    QeetrixListItem("Language", metadata: Text("English"), accessory: .chevron, action: {})
+                    QeetrixSeparator()
+                    QeetrixListItem("Ada Lovelace", description: Text("Selected"), isSelected: true, action: {}) {
+                        QeetrixAvatar(name: "Ada Lovelace", isDecorative: true)
+                    } trailing: {
+                        QeetrixIcon(.check, size: .sm, shape: .sharp).foregroundStyle(QeetrixColor.iconBrand)
+                    }
+                    QeetrixSeparator()
+                    QeetrixListItem("Sign out", role: .destructive, action: {}) { QeetrixListItemIcon(.x) }
+                    QeetrixSeparator()
+                    QeetrixListItem("Managed by Acme", description: Text("Your organisation sets this"), isOn: .constant(true)) {
+                        QeetrixListItemIcon(.lock)
+                    }
+                    .disabled(true)
                 }
+            )
+        }
+
+        @Test("Rows in each density: 44, 44 and 48 pt")
+        func densities() {
+            assertSpecimen(
+                VStack(spacing: 0) {
+                    QeetrixListItem("Compact", metadata: Text("44 pt")).qeetrixDensity(.compact)
+                    QeetrixSeparator()
+                    QeetrixListItem("Default", metadata: Text("44 pt"))
+                    QeetrixSeparator()
+                    QeetrixListItem("Comfortable", metadata: Text("48 pt")).qeetrixDensity(.comfortable)
+                }
+            )
+        }
+
+        @Test("In a plain List: the row's insets, raised surface and border.subtle separators, edge to edge")
+        func inList() {
+            assertSpecimen(
+                List {
+                    Section {
+                        QeetrixListItem("Priya Sharma", description: Text(verbatim: "priya@acme.in"), accessory: .chevron) {
+                            QeetrixAvatar(name: "Priya Sharma", isDecorative: true)
+                        }
+                        QeetrixListItem("Kaveri Foods", description: Text(verbatim: "admin@kaveri.in"), accessory: .chevron) {
+                            QeetrixAvatar(name: "Kaveri Foods", shape: .square, isDecorative: true)
+                        }
+                    } header: {
+                        QeetrixSectionHeader("Accounts", isRuled: false)
+                    }
+                    .listSectionSeparator(.hidden)
+                    Section {
+                        QeetrixListItem("Face ID", isOn: .constant(true)) { QeetrixListItemIcon(.scanLine) }
+                        QeetrixListItem("Sign out", role: .destructive, action: {})
+                    } header: {
+                        QeetrixSectionHeader("Security")
+                    }
+                    .listSectionSeparator(.hidden)
+                }
+                .qeetrixListStyle()
+                .frame(height: 420)
             )
         }
     }

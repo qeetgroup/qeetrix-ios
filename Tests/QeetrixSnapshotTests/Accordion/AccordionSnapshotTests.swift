@@ -1,24 +1,29 @@
 #if os(iOS)
-    import Qeetrix
     import SwiftUI
     import Testing
+
+    @testable import Qeetrix
 
     @MainActor
     @Suite("Accordion snapshots")
     struct AccordionSnapshotTests {
-        @Test("Collapsed and expanded, with a description and an icon")
-        func items() {
+        @Test("Open and closed sections, a disabled one, a long title, and a section on its own")
+        func variants() {
             assertSpecimen(
-                QeetrixAccordion {
-                    QeetrixAccordionItem(
-                        "Billing", description: Text("Invoices and payment method"), icon: .fileText, isExpanded: .constant(true)
-                    ) {
-                        Text("Invoices are sent on the first of each month.")
+                VStack(alignment: .leading, spacing: 24) {
+                    QeetrixAccordion(expanded: .constant(Optional(1))) {
+                        QeetrixAccordionItem("Tax settings", value: 1) {
+                            QeetrixText("GST is added at 18% to every invoice for customers in India.")
+                        }
+                        QeetrixAccordionItem("Invoice numbering", value: 2) { QeetrixText("INV-YYYY-NNNN") }
+                        QeetrixAccordionItem("Payment reminders", value: 3) { QeetrixText("Off") }.disabled(true)
+                        QeetrixAccordionItem("What happens to unpaid invoices at the end of the financial year?", value: 4) {
+                            QeetrixText("They carry over.")
+                        }
                     }
-                    QeetrixAccordionItem("Members", icon: .users, isExpanded: .constant(false)) {
-                        Text("Twelve people have access.")
+                    QeetrixAccordionItem("Advanced options", isExpanded: .constant(false)) {
+                        QeetrixText("Retry failed webhooks")
                     }
-                    DisclosureGroup("Advanced", isExpanded: .constant(false)) { Text("Hidden") }
                 }
             )
         }

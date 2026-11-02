@@ -21,35 +21,33 @@ struct SignUpScreen: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: QeetrixSpacing.l) {
-                QeetrixFormErrorSummary(
-                    errors: [Field.name, .email, .password, .country, .terms].compactMap { field in
-                        errors[field].map { message in QeetrixFormErrorSummary.Item(id: "\(field)", message: "\(message)") { focus = field }
-                        }
+            VStack(alignment: .leading, spacing: QeetrixDensity.default.spaceFormGap) {
+                QeetrixErrorSummary(
+                    items: [Field.name, .email, .password, .country, .terms].compactMap { field in
+                        errors[field].map { message in QeetrixErrorSummary.Item(id: "\(field)", message: message) { focus = field } }
                     })
-                QeetrixTextField("Full name", text: $name, message: errors[.name].map { .error("\($0)") }, isRequired: true)
+                QeetrixTextField("Full name", text: $name, error: errors[.name], isRequired: true)
                     .focused($focus, equals: .name)
                 QeetrixTextField(
-                    "Work email", text: $email, prompt: Text(verbatim: "name@company.com"), message: errors[.email].map { .error("\($0)") },
-                    isRequired: true
+                    "Work email", text: $email, prompt: Text(verbatim: "e.g. asha@acme.in"), error: errors[.email], isRequired: true
                 )
                 .textContentType(.emailAddress)
                 .keyboardType(.emailAddress)
                 .focused($focus, equals: .email)
                 QeetrixPasswordInput(
-                    "Password", text: $password, purpose: .new, description: Text("At least 12 characters."),
-                    message: errors[.password].map { .error("\($0)") }, isRequired: true
+                    "Password", text: $password, autoComplete: .newPassword, description: Text("At least 12 characters."),
+                    error: errors[.password], isRequired: true
                 )
                 .focused($focus, equals: .password)
                 QeetrixSelect(
                     "Country", selection: $country, options: countries, placeholder: Text("Choose a country"),
-                    message: errors[.country].map { .error("\($0)") }, isRequired: true)
+                    error: errors[.country], isRequired: true)
                 QeetrixCheckbox("I accept the terms", isOn: $acceptsTerms)
                 QeetrixFormActions {
-                    QeetrixButton("Create account") { submit() }
+                    QeetrixButton("Create account", size: .lg) { submit() }
                 }
             }
-            .padding(QeetrixSpacing.l)
+            .padding(QeetrixSpace.insetLg)
         }
         .background(QeetrixColor.surfaceCanvas)
         .navigationTitle("Sign up")
@@ -58,11 +56,11 @@ struct SignUpScreen: View {
 
     private func submit() {
         var found: [Field: String] = [:]
-        if name.trimmingCharacters(in: .whitespaces).isEmpty { found[.name] = "Enter your name." }
-        if !email.contains("@") { found[.email] = "Enter an email address with an @." }
-        if password.count < 12 { found[.password] = "Use at least 12 characters." }
-        if country == nil { found[.country] = "Choose a country." }
-        if !acceptsTerms { found[.terms] = "Accept the terms to continue." }
+        if name.trimmingCharacters(in: .whitespaces).isEmpty { found[.name] = "Enter your name" }
+        if !email.contains("@") { found[.email] = "Enter a work email, like asha@acme.in" }
+        if password.count < 12 { found[.password] = "Use at least 12 characters" }
+        if country == nil { found[.country] = "Choose a country" }
+        if !acceptsTerms { found[.terms] = "Accept the terms to continue" }
         errors = found
         if found.isEmpty {
             toast = .success("Account created")

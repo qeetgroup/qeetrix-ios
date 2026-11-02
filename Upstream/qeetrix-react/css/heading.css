@@ -1,0 +1,99 @@
+@layer qx.base, qx.components, qx.state;
+@import "./base.css";
+@import "./state.css";
+
+@layer qx.components {
+  .qx-heading {
+    font: var(--qx-typography-heading-lg);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-heading);
+    color: var(--qx-color-text-default);
+    margin: 0;
+  }
+  
+  .qx-heading[data-size^="display"] {
+    font-variation-settings: "GEOM" var(--qx-font-geometry-display);
+  }
+  
+  .qx-heading[data-size="display-lg"] {
+    font-size: var(--qx-typography-display-lg-font-size);
+    line-height: var(--qx-typography-display-lg-line-height);
+  }
+  
+  .qx-heading[data-size="display-md"] {
+    font-size: var(--qx-typography-display-md-font-size);
+    line-height: var(--qx-typography-display-md-line-height);
+  }
+  
+  .qx-heading[data-size="display-sm"] {
+    font-size: var(--qx-typography-display-sm-font-size);
+    line-height: var(--qx-typography-display-sm-line-height);
+  }
+  
+  .qx-heading[data-size="heading-lg"] {
+    font-size: var(--qx-typography-heading-lg-font-size);
+    line-height: var(--qx-typography-heading-lg-line-height);
+  }
+  
+  .qx-heading[data-size="heading-md"] {
+    font-size: var(--qx-typography-heading-md-font-size);
+    line-height: var(--qx-typography-heading-md-line-height);
+  }
+  
+  .qx-heading[data-size="heading-sm"] {
+    font-size: var(--qx-typography-heading-sm-font-size);
+    line-height: var(--qx-typography-heading-sm-line-height);
+  }
+  
+  .qx-heading[data-size="title-lg"] {
+    font-size: var(--qx-typography-title-lg-font-size);
+    line-height: var(--qx-typography-title-lg-line-height);
+  }
+  
+  .qx-heading[data-size="title-md"] {
+    font-size: var(--qx-typography-title-md-font-size);
+    line-height: var(--qx-typography-title-md-line-height);
+  }
+  
+  .qx-heading[data-size="title-sm"] {
+    font-size: var(--qx-typography-title-sm-font-size);
+    line-height: var(--qx-typography-title-sm-line-height);
+  }
+  
+  .qx-heading[data-size^="display-"] {
+    font-variation-settings: "GEOM" var(--qx-font-geometry-display);
+  }
+  
+  .qx-heading[data-tone="subtle"] {
+    color: var(--qx-color-text-subtle);
+  }
+  
+  .qx-heading[data-tone="inverse"] {
+    color: var(--qx-color-text-inverse);
+  }
+  
+  .qx-heading[data-truncate="line"] {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  
+  .qx-heading[data-truncate="lines"] {
+    -webkit-line-clamp: var(--qx-text-lines);
+    line-clamp: var(--qx-text-lines);
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    overflow: hidden;
+  }
+  
+  .qx-heading[data-align="start"] {
+    text-align: start;
+  }
+  
+  .qx-heading[data-align="center"] {
+    text-align: center;
+  }
+  
+  .qx-heading[data-align="end"] {
+    text-align: end;
+  }
+}

@@ -1,10 +1,10 @@
 import SwiftUI
 
 extension View {
-    /// Qeetrix styling for a `TabView`'s tab bar: the brand tint on the selected tab. The bar's material,
+    /// Qeetrix styling for a `TabView`'s tab bar: Ember (`color.icon.brand`) on the current tab, as on the web's current navigation item. The bar's material,
     /// layout and adaptation (a sidebar on iPad where the system offers one) stay the system's.
     public func qeetrixTabBar() -> some View {
-        tint(QeetrixColor.textBrand)
+        tint(QeetrixColor.iconBrand)
     }
 
     /// Makes this view a tab of a `TabView`, labelled with a title and a Qeetrix icon, with an optional

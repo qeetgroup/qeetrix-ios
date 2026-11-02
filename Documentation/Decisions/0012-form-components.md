@@ -1,6 +1,6 @@
 # 0012 — Form components: one field, native inputs, the app's validation
 
-**Status:** Accepted (Phase 3, 2026-10-18). Builds on ADR 0010.
+**Status:** Accepted (Phase 3, 2026-10-18). Builds on ADR 0010. Amended by ADR 0018: fields take an `error` (no warning or success messages) and carry no asterisk.
 
 ## Context
 

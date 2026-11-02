@@ -6,18 +6,20 @@ import Testing
 
 @Suite("Icons")
 struct IconTests {
-    @Test("Names are the pinned qeetrix-icons names")
+    @Test("Names are the pinned @qeetrix/icons 2.1.0 names")
     func names() throws {
-        let pins = try JSONSerialization.jsonObject(with: try Repository.data("Upstream/pins.json")) as? [String: Any]
-        let pinned = (pins?["qeetrixIcons"] as? [String: Any])?["icons"] as? [String] ?? []
+        let pins = try Repository.json("Upstream/pins.json") as? [String: Any]
+        let pinned = (pins?["icons"] as? [String: Any])?["icons"] as? [String] ?? []
         #expect(QeetrixIconName.allCases.map(\.rawValue).sorted() == pinned.sorted())
+        #expect(QeetrixIconName.allCases.count == 68)
+        #expect(QeetrixIconName(rawValue: "chevron-right") == .chevronRight)
+        #expect(QeetrixIconName(rawValue: "file-spreadsheet") == .fileSpreadsheet)
     }
 
     @Test("Drawings exist for every shape and variant the manifest lists")
     func drawings() throws {
-        let manifest =
-            try JSONSerialization.jsonObject(with: try Repository.data("Upstream/qeetrix-icons/icons.json")) as? [[String: Any]]
-            ?? []
+        let manifest = try Repository.json("Upstream/qeetrix-icons/icons.json") as? [[String: Any]] ?? []
+        #expect(manifest.count == QeetrixIconName.allCases.count)
         for entry in manifest {
             let name = try #require(QeetrixIconName(rawValue: entry["name"] as? String ?? ""))
             let shapes = entry["shapes"] as? [String] ?? []
@@ -32,7 +34,7 @@ struct IconTests {
         }
     }
 
-    @Test("Paths keep the 24-unit geometry of the SVG")
+    @Test("Paths keep the 24-unit geometry of the drawing")
     func geometry() throws {
         // x: M18 6 6 18 and m6 6 12 12.
         let x = try #require(QeetrixIconName.x.drawing(.round, .outline))
@@ -41,9 +43,15 @@ struct IconTests {
         // search: circle cx 11 cy 11 r 8.
         let search = try #require(QeetrixIconName.search.drawing(.round, .outline))
         #expect(search.elements.contains { $0.path.boundingRect == CGRect(x: 3, y: 3, width: 16, height: 16) })
-        // Sharp drawings use square caps and mitres; round ones round.
-        #expect(QeetrixIconName.x.drawing(.sharp, .outline)?.elements.first?.stroke?.cap == .square)
+        // Sharp drawings use square caps and mitres; round ones round — the shape Qeetrix's controls use.
+        for name in QeetrixIconName.allCases {
+            let sharp = try #require(name.drawing(.sharp, .outline), "\(name)")
+            for element in sharp.elements where element.stroke != nil {
+                #expect(element.stroke?.cap == .square && element.stroke?.join == .miter, "\(name)")
+            }
+        }
         #expect(x.elements.first?.stroke?.cap == .round)
+        #expect(x.elements.first?.stroke?.join == .round)
         // Filled drawings fill, with the SVG's fill rule.
         let filled = try #require(QeetrixIconName.search.drawing(.round, .filled))
         #expect(filled.elements.allSatisfy { $0.fill != nil && $0.stroke == nil })
@@ -78,8 +86,8 @@ struct IconTests {
         #expect(image.pixel(12, 12).r < 60)  // the crossing of the two strokes
         #expect(image.pixel(1, 12).r > 240)  // outside the drawing
         let themed = try #require(
-            Rendered(QeetrixIcon(.x, size: .lg, relativeTo: nil).foregroundStyle(QeetrixColor.textBrand).qeetrixTheme(.light)))
-        #expect(close(QeetrixTheme.light.resolve(.textBrand).bytes, themed.pixel(12, 12), tolerance: 8))
+            Rendered(QeetrixIcon(.x, size: .lg, relativeTo: nil).foregroundStyle(QeetrixColor.iconBrand).qeetrixTheme(.light)))
+        #expect(close(QeetrixTheme.light.resolve(.iconBrand).bytes, themed.pixel(12, 12), tolerance: 8))
     }
 
     @Test("Mirrored icons flip in right-to-left layouts")

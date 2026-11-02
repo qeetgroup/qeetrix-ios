@@ -1,41 +1,47 @@
 #if os(iOS)
-    import Qeetrix
     import SwiftUI
     import Testing
+
+    @testable import Qeetrix
 
     @MainActor
     @Suite("Card snapshots")
     struct CardSnapshotTests {
-        @Test("Variants, sizes, selection, footer and the button style")
+        @Test("Titled with actions and a footer, untitled, subdued, danger, and the selectable card")
         func variants() {
             assertSpecimen(
-                VStack(spacing: 16) {
-                    QeetrixCard {
-                        QeetrixCardHeader("Team plan", description: "Billed monthly") {
-                            QeetrixBadge("Current", variant: .brand)
-                        }
-                        QeetrixText("Up to 25 members, with audit logs and single sign-on.")
+                VStack(alignment: .leading, spacing: 16) {
+                    QeetrixCard(title: Text("Team plan"), description: Text("Billed monthly")) {
+                        QeetrixText("Up to 25 members, with audit logs and SSO.")
+                    } actions: {
+                        QeetrixButton("View all", variant: .ghost, size: .sm) {}
                     } footer: {
+                        QeetrixButton("Cancel", variant: .ghost) {}
                         QeetrixButton("Upgrade") {}
-                        QeetrixButton("Compare plans", variant: .ghost) {}
                     }
-                    QeetrixCard(variant: .outline, size: .sm) {
-                        QeetrixCardHeader("Outline, small", description: "No shadow, 12 pt rhythm")
+                    QeetrixCard {
+                        QeetrixText("An untitled card is a plain ruled surface.")
                     }
-                    QeetrixCard(variant: .elevated, isSelected: true) {
-                        QeetrixCardHeader("Elevated and selected", description: "A 2 pt brand boundary")
+                    QeetrixCard("Recent activity", variant: .subdued) {
+                        QeetrixText("No activity this week.", tone: .subtle)
                     }
-                    Button {
-                    } label: {
-                        QeetrixCardHeader("A card that is a button", description: "QeetrixCardButtonStyle")
+                    QeetrixCard(title: Text("Delete organisation"), description: Text("This can't be undone."), tone: .danger) {
+                        QeetrixText("Every project, member and invoice is removed.")
+                    } footer: {
+                        QeetrixButton("Delete organisation", tone: .danger) {}
                     }
-                    .buttonStyle(.qeetrixCard())
-                    Button {
-                    } label: {
-                        QeetrixCardHeader("Disabled", description: "Faded")
+                    HStack(spacing: 8) {
+                        Button {
+                        } label: {
+                            QeetrixText("Monthly", weight: .semibold)
+                        }
+                        .buttonStyle(.qeetrixCard(isSelected: true))
+                        Button {
+                        } label: {
+                            QeetrixText("Yearly", weight: .semibold)
+                        }
+                        .buttonStyle(.qeetrixCard())
                     }
-                    .buttonStyle(.qeetrixCard(.outline))
-                    .disabled(true)
                 }
             )
         }

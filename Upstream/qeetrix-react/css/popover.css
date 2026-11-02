@@ -1,0 +1,74 @@
+@layer qx.base, qx.components, qx.state;
+@import "./base.css";
+@import "./state.css";
+
+@layer qx.components {
+  .qx-popover-positioner {
+    z-index: var(--qx-z-popover);
+  }
+  
+  .qx-popover {
+    gap: var(--qx-space-gap-md);
+    min-inline-size: 0;
+    max-inline-size: min(360px, var(--available-width));
+    max-block-size: var(--available-height);
+    padding: var(--qx-space-inset-lg);
+    border: var(--qx-border-width-default) solid var(--qx-color-border-subtle);
+    border-radius: var(--qx-radius-overlay);
+    background: var(--qx-color-surface-overlay);
+    box-shadow: var(--qx-shadow-overlay);
+    color: var(--qx-color-text-default);
+    font: var(--qx-typography-body-md);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    transform-origin: var(--transform-origin);
+    transition-property: opacity, translate;
+    transition-duration: var(--qx-motion-duration-normal);
+    transition-timing-function: var(--qx-motion-easing-enter);
+    outline: 0;
+    flex-direction: column;
+    display: flex;
+    overflow: auto;
+  }
+  
+  .qx-popover[data-starting-style], .qx-popover[data-ending-style] {
+    opacity: 0;
+  }
+  
+  .qx-popover[data-side="bottom"]:is([data-starting-style], [data-ending-style]) {
+    translate: 0 -4px;
+  }
+  
+  .qx-popover[data-side="top"]:is([data-starting-style], [data-ending-style]) {
+    translate: 0 4px;
+  }
+  
+  .qx-popover[data-side="left"]:is([data-starting-style], [data-ending-style]) {
+    translate: 4px;
+  }
+  
+  .qx-popover[data-side="right"]:is([data-starting-style], [data-ending-style]) {
+    translate: -4px;
+  }
+  
+  .qx-popover[data-ending-style] {
+    transition-duration: var(--qx-motion-duration-fast);
+    transition-timing-function: var(--qx-motion-easing-exit);
+  }
+  
+  .qx-popover-header {
+    gap: var(--qx-space-gap-xs);
+    flex-direction: column;
+    display: flex;
+  }
+  
+  .qx-popover-title {
+    font: var(--qx-typography-title-sm);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-heading);
+    margin: 0;
+  }
+  
+  .qx-popover-description {
+    color: var(--qx-color-text-subtle);
+    margin: 0;
+  }
+}

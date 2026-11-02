@@ -15,7 +15,7 @@ final class ConfirmationDialogUITests: XCTestCase {
         XCTAssertTrue(copy.waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["Share the Q3 summary"].exists, "The title is shown")
         copy.tap()
-        XCTAssertFalse(copy.waitForExistence(timeout: 1))
+        XCTAssertTrue(copy.waitForNonExistence(timeout: 3))
         XCTAssertTrue(app.staticTexts["confirmation-result"].waitForLabel("Result: copied link"))
     }
 
@@ -28,7 +28,7 @@ final class ConfirmationDialogUITests: XCTestCase {
         // Anchored to its button, the dialog shows no Cancel button: a tap outside is the cancel.
         let cancel = app.buttons["Cancel"]
         if cancel.exists { cancel.tap() } else { app.tapOutside() }
-        XCTAssertFalse(remove.waitForExistence(timeout: 1))
+        XCTAssertTrue(remove.waitForNonExistence(timeout: 3))
         XCTAssertEqual(app.staticTexts["confirmation-result"].label, "Result: none")
         app.buttons["Remove member"].tap()
         XCTAssertTrue(remove.waitForExistence(timeout: 5))

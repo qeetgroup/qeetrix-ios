@@ -13,8 +13,8 @@ these files for a new component, at the paths in
 | `ComponentPage.swift.template` | `Examples/QeetrixShowcase/QeetrixShowcase/Components/<Family>/<Component>Page.swift` |
 
 It also lists the component in the DocC landing page under its category, adds its page to the
-showcase catalogue, and, when qeetrix-ui defines `component.<slug or family>` tokens, adds that group to
-`Upstream/pins.json` (run `Scripts/generate.sh` afterwards).
+showcase catalogue. When `@qeetrix/tokens` has a `component.<family>` group, the source's header names
+it: those groups aren't generated, so add a rule to `Scope.swift` before using one.
 
 The scaffold does not build on purpose: the source and the showcase page carry an `#error`, and the
 behaviour test records an issue, until the component is implemented.

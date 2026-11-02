@@ -22,11 +22,12 @@ struct AppNavigationPage: View {
                     QeetrixText("Open a detail page")
                         .qeetrixMinimumTouchTarget()
                 }
-                QeetrixText("It sets qeetrixNavigationBar(background: .canvas) and a toolbar button with a Qeetrix icon.", variant: .muted)
+                QeetrixText(
+                    "It sets qeetrixNavigationBar(background: .canvas) and a toolbar button with a Qeetrix icon.", size: .sm, tone: .subtle)
             }
             DemoSection("Tab bar") {
-                QeetrixButton("Open the tab bar", variant: .outline) { showsTabBar = true }
-                QeetrixText("Selected tab: \(tab.rawValue)", variant: .muted)
+                QeetrixButton("Open the tab bar", variant: .soft) { showsTabBar = true }
+                QeetrixText("Selected tab: \(tab.rawValue)", size: .sm, tone: .subtle)
                     .accessibilityIdentifier("selected-tab")
             }
         }
@@ -36,7 +37,7 @@ struct AppNavigationPage: View {
                     .qeetrixTabItem("Home", icon: .house)
                     .tag(AppTab.home)
                 TabBarDemoTab(title: "Inbox", close: close) {
-                    QeetrixButton("Mark all as read", variant: .outline) { unread = 0 }
+                    QeetrixButton("Mark all as read", variant: .ghost) { unread = 0 }
                 }
                 .qeetrixTabItem("Inbox", icon: .inbox, badge: unread)
                 .tag(AppTab.inbox)
@@ -67,12 +68,12 @@ private struct TabBarDemoTab<Extra: View>: View {
 
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: QeetrixSpacing.m) {
+            VStack(alignment: .leading, spacing: QeetrixSpace.gapMd) {
                 QeetrixText("\(title) content")
                     .accessibilityIdentifier("tab-content")
                 extra
             }
-            .padding(QeetrixSpacing.l)
+            .padding(QeetrixSpace.insetLg)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .background(QeetrixColor.surfaceCanvas)
             .navigationTitle(title)
@@ -98,11 +99,11 @@ private struct NavigationBarDetail: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: QeetrixSpacing.m) {
+            VStack(alignment: .leading, spacing: QeetrixSpace.gapMd) {
                 QeetrixText("Items: \(items)").accessibilityIdentifier("detail-items")
-                QeetrixText("Swipe from the leading edge, or use the back button, to go back.", variant: .muted)
+                QeetrixText("Swipe from the leading edge, or use the back button, to go back.", size: .sm, tone: .subtle)
             }
-            .padding(QeetrixSpacing.l)
+            .padding(QeetrixSpace.insetLg)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .background(QeetrixColor.surfaceCanvas)

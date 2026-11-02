@@ -2,14 +2,15 @@
 
 ## Overview
 
-The system alert, for a decision the person must make before going on — deleting something for good,
-leaving with unsaved changes — or a notice they must acknowledge. Describe it as a value and present it
-by setting it:
+A decision the person must make before going on — deleting something for good, leaving with unsaved
+changes — or a notice they must acknowledge: `@qeetrix/react`'s Dialog with a `danger` or `warning`
+`intent` (an alert dialog), presented as the system alert. Describe it as a value and present it by
+setting it:
 
 ```swift
 @State private var alert: QeetrixAlertDialog?
 
-QeetrixButton("Delete workspace", variant: .destructive) {
+QeetrixButton("Delete workspace", tone: .danger) {
     alert = QeetrixAlertDialog(
         "Delete this workspace?",
         message: Text("Its projects and files are removed for everyone."),
@@ -22,13 +23,13 @@ QeetrixButton("Delete workspace", variant: .destructive) {
 - Every button sets the value back to `nil`, then runs its action once.
 - A destructive action is drawn as destructive. When the actions include one but no cancel, a "Cancel"
   is added, so the safe choice is always there. With no actions, the system shows OK.
-- Keep it to two or three actions. For a choice among more, use a ``QeetrixConfirmationDialog``.
+- Title it with the question ("Delete this workspace?") and name the action on its button ("Delete",
+  not "OK"). Keep it to two or three actions; for a choice among more, use a
+  ``QeetrixConfirmationDialog``.
 
 An alert interrupts. For an outcome that needs no decision, use a ``QeetrixToast``; for a problem with
-what someone typed, show it at the field.
-
-A confirmation records intent; it does not authorise. Whatever the person confirms, the code that performs
-the action still checks that it is allowed.
+what someone typed, show it at the field. A confirmation records intent; it does not authorise: the code
+that performs the action still checks that it is allowed.
 
 ### Accessibility
 
@@ -37,11 +38,13 @@ Switch Control and Voice Control work with it as with any system alert.
 
 ### Platform differences
 
-The web `AlertDialog` is drawn by Qeetrix; on iOS the system draws the alert, in its own font and
-material, and only the tint reaches it. The web's inline `Alert` — a status message in the page — is a
-different component, not this one.
+The web's Dialog is drawn by Qeetrix — `color.surface.overlay`, `shadow.modal`, a 3-point intent line on
+top, red for destructive and amber for a warning, the actions end-aligned with Cancel first and initial
+focus on it. On iOS the system draws the alert (ADR 0014), in its own font and material, places its
+buttons and their focus, and only the tint reaches it. For a dialog with fields or longer content, use a
+sheet with an `intent` (``QeetrixSheetContent``).
 
-On the web: [Alert Dialog on ui.qeet.in](https://ui.qeet.in/docs/components/alert-dialog).
+On the web: [Dialog on ui.qeet.in](https://ui.qeet.in/components/dialog/).
 
 ## Topics
 

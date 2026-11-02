@@ -9,6 +9,8 @@ public struct CSSDeclaration: Equatable, Sendable {
     public let selector: String
     public let name: String
     public let value: String
+    /// Every enclosing block, outermost first: `["@media (prefers-reduced-motion: reduce)", ":root"]`.
+    public var blocks: [String] = []
 }
 
 public enum CSSDeclarations {
@@ -27,7 +29,7 @@ public enum CSSDeclarations {
             let name = statement[..<colon].trimmingCharacters(in: .whitespaces)
             let value = statement[statement.index(after: colon)...]
                 .trimmingCharacters(in: .whitespacesAndNewlines)
-            result.append(CSSDeclaration(selector: stack.last ?? "", name: name, value: value))
+            result.append(CSSDeclaration(selector: stack.last ?? "", name: name, value: value, blocks: stack))
         }
 
         var depth = 0  // parentheses, so `;` or `{` inside a function never splits a value

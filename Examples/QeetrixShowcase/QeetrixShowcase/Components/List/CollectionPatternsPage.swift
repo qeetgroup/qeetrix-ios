@@ -2,7 +2,7 @@ import Qeetrix
 import SwiftUI
 
 /// A whole collection screen from the pieces: a data state around a searchable, filterable list, rows that
-/// open a detail, swipe and context-menu actions with a confirmation and an undo toast.
+/// open a detail, a swipe action that confirms and reaches the context menu, and an undo toast.
 struct CollectionPatternsPage: View {
     enum Load: String, CaseIterable, Identifiable {
         case loaded = "Loaded"
@@ -16,7 +16,6 @@ struct CollectionPatternsPage: View {
     @State private var documents = ShowcaseDocument.samples
     @State private var query = ""
     @State private var showsArchived = false
-    @State private var confirmDelete: QeetrixConfirmationDialog?
     @State private var toast: QeetrixToast?
 
     private var visible: [ShowcaseDocument] {
@@ -28,8 +27,9 @@ struct CollectionPatternsPage: View {
 
     var body: some View {
         QeetrixDataState(
-            isLoading: load == .loading, isEmpty: load == .empty || documents.isEmpty,
-            failure: load == .failed ? QeetrixDataFailure("Couldn't load documents. Check your connection.") { load = .loaded } : nil
+            isLoading: load == .loading, error: load == .failed ? ShowcaseLoadError() : nil, isEmpty: load == .empty || documents.isEmpty,
+            failure: QeetrixDataStateFailure(title: "Couldn't load documents", description: "Check your connection."),
+            onRetry: { load = .loaded }
         ) {
             List {
                 Section {
@@ -38,43 +38,33 @@ struct CollectionPatternsPage: View {
                 }
                 Section {
                     if visible.isEmpty {
-                        QeetrixEmptyState("No results", description: Text("Nothing matches “\(query)”."), variant: .noResults, size: .sm)
-                            .listRowBackground(Color.clear)
+                        QeetrixEmptyState(
+                            title: Text("No results"), description: Text("Nothing matches “\(query)”."), icon: .search, size: .section
+                        )
+                        .listRowBackground(Color.clear)
                     }
                     ForEach(visible) { document in
-                        NavigationLink {
-                            DocumentDetail(document: document)
-                        } label: {
-                            QeetrixListItem(document.title, description: Text(document.owner), icon: .fileText) {
-                                QeetrixBadge(document.status.rawValue, variant: document.status == .active ? .success : .secondary)
-                            }
+                        QeetrixListItem(document.title, description: Text(verbatim: document.owner), value: document) {
+                            QeetrixListItemIcon(.fileText)
+                        } trailing: {
+                            QeetrixBadge(document.status.rawValue, tone: document.status == .active ? .success : .neutral)
                         }
-                        .qeetrixListRow()
-                        .swipeActions {
-                            Button(role: .destructive) {
-                                askToDelete(document)
-                            } label: {
-                                Label {
-                                    Text("Delete")
-                                } icon: {
-                                    Image(qeetrix: .trash)
-                                }
-                            }
-                        }
-                        .contextMenu {
-                            QeetrixMenuItem("Delete", icon: .trash, role: .destructive) { askToDelete(document) }
-                        }
+                        .qeetrixSwipeActions(actions: [
+                            QeetrixSwipeAction(
+                                "Delete", icon: .trash, tone: .danger, confirmation: Text("Delete \(document.title)?")
+                            ) { delete(document) }
+                        ])
                     }
                 } header: {
-                    QeetrixSectionHeader(title: Text("Documents: \(visible.count)")).accessibilityIdentifier("collection-count")
+                    QeetrixSectionHeader(title: Text("Documents: \(visible.count)"), isRuled: false).accessibilityIdentifier(
+                        "collection-count")
                 }
             }
-            .scrollContentBackground(.hidden)
+            .qeetrixListStyle()
+            .navigationDestination(for: ShowcaseDocument.self) { DocumentDetail(document: $0) }
             .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search documents"))
-        } empty: {
-            QeetrixEmptyState(
-                "No documents yet", description: Text("Documents you create appear here."), variant: .firstUse, icon: .fileText
-            ) {
+        } emptyState: {
+            QeetrixEmptyState("No documents yet", description: "Documents you create appear here.", icon: .fileText) {
                 QeetrixButton("Create a document") {
                     documents = ShowcaseDocument.samples
                     load = .loaded
@@ -83,7 +73,6 @@ struct CollectionPatternsPage: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(QeetrixColor.surfaceCanvas)
-        .qeetrixConfirmationDialog($confirmDelete)
         .qeetrixToast($toast)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
@@ -105,12 +94,6 @@ struct CollectionPatternsPage: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    private func askToDelete(_ document: ShowcaseDocument) {
-        confirmDelete = QeetrixConfirmationDialog(
-            "Delete \(document.title)?",
-            actions: [QeetrixDialogAction("Delete", role: .destructive) { delete(document) }])
-    }
-
     private func delete(_ document: ShowcaseDocument) {
         guard let index = documents.firstIndex(of: document) else { return }
         documents.remove(at: index)
@@ -119,6 +102,49 @@ struct CollectionPatternsPage: View {
             action: .init("Undo") {
                 documents.insert(document, at: min(index, documents.count))
             })
+    }
+}
+
+/// What the page's simulated data source fails with.
+struct ShowcaseLoadError: Error {}
+
+/// A document's details: its fields, its owner and its history.
+struct DocumentDetail: View {
+    let document: ShowcaseDocument
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: QeetrixSpace.layoutSm) {
+                QeetrixDescriptionList {
+                    QeetrixDescriptionItem("Title", value: document.title)
+                    QeetrixDescriptionItem("Owner", value: document.owner)
+                    QeetrixDescriptionItem("Size", value: document.size)
+                    QeetrixDescriptionItem("Status") {
+                        QeetrixBadge(document.status.rawValue, tone: document.status == .active ? .success : .neutral)
+                    }
+                }
+                QeetrixCard {
+                    QeetrixListItem("Owner", description: Text(verbatim: document.owner)) {
+                        QeetrixListItemIcon(.contactRound)
+                    } trailing: {
+                        QeetrixBadge("Editor").accessibilityIdentifier("detail-owner-badge")
+                    }
+                    .accessibilityIdentifier("detail-owner-row")
+                }
+                QeetrixSectionHeader("History")
+                QeetrixTimeline {
+                    QeetrixTimelineItem("Shared with the team", time: Text(verbatim: "Today, 09:41"), icon: .contactRound, tone: .brand)
+                    QeetrixTimelineItem("Edited", description: document.owner, time: Text(verbatim: "Yesterday"))
+                    QeetrixTimelineItem("Created", time: Text(verbatim: "12 Oct"))
+                }
+            }
+            .padding(QeetrixSpace.insetLg)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .background(QeetrixColor.surfaceCanvas)
+        .navigationTitle(document.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .accessibilityIdentifier("document-detail")
     }
 }
 

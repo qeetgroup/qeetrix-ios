@@ -6,7 +6,7 @@ import SwiftUI
 /// it against a tagged copy of the package, resolved by URL and version as an app installs a release.
 @main
 struct ConsumerApp: App {
-    /// The documented integration: the theme stored under the web ThemeProvider's key and values.
+    /// The documented integration: the theme stored under the web QeetrixProvider's key and values.
     @AppStorage("theme") private var mode: QeetrixThemeMode = .system
     private let fonts = QeetrixFontRegistry.register()
 
@@ -45,11 +45,12 @@ struct ConsumerHome: View {
                 Section {
                     ForEach(fonts, id: \.family) { font in
                         QeetrixListItem(
-                            font.family.rawValue, metadata: Text(font.isAvailable ? "Available" : "Missing"), icon: .info
+                            font.family.rawValue, metadata: Text(font.isAvailable ? "Available" : "Missing"),
+                            leading: { QeetrixListItemIcon(.info) }
                         )
                         .accessibilityIdentifier("font-\(font.family.rawValue)")
                     }
-                    QeetrixListItem("Tokens", metadata: Text(tokensVersion), icon: .database)
+                    QeetrixListItem("Tokens", metadata: Text(verbatim: tokensVersion), leading: { QeetrixListItemIcon(.database) })
                         .accessibilityIdentifier("tokens")
                 } header: {
                     QeetrixSectionHeader("Package resources")
@@ -60,7 +61,7 @@ struct ConsumerHome: View {
         }
     }
 
-    /// The `@qeetrix/ui` version the bundled tokens were generated from, read from the package's bundle.
+    /// The `@qeetrix/tokens` version the bundled tokens were generated from, read from the package's bundle.
     private var tokensVersion: String {
         (try? QeetrixProvenance.bundled().tokens.version) ?? "Unavailable"
     }

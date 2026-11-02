@@ -6,8 +6,9 @@
 #   Scripts/new-component.sh Checkbox Checkbox --category "Forms & inputs"
 #   Scripts/new-component.sh Input TextArea --category "Forms & inputs" --slug textarea --dry-run
 #
-# <Family> is the qeetrix-ui family the web component belongs to (component-manifest.json "category");
-# --slug defaults to the component name in kebab case. It never overwrites: an existing component stops
+# <Family> is the @qeetrix/react family the web component belongs to, in UpperCamelCase (the "name" in
+# Upstream/qeetrix-react/component-manifest.json, e.g. number-field → NumberField); --slug names the
+# web part when it differs from the component name, and the ui.qeet.in page is its kebab case. It never overwrites: an existing component stops
 # the run with the reasons and changes nothing.
 set -eu
 root=$(cd "$(dirname "$0")/.." && pwd)

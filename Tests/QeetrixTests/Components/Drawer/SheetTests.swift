@@ -6,24 +6,34 @@ import Testing
 @MainActor
 @Suite("Sheet")
 struct SheetTests {
-    @Test("Title in the heading role, body text-sm, surface from component.dialog")
-    func metrics() {
-        #expect(QeetrixSheetMetrics.titleType == QeetrixTypeSpec(.heading))
-        #expect(QeetrixSheetMetrics.bodyType.tokens.size == 14)
-        #expect(QeetrixDialogTokens.background == QeetrixComponentColor(.surfaceOverlay))
-        #expect(QeetrixDialogTokens.corner == QeetrixCorner.overlay)
+    @Test("Intents are the Dialog's: Ember, danger, and the warning icon colour for the 3 pt line")
+    func intents() {
+        #expect(QeetrixDialogIntent.allCases.map(\.rawValue) == ["standard", "danger", "warning"])
+        #expect(QeetrixDialogIntent.allCases.map(\.color) == [.borderBrand, .borderDanger, .iconWarning])
     }
 
-    @Test("The layout renders with and without a description, light and dark")
+    @Test("An intent draws the 3 pt line across the top")
+    func intentLine() throws {
+        let sheet = QeetrixSheetContent("Revoke this API key?", intent: .danger) {
+            Text("Apps using it stop working.")
+        } actions: {
+            QeetrixButton("Revoke key", tone: .danger) {}
+        }
+        let image = try #require(Rendered(sheet.frame(width: 390, height: 400).environment(\.colorScheme, .light)))
+        #expect(close(QeetrixTheme.light.resolve(.borderDanger).bytes, image.pixel(195, 1)))
+        #expect(close(QeetrixTheme.light.resolve(.surfaceOverlay).bytes, image.pixel(195, 5)))
+    }
+
+    @Test("The layout renders with and without a description, dismissible or not, light and dark")
     func renders() {
         for scheme in [ColorScheme.light, .dark] {
-            let full = QeetrixSheetContent("Edit profile", description: Text("Your team sees these details.")) {
+            let full = QeetrixSheetContent("Edit address", description: Text("Used on every invoice.")) {
                 Text("Content")
             } actions: {
-                QeetrixButton("Cancel", variant: .outline) {}
-                QeetrixButton("Save") {}
+                QeetrixButton("Cancel", variant: .ghost, size: .lg) {}
+                QeetrixButton("Save", size: .lg) {}
             }
-            let bare = QeetrixSheetContent("Filters", onClose: {}) {
+            let bare = QeetrixSheetContent("Unsaved changes", isDismissible: false, onClose: {}) {
                 Text("Content")
             } actions: {
                 EmptyView()
@@ -43,12 +53,8 @@ struct SheetTests {
         }
         sheet.onClose?()
         #expect(closed == 1)
-        #expect(
-            QeetrixSheetContent("Edit") {
-                EmptyView()
-            } actions: {
-                EmptyView()
-            }.onClose == nil)
+        #expect(sheet.isDismissible)
+        #expect(sheet.intent == nil, "Without an intent it is the drawer: no line")
     }
 
     @Test("The modifiers attach without presenting")
