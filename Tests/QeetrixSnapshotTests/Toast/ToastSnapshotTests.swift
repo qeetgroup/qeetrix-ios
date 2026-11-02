@@ -9,15 +9,15 @@
     struct ToastSnapshotTests {
         @AccessibilityFocusState private var focus: QeetrixToastFocus?
 
-        @Test("Info, success, warning and error")
-        func types() {
+        @Test("Info, success, warning and danger")
+        func tones() {
             assertSpecimen(
                 // Spaced so each toast's overlay shadow shows, as it does with one toast on screen.
                 VStack(spacing: 24) {
                     toast(QeetrixToast(.info, title: "Message archived"))
                     toast(QeetrixToast(.success, title: "Settings saved", description: "They apply to new sessions."))
                     toast(QeetrixToast(.warning, title: "Saved offline", description: "Changes sync when you reconnect."))
-                    toast(QeetrixToast(.error, title: "Report not sent", description: "Check your connection."))
+                    toast(QeetrixToast(.danger, title: "Report not sent", description: "Check your connection."))
                 }
             )
         }

@@ -1,0 +1,33 @@
+@layer qx.base, qx.components, qx.state;
+@import "../base.css";
+@import "../state.css";
+@import "./alert.css";
+@import "../link.css";
+
+@layer qx.components {
+  .qx-form {
+    gap: var(--qx-space-form-gap);
+    flex-direction: column;
+    min-inline-size: 0;
+    display: flex;
+  }
+  
+  .qx-error-summary:focus {
+    outline: var(--qx-focus-ring-width) solid var(--qx-color-border-focus);
+    outline-offset: calc(-1 * var(--qx-focus-ring-width));
+  }
+  
+  .qx-error-summary-title {
+    font: inherit;
+    margin: 0;
+  }
+  
+  .qx-error-summary-list {
+    gap: var(--qx-space-gap-xs);
+    margin: var(--qx-space-gap-xs) 0 0;
+    flex-direction: column;
+    padding: 0;
+    list-style: none;
+    display: flex;
+  }
+}

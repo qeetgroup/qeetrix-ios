@@ -6,12 +6,17 @@ import SwiftUI
 /// ```swift
 /// Text("Saved")
 ///     .foregroundStyle(QeetrixColor.textSuccess)
-///     .background(QeetrixColor.surfaceDefault)
+///     .background(QeetrixColor.surfaceRaised)
 /// ```
 ///
-/// Increased contrast: qeetrix-ui defines no contrast theme yet, so `.increased` resolves to the same
-/// values as `.standard` — every semantic text pair already meets WCAG 2.2 AA in both themes. When
-/// upstream registers a contrast theme, the generator fails until it is mapped here.
+/// Where each colour may appear is a design rule, not a token (design rules §4): Ember
+/// (`bgBrandBold`, `borderBrand`, `textBrand`) only for the primary action, focus, the current item,
+/// checked controls and links; status colours only for status; the page on `surfaceCanvas` and content
+/// on `surfaceRaised`.
+///
+/// Increased contrast: `@qeetrix/tokens` has no contrast context yet, so `.increased` resolves to the
+/// same values as `.standard` — every designed pair already meets WCAG 2.2 AA in both schemes. When the
+/// resolver gains a contrast modifier, the generator fails until it is mapped here.
 extension QeetrixColor: ShapeStyle {
     public func resolve(in environment: EnvironmentValues) -> Color.Resolved {
         rgba(for: environment.colorScheme).resolved

@@ -9,11 +9,11 @@ struct ComponentPage<Content: View>: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: QeetrixSpacing.xl2) {
-                QeetrixText(summary, variant: .lead)
+            VStack(alignment: .leading, spacing: QeetrixSpace.layoutMd) {
+                QeetrixText(summary, size: .lg, tone: .subtle)
                 content
             }
-            .padding(QeetrixSpacing.l)
+            .padding(QeetrixSpace.insetLg)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .background(QeetrixColor.surfaceCanvas)
@@ -33,8 +33,8 @@ struct DemoSection<Content: View>: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: QeetrixSpacing.m) {
-            QeetrixText(title, variant: .h3)
+        VStack(alignment: .leading, spacing: QeetrixSpace.gapMd) {
+            QeetrixHeading(title, level: 2, size: .titleMd)
             content
         }
     }
@@ -42,36 +42,45 @@ struct DemoSection<Content: View>: View {
 
 /// Lays children out in rows that wrap, so a row of buttons or badges reflows at large text sizes.
 struct FlowLayout: Layout {
-    var spacing: CGFloat = QeetrixSpacing.s
+    var spacing: CGFloat = QeetrixSpace.gapSm
 
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         arrange(subviews, width: proposal.width ?? .infinity).size
     }
 
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        for (index, origin) in arrange(subviews, width: bounds.width).origins.enumerated() {
-            subviews[index].place(at: CGPoint(x: bounds.minX + origin.x, y: bounds.minY + origin.y), proposal: .unspecified)
+        let layout = arrange(subviews, width: bounds.width)
+        for (index, origin) in layout.origins.enumerated() {
+            subviews[index].place(
+                at: CGPoint(x: bounds.minX + origin.x, y: bounds.minY + origin.y), proposal: ProposedViewSize(layout.sizes[index]))
         }
     }
 
-    private func arrange(_ subviews: Subviews, width: CGFloat) -> (origins: [CGPoint], size: CGSize) {
+    /// Each child at its ideal size, except that one wider than the row is offered the row's width, so
+    /// at the largest text sizes a long button label wraps instead of pushing the page off screen.
+    private func arrange(_ subviews: Subviews, width: CGFloat) -> (origins: [CGPoint], sizes: [CGSize], size: CGSize) {
         var origins: [CGPoint] = []
+        var sizes: [CGSize] = []
         var x: CGFloat = 0
         var y: CGFloat = 0
         var lineHeight: CGFloat = 0
         var maxX: CGFloat = 0
         for subview in subviews {
-            let size = subview.sizeThatFits(.unspecified)
+            var size = subview.sizeThatFits(.unspecified)
+            if size.width > width {
+                size = subview.sizeThatFits(ProposedViewSize(width: width, height: nil))
+            }
             if x > 0 && x + size.width > width {
                 x = 0
                 y += lineHeight + spacing
                 lineHeight = 0
             }
             origins.append(CGPoint(x: x, y: y))
+            sizes.append(size)
             x += size.width + spacing
             maxX = max(maxX, x - spacing)
             lineHeight = max(lineHeight, size.height)
         }
-        return (origins, CGSize(width: maxX, height: y + lineHeight))
+        return (origins, sizes, CGSize(width: maxX, height: y + lineHeight))
     }
 }

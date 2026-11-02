@@ -2,36 +2,25 @@
 
 ## Overview
 
-Multi-line plain text: feedback, notes, descriptions. For a single line use ``QeetrixTextField``; for
-formatted text a rich-text editor, which Qeetrix for iOS does not provide.
+Multi-line text with its label, help text and error — `@qeetrix/react`'s Textarea in a Field. For one
+line, use ``QeetrixTextField``.
 
 ```swift
-QeetrixTextarea(
-    "Feedback", text: $feedback,
-    prompt: Text("What could be better?"),
-    description: Text("Up to 500 characters.")
-)
+QeetrixTextarea("Notes", text: $notes, prompt: Text("e.g. Deliver after 5 pm"), rows: 4)
 ```
 
-- **Size.** Two control heights to start, growing with the text to 15 lines — the web's 24 rem cap —
-  then scrolling, so a long note never pushes the rest of a form off the screen.
-- **Prompt.** Drawn while the field is empty; never part of the value.
-- **States.** A message colours the boundary; `isReadOnly` shows the text selectable with a dashed
-  boundary; `disabled(_:)` shows the sunken surface and fades it.
+- The same box as ``QeetrixTextField``, `rows` lines tall at least (3 by default), with the vertical
+  padding that centres one line in an input's height.
+- It grows with its content up to `maxRows`, then scrolls; without `maxRows` it keeps growing.
+- The same focus, invalid, read-only and disabled states as a text field.
 
-### Keyboard and accessibility
+### Accessibility
 
-Return starts a new line, so a textarea does not submit a form. Selection, the edit menu and dictation
-work as in any iOS text field. VoiceOver reads a text field named by the label, with the description as
-its hint and the message attached.
+VoiceOver reads it by its label, with its value, description and error, as a text field.
 
 ### Platform differences
 
-The web textarea can be resized by dragging its corner; on iOS it grows with its text instead.
+The web textarea can be dragged taller where `field-sizing` isn't supported; on iOS it always grows
+with its text.
 
-On the web: [Textarea on ui.qeet.in](https://ui.qeet.in/docs/components/textarea).
-
-## See Also
-
-- ``QeetrixTextField``
-- ``QeetrixField``
+On the web: [Textarea on ui.qeet.in](https://ui.qeet.in/components/textarea/).

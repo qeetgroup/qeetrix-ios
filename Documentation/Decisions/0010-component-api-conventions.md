@@ -1,6 +1,6 @@
 # 0010 — Component API conventions
 
-**Status:** Accepted (Phase 2, 2026-10-18).
+**Status:** Accepted (Phase 2, 2026-10-18). Amended by ADR 0015: names follow `@qeetrix/react`.
 
 ## Context
 

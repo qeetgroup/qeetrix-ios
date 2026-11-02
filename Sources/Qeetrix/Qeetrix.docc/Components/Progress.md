@@ -2,44 +2,49 @@
 
 ## Overview
 
-Task progress: a bar, with an optional label and percentage above it.
+A task advancing — an upload, an import — as `@qeetrix/react`'s Progress.
 
 ```swift
-VStack(alignment: .leading, spacing: QeetrixSpacing.l) {
-    QeetrixProgress("Uploading", value: 0.4)
+VStack(alignment: .leading, spacing: QeetrixSpace.gapLg) {
+    QeetrixProgress("Uploading invoices", value: 0.4, showsValue: true)
+    QeetrixProgress("Import failed", value: 0.62, tone: .danger)
     QeetrixProgress("Preparing export", value: nil)
 }
 ```
 
-- **Determinate.** The bar eases to each new value over the slow duration.
-- **Indeterminate.** Pass `nil` while the total is unknown: a segment sweeps along the track, mirrored
-  in right-to-left layouts.
-- **Sizes.** `sm`, `md` and `lg` tracks are 4, 8 and 12 pt — fixed steps, not density-resolved.
+- **Header**: the label in the field-label style (`label.sm`, `color.text.subtle`) and, with
+  `showsValue`, the percentage (`label.sm`, tabular figures, `color.text.default`) at its end.
+- **Track**: 4 points of `color.border.default` in light and `color.surface.sunken` in dark (so each
+  tone keeps 3:1 against it), square ends. The indicator is `color.bg.brand.bold`
+  while the task runs (`brand`), `color.bg.success.bold` once it's done (`success`) and
+  `color.bg.danger.bold` if it failed (`danger`). It moves over `motion.duration.normal`.
+- **Indeterminate** (`value: nil`): a 30%-wide segment slides along the track every 1.6 seconds.
+- `value` is a fraction of `total` (1 by default).
 
-``QeetrixProgressViewStyle`` gives any `ProgressView` the same bar:
+``QeetrixProgressViewStyle`` styles any `ProgressView` the same way:
 
 ```swift
 ProgressView("Syncing", value: 0.25)
-    .progressViewStyle(.qeetrix(size: .sm))
+    .progressViewStyle(.qeetrix(tone: .success))
 ```
 
 ### Accessibility
 
-- VoiceOver reads a native progress indicator: the label, then the percentage. While the total is
-  unknown it reads an activity indicator with the label, and no percentage.
-- A bar without a label needs `accessibilityLabel(_:)`.
-- With Reduce Motion on, an indeterminate bar is a still, hatched fill — busy, not done.
+VoiceOver reads it as the system's progress indicator, with its label and percentage — or, while the
+total isn't known, as an activity indicator. Under Reduce Motion the indeterminate segment spans the
+track and fades instead of sliding, so the wait stays visible.
 
-### Platform adaptations
+### Platform differences
 
-The percentage is formatted for the person's locale (for example "40 %" in French), as the web formats
-it with the browser's locale.
+The web's Progress takes `min`, `max` and a `format`; iOS takes `value` and `total`, as `ProgressView`
+does, and formats a percentage for the environment's locale. The web's Meter, a measurement within a
+range, has no iOS counterpart yet.
 
-On the web: [Progress on ui.qeet.in](https://ui.qeet.in/docs/components/progress).
+On the web: [Progress on ui.qeet.in](https://ui.qeet.in/components/progress/).
 
 ## Topics
 
 ### Styling
 
-- ``QeetrixProgressSize``
+- ``QeetrixProgressTone``
 - ``QeetrixProgressViewStyle``

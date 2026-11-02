@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import Testing
 
 @testable import Qeetrix
@@ -93,5 +94,34 @@ struct NumberFieldTests {
         #expect(QeetrixNumberParser.integer(Decimal(string: "42")!) == 42)
         #expect(QeetrixNumberParser.integer(Decimal(string: "1e30")!) == Int.max)
         #expect(QeetrixNumberParser.integer(Decimal(string: "-1e30")!) == Int.min)
+    }
+}
+
+@MainActor
+@Suite("Number field view")
+struct NumberFieldViewTests {
+    @Test("The box is a field's height; steppers are control.sm squares behind a hairline")
+    func box() throws {
+        let with = try #require(Rendered(QeetrixNumberField("Seats", value: .constant(5), in: 1...10).frame(width: 300)))
+        let field = try #require(
+            Rendered(QeetrixNumberInput(value: .constant(5), range: 1...10, step: 1, fractionDigits: 0, prompt: nil).frame(width: 300)))
+        #expect(field.height == Int(QeetrixDensity.default.sizeControlLg))
+        #expect(with.height > field.height, "The label above it")
+    }
+
+    @Test("Renders with steppers, without, with affixes, an error and disabled")
+    func renders() {
+        let fields: [QeetrixNumberField] = [
+            QeetrixNumberField("Seats", value: .constant(5), in: 1...250),
+            QeetrixNumberField(
+                "Discount", value: .constant(Decimal(5)), in: 0...100, step: Decimal(string: "0.5")!, fractionDigits: 1,
+                endAdornment: Text("%")),
+            QeetrixNumberField("Amount", value: .constant(Decimal?.none), startAdornment: Text("₹"), showsSteppers: false),
+            QeetrixNumberField("Seats", value: .constant(500), error: "Up to 250 seats"),
+        ]
+        for field in fields {
+            #expect(ImageRenderer(content: field.frame(width: 300)).cgImage != nil)
+            #expect(ImageRenderer(content: field.disabled(true).frame(width: 300)).cgImage != nil)
+        }
     }
 }

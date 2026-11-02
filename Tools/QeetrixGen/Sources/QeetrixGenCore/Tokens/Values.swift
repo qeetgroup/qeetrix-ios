@@ -1,6 +1,6 @@
 import Foundation
 
-/// The CSS root font size `rem` is measured against. qeetrix-ui never sets `html { font-size }`,
+/// The CSS root font size `rem` is measured against. `@qeetrix/tokens` and `@qeetrix/react` never set `html { font-size }`,
 /// so browsers use their default, 16px; ARCHITECTURE.md records the assumption.
 public let remInPoints: Double = 16
 

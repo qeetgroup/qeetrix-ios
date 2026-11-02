@@ -2,44 +2,39 @@
 
 ## Overview
 
-A choice that is on or off, independently of others: accepting terms, opting into a channel. For a
-setting that takes effect immediately, use ``QeetrixSwitch``; for one choice from several, use
-``QeetrixRadioGroup``.
+A checkbox with its label — `@qeetrix/react`'s Checkbox. It turns one option on or off, or picks
+several (design rules §9).
 
 ```swift
-QeetrixCheckbox("Accept the terms", isOn: $accepted, description: Text("You can read them at any time."))
+QeetrixCheckbox("Email me receipts", isOn: $receipts, description: Text("One email per invoice."))
+QeetrixCheckbox("All channels", sources: $channels, isOn: \.isOn)
 ```
 
-### States
+- **Box**: 16 points, 2-point corners, a 1-point `color.border.strong` edge on `color.bg.input`
+  (`color.border.strong-hover` under a pointer).
+- **Checked or mixed**: the Ember fill with a white 12-point sharp tick or dash, stroke 3. A parent
+  checkbox over `sources` is mixed when some of them are on.
+- **Invalid**, in a group with an error: the danger edge, checked or not, hovered or not.
+  **Disabled**: `color.bg.disabled`, the
+  disabled edge and mark.
+- **Row**: the label in `body.md`, 8 points after the box, and an optional description in `body.sm`
+  under it. The whole row toggles it.
 
-- **Checked and unchecked**, carried by the glyph, not only the colour: the brand fill with a white check.
-- **Mixed.** A checkbox that stands for a group takes the items it controls; it shows a minus while some
-  are on. A tap turns them all on, a second all off — SwiftUI's own mixed-toggle behaviour.
+Settings that apply at once use ``QeetrixSwitch``; a checkbox is for choices a Save step confirms.
 
-  ```swift
-  QeetrixCheckbox("All channels", sources: $channels, isOn: \.isOn)
-  ```
+### Any toggle, the Qeetrix style
 
-- **Disabled** with `disabled(_:)`. In a ``QeetrixFieldSet`` with an error, the boxes take the error
-  boundary.
-
-``QeetrixCheckboxToggleStyle`` gives any `Toggle` the checkbox: `.toggleStyle(.qeetrixCheckbox)`.
+`.toggleStyle(.qeetrixCheckbox)` gives any `Toggle` the same look.
 
 ### Accessibility
 
-It is a native `Toggle`, so VoiceOver reads its label and state — on, off, or the system's mixed state —
-with the description as the hint. The whole row is the target, at least 44 pt tall.
+VoiceOver reads it as the system's toggle — its label, whether it's on, and its description as the
+hint. The row is a 44-point target.
 
 ### Platform differences
 
-The web checkbox is a 16 px box with a 24 px pointer target; here the box is the same and the row is a
-44 pt touch target. iOS has no checkbox role: VoiceOver reads it as a toggle, the platform's on/off
-control.
+- **Rows.** The web's row is a 24-point target with rows 4 points apart; iOS rows are 44 points tall
+  and flush (ADR 0012).
+- **Focus.** The Ember frame 2 points outside the box shows under keyboard focus.
 
-On the web: [Checkbox on ui.qeet.in](https://ui.qeet.in/docs/components/checkbox).
-
-## Topics
-
-### Styling
-
-- ``QeetrixCheckboxToggleStyle``
+On the web: [Checkbox on ui.qeet.in](https://ui.qeet.in/components/checkbox/).

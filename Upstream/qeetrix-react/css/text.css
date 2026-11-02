@@ -1,0 +1,108 @@
+@layer qx.base, qx.components, qx.state;
+@import "./base.css";
+@import "./state.css";
+
+@layer qx.components {
+  .qx-text {
+    font: var(--qx-typography-body-md);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    margin: 0;
+  }
+  
+  .qx-text[data-size="sm"] {
+    font-size: var(--qx-typography-body-sm-font-size);
+    line-height: var(--qx-typography-body-sm-line-height);
+  }
+  
+  .qx-text[data-size="md"] {
+    font-size: var(--qx-typography-body-md-font-size);
+    line-height: var(--qx-typography-body-md-line-height);
+  }
+  
+  .qx-text[data-size="lg"] {
+    font-size: var(--qx-typography-body-lg-font-size);
+    line-height: var(--qx-typography-body-lg-line-height);
+  }
+  
+  .qx-text[data-weight="regular"] {
+    font-weight: var(--qx-typography-body-md-font-weight);
+  }
+  
+  .qx-text[data-weight="medium"] {
+    font-weight: var(--qx-typography-label-md-font-weight);
+  }
+  
+  .qx-text[data-weight="semibold"] {
+    font-weight: var(--qx-typography-title-md-font-weight);
+  }
+  
+  .qx-text[data-mono] {
+    font-family: var(--qx-font-family-mono);
+  }
+  
+  .qx-text[data-tone="default"] {
+    color: var(--qx-color-text-default);
+  }
+  
+  .qx-text[data-tone="subtle"] {
+    color: var(--qx-color-text-subtle);
+  }
+  
+  .qx-text[data-tone="subtlest"] {
+    color: var(--qx-color-text-subtlest);
+  }
+  
+  .qx-text[data-tone="disabled"] {
+    color: var(--qx-color-text-disabled);
+  }
+  
+  .qx-text[data-tone="inverse"] {
+    color: var(--qx-color-text-inverse);
+  }
+  
+  .qx-text[data-tone="brand"] {
+    color: var(--qx-color-text-brand);
+  }
+  
+  .qx-text[data-tone="danger"] {
+    color: var(--qx-color-text-danger);
+  }
+  
+  .qx-text[data-tone="success"] {
+    color: var(--qx-color-text-success);
+  }
+  
+  .qx-text[data-tone="warning"] {
+    color: var(--qx-color-text-warning);
+  }
+  
+  .qx-text[data-tone="info"] {
+    color: var(--qx-color-text-info);
+  }
+  
+  .qx-text[data-truncate="line"] {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  
+  .qx-text[data-truncate="lines"] {
+    -webkit-line-clamp: var(--qx-text-lines);
+    line-clamp: var(--qx-text-lines);
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    overflow: hidden;
+  }
+  
+  .qx-text[data-align="start"] {
+    text-align: start;
+  }
+  
+  .qx-text[data-align="center"] {
+    text-align: center;
+  }
+  
+  .qx-text[data-align="end"] {
+    text-align: end;
+  }
+}

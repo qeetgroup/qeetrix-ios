@@ -2,52 +2,51 @@
 
 ## Overview
 
-A labelled single-line field — the web's `Field` with an `Input` — with an optional description and an
-optional error, warning or success message.
+A single-line text field with its label, help text and error — `@qeetrix/react`'s TextField, a Field
+around an Input, the default way to build a form row.
 
 ```swift
 QeetrixTextField(
     "Work email", text: $email,
-    prompt: Text("name@company.com"),
+    prompt: Text("e.g. priya@acme.in"),
     description: Text("We send sign-in links here."),
-    message: emailError.map { QeetrixFieldMessage(.error, text: $0) },
+    error: emailError,
     isRequired: true
 )
 .keyboardType(.emailAddress)
 .textContentType(.emailAddress)
+QeetrixTextField("Amount", text: $amount, startAdornment: Text("₹"))
+QeetrixTextField("Search", text: $query, icon: .search, isLabelHidden: true)
 ```
 
-- **States.** The boundary steps up under a pointer, turns to the focus ring with a 1 pt outline when
-  focused, and takes the message's tone. An error keeps its colour when focused.
-- **Read-only.** `isReadOnly` shows the value with a dashed boundary, selectable but not editable.
-- **Disabled.** `disabled(_:)` shows the sunken surface and fades the field.
-- **Height.** The density's control height, as a minimum, so larger text grows the field.
+- **The box** (design rules §8): filled with `color.bg.neutral.subtle` (`-hover` under a pointer), a
+  1-point `color.border.strong` bottom line, 4-point top corners and a square bottom,
+  `size.control.lg` tall, 12 points of inline padding.
+- **Text**: the value in `body.md`, `color.text.default`; the prompt in `color.text.subtlest` — an
+  example ("e.g. Acme Pvt Ltd"), never an instruction or the label.
+- **Adornments**: an optional leading `icon` (sharp, 16 points, `color.icon.subtle`) and text affixes —
+  `startAdornment` and `endAdornment`, such as ₹ or ".qeet.in" — in `color.text.subtle`, 8 points from
+  the text.
+- **States.** Focus: a 2-point Ember frame drawn inside the box replaces the bottom line. Invalid (an
+  `error`): a 2-point danger frame. Read-only: no fill, the editable `color.border.strong` line,
+  the value selectable. Disabled (`.disabled(true)`): `color.bg.disabled`, a `color.border.disabled` line,
+  `color.text.disabled`.
 
 Keyboard type, content type, autocapitalisation, submit label and `onSubmit` apply as they do to any
 `TextField`.
 
 ### Accessibility
 
-- VoiceOver reads the field by its label — with "Required" for a required field — and its value.
-- The description and the message follow as text, in reading order, so they never depend on VoiceOver's
-  hints setting.
-- When a message appears or changes, VoiceOver announces it.
-- A tap on the padding, or just outside a short field, focuses it: the target is at least 44 pt.
+- VoiceOver reads the field by its label — with "Required" for a required field — its value, its
+  description as the hint, and its error with it.
+- A tap on the padding, or just outside a short field, focuses it: the target is at least 44 points.
 
-### Platform adaptations
+### Platform differences
 
-- **Text size.** The web uses 16 px text below its `md` breakpoint so iOS Safari does not zoom on
-  focus, and 14 px above it. A native field never zooms, but its text stays at 16 pt, the size the web
-  shows on a phone.
-- **Required.** The web announces the native `required` attribute; here "Required" is part of the
-  field's label, because a hint can be switched off.
-- **Announcements.** The web's error is a `role="alert"` region and its warning and success are
-  `role="status"`. Here each new message is posted as a VoiceOver announcement.
+- **Height.** At the default text size the field is the web's height; larger text scales it in
+  proportion.
+- **Focus frame.** The web frames a focused field for any focus, as here.
+- **Clear and copy tools.** The web's `endAdornment` can hold a control (an IconButton); on iOS the
+  adornments are text.
 
-On the web: [Input on ui.qeet.in](https://ui.qeet.in/docs/components/input).
-
-## Topics
-
-### Messages
-
-- ``QeetrixFieldMessage``
+On the web: [Text field on ui.qeet.in](https://ui.qeet.in/components/text-field/).

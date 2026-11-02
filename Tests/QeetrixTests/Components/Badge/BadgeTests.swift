@@ -6,39 +6,56 @@ import Testing
 @MainActor
 @Suite("Badge")
 struct BadgeTests {
-    @Test("Each variant takes the web's colours")
-    func colours() {
-        let solid = QeetrixBadge.colors(.default, colorScheme: .light)
-        #expect(solid.background == QeetrixBadgeTokens.defaultBackground)
-        #expect(solid.foreground == QeetrixBadgeTokens.defaultForeground)
-        let tones: [(QeetrixBadgeVariant, QeetrixColor, QeetrixColor, QeetrixComponentColor)] = [
-            (.brand, .surfaceBrandSubtle, .textBrand, QeetrixBadgeTokens.borderBrand),
-            (.info, .feedbackInfoSubtle, .textInfo, QeetrixBadgeTokens.borderInfo),
-            (.success, .feedbackSuccessSubtle, .textSuccess, QeetrixBadgeTokens.borderSuccess),
-            (.warning, .feedbackWarningSubtle, .textWarning, QeetrixBadgeTokens.borderWarning),
-            (.destructive, .feedbackErrorSubtle, .textDanger, QeetrixBadgeTokens.borderDanger),
-        ]
-        for (variant, background, foreground, border) in tones {
-            let colors = QeetrixBadge.colors(variant, colorScheme: .light)
-            #expect(colors.background == QeetrixComponentColor(background))
-            #expect(colors.foreground == QeetrixComponentColor(foreground))
-            #expect(colors.border == border)
+    @Test("Tones, variants and sizes are @qeetrix/react's")
+    func names() {
+        #expect(QeetrixBadgeTone.allCases.map(\.rawValue) == ["neutral", "brand", "info", "success", "warning", "danger"])
+        #expect(QeetrixBadgeVariant.allCases.map(\.rawValue) == ["subtle", "solid"])
+        #expect(QeetrixBadgeSize.allCases.map(\.rawValue) == ["sm", "md"])
+    }
+
+    @Test("Every tone and variant takes its badge.css fill and text")
+    func colours() throws {
+        let css = String(decoding: try Repository.data("Upstream/qeetrix-react/css/badge.css"), as: UTF8.self)
+        func token(_ color: QeetrixColor) -> String { "--qx-" + color.rawValue.replacingOccurrences(of: ".", with: "-") }
+        for variant in QeetrixBadgeVariant.allCases {
+            for tone in QeetrixBadgeTone.allCases {
+                let (background, foreground) = QeetrixBadge.colors(tone, variant)
+                #expect(css.contains(token(background)), "\(variant) \(tone) \(background)")
+                #expect(css.contains(token(foreground)), "\(variant) \(tone) \(foreground)")
+            }
         }
-        #expect(QeetrixBadge.colors(.secondary, colorScheme: .light).background == QeetrixComponentColor(.surfaceInteractive))
-        #expect(QeetrixBadge.colors(.muted, colorScheme: .light).foreground == QeetrixComponentColor(.textTertiary))
+        #expect(QeetrixBadge.colors(.neutral, .subtle) == (.bgNeutralSubtlePressed, .textDefault))
+        #expect(QeetrixBadge.colors(.brand, .subtle) == (.bgBrandSubtle, .textBrand), "Not -pressed: 4.26:1 in light")
+        #expect(QeetrixBadge.colors(.warning, .solid) == (.bgWarningBold, .textOnWarning))
+        #expect(QeetrixBadge.colors(.neutral, .solid) == (.bgNeutralBold, .textInverse))
+        #expect(QeetrixBadge.colors(.danger, .solid) == (.bgDangerBold, .textOnBold))
     }
 
-    @Test("The outline badge's boundary is stronger in dark")
-    func outline() {
-        #expect(QeetrixBadge.colors(.outline, colorScheme: .light).border == QeetrixComponentColor(.borderDefault))
-        #expect(QeetrixBadge.colors(.outline, colorScheme: .dark).border == QeetrixComponentColor(.borderStrong))
+    @Test("label.sm; 20 pt tall at md, 16 pt at sm")
+    func metrics() throws {
+        #expect(QeetrixBadge.labelType == QeetrixTypeSpec(.labelSm))
+        let md = try #require(Rendered(QeetrixBadge("Paid")))
+        let sm = try #require(Rendered(QeetrixBadge("Paid", size: .sm)))
+        // label.sm's 16 pt line (CSS half-leading), within a pixel of a scale-1 render's rounding.
+        #expect(abs(md.height - 20) <= 1)
+        #expect(abs(sm.height - 16) <= 1)
+        #expect(md.height - sm.height == 4, "2 pt block padding at md, none at sm")
+        #expect(md.width - sm.width == 4, "8 pt inline padding at md, 6 at sm")
     }
 
-    @Test("Label: 12 pt medium in the UI letter style; 12 pt icons")
-    func metrics() {
-        #expect(QeetrixBadge.labelType.tokens.size == 12)
-        #expect(QeetrixBadge.labelType.tokens.weight == .medium)
-        #expect(QeetrixBadge.labelType.tokens.geometry == QeetrixTextRole.label.tokens.geometry)
-        #expect(QeetrixBadge.iconSize.points == 12)
+    @Test("A pill: the corners are clear")
+    func pill() throws {
+        let image = try #require(Rendered(QeetrixBadge("Overdue", tone: .danger, variant: .solid).environment(\.colorScheme, .light)))
+        #expect(image.pixel(0, 0).a < 64)
+        #expect(close(QeetrixTheme.light.resolve(.bgDangerBold).bytes, image.pixel(image.width / 2, 1)))
+    }
+
+    @Test("Badges render with and without an icon, every tone and variant")
+    func renders() {
+        for variant in QeetrixBadgeVariant.allCases {
+            for tone in QeetrixBadgeTone.allCases {
+                #expect(ImageRenderer(content: QeetrixBadge("Paid", tone: tone, variant: variant, icon: .circleCheck)).cgImage != nil)
+            }
+        }
     }
 }

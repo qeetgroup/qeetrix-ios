@@ -1,34 +1,40 @@
 import SwiftUI
 
-/// A square button holding one icon, with a required accessible label.
+/// A square, icon-only button, as `@qeetrix/react`'s IconButton. Its accessible label is required.
 ///
 /// ```swift
-/// QeetrixIconButton(.x, label: "Close") { dismiss() }
-/// QeetrixIconButton(.bell, label: "Notifications", variant: .outline, size: .sm) { openInbox() }
+/// QeetrixIconButton(.x, label: "Close", tone: .neutral, size: .sm) { dismiss() }
+/// QeetrixIconButton(.share2, label: "Share", variant: .soft) { share() }
 /// ```
 ///
-/// It is a ``QeetrixButton`` without a visible title: `ghost` by default, the same ``QeetrixButtonSize``
-/// heights as a square (24, 28, the density's height, 36 pt), with a 12 pt icon at `xs` and 16 pt
-/// otherwise. The label is what VoiceOver reads; it is not shown. While `isLoading` is true the
-/// spinner takes the icon's place in the same square.
+/// `ghost` by default; the same ``QeetrixButtonVariant``s, ``QeetrixButtonTone``s and control heights
+/// as ``QeetrixButton``, as a square, with a 16 pt sharp icon (20 pt at `lg`). VoiceOver reads the
+/// label; with a pointer (iPad) it shows as a tooltip, as on the web — `tooltip` replaces the text
+/// shown. While `isLoading` is true the spinner takes the icon's place.
 public struct QeetrixIconButton: View {
     let icon: QeetrixIconName
     let label: Text
     let variant: QeetrixButtonVariant
-    let size: QeetrixButtonSize
+    let tone: QeetrixButtonTone
+    let size: QeetrixControlSize
     let isLoading: Bool
+    let tooltip: Text?
     let action: @MainActor () -> Void
+    @ScaledMetric(relativeTo: .body) private var spinnerScale: CGFloat = 100
 
     /// An icon button with a localised accessible label.
     public init(
         _ icon: QeetrixIconName,
         label: LocalizedStringKey,
         variant: QeetrixButtonVariant = .ghost,
-        size: QeetrixButtonSize = .default,
+        tone: QeetrixButtonTone = .brand,
+        size: QeetrixControlSize = .md,
         isLoading: Bool = false,
+        tooltip: Text? = nil,
         action: @escaping @MainActor () -> Void
     ) {
-        self.init(icon, label: Text(label), variant: variant, size: size, isLoading: isLoading, action: action)
+        self.init(
+            icon, label: Text(label), variant: variant, tone: tone, size: size, isLoading: isLoading, tooltip: tooltip, action: action)
     }
 
     /// An icon button with an accessible label used as given, without localisation.
@@ -36,11 +42,14 @@ public struct QeetrixIconButton: View {
         _ icon: QeetrixIconName,
         label: S,
         variant: QeetrixButtonVariant = .ghost,
-        size: QeetrixButtonSize = .default,
+        tone: QeetrixButtonTone = .brand,
+        size: QeetrixControlSize = .md,
         isLoading: Bool = false,
+        tooltip: Text? = nil,
         action: @escaping @MainActor () -> Void
     ) {
-        self.init(icon, label: Text(label), variant: variant, size: size, isLoading: isLoading, action: action)
+        self.init(
+            icon, label: Text(label), variant: variant, tone: tone, size: size, isLoading: isLoading, tooltip: tooltip, action: action)
     }
 
     /// An icon button with a `Text` accessible label.
@@ -48,37 +57,38 @@ public struct QeetrixIconButton: View {
         _ icon: QeetrixIconName,
         label: Text,
         variant: QeetrixButtonVariant = .ghost,
-        size: QeetrixButtonSize = .default,
+        tone: QeetrixButtonTone = .brand,
+        size: QeetrixControlSize = .md,
         isLoading: Bool = false,
+        tooltip: Text? = nil,
         action: @escaping @MainActor () -> Void
     ) {
         self.icon = icon
         self.label = label
         self.variant = variant
+        self.tone = tone
         self.size = size
         self.isLoading = isLoading
+        self.tooltip = tooltip
         self.action = action
     }
 
     public var body: some View {
-        let iconSize = Self.iconSize(size)
+        let iconSize = QeetrixButtonStyle.iconSize(for: size)
+        // The spinner is drawn at its token size; it grows with the icon it stands in for.
         Button {
             if !isLoading { action() }
         } label: {
             if isLoading {
-                QeetrixButtonBusyIndicator(size: iconSize)
+                QeetrixSpinner(size: size == .lg ? .lg : .md, isDecorative: true)
+                    .scaleEffect(spinnerScale / 100)
             } else {
-                QeetrixIcon(icon, size: iconSize)
+                QeetrixIcon(icon, size: iconSize, shape: .sharp)
             }
         }
-        .buttonStyle(QeetrixButtonStyle(variant, size: size, layout: .icon, isLoading: isLoading))
+        .buttonStyle(QeetrixButtonStyle(variant, tone: tone, size: size, layout: .icon, isLoading: isLoading))
         .accessibilityLabel(label)
-        .modifier(QeetrixBusyAccessibility(isLoading: isLoading, loadingLabel: nil))
-    }
-
-    /// 12 pt at `xs` (`size-3`), 16 pt otherwise (`size-4`) — the web IconButton does not use the
-    /// text button's 14 pt at `sm`.
-    static func iconSize(_ size: QeetrixButtonSize) -> QeetrixIconSize {
-        QeetrixIconSize(QeetrixWebScale.spacing(size == .xs ? 3 : 4))
+        .help(tooltip ?? label)
+        .modifier(QeetrixBusyAccessibility(isLoading: isLoading))
     }
 }

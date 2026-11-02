@@ -1,17 +1,19 @@
 import SwiftUI
 
-/// A form's action buttons — the web's `FormActions`.
+/// A form's actions, end-aligned: the tertiary ones first, then the primary or destructive one, 8 pt
+/// apart (`space.gap.sm`) — the row `@qeetrix/react` uses in dialog, drawer and card footers.
 ///
 /// ```swift
 /// QeetrixFormActions {
-///     QeetrixButton("Cancel", variant: .outline) { dismiss() }
-///     QeetrixButton("Create account", isLoading: isSubmitting) { submit() }
+///     QeetrixButton("Cancel", variant: .ghost, size: .lg) { cancel() }
+///     QeetrixButton("Save", size: .lg) { save() }
 /// }
 /// ```
 ///
-/// List the buttons in reading order, primary last. On a compact-width screen they stack full-width with
-/// the primary on top, where a thumb reaches it first; in a regular-width size class they sit in a row at
-/// the trailing edge, primary last. VoiceOver reads them in the order they appear.
+/// When they don't fit on one line the earlier ones wrap above. iOS only: at compact width they stack
+/// full width, the primary on top — so a form's main button spans the column with its fields, as the
+/// web's `fullWidth` does — and text buttons stretch to the width (design rules §8). A form's main
+/// button is `lg`, the field height.
 public struct QeetrixFormActions<Content: View>: View {
     let content: Content
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -26,15 +28,12 @@ public struct QeetrixFormActions<Content: View>: View {
             content
         }
         .environment(\.qeetrixButtonFillsWidth, isCompact)
-        .padding(.top, QeetrixWebScale.spacing(2))  // pt-2
     }
 }
 
-/// `flex flex-col-reverse gap-2 sm:flex-row sm:flex-wrap sm:justify-end`: stacked in reverse on compact
-/// width, a trailing row otherwise — wrapping, last first, when the row does not fit.
 struct QeetrixFormActionsLayout: Layout {
     let isCompact: Bool
-    var spacing: CGFloat = QeetrixWebScale.spacing(2)  // gap-2
+    var spacing: CGFloat = QeetrixSpace.gapSm
 
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         arrange(width: proposal.width ?? .infinity, subviews: subviews).size
@@ -66,7 +65,7 @@ struct QeetrixFormActionsLayout: Layout {
             }
             return (placements, CGSize(width: width, height: y - spacing))
         }
-        // Rows from the trailing edge; when a row is full the earlier buttons wrap onto the next line.
+        // Rows from the trailing edge; when a row is full the earlier buttons wrap onto the line above.
         let sizes = subviews.map { $0.sizeThatFits(.unspecified) }
         var rows: [[Int]] = [[]]
         var rowWidth: CGFloat = 0

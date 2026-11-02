@@ -8,10 +8,21 @@ boundaries, not commitments of scope.
 | 1 — Foundations | Token pipeline from `@qeetrix/ui`; semantic colours; light/dark/system theming; typography with the bundled fonts and Dynamic Type; spacing, size, corners, stroke, focus, density, elevation, motion; icon infrastructure with a representative set; accessibility helpers; showcase app; tests, CI, docs | Done |
 | 2 — Core components | Text, Separator, Card, Badge, Button, Icon button, Spinner, Progress, Avatar, Switch, Text field, with their `component.*` tokens; the component template and scaffold; snapshot and UI tests; CI gates | Done |
 | 3 — Inputs and forms | Field and field set, textarea, password, one-time code, checkbox, radio group, select, number field; form actions and error summary | Done |
-| **4 — Navigation, overlays, feedback** | Tabs; navigation and tab bar styling; alert and confirmation dialogs; sheets; popovers; menus; toasts | **Current** |
+| 4 — Navigation, overlays, feedback | Tabs; navigation and tab bar styling; alert and confirmation dialogs; sheets; popovers; menus; toasts | Done |
+| **4a — The move to `@qeetrix/react`** | Tokens from `@qeetrix/tokens`' DTCG build, fonts and icons from npm; every component re-specified to its `@qeetrix/react` counterpart; ADR 0015, [MIGRATION_QEETRIX_REACT.md](Documentation/MIGRATION_QEETRIX_REACT.md) | Done, except the device pass |
+| **4b — The iOS component tickets** | QTRX-95 to QTRX-155: list rows, states, chips, pickers, the Qeet Auth pieces (OTP code, QR code and scanner, permission primer), haptics and formatting; see the [CHANGELOG](CHANGELOG.md) | **Current** |
 | 5 — Data display and advanced | Lists, tables, charts and the other data components | Planned |
 | 6 — Accessibility and maturity | Device-verified VoiceOver, Switch Control and keyboard; increased-contrast values (with upstream); performance | Planned |
 | 7 — Documentation and release | DocC catalogue, docs on ui.qeet.in, versioned releases | Planned |
+
+## Phase 4a — the move to `@qeetrix/react`
+
+Phases 1 to 4 were built from `@qeetrix/ui` 2.1.6. Phase 4a moves the whole library to
+`@qeetrix/tokens` 0.0.13, `@qeetrix/icons` 2.1.0 and `@qeetrix/react` 0.4.0 (ADR 0015). What each
+component does and does not have yet — `multiple` and groups on the select, vertical tabs, the
+Caps Lock warning, menu shortcuts and submenus, a toast stack, dialog widths, the field's help
+button, the number field's `largeStep` and `format`, Meter, CheckboxGroup, a fieldset error, choice
+tiles — is in the migration file's component table.
 
 ## Phase 4 — what is done and what is not
 
@@ -34,7 +45,7 @@ Deferred, with the reasons in ADR 0014:
 
 - a separate centred `QeetrixDialog` (the sheet is the dialog);
 - `QeetrixSnackbar` (the toast with an action covers it);
-- the inline `QeetrixAlert`;
+- the inline `QeetrixAlert` (built in phase 4b, QTRX-111);
 - a stack of toasts;
 - styling the system menu surface (`component.menu`).
 

@@ -16,17 +16,23 @@ enum Showcase {
 }
 
 extension XCUIElement {
-    /// Taps `points` outside this element's frame, below its bottom edge — inside a 44 pt hit area
-    /// for a control drawn shorter than that, outside it otherwise.
-    func tapBelow(by points: CGFloat) {
-        coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 1)).withOffset(CGVector(dx: 0, dy: points)).tap()
+    /// Taps `points` below this element's centre. Between half the drawn height and 22 pt, that is
+    /// outside a control drawn shorter than 44 pt but inside its centred 44 pt hit area. Measured from
+    /// the centre because the frame is the hit area on iOS 27 and the drawn control on earlier systems.
+    func tapBelowCentre(by points: CGFloat) {
+        coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).withOffset(CGVector(dx: 0, dy: points)).tap()
     }
 
-    /// Scrolls the app until this element is on screen.
-    func scrollIntoView(in app: XCUIApplication, attempts: Int = 8) {
+    /// Scrolls the app until this element is on screen: slow drags of a third of the screen, without
+    /// a swipe's momentum, which on a small screen (iPhone SE) carried the element past the top. Drags
+    /// back down when the element is above the middle of the screen.
+    func scrollIntoView(in app: XCUIApplication, attempts: Int = 16) {
         var remaining = attempts
         while !isHittable && remaining > 0 {
-            app.swipeUp()
+            let isAbove = exists && frame.maxY < app.frame.midY
+            let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: isAbove ? 0.35 : 0.7))
+            let to = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: isAbove ? 0.7 : 0.35))
+            from.press(forDuration: 0.05, thenDragTo: to)
             remaining -= 1
         }
     }
@@ -54,7 +60,9 @@ extension XCUIApplication {
     func tapOutside() {
         let region = otherElements["PopoverDismissRegion"].firstMatch
         if region.exists {
-            region.tap()
+            // Near a corner, not the centre: the region spans the screen, and in landscape the popover
+            // can sit over its centre (iPhone 17), where a tap lands on the popover instead.
+            region.coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.88)).tap()
         } else {
             coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.08)).tap()
         }

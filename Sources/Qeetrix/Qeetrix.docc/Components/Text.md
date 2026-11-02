@@ -2,42 +2,44 @@
 
 ## Overview
 
-Use `QeetrixText` for discrete pieces of copy — titles, section headings, paragraphs, captions —
-in the variants of the web's Typography component.
+Running text, labels and inline code, on the body typography roles — `@qeetrix/react`'s Text.
 
 ```swift
-VStack(alignment: .leading, spacing: QeetrixSpacing.s) {
-    QeetrixText("Security", variant: .h2)
-    QeetrixText("Sign in with a passkey on every device you trust.", variant: .lead)
-    QeetrixText("Last used 2 days ago", variant: .muted)
+VStack(alignment: .leading, spacing: QeetrixSpace.gapSm) {
+    QeetrixHeading("Security", level: 2)
+    QeetrixText("Sign in with a passkey on every device you trust.", size: .lg, tone: .subtle)
+    QeetrixText("Last used 2 days ago", size: .sm, tone: .subtle)
+    QeetrixText("INV-2026-0042", mono: true)
 }
 ```
 
-Each variant sets the family, size, weight, letter style, line height and colour. Headings are
-semibold in the heading letter style; copy is in the body role; `small` is the label role;
-`inlineCode` is Fira Code on a sunken chip.
+- **Size**: `sm` (`body.sm`, 12/16), `md` (`body.md`, 14/20, default) or `lg` (`body.lg`, 16/24).
+- **Weight**: `regular` (400, default), `medium` (500) or `semibold` (600).
+- **Tone**: a text colour from ``QeetrixTextTone``; `nil` keeps the surrounding colour. `disabled` is
+  only for text inside an inactive control; quieter text that must still be read is `subtle`.
+- **Mono**: Fira Code at the same size, for code, IDs and keys.
+- **Truncate**: a number of lines, ending with an ellipsis; without it, text wraps freely.
+- **Align**: `start`, `center` or `end`, following the layout direction.
+
+Qeet Sans in its A11y letter style (`font.geometry.body`). For section titles use ``QeetrixHeading``.
 
 ### Accessibility
 
-- h1–h4 are VoiceOver headings, at their level, so the rotor can move between them.
-- Every variant scales with Dynamic Type and steps one weight heavier with Bold Text.
-- Text wraps rather than truncates. Use `lineLimit(_:)` to clip it, as on any text, and give the
-  full value another way when it matters.
+Text scales with Dynamic Type along the body roles' curves and draws one weight heavier under Bold
+Text. VoiceOver reads it as static text.
 
-### Platform adaptations
+### Platform differences
 
-- **Breakpoint.** The web sets h1–h3 one step larger from its `sm` breakpoint (640 px). Here that
-  breakpoint is the regular horizontal size class, so an iPhone gets the web's mobile sizes and an iPad
-  the larger ones.
-- **No `as` or `list`.** The web chooses the HTML element with `as` and renders bullet lists. On iOS
-  the heading level comes from the variant, and a list is a layout of `QeetrixText` rows.
-- **Colour.** The web's `p` inherits the page's text colour; here it sets the primary text colour, so
-  a `QeetrixText` looks the same wherever it is placed.
+The web's Text renders any element (`render`); on iOS it is a view around SwiftUI `Text`, so it composes
+with `Text` modifiers rather than taking an element.
 
-On the web: [Typography on ui.qeet.in](https://ui.qeet.in/docs/components/typography).
+On the web: [Text on ui.qeet.in](https://ui.qeet.in/components/text/).
 
 ## Topics
 
-### Variants
+### Styling
 
-- ``QeetrixTextVariant``
+- ``QeetrixTextSize``
+- ``QeetrixTextWeight``
+- ``QeetrixTextTone``
+- ``QeetrixTextAlign``

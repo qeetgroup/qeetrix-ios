@@ -1,0 +1,19 @@
+@layer qx.base, qx.components, qx.state;
+@import "../base.css";
+@import "../state.css";
+@import "../button.css";
+@import "../input.css";
+
+@layer qx.components {
+  .qx-search-field {
+    padding-inline-end: var(--qx-space-gap-xs);
+  }
+  
+  .qx-search-field .qx-input-control::-webkit-search-cancel-button {
+    appearance: none;
+  }
+  
+  .qx-search-field .qx-input-control::-webkit-search-decoration {
+    appearance: none;
+  }
+}

@@ -1,0 +1,148 @@
+@layer qx.base, qx.components, qx.state;
+@import "./base.css";
+@import "./state.css";
+
+@layer qx.components {
+  :root, [data-qx-color-scheme="light"] {
+    --qx-progress-track: var(--qx-color-border-default);
+    --qx-progress-warning: var(--qx-color-border-warning);
+  }
+  
+  [data-qx-color-scheme="dark"] {
+    --qx-progress-track: var(--qx-color-surface-sunken);
+    --qx-progress-warning: var(--qx-color-bg-warning-bold);
+  }
+  
+  .qx-progress {
+    gap: var(--qx-space-gap-xs);
+    flex-direction: column;
+    min-inline-size: 0;
+    display: flex;
+  }
+  
+  .qx-progress-header {
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--qx-space-gap-md);
+    display: flex;
+  }
+  
+  .qx-progress-label {
+    font: var(--qx-typography-label-sm);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    color: var(--qx-color-text-subtle);
+  }
+  
+  .qx-progress-value {
+    font: var(--qx-typography-label-sm);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variant-numeric: tabular-nums;
+    color: var(--qx-color-text-default);
+  }
+  
+  .qx-progress-track {
+    background: var(--qx-progress-track);
+    block-size: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .qx-progress-track[data-target] {
+    overflow: visible;
+  }
+  
+  .qx-meter-target {
+    background: var(--qx-color-text-default);
+    inline-size: 2px;
+    position: absolute;
+    inset-block: -3px;
+    inset-inline-start: calc(var(--qx-meter-target) - 1px);
+  }
+  
+  .qx-progress-indicator {
+    background: var(--qx-color-bg-brand-bold);
+    block-size: 100%;
+    transition-property: inline-size;
+    transition-duration: var(--qx-motion-duration-normal);
+    transition-timing-function: var(--qx-motion-easing-standard);
+  }
+  
+  [data-tone="neutral"] .qx-progress-indicator {
+    background: var(--qx-color-bg-neutral-bold);
+  }
+  
+  [data-tone="info"] .qx-progress-indicator {
+    background: var(--qx-color-bg-info-bold);
+  }
+  
+  [data-tone="success"] .qx-progress-indicator {
+    background: var(--qx-color-bg-success-bold);
+  }
+  
+  [data-tone="warning"] .qx-progress-indicator {
+    background: var(--qx-progress-warning);
+  }
+  
+  [data-tone="danger"] .qx-progress-indicator {
+    background: var(--qx-color-bg-danger-bold);
+  }
+  
+  .qx-progress-indicator[data-indeterminate] {
+    inline-size: 30%;
+    animation-name: qx-progress-slide;
+    animation-duration: calc(4 * var(--qx-motion-duration-slower));
+    animation-timing-function: var(--qx-motion-easing-standard);
+    animation-iteration-count: infinite;
+  }
+  
+  [dir="rtl"] .qx-progress-indicator[data-indeterminate] {
+    animation-name: qx-progress-slide-rtl;
+  }
+  
+  @keyframes qx-progress-slide {
+    from {
+      translate: -100%;
+    }
+  
+    to {
+      translate: 334%;
+    }
+  }
+  
+  @keyframes qx-progress-slide-rtl {
+    from {
+      translate: 100%;
+    }
+  
+    to {
+      translate: -334%;
+    }
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .qx-progress-indicator[data-indeterminate], [dir="rtl"] .qx-progress-indicator[data-indeterminate] {
+      inline-size: 100%;
+      animation: 1.6s ease-in-out infinite qx-progress-fade;
+    }
+  }
+  
+  @keyframes qx-progress-fade {
+    50% {
+      opacity: .35;
+    }
+  }
+  
+  @media (forced-colors: active) {
+    .qx-progress-track, .qx-progress-indicator {
+      forced-color-adjust: none;
+    }
+  
+    .qx-progress-track {
+      background: graytext;
+    }
+  
+    .qx-progress-indicator {
+      background: highlight;
+    }
+  }
+}

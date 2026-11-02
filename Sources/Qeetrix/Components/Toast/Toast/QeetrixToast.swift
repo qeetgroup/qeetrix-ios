@@ -4,20 +4,20 @@ import SwiftUI
     import UIKit
 #endif
 
-/// What a ``QeetrixToast`` reports, as the web toast's types.
-public enum QeetrixToastType: String, CaseIterable, Sendable {
-    /// A neutral message.
+/// What a ``QeetrixToast`` reports, as `@qeetrix/react`'s `ToastTone`.
+public enum QeetrixToastTone: String, CaseIterable, Sendable {
+    /// A neutral message, the default.
     case info
     /// Something finished as intended.
     case success
     /// Something finished, with something to look at.
     case warning
-    /// Something failed. Announced with high priority. A failure the person must resolve belongs next to
-    /// what failed, not in a toast.
-    case error
+    /// Something failed. It stays until dismissed and is announced with high priority. A failure the
+    /// person must resolve belongs next to what failed, not in a toast.
+    case danger
 }
 
-/// Brief, non-blocking feedback about an outcome — "Saved", "Link copied" — the web's `Toast`.
+/// Brief, non-blocking feedback about an outcome — "Saved", "Link copied" — `@qeetrix/react`'s toast.
 ///
 /// ```swift
 /// @State private var toast: QeetrixToast?
@@ -27,6 +27,7 @@ public enum QeetrixToastType: String, CaseIterable, Sendable {
 ///
 /// toast = .success("Settings saved")
 /// toast = QeetrixToast(.info, title: "Message archived", action: .init("Undo") { unarchive() })
+/// toast = QeetrixToast(.danger, title: "Couldn't send the invoice", description: "Check the address and try again.")
 /// ```
 ///
 /// A toast never blocks: the screen stays usable underneath, and it leaves by itself. For something the
@@ -49,22 +50,23 @@ public struct QeetrixToast: Identifiable {
     }
 
     public let id = UUID()
-    public let type: QeetrixToastType
+    public let tone: QeetrixToastTone
     public let title: String
     public let description: String?
     public let action: Action?
-    /// How long the toast stays: `nil` for the default of its type, `.zero` to stay until dismissed.
+    /// How long the toast stays: `nil` for the default, 5 s, or `.zero` to stay until dismissed. A
+    /// `danger` toast stays until dismissed whatever its duration.
     public let duration: Duration?
 
     /// - Parameters:
-    ///   - type: What it reports.
+    ///   - tone: What it reports.
     ///   - title: The message, already localised.
     ///   - description: A second line, already localised.
     ///   - action: An optional button.
-    ///   - duration: `nil` for the default — 5 s, or 10 s for warnings, errors and toasts with an action —
-    ///     or `.zero` to stay until dismissed.
-    public init(_ type: QeetrixToastType, title: String, description: String? = nil, action: Action? = nil, duration: Duration? = nil) {
-        self.type = type
+    ///   - duration: `nil` for the default, 5 s, or `.zero` to stay until dismissed. A `danger` toast
+    ///     stays until dismissed whatever its duration.
+    public init(_ tone: QeetrixToastTone, title: String, description: String? = nil, action: Action? = nil, duration: Duration? = nil) {
+        self.tone = tone
         self.title = title
         self.description = description
         self.action = action
@@ -87,8 +89,8 @@ public struct QeetrixToast: Identifiable {
     }
 
     /// An error toast, localised from the main bundle.
-    public static func error(_ title: LocalizedStringResource) -> QeetrixToast {
-        QeetrixToast(.error, title: String(localized: title))
+    public static func danger(_ title: LocalizedStringResource) -> QeetrixToast {
+        QeetrixToast(.danger, title: String(localized: title))
     }
 }
 
@@ -101,14 +103,14 @@ extension View {
     /// - **One at a time.** Setting a new toast replaces the one on screen at once; nothing queues. A
     ///   repeat of the toast on screen — the same type, title and description — keeps it and restarts its
     ///   timer, without announcing it again.
-    /// - **Timing.** 5 s, or 10 s for warnings, errors and toasts with an action, as on the web. While
-    ///   VoiceOver is running a toast with an action stays until it is used or closed. A toast whose time
-    ///   runs out while VoiceOver's focus or a pointer is on it leaves when they move off.
+    /// - **Timing.** 5 s, as on the web; a `danger` toast stays until it is dismissed. While VoiceOver is
+    ///   running a toast with an action stays until it is used or closed. A toast whose time runs out
+    ///   while VoiceOver's focus or a pointer is on it leaves when they move off.
     /// - **Leaving.** The Close button, the action, the timer or setting `toast` to `nil`. The timer stops
     ///   when this view disappears.
-    /// - **Placement.** At the bottom, above the safe area, the full width on iPhone and 384 pt at the
-    ///   trailing edge on iPad. Only the toast itself takes touches.
-    /// - **Announcement.** VoiceOver announces each new toast once — errors with high priority.
+    /// - **Placement.** At the bottom, 16 pt from the edges, above the safe area: the full width on iPhone
+    ///   and 360 pt at the trailing edge on iPad. Only the toast itself takes touches.
+    /// - **Announcement.** VoiceOver announces each new toast once — `danger` ones with high priority.
     public func qeetrixToast(_ toast: Binding<QeetrixToast?>) -> some View {
         modifier(QeetrixToastHost(toast: toast))
     }
@@ -116,31 +118,31 @@ extension View {
 
 /// The lifecycle rules, apart from the view, so they can be tested.
 enum QeetrixToastPolicy {
-    /// The web's `TOAST_EXTENDED_TIMEOUT` and default timeout.
+    /// `ToastProvider`'s `timeout`, 5000 ms.
     static let standardDuration = Duration.seconds(5)
-    static let extendedDuration = Duration.seconds(10)
 
     /// How long `toast` stays before leaving by itself; `nil` when it stays until dismissed.
     static func duration(for toast: QeetrixToast, voiceOverRunning: Bool) -> Duration? {
+        // A danger toast stays until dismissed, whatever its duration (toast.tsx: `timeout = 0`).
+        if toast.tone == .danger { return nil }
         if let duration = toast.duration {
             return duration == .zero ? nil : duration
         }
         if toast.action != nil && voiceOverRunning { return nil }
-        let needsTime = toast.type == .error || toast.type == .warning || toast.action != nil
-        return needsTime ? extendedDuration : standardDuration
+        return standardDuration
     }
 
     /// Whether `new` is a repeat of `current`: then it is not announced again, only re-timed.
     static func isRepeat(_ new: QeetrixToast, of current: QeetrixToast?) -> Bool {
         guard let current else { return false }
-        return new.type == current.type && new.title == current.title && new.description == current.description
+        return new.tone == current.tone && new.title == current.title && new.description == current.description
             && (new.action == nil) == (current.action == nil)
     }
 
     /// The announcement for `toast`: its title and description, high priority for an error.
     static func announcement(for toast: QeetrixToast) -> AttributedString {
         var text = AttributedString([toast.title, toast.description].compactMap { $0 }.joined(separator: ". "))
-        text.accessibilitySpeechAnnouncementPriority = toast.type == .error ? .high : .default
+        text.accessibilitySpeechAnnouncementPriority = toast.tone == .danger ? .high : .default
         return text
     }
 }
@@ -226,12 +228,13 @@ struct QeetrixToastHost: ViewModifier {
                     QeetrixToastView(toast: shown, focus: $focus, close: { dismiss(shown.id) }, act: { act(on: shown.id) })
                         .frame(maxWidth: isCompact ? .infinity : QeetrixToastMetrics.maximumWidth)
                         .onHover { isHovered = $0 }
-                        .padding(QeetrixWebScale.spacing(4))  // bottom-4 end-4
-                        .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
+                        .padding(QeetrixSpace.insetLg)
+                        .transition(reduceMotion ? .opacity : .offset(y: 4).combined(with: .opacity))
                         .id(shown.id)
                 }
             }
-            .animation(QeetrixMotion.animation(.enter, .slow, reduceMotion: reduceMotion), value: state.shown?.id)
+            // toast.css: in over `normal` with `enter`, a fade and a 4 pt rise.
+            .animation(QeetrixMotion.animation(.enter, .normal, reduceMotion: reduceMotion), value: state.shown?.id)
             .onAppear { present(toast) }
             .onChange(of: toast?.id) { present(toast) }
             .onChange(of: isHeld) { _, held in
@@ -283,8 +286,9 @@ struct QeetrixToastHost: ViewModifier {
     }
 }
 
-/// The toast: the status icon, the title and description, the optional action, and Close — on the
-/// overlay surface with the status accent on the inline-start edge.
+/// The toast (toast.css): the overlay surface, 4 pt corners and `shadow.overlay`, a 3 pt status edge on
+/// the start side, the sharp 16 pt status icon, the title (`title.sm`) and description (`body.sm`,
+/// `color.text.subtle`), then the action — a ghost `sm` button — and Close, a neutral `sm` icon button.
 struct QeetrixToastView: View {
     let toast: QeetrixToast
     let focus: AccessibilityFocusState<QeetrixToastFocus?>.Binding
@@ -292,125 +296,67 @@ struct QeetrixToastView: View {
     let act: @MainActor () -> Void
 
     var body: some View {
-        let shape = RoundedRectangle(cornerRadius: QeetrixCorner.overlay)  // rounded-(--qx-corner-overlay)
-        HStack(alignment: .top, spacing: QeetrixWebScale.spacing(3)) {  // gap-3
-            QeetrixIcon(
-                QeetrixToastMetrics.icon(toast.type), size: QeetrixIconSize(QeetrixWebScale.spacing(4)),
-                variant: toast.type == .info ? .outline : .filled
-            )
-            .foregroundStyle(QeetrixToastMetrics.iconColor(toast.type))
-            .padding(.top, QeetrixWebScale.spacing(0.5))  // mt-0.5
-            VStack(alignment: .leading, spacing: QeetrixWebScale.spacing(0.5)) {  // gap-0.5
-                VStack(alignment: .leading, spacing: QeetrixWebScale.spacing(0.5)) {
-                    Text(verbatim: toast.title)
-                        .qeetrixType(QeetrixToastMetrics.titleType)
-                        .foregroundStyle(QeetrixToastMetrics.titleColor(toast.type))
-                    if let description = toast.description {
-                        Text(verbatim: description)
-                            .qeetrixType(QeetrixSheetMetrics.bodyType)
-                            .foregroundStyle(QeetrixColor.textTertiary)  // text-muted-foreground
-                    }
-                }
-                .accessibilityElement(children: .combine)
-                .accessibilityFocused(focus, equals: .message)
-                if let action = toast.action {
-                    Button(action: act) { Text(verbatim: action.title) }
-                        .buttonStyle(QeetrixToastActionStyle())
-                        .padding(.top, QeetrixWebScale.spacing(2))  // mt-2
-                        .accessibilityFocused(focus, equals: .action)
+        let shape = RoundedRectangle(cornerRadius: QeetrixRadius.overlay)
+        HStack(alignment: .top, spacing: QeetrixSpace.gapMd) {
+            QeetrixIcon(QeetrixToastMetrics.icon(toast.tone), size: .sm, shape: .sharp)
+                .foregroundStyle(QeetrixToastMetrics.accent(toast.tone))
+                .padding(.top, 4)  // centred on the 24 pt title line
+            VStack(alignment: .leading, spacing: 2) {
+                Text(verbatim: toast.title)
+                    .qeetrixTextStyle(.titleSm)
+                    .foregroundStyle(QeetrixColor.textDefault)
+                if let description = toast.description {
+                    Text(verbatim: description)
+                        .qeetrixTextStyle(.bodySm)
+                        .foregroundStyle(QeetrixColor.textSubtle)
                 }
             }
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .padding(.vertical, QeetrixWebScale.spacing(3))  // py-3
-        .padding(.leading, QeetrixWebScale.spacing(3.5))  // ps-3.5
-        .padding(.trailing, QeetrixWebScale.spacing(10))  // pe-10, the close button's lane
-        .overlay(alignment: .topTrailing) {
-            QeetrixIconButton(.x, label: QeetrixStrings.close, variant: .ghost, size: .sm, action: close)
-                .padding(QeetrixWebScale.spacing(2))  // inset-e-2 top-2
+            .accessibilityElement(children: .combine)
+            .accessibilityFocused(focus, equals: .message)
+            if let action = toast.action {
+                QeetrixButton(action.title, variant: .ghost, size: .sm, action: act)
+                    .padding(.vertical, -2)
+                    .accessibilityFocused(focus, equals: .action)
+            }
+            QeetrixIconButton(.x, label: QeetrixStrings.dismiss, tone: .neutral, size: .sm, action: close)
                 .accessibilityFocused(focus, equals: .close)
         }
+        .padding(.top, 12)
+        .padding(.bottom, 12)
+        .padding(.leading, 14)
+        .padding(.trailing, 8)
         .overlay(alignment: .leading) {
-            if let accent = QeetrixToastMetrics.accent(toast.type) {
-                Rectangle().fill(accent).frame(width: QeetrixToastMetrics.accentWidth)  // border-s-[3px]
-            }
+            Rectangle().fill(QeetrixToastMetrics.accent(toast.tone)).frame(width: QeetrixBorderWidth.accent).accessibilityHidden(true)
         }
         .clipShape(shape)
-        .qeetrixElevation(.overlay, fill: .surfaceOverlay, in: shape)  // bg-popover shadow-popover
-        .overlay { shape.strokeBorder(QeetrixColor.borderDefault, lineWidth: QeetrixStroke.hairline) }  // border border-border
+        .qeetrixShadow(.overlay, fill: .surfaceOverlay, in: shape)
         .accessibilityElement(children: .contain)
     }
 }
 
-/// `inline-flex h-7 px-2.5 rounded-md border bg-transparent text-xs font-medium`, the toast's action.
-struct QeetrixToastActionStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        QeetrixToastActionBody(configuration: configuration)
-    }
-}
-
-private struct QeetrixToastActionBody: View {
-    let configuration: ButtonStyleConfiguration
-    @Environment(\.colorScheme) private var colorScheme
-    @State private var isHovered = false
-
-    var body: some View {
-        let shape = RoundedRectangle(cornerRadius: QeetrixCorner.chip)  // rounded-md
-        configuration.label
-            .qeetrixType(QeetrixComponentType.ui(QeetrixWebScale.textXS, .medium, scalesLike: .caption))
-            .foregroundStyle(QeetrixColor.textPrimary)
-            .padding(.horizontal, QeetrixWebScale.spacing(2.5))
-            .frame(minHeight: QeetrixWebScale.spacing(7))  // h-7
-            .background {
-                if configuration.isPressed || isHovered { shape.fill(QeetrixColor.surfaceInteractive) }  // hover:bg-surface-interactive
-            }
-            .overlay {
-                shape.strokeBorder(
-                    colorScheme == .dark ? QeetrixColor.borderStrong : QeetrixColor.borderDefault, lineWidth: QeetrixStroke.hairline)
-            }
-            .contentShape(shape)
-            .qeetrixHitArea()
-            .onHover { isHovered = $0 }
-    }
-}
-
 enum QeetrixToastMetrics {
-    /// `max-w-sm`.
-    static let maximumWidth: CGFloat = 384
-    static let accentWidth: CGFloat = 3
-    /// `font-heading text-sm font-medium`.
-    static let titleType = QeetrixComponentType.heading(QeetrixWebScale.textSM, .medium, scalesLike: .subheadline)
+    /// The viewport's width: `min(360px, 100vw - 32px)`.
+    static let maximumWidth: CGFloat = 360
 
-    static func icon(_ type: QeetrixToastType) -> QeetrixIconName {
-        switch type {
+    /// Each tone's own icon, so status is never colour alone.
+    static func icon(_ tone: QeetrixToastTone) -> QeetrixIconName {
+        switch tone {
         case .info: .info
         case .success: .circleCheck
         case .warning: .triangleAlert
-        case .error: .circleX
+        case .danger: .circleAlert
         }
     }
 
-    static func iconColor(_ type: QeetrixToastType) -> QeetrixColor {
-        switch type {
-        case .info: .textInfo
-        case .success: .textSuccess
-        case .warning: .textWarning
-        case .error: .textDanger
-        }
-    }
-
-    static func titleColor(_ type: QeetrixToastType) -> QeetrixColor {
-        type == .info ? .textPrimary : iconColor(type)
-    }
-
-    /// `border-s-success`, `-warning`, `-destructive`: the bridge's feedback colours. Info has none.
-    static func accent(_ type: QeetrixToastType) -> QeetrixColor? {
-        switch type {
-        case .info: nil
-        case .success: .feedbackSuccess
-        case .warning: .feedbackWarning
-        case .error: .feedbackError
+    /// The status edge and the icon: `color.icon.info`, `-success`, `-warning`, `-danger`.
+    static func accent(_ tone: QeetrixToastTone) -> QeetrixColor {
+        switch tone {
+        case .info: .iconInfo
+        case .success: .iconSuccess
+        case .warning: .iconWarning
+        case .danger: .iconDanger
         }
     }
 }

@@ -5,9 +5,9 @@ import SwiftUI
 enum QeetrixTextInputTraits {
     /// Password AutoFill for the purpose; no autocapitalisation or autocorrection, so a password is
     /// never sent to a spelling service.
-    case password(QeetrixPasswordPurpose)
+    case password(QeetrixPasswordAutoComplete)
     /// One-time-code AutoFill (from Messages and Mail), with the keypad for the code's characters.
-    case oneTimeCode(QeetrixOTPCharacters)
+    case oneTimeCode(QeetrixOTPValidationType)
     /// A numeric keypad: digits only, with the locale's decimal separator, or with a minus sign.
     case number(allowsFraction: Bool, allowsNegative: Bool)
 }
@@ -17,14 +17,14 @@ extension View {
     func qeetrixTextInputTraits(_ traits: QeetrixTextInputTraits) -> some View {
         #if os(iOS)
             switch traits {
-            case .password(let purpose):
-                textContentType(purpose == .new ? .newPassword : .password)
+            case .password(let autoComplete):
+                textContentType(autoComplete.contentType)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
-            case .oneTimeCode(let characters):
+            case .oneTimeCode(let validationType):
                 textContentType(.oneTimeCode)
-                    .keyboardType(characters == .digits ? .numberPad : .asciiCapable)
-                    .textInputAutocapitalization(characters == .digits ? .never : .characters)
+                    .keyboardType(validationType == .numeric ? .numberPad : .asciiCapable)
+                    .textInputAutocapitalization(validationType == .numeric ? .never : .characters)
                     .autocorrectionDisabled()
             case .number(let allowsFraction, let allowsNegative):
                 // Neither the number pad nor the decimal pad has a minus key.
@@ -36,3 +36,16 @@ extension View {
         #endif
     }
 }
+
+#if os(iOS)
+    extension QeetrixPasswordAutoComplete {
+        /// The AutoFill content type: none for `off`, a secret that isn't the user's password.
+        var contentType: UITextContentType? {
+            switch self {
+            case .currentPassword: .password
+            case .newPassword: .newPassword
+            case .off: nil
+            }
+        }
+    }
+#endif

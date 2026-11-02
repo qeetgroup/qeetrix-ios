@@ -12,7 +12,7 @@ final class SheetUITests: XCTestCase {
         let sheet = app.staticTexts["Your team sees these details."]
         XCTAssertTrue(sheet.waitForExistence(timeout: 5))
         app.buttons["Close"].tap()
-        XCTAssertFalse(sheet.waitForExistence(timeout: 2))
+        XCTAssertTrue(sheet.waitForNonExistence(timeout: 3))
     }
 
     @MainActor
@@ -33,12 +33,12 @@ final class SheetUITests: XCTestCase {
         // chooses it.
         let keep = app.buttons["Keep editing"]
         if keep.exists { keep.tap() } else { app.tapOutside() }
-        XCTAssertFalse(discard.waitForExistence(timeout: 2))
+        XCTAssertTrue(discard.waitForNonExistence(timeout: 3))
         XCTAssertTrue(sheet.exists)
         app.buttons["Close"].tap()
         XCTAssertTrue(discard.waitForExistence(timeout: 5))
         discard.tap()
-        XCTAssertFalse(sheet.waitForExistence(timeout: 3))
+        XCTAssertTrue(sheet.waitForNonExistence(timeout: 3))
         XCTAssertEqual(app.staticTexts["profile-name"].label, "Display name: Asha Rao")
     }
 
@@ -51,7 +51,7 @@ final class SheetUITests: XCTestCase {
         field.tap()
         field.typeText(" K")
         app.buttons["Save"].tap()
-        XCTAssertFalse(app.staticTexts["Your team sees these details."].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["Your team sees these details."].waitForNonExistence(timeout: 3))
         XCTAssertEqual(app.staticTexts["profile-name"].label, "Display name: Asha Rao K")
     }
 
@@ -68,6 +68,22 @@ final class SheetUITests: XCTestCase {
         let sheet = app.staticTexts["Medium or large; drag the handle."]
         XCTAssertTrue(sheet.waitForExistence(timeout: 5))
         sheet.dragToBottom(of: app)
-        XCTAssertFalse(sheet.waitForExistence(timeout: 3), "Without changes to guard, a swipe dismisses")
+        XCTAssertTrue(sheet.waitForNonExistence(timeout: 3), "Without changes to guard, a swipe dismisses")
+    }
+
+    @MainActor
+    func testANonDismissibleDialogSheetHasNoCloseAndOnlyItsActionsCloseIt() {
+        let app = Showcase.launch("sheet")
+        let open = app.buttons["Revoke API key"]
+        open.scrollIntoView(in: app)
+        open.tap()
+        let title = app.staticTexts["Revoke this API key?"]
+        XCTAssertTrue(title.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["Close"].exists, "Not dismissible: no close button")
+        title.dragToBottom(of: app)
+        XCTAssertTrue(title.waitForExistence(timeout: 2), "Not dismissible: a swipe does not close it")
+        app.buttons["Revoke key"].tap()
+        XCTAssertTrue(title.waitForNonExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["key-state"].waitForLabel("Key revoked"))
     }
 }

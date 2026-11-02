@@ -83,15 +83,19 @@ only the public API goes in `Tests/QeetrixTests/Integration`, without `@testable
 
 ## Upstream sync
 
-Tokens, fonts and icons come from upstream and are never edited here.
+Tokens, fonts, icons and the component manifest come from three npm packages and are never edited
+here: `@qeetrix/tokens`, `@qeetrix/icons` and `@qeetrix/react` (ADR 0015).
 
-1. Make the change upstream (qeetrix-ui or qeetrix-icons) and release it.
-2. Update `Upstream/pins.json`: the `@qeetrix/ui` version, the qeetrix-icons commit and icon
-   list, or a font tag.
-3. Run `Scripts/sync-upstream.sh`. It fetches, verifies (npm integrity, and that each TTF's WOFF2
-   sibling is byte-identical to the web's), copies, and rewrites `upstream.lock.json`.
-4. Run `Scripts/generate.sh`, then read the diff of `Documentation/Foundations/TOKEN_COVERAGE.md` and
-   the generated Swift.
+1. Make the change upstream (qeetrix-tokens, qeetrix-icons or qeetrix-react) and publish it.
+2. Update `Upstream/pins.json`: a package version, the icon list, or the `@qeetrix/react` families
+   whose CSS is kept as the components' reference.
+3. Run `Scripts/sync-upstream.sh`. It fetches each tarball from npm, checks it against the
+   registry's integrity hash, checks each TTF against the sha256 and size in the tokens package's
+   `fonts/native.json` (and that file's WOFF2 hash), fails if a pinned icon name has become an alias,
+   copies, and rewrites `upstream.lock.json`.
+4. Run `Scripts/generate.sh`, then read the diff of `Documentation/Foundations/TOKEN_COVERAGE.md`,
+   `Documentation/Foundations/token-values.json` and the generated Swift. Compare `token-values.json`
+   with the Android library's.
 5. Run every check above. If public names changed, `Scripts/api-check.sh --update` and note the change
    in `CHANGELOG.md`.
 
@@ -99,7 +103,9 @@ Generation fails, by design, when upstream adds something iOS has no decision fo
 
 - a consumable token group with no rule in
   [`Scope.swift`](Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift);
-- a new theme;
+- a new resolver modifier or context (colour scheme, density);
+- a pre-resolved file or `tokens.css` that disagrees with the generator's resolution of the DTCG
+  sources;
 - CSS syntax the evaluator does not know;
 - a typography role on a font that is not bundled;
 - SVG features outside the supported subset.
@@ -124,12 +130,16 @@ Scripts/new-component.sh Checkbox Checkbox --category "Forms & inputs"
 
 In short:
 
-- **Location.** `Sources/Qeetrix/Components/<Family>/<Component>/`, where `<Family>` is the qeetrix-ui
-  family identifier from its `component-map.json` (`Button`, `DropdownMenu`, …). The ui.qeet.in
-  categories, such as Actions or Forms & inputs, are for documentation and the showcase, not folders.
-- **Tokens.** Semantic tokens by default. Component tokens only where qeetrix-ui defines
-  `component.<name>.*` (the scaffold adopts them). Web utility values through `QeetrixWebScale`. Never
-  add iOS-only design values.
+- **Location.** `Sources/Qeetrix/Components/<Family>/<Component>/`, where `<Family>` is the
+  `@qeetrix/react` family in UpperCamelCase, from its `dist/manifest.json` (`Button`, `TextField`,
+  `NumberField`, …). The ui.qeet.in categories, such as Actions or Forms & inputs, are for
+  documentation and the showcase, not folders.
+- **Look.** Variant, tone and size names are `@qeetrix/react`'s. Metrics, states, motion, focus and
+  colours follow the family's CSS (kept in `Upstream/qeetrix-react/css/`, listed in `pins.json`) and
+  the design rules; restate each value beside the CSS rule it comes from.
+- **Tokens.** Semantic tokens, by their generated names. `@qeetrix/tokens`' `component.*` groups are
+  not generated; a component that needs one gets a rule in `Scope.swift` first. Never add iOS-only
+  design values.
 - **Accessibility.** Hit areas of at least 44 pt (`qeetrixHitArea()`), Dynamic Type up to the
   accessibility sizes, VoiceOver labels and traits, Reduce Motion, and right-to-left layout. Test
   each.

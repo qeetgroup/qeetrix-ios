@@ -2,46 +2,61 @@
 
 ## Overview
 
-A row of tabs that switches between panels of related content in one place — a card's views, a
-settings page's sections. The strip selects; you own the selection and draw the panel for it.
+Switch between views of the same context — `@qeetrix/react`'s Tabs list. The selection is yours; show
+the selected view below it.
 
 ```swift
 @State private var section = Section.overview
 
-QeetrixTabs(selection: $section, tabs: [
-    QeetrixTab("Overview", value: Section.overview),
-    QeetrixTab("Activity", value: Section.activity, icon: .bell),
-    QeetrixTab("Archive", value: Section.archive, isDisabled: true),
-])
+QeetrixTabs(
+    selection: $section,
+    tabs: [
+        QeetrixTab("Overview", value: Section.overview),
+        QeetrixTab("Activity", value: Section.activity, icon: .bell, badge: 3),
+        QeetrixTab("Archive", value: Section.archive, isDisabled: true),
+    ])
 switch section {
-case .overview: OverviewPanel()
-case .activity: ActivityPanel()
+case .overview: Text("Overview")
+case .activity: Text("Activity")
 case .archive: EmptyView()
 }
 ```
 
-- `default` is contained: a sunken well with the selected tab raised inside it. `line` sits on a 1 pt
-  track and marks the selected tab with a 2 pt brand indicator — for a page's sections.
-- Tabs follow the density's control height; labels are `text-sm` medium and never truncate.
-- A strip wider than its container scrolls sideways and brings the selected tab into view, without
-  animation when Reduce Motion is on.
-- A disabled tab is dimmed and can't be chosen.
+- **Tabs** are `size.control.lg` tall with 16 points of inline padding (12 at compact density),
+  `label.md` in `color.text.subtle` (`color.text.default` under a pointer); an optional leading 16-point
+  sharp icon, filled while selected (`filledWhenSelected`, on by default); and a count after the label
+  as a neutral `sm` badge.
+- **Selected**: `color.text.default` at weight 600, marked by the Ember bar — 3 points of
+  `color.border.brand` on its bottom edge — which slides between tabs over `motion.duration.normal`.
+- **Variant**: `line` (default), for the views of a page, with a 2-point `color.border.subtle` line under
+  the whole list; or `contained`, a segmented strip for a few views of one panel or card — a 1-point
+  `color.border.default` edge round it and between segments, the neutral fill, the selected segment on
+  `color.surface.default` with the Ember bar.
+- **Disabled** tabs are `color.text.disabled`.
 
-Use it for in-content selection. The app's main sections belong in a `TabView` (see
-<doc:NavigationBars>); two or three options in a form are a ``QeetrixRadioGroup``.
+```swift
+QeetrixTabs(
+    selection: $section,
+    tabs: [QeetrixTab("Overview", value: Section.overview), QeetrixTab("Activity", value: Section.activity)],
+    variant: .contained)
+```
+
+The list scrolls sideways when its tabs don't fit, keeping the selected one in view.
 
 ### Accessibility
 
-The strip carries the tab-bar trait, and each tab is a button with the selected state on the chosen one,
-so VoiceOver can present the strip as a group of tabs. Each tab's touch target is at least 44 pt.
+VoiceOver reads the list as a tab bar and each tab as a button that is selected or not. Each tab is a
+44-point target. Under Reduce Motion the bar moves without sliding. Keyboard focus is the Ember frame
+inside the tab, where a scrolling list can't clip it.
 
 ### Platform differences
 
-The web's arrow-key roving focus is the system's focus movement on iOS. Panels are not part of the
-component: on the web `TabsContent` mounts the panel, here your view switches on the selection, so the
-panel's state lives wherever you keep it.
+- **Panels.** The web's Tabs own their panels; on iOS you show the selected view yourself.
+- **Vertical tabs** and the web's `activateOnFocus` have no counterpart.
+- For an app's top-level sections, use the system `TabView` with `qeetrixTabBar()` — see
+  <doc:NavigationBars>.
 
-On the web: [Tabs on ui.qeet.in](https://ui.qeet.in/docs/components/tabs).
+On the web: [Tabs on ui.qeet.in](https://ui.qeet.in/components/tabs/).
 
 ## Topics
 

@@ -1,0 +1,57 @@
+{
+  "primitive": {
+    "duration": {
+      "0": {
+        "$value": {
+          "value": 0,
+          "unit": "ms"
+        }
+      },
+      "100": {
+        "$value": {
+          "value": 100,
+          "unit": "ms"
+        }
+      },
+      "200": {
+        "$value": {
+          "value": 200,
+          "unit": "ms"
+        }
+      },
+      "300": {
+        "$value": {
+          "value": 300,
+          "unit": "ms"
+        }
+      },
+      "400": {
+        "$value": {
+          "value": 400,
+          "unit": "ms"
+        }
+      },
+      "$type": "duration",
+      "$description": "Motion durations. Nothing in the interface runs longer than 400ms."
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "$description": "Easing curves from the standard polynomial and exponential families. Qeetrix motion is calm and precise: elements arrive with a long, soft settle and leave quickly.",
+      "linear": {
+        "$value": [0, 0, 1, 1]
+      },
+      "in-cubic": {
+        "$value": [0.32, 0, 0.67, 0]
+      },
+      "out-quart": {
+        "$value": [0.25, 1, 0.5, 1]
+      },
+      "out-expo": {
+        "$value": [0.16, 1, 0.3, 1]
+      },
+      "in-out-cubic": {
+        "$value": [0.65, 0, 0.35, 1]
+      }
+    }
+  }
+}

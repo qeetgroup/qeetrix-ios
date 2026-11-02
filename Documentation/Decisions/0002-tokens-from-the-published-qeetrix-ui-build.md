@@ -1,6 +1,6 @@
 # 0002 — Tokens come from the published `@qeetrix/ui` build
 
-**Status:** Accepted, 2026-10-18
+**Status:** Superseded by ADR 0015 (2026-10-30). Accepted, 2026-10-18.
 
 ## Context
 

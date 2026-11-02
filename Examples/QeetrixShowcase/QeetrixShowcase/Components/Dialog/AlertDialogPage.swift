@@ -13,7 +13,7 @@ struct AlertDialogPage: View {
                 "Interrupts to ask for a decision. The system alert, described by a value: setting it presents, every button dismisses."
         ) {
             DemoSection("A destructive decision") {
-                QeetrixButton("Delete workspace", variant: .destructive) {
+                QeetrixButton("Delete workspace", tone: .danger) {
                     alert = QeetrixAlertDialog(
                         "Delete this workspace?",
                         message: Text("Its projects and files are removed for everyone. This cannot be undone."),
@@ -24,10 +24,10 @@ struct AlertDialogPage: View {
                             }
                         ])
                 }
-                QeetrixText("Cancel is added because the only action is destructive.", variant: .muted)
+                QeetrixText("Cancel is added because the only action is destructive.", size: .sm, tone: .subtle)
             }
             DemoSection("Two choices") {
-                QeetrixButton("Leave the page", variant: .outline) {
+                QeetrixButton("Leave the page", variant: .ghost) {
                     alert = QeetrixAlertDialog(
                         "Leave without saving?",
                         message: Text("Your changes to this draft are lost."),
@@ -38,10 +38,10 @@ struct AlertDialogPage: View {
                 }
             }
             DemoSection("A notice") {
-                QeetrixButton("Show a notice", variant: .outline) {
+                QeetrixButton("Show a notice", variant: .ghost) {
                     alert = QeetrixAlertDialog("Storage almost full", message: Text("Delete files or move them to free up space."))
                 }
-                QeetrixText("With no actions the system shows OK.", variant: .muted)
+                QeetrixText("With no actions the system shows OK.", size: .sm, tone: .subtle)
             }
             QeetrixText("Result: \(result)").accessibilityIdentifier("alert-result")
         }

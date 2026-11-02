@@ -2,23 +2,24 @@
 
 ## Overview
 
-A form's buttons, placed the way the web's `FormActions` places them.
+A form's actions, end-aligned — tertiary first, then the primary or destructive one, 8 points apart:
+the row `@qeetrix/react` uses in dialog, drawer and card footers.
 
 ```swift
 QeetrixFormActions {
-    QeetrixButton("Cancel", variant: .outline) { dismiss() }
-    QeetrixButton("Create account", isLoading: isSubmitting) { submit() }
+    QeetrixButton("Cancel", variant: .ghost, size: .lg) { dismiss() }
+    QeetrixButton("Create account", size: .lg, isLoading: isSubmitting) { submit() }
 }
 ```
 
-List the buttons in reading order, primary last. On a compact-width screen they stack full-width with the
-primary on top, where a thumb reaches it first; in a regular-width size class they sit in a row at the
-trailing edge, wrapping when the row is full. Show a submission in progress with the button's own
-`isLoading`.
+When they don't fit on one line, the earlier actions wrap above.
 
-On the web: [Form on ui.qeet.in](https://ui.qeet.in/docs/components/form).
+### Accessibility
 
-## See Also
+VoiceOver reads the actions in order, tertiary first.
 
-- ``QeetrixFormErrorSummary``
-- <doc:Forms>
+### Platform differences
+
+iOS only: at compact width the actions stack full width, the primary on top, and text buttons stretch to
+the width — so a form's main button spans the column with its fields, as the web's `fullWidth` does on a
+phone. The web has no separate component for the row.

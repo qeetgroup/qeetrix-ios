@@ -1,34 +1,46 @@
 # Spacing
 
-Lay out views on the Qeetrix spacing scale.
+Lay out views on the Qeetrix spacing scale: inside containers, between siblings, between sections.
 
 ## Overview
 
-``QeetrixSpacing`` is the spacing scale, in points:
+``QeetrixSpace`` is `@qeetrix/tokens`' spacing, on a 4-point grid, in three sets:
 
-| Token | Points |
-|:--|--:|
-| ``QeetrixSpacing/zero`` | 0 |
-| ``QeetrixSpacing/xxs`` | 2 |
-| ``QeetrixSpacing/xs`` | 4 |
-| ``QeetrixSpacing/s`` | 8 |
-| ``QeetrixSpacing/m`` | 12 |
-| ``QeetrixSpacing/l`` | 16 |
-| ``QeetrixSpacing/xl`` | 24 |
-| ``QeetrixSpacing/xl2`` | 32 |
-| ``QeetrixSpacing/xl3`` | 48 |
-| ``QeetrixSpacing/xl4`` | 64 |
-| ``QeetrixSpacing/xl5`` | 96 |
+| Set | `xs` | `sm` | `md` | `lg` | `xl` | Use |
+|:--|--:|--:|--:|--:|--:|:--|
+| `inset` | 4 | 8 | 12 | 16 | 24 | Padding inside a container (``QeetrixSpace/insetLg``) |
+| `gap` | 4 | 8 | 12 | 16 | 24 | Space between siblings (``QeetrixSpace/gapSm``) |
+| `layout` | — | 24 | 32 | 48 | 64 | Space between sections (``QeetrixSpace/layoutLg``) |
 
-Use it for padding, stack spacing and gaps, instead of literal numbers:
+Use them for padding, stack spacing and gaps, instead of literal numbers:
 
 ```swift
-VStack(alignment: .leading, spacing: QeetrixSpacing.s) {
-    Text("Title").qeetrixTextStyle(.heading)
-    Text("Body").qeetrixTextStyle(.body)
+VStack(alignment: .leading, spacing: QeetrixSpace.gapSm) {
+    Text("Title").qeetrixTextStyle(.headingSm)
+    Text("Body").qeetrixTextStyle(.bodyMd)
 }
-.padding(QeetrixSpacing.l)
+.padding(QeetrixSpace.insetLg)
 ```
 
-The names follow the web's `space.*` tokens. A leading number moves to the end, because Swift names
-can't start with a digit: `space.2xl` is `xl2`.
+## The form gap
+
+Fields in a form stand ``QeetrixDensity/spaceFormGap`` apart — 12, 16 or 20 points at compact, default
+and comfortable density — so a denser region tightens its forms with its controls.
+``QeetrixFieldset`` uses it; read it from the environment for your own stacks:
+
+```swift
+struct ContactForm: View {
+    @Environment(\.qeetrixDensity) private var density
+    @State private var name = ""
+    @State private var email = ""
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: density.spaceFormGap) {
+            QeetrixTextField("Name", text: $name)
+            QeetrixTextField("Email", text: $email)
+        }
+    }
+}
+```
+
+The names are the token paths in lowerCamelCase: `space.inset.lg` is `insetLg`.

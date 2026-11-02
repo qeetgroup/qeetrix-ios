@@ -8,25 +8,31 @@ struct CardPage: View {
     var body: some View {
         ComponentPage(
             title: "Card",
-            summary: "A surface that groups related content, with an optional header and footer."
+            summary: "Related content on a raised, ruled surface: no shadow, 4 pt corners, an optional ruled header and footer."
         ) {
-            DemoSection("Default, with a footer") {
-                QeetrixCard {
-                    QeetrixCardHeader("Team plan", description: "Billed monthly") {
-                        QeetrixBadge("Current", variant: .brand)
-                    }
+            DemoSection("A titled card with actions and a footer") {
+                QeetrixCard(title: Text("Team plan"), description: Text("Billed monthly")) {
                     QeetrixText("Up to 25 members, with audit logs and single sign-on.")
+                } actions: {
+                    QeetrixBadge("Current", tone: .brand)
                 } footer: {
-                    QeetrixButton("Upgrade") {}
                     QeetrixButton("Compare", variant: .ghost) {}
+                    QeetrixButton("Upgrade") {}
                 }
             }
-            DemoSection("Outline and elevated") {
-                QeetrixCard(variant: .outline, size: .sm) {
-                    QeetrixCardHeader("Outline, small", description: "For dense, repeated tiles")
+            DemoSection("Subdued and untitled") {
+                QeetrixCard(title: Text("Usage"), description: Text("A secondary panel"), variant: .subdued) {
+                    QeetrixText("1,240 of 5,000 API calls this month.")
                 }
-                QeetrixCard(variant: .elevated) {
-                    QeetrixCardHeader("Elevated", description: "The one surface that stands forward")
+                QeetrixCard {
+                    QeetrixText("A card without a title is a plain group.")
+                }
+            }
+            DemoSection("A danger zone") {
+                QeetrixCard(title: Text("Delete workspace"), description: Text("This can't be undone."), tone: .danger) {
+                    QeetrixText("Every project, file and member is removed.")
+                } footer: {
+                    QeetrixButton("Delete workspace", tone: .danger) {}
                 }
             }
             DemoSection("Cards that are buttons") {
@@ -35,11 +41,14 @@ struct CardPage: View {
                         selectedPlan = plan
                         opened += 1
                     } label: {
-                        QeetrixCardHeader(plan, description: plan == selectedPlan ? "Selected" : "Tap to choose")
+                        VStack(alignment: .leading, spacing: QeetrixSpace.gapXs) {
+                            QeetrixHeading(plan, level: 3, size: .titleSm)
+                            QeetrixText(plan == selectedPlan ? "Selected" : "Tap to choose", size: .sm, tone: .subtle)
+                        }
                     }
                     .buttonStyle(.qeetrixCard(isSelected: plan == selectedPlan))
                 }
-                QeetrixText("Chosen \(opened) times", variant: .muted)
+                QeetrixText("Chosen \(opened) times", size: .sm, tone: .subtle)
                     .accessibilityIdentifier("card-taps")
             }
         }

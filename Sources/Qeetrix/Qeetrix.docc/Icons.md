@@ -1,10 +1,11 @@
 # Icons
 
-Draw Qeetrix icons in their round and sharp, outline and filled forms.
+Draw Qeetrix icons in their round and sharp shapes, outline and filled.
 
 ## Overview
 
-``QeetrixIcon`` draws an icon from `qeetrix-icons` as vector paths, in the current foreground style:
+``QeetrixIcon`` draws an icon from `@qeetrix/icons` 2.1 as vector paths, in the current foreground
+style:
 
 ```swift
 QeetrixIcon(.search)
@@ -12,15 +13,30 @@ QeetrixIcon(.bell, size: .lg, variant: .filled)
 QeetrixIcon(.x, shape: .sharp)
 ```
 
-The defaults match the web's `<Icon>`: size ``QeetrixIconSize/md`` (20 points), stroke
+The defaults match the web's icon components: size ``QeetrixIconSize/md`` (20 points), stroke
 ``QeetrixIconStroke/regular``, round outline. The stroke is measured on the icon's 24-unit grid, so it
-scales with the icon.
+scales with the icon. The sizes are `size.icon.*`: ``QeetrixIconSize/xs2`` 12, ``QeetrixIconSize/xs``
+14, ``QeetrixIconSize/sm`` 16, ``QeetrixIconSize/md`` 20 and ``QeetrixIconSize/lg`` 24 points.
 
-Not every icon has every drawing. Ask ``QeetrixIconName/hasDrawing(_:_:)``. A missing drawing falls
-back to the outline.
+## Which shape and variant
 
-The names are the `qeetrix-icons` names, which are Lucide's. This release includes a representative
-set (``QeetrixIconName``); the full catalogue comes later.
+Qeetrix's own components follow the icon rules of the design (design rules §16):
+
+- **Sharp in controls.** Buttons, fields, badges, menus and toasts draw their icons in the sharp
+  shape — square ends and mitred corners, matching the square corners. Navigation (tab bars) keeps the
+  round shape, which reads more calmly in a list.
+- **Outline by default; filled only for a selected or active state**, such as a selected tab
+  (`filledWhenSelected`, on by default). If an icon has no filled drawing, the state is shown by the Ember bar or tint
+  instead.
+- **Sizes:** 16 points inside controls (20 in a large button), 20 standalone, 24 in empty states.
+- **Colour:** `iconDefault` or `iconSubtle`; Ember only when the icon is part of a current or selected
+  item.
+
+Not every icon has every drawing. Ask ``QeetrixIconName/hasDrawing(_:_:)``; a missing drawing falls back
+to the outline.
+
+The names are `@qeetrix/icons`' names, which are Lucide's. The library carries the icons its components
+and the showcase use (``QeetrixIconName``), not the whole catalogue.
 
 ## In system chrome
 
@@ -47,5 +63,6 @@ QeetrixIcon(.lock, label: Text("Locked"))
 ```
 
 Icons scale with Dynamic Type relative to `.body`, like SF Symbols beside text. Pass `relativeTo:` to
-follow another text style, or `nil` for a fixed size. Icons whose meaning has a direction, such as
-``QeetrixIconName/send``, mirror in right-to-left languages.
+follow another text style, or `nil` for a fixed size. Icons whose meaning has a direction — the
+manifest's `directionality: "mirror"`, such as ``QeetrixIconName/send`` — mirror in right-to-left
+languages.

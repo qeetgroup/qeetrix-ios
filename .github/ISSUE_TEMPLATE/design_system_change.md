@@ -4,8 +4,8 @@ about: A token, font, icon or component change for iOS
 labels: design-system
 ---
 
-Tokens, fonts and icons are not edited in this repository; they come from qeetrix-ui and qeetrix-icons
-(see `CONTRIBUTING.md`). A visual change starts upstream, then reaches iOS through a pin bump.
+Tokens, fonts, icons and component looks are not invented in this repository; they come from
+`@qeetrix/tokens`, `@qeetrix/icons` and `@qeetrix/react` (see `CONTRIBUTING.md`). A visual change starts upstream, then reaches iOS through a pin bump.
 
 ## The change
 
@@ -13,7 +13,7 @@ Tokens, fonts and icons are not edited in this repository; they come from qeetri
 
 ## Upstream
 
-- [ ] Already released upstream: link the qeetrix-ui / qeetrix-icons release, and this issue tracks
+- [ ] Already released upstream: link the `@qeetrix/tokens`, `@qeetrix/icons` or `@qeetrix/react` release, and this issue tracks
       the pin bump here.
 - [ ] Not upstream yet: link the upstream issue. This issue tracks the iOS follow-up.
 

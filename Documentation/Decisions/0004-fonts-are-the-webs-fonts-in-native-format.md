@@ -1,6 +1,6 @@
 # 0004 — Fonts are the web's fonts, in native format
 
-**Status:** Accepted, 2026-10-18
+**Status:** Accepted, 2026-10-18. Amended by ADR 0015: the TTFs now come from `@qeetrix/tokens`.
 
 ## Context
 

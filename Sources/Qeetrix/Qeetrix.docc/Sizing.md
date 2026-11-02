@@ -4,17 +4,21 @@ Size controls and rows with the Qeetrix densities.
 
 ## Overview
 
-``QeetrixDensity`` defines four metrics at three densities, in points:
+``QeetrixDensity`` is `@qeetrix/tokens`' density modifier: three densities that share one set of
+components (design rules §6). Each sets the control heights, the row height and the form gap, in
+points:
 
-| Metric | ``QeetrixDensity/compact`` | ``QeetrixDensity/default`` | ``QeetrixDensity/comfortable`` |
+| Size | ``QeetrixDensity/compact`` | ``QeetrixDensity/default`` | ``QeetrixDensity/comfortable`` |
 |:--|--:|--:|--:|
-| ``QeetrixDensity/controlHeight`` | 28 | 32 | 36 |
-| ``QeetrixDensity/rowHeight`` | 40 | 40 | 52 |
-| ``QeetrixDensity/cellPaddingY`` | 6 | 12 | 12 |
-| ``QeetrixDensity/fieldGap`` | 8 | 16 | 16 |
+| ``QeetrixDensity/sizeControlSm`` | 24 | 28 | 32 |
+| ``QeetrixDensity/sizeControlMd`` | 28 | 32 | 36 |
+| ``QeetrixDensity/sizeControlLg`` | 32 | 40 | 44 |
+| ``QeetrixDensity/sizeRow`` | 32 | 40 | 48 |
+| ``QeetrixDensity/spaceFormGap`` | 12 | 16 | 20 |
 
-Set a density for a view hierarchy with `.qeetrixDensity(_:)`, and read it with
-`@Environment(\.qeetrixDensity)`:
+Use `compact` for data-heavy consoles, `default` for most screens and `comfortable` for welcoming
+pages such as sign-in and checkout. Set a density once per region, never per component, with
+`.qeetrixDensity(_:)`, and read it with `@Environment(\.qeetrixDensity)`:
 
 ```swift
 struct SettingsRow: View {
@@ -22,16 +26,23 @@ struct SettingsRow: View {
 
     var body: some View {
         Text("Notifications")
-            .qeetrixTextStyle(.body)
-            .frame(maxWidth: .infinity, minHeight: density.rowHeight, alignment: .leading)
+            .qeetrixTextStyle(.bodyMd)
+            .frame(maxWidth: .infinity, minHeight: density.sizeRow, alignment: .leading)
     }
 }
 ```
 
+## Control sizes
+
+``QeetrixControlSize`` — `sm`, `md`, `lg`, `@qeetrix/react`'s `ControlSize` — picks a control's height
+from the density: ``QeetrixDensity/controlHeight(_:)``. Buttons are `md` by default; fields are always
+`lg`, and a form's main button is `lg` too, so it lines up with its fields.
+
 ## Touch targets
 
-Density heights are drawing sizes, taken from the web. A tappable element still needs a hit area of at
-least 44 × 44 points; `.qeetrixMinimumTouchTarget()` provides one without changing the drawing. See
-<doc:Accessibility>.
+Density heights are drawing sizes, taken from the web. Every tappable Qeetrix component still has a hit
+area of at least 44 × 44 points, without changing its drawing; `.qeetrixMinimumTouchTarget()` does the
+same for your own controls. See <doc:Accessibility>.
 
-Icon sizes are in ``QeetrixIconSize``; see <doc:Icons>.
+``QeetrixSize/targetMin`` (24 points) is the web's minimum pointer target; the smallest an OTP slot
+shrinks to. Icon sizes are in ``QeetrixIconSize``; see <doc:Icons>.

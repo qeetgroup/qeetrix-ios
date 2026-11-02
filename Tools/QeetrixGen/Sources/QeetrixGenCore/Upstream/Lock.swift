@@ -3,35 +3,82 @@ import Foundation
 
 /// Where every input came from, read from `Upstream/upstream.lock.json`.
 public struct Provenance: Equatable, Sendable {
-    public struct Font: Equatable, Sendable {
-        public let family: String
-        public let webFamily: String
-        public let repository: String
-        public let tag: String
-        public let destination: String
-        public let ttfSHA256: String
-        public let woff2SHA256: String
-        public let webFile: String
+    /// One npm package, exactly as the registry published it.
+    public struct Package: Equatable, Sendable {
+        /// `@qeetrix/tokens`, `@qeetrix/icons`, `@qeetrix/react`.
+        public let name: String
+        public let version: String
+        /// The commit the package was published from (the registry's `gitHead`).
+        public let gitHead: String
+        /// The tarball's Subresource Integrity hash, as the registry states it and the sync verified it.
+        public let integrity: String
+
+        public init(name: String, version: String, gitHead: String, integrity: String) {
+            self.name = name
+            self.version = version
+            self.gitHead = gitHead
+            self.integrity = integrity
+        }
     }
 
-    public let qeetrixUIPackage: String
-    public let qeetrixUIVersion: String
-    public let qeetrixUIGitHead: String
-    public let qeetrixUIIntegrity: String
-    public let iconsRepository: String
-    public let iconsPackage: String
-    public let iconsVersion: String
-    public let iconsCommit: String
+    /// A bundled font: the TTF the tokens package ships for native platforms.
+    public struct Font: Equatable, Sendable {
+        /// The `QeetrixFontFamily` case, e.g. `sans`.
+        public let family: String
+        /// The family name the web's CSS uses, e.g. `Qeet Sans`.
+        public let webFamily: String
+        /// The package and the TTF's path in it.
+        public let package: String
+        public let source: String
+        /// The package's full WOFF2, which it made the TTF from (the web loads per-script subsets of it).
+        public let woff2SHA256: String
+        /// The bundled TTF, repository-relative.
+        public let destination: String
+        public let ttfSHA256: String
+        /// How the package made the TTF, from its `native.json`.
+        public let madeWith: String
+
+        public init(
+            family: String, webFamily: String, package: String, source: String, woff2SHA256: String, destination: String,
+            ttfSHA256: String, madeWith: String
+        ) {
+            self.family = family
+            self.webFamily = webFamily
+            self.package = package
+            self.source = source
+            self.woff2SHA256 = woff2SHA256
+            self.destination = destination
+            self.ttfSHA256 = ttfSHA256
+            self.madeWith = madeWith
+        }
+    }
+
+    public let packages: [Package]
     public let fonts: [Font]
     /// Repository-relative path → sha256 of every pinned input the snapshot holds.
     public let files: [(path: String, sha256: String)]
 
+    public init(packages: [Package], fonts: [Font], files: [(path: String, sha256: String)]) {
+        self.packages = packages
+        self.fonts = fonts
+        self.files = files
+    }
+
     public static func == (lhs: Provenance, rhs: Provenance) -> Bool {
-        lhs.qeetrixUIPackage == rhs.qeetrixUIPackage && lhs.qeetrixUIVersion == rhs.qeetrixUIVersion
-            && lhs.qeetrixUIGitHead == rhs.qeetrixUIGitHead && lhs.qeetrixUIIntegrity == rhs.qeetrixUIIntegrity
-            && lhs.iconsRepository == rhs.iconsRepository && lhs.iconsCommit == rhs.iconsCommit
-            && lhs.iconsVersion == rhs.iconsVersion && lhs.iconsPackage == rhs.iconsPackage && lhs.fonts == rhs.fonts
-            && lhs.files.map(\.path) == rhs.files.map(\.path) && lhs.files.map(\.sha256) == rhs.files.map(\.sha256)
+        lhs.packages == rhs.packages && lhs.fonts == rhs.fonts && lhs.files.map(\.path) == rhs.files.map(\.path)
+            && lhs.files.map(\.sha256) == rhs.files.map(\.sha256)
+    }
+
+    public static let tokensPackage = "@qeetrix/tokens"
+    public static let iconsPackage = "@qeetrix/icons"
+    public static let reactPackage = "@qeetrix/react"
+
+    /// The locked package of that name.
+    public func package(_ name: String) throws -> Package {
+        guard let package = packages.first(where: { $0.name == name }) else {
+            throw GeneratorError("\(Lock.path) has no \(name); run Scripts/sync-upstream.sh.")
+        }
+        return package
     }
 }
 
@@ -53,26 +100,24 @@ public enum Lock {
             guard let text = value?[key]?.stringValue else { throw GeneratorError("\(path): missing \(key).") }
             return text
         }
-        let ui = json["qeetrixUI"]
-        let icons = json["qeetrixIcons"]
+        let packages = try (json["packages"]?.arrayValue ?? []).map { package in
+            Provenance.Package(
+                name: try string(package, "package"), version: try string(package, "version"),
+                gitHead: try string(package, "gitHead"), integrity: try string(package, "integrity"))
+        }
         let fonts = try (json["fonts"]?.arrayValue ?? []).map { font in
             Provenance.Font(
-                family: try string(font, "family"), webFamily: try string(font, "webFamily"),
-                repository: try string(font, "repository"), tag: try string(font, "tag"),
+                family: try string(font, "family"), webFamily: try string(font, "webFamily"), package: try string(font, "package"),
+                source: try string(font, "source"), woff2SHA256: try string(font, "woff2SHA256"),
                 destination: try string(font, "destination"), ttfSHA256: try string(font, "ttfSHA256"),
-                woff2SHA256: try string(font, "woff2SHA256"), webFile: try string(font, "webFile"))
+                madeWith: try string(font, "madeWith"))
         }
         guard case let .object(filePairs)? = json["files"] else { throw GeneratorError("\(path): missing files.") }
         let files = try filePairs.map { pair -> (path: String, sha256: String) in
             guard let hash = pair.1.stringValue else { throw GeneratorError("\(path): \(pair.0) has no hash.") }
             return (pair.0, hash)
         }
-        return Provenance(
-            qeetrixUIPackage: try string(ui, "package"), qeetrixUIVersion: try string(ui, "version"),
-            qeetrixUIGitHead: try string(ui, "gitHead"), qeetrixUIIntegrity: try string(ui, "integrity"),
-            iconsRepository: try string(icons, "repository"), iconsPackage: try string(icons, "package"),
-            iconsVersion: try string(icons, "version"), iconsCommit: try string(icons, "commit"),
-            fonts: fonts, files: files)
+        return Provenance(packages: packages, fonts: fonts, files: files)
     }
 
     public static func json(_ provenance: Provenance) -> OrderedJSON {
@@ -80,26 +125,20 @@ public enum Lock {
             (
                 "$comment",
                 .string(
-                    "Written by Scripts/sync-upstream.sh — do not edit. Records exactly which upstream artifacts this package is built from and the sha256 of every file taken from them; Scripts/verify.sh fails if any of those files changes without a sync."
+                    "Written by Scripts/sync-upstream.sh — do not edit. Records exactly which npm packages this package is built from (each tarball verified against the registry's integrity hash), where the fonts came from, and the sha256 of every file taken from them; Scripts/verify.sh fails if any of those files changes without a sync."
                 )
             ),
             (
-                "qeetrixUI",
-                .object([
-                    ("package", .string(provenance.qeetrixUIPackage)),
-                    ("version", .string(provenance.qeetrixUIVersion)),
-                    ("gitHead", .string(provenance.qeetrixUIGitHead)),
-                    ("integrity", .string(provenance.qeetrixUIIntegrity)),
-                ])
-            ),
-            (
-                "qeetrixIcons",
-                .object([
-                    ("repository", .string(provenance.iconsRepository)),
-                    ("package", .string(provenance.iconsPackage)),
-                    ("version", .string(provenance.iconsVersion)),
-                    ("commit", .string(provenance.iconsCommit)),
-                ])
+                "packages",
+                .array(
+                    provenance.packages.map { package in
+                        .object([
+                            ("package", .string(package.name)),
+                            ("version", .string(package.version)),
+                            ("gitHead", .string(package.gitHead)),
+                            ("integrity", .string(package.integrity)),
+                        ])
+                    })
             ),
             (
                 "fonts",
@@ -108,12 +147,12 @@ public enum Lock {
                         .object([
                             ("family", .string(font.family)),
                             ("webFamily", .string(font.webFamily)),
-                            ("repository", .string(font.repository)),
-                            ("tag", .string(font.tag)),
+                            ("package", .string(font.package)),
+                            ("source", .string(font.source)),
+                            ("woff2SHA256", .string(font.woff2SHA256)),
                             ("destination", .string(font.destination)),
                             ("ttfSHA256", .string(font.ttfSHA256)),
-                            ("woff2SHA256", .string(font.woff2SHA256)),
-                            ("webFile", .string(font.webFile)),
+                            ("madeWith", .string(font.madeWith)),
                         ])
                     })
             ),

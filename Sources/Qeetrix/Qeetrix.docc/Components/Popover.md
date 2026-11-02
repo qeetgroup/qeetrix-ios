@@ -1,23 +1,25 @@
 # Popover
 
-Contextual content anchored to a control, with `qeetrixPopover(isPresented:arrowEdge:compactAdaptation:content:)`.
+Contextual content anchored to a control — `@qeetrix/react`'s Popover — with
+`qeetrixPopover(isPresented:title:description:arrowEdge:compactAdaptation:content:)`.
 
 ## Overview
 
 A small panel about the control it points at — help for a setting, the details behind a summary.
 
 ```swift
-QeetrixIconButton(.info, label: "About roles") { showsRoles = true }
-    .qeetrixPopover(isPresented: $showsRoles) {
-        Text("Roles").qeetrixTextStyle(.label)
-        Text("Admins can invite members and manage billing.")
+QeetrixIconButton(.info, label: "About roles", tone: .neutral) { showsRoles = true }
+    .qeetrixPopover(isPresented: $showsRoles, title: Text("Roles"), description: Text("Who can do what.")) {
+        QeetrixText("Admins can invite members and manage billing.")
     }
 ```
 
-- In a regular-width window (iPad, and iPhones in landscape where they have the room) it is a popover
-  with an arrow, 288 pt wide at most, on the popover surface from the `component.popover` tokens.
-- In compact width iOS shows it as a sheet at medium height, the native form for contextual content on a
-  small screen. Pass `compactAdaptation: .popover` to keep a small popover there too.
+- **Look** (popover.css): `color.surface.overlay`, 16 points of padding (`space.inset.lg`) and 12 points
+  between its parts, at most 360 points wide; an optional title (`title.sm`) and description (`body.md`,
+  `color.text.subtle`, 4 points under it). The title names it.
+- On iPad and on any iPhone in landscape (compact height) it is the system popover. In a portrait
+  iPhone (compact width) iOS shows it as a sheet at medium height, the native form for contextual
+  content on a small screen; pass `compactAdaptation: .popover` to keep a small popover there too.
 - A tap outside or Escape dismisses it, and `isPresented` becomes `false`.
 
 Don't put urgent warnings, destructive confirmations or a whole form in a popover: use a
@@ -26,11 +28,13 @@ Don't put urgent warnings, destructive confirmations or a whole form in a popove
 ### Accessibility
 
 The popover is the system's presentation, so VoiceOver moves into it when it appears and reads its
-content in order.
+title, then its content.
 
 ### Platform differences
 
-The web popover opens on click and can open on hover; iOS has no hover-to-open, and the web's
-`HoverCard` and `Tooltip` have no counterpart here.
+- **Frame and arrow.** The system draws the popover's frame, shadow and arrow (ADR 0014). The web's
+  popover has a 1-point `color.border.subtle` edge, `shadow.overlay` and no arrow.
+- **Opening.** The web popover opens on click; iOS has no hover-to-open, and the web's Tooltip has no
+  counterpart beyond an icon button's pointer tooltip.
 
-On the web: [Popover on ui.qeet.in](https://ui.qeet.in/docs/components/popover).
+On the web: [Popover on ui.qeet.in](https://ui.qeet.in/components/popover/).

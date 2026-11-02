@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// The two drawing shapes qeetrix-icons provides.
+/// The two drawing shapes `@qeetrix/icons` provides.
 public enum QeetrixIconShape: String, CaseIterable, Sendable {
     /// Round caps and joins — the default, Lucide's own drawing.
     case round
@@ -16,7 +16,8 @@ public enum QeetrixIconVariant: String, CaseIterable, Sendable {
 
 /// A Qeetrix icon, drawn from vector paths in the icon's colour (the inherited foreground style).
 ///
-/// Defaults match the web's `<Icon>`: size `md`, stroke `regular`, round outline. Like an SF Symbol,
+/// Defaults match `@qeetrix/icons`' components: size `md`, stroke `regular`, round outline. Qeetrix
+/// components draw the sharp shape inside controls (design rules §16). Like an SF Symbol,
 /// the icon scales with Dynamic Type relative to `.body`; pass `relativeTo: nil` for a fixed size.
 ///
 /// Icons are decorative unless given a label — hidden from VoiceOver, because the text beside them
@@ -111,7 +112,7 @@ enum QeetrixIconAccessibility {
 }
 
 extension QeetrixIconName {
-    /// Whether qeetrix-icons draws this icon in a shape and variant. Without that drawing,
+    /// Whether `@qeetrix/icons` draws this icon in a shape and variant. Without that drawing,
     /// `QeetrixIcon` shows the outline instead.
     public func hasDrawing(_ shape: QeetrixIconShape, _ variant: QeetrixIconVariant) -> Bool {
         drawing(shape, variant) != nil

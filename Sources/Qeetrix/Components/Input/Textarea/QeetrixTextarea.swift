@@ -1,91 +1,82 @@
 import SwiftUI
 
-/// A labelled multi-line text field — the web's `Field` with a `Textarea`.
+/// Multi-line text with its label, help text and error — `@qeetrix/react`'s Textarea in a Field.
 ///
 /// ```swift
-/// QeetrixTextarea(
-///     "Feedback", text: $feedback,
-///     prompt: Text("What could be better?"),
-///     description: Text("Up to 500 characters.")
-/// )
+/// QeetrixTextarea("Notes", text: $notes, prompt: Text("e.g. Deliver after 5 pm"), rows: 4)
 /// ```
 ///
-/// It is a native multi-line text field: Return starts a new line, and selection, the edit menu and
-/// dictation behave as in any iOS text field. It starts two control heights tall, grows
-/// with its text to 15 lines (the web's 24 rem cap), then scrolls. The prompt is drawn while the field is
-/// empty and is never part of its value. It takes the same states as ``QeetrixTextField``: a message
-/// colours its boundary, `disabled(_:)` dims it and `isReadOnly` shows the text selectable but not
-/// editable. Plain text only.
+/// The same box as ``QeetrixTextField`` (design rules §8), `rows` lines tall at least (3 by default),
+/// with the padding that centres one line in an input's height. It grows with its content up to
+/// `maxRows`, then scrolls; without `maxRows` it keeps growing. Read-only shows the text, selectable,
+/// with no fill.
 public struct QeetrixTextarea: View {
     let context: QeetrixFieldContext
     let isOptional: Bool
     let text: Binding<String>
     let prompt: Text?
+    let rows: Int
+    let maxRows: Int?
     let isReadOnly: Bool
 
-    /// A multi-line field with a localised label.
     public init(
         _ titleKey: LocalizedStringKey,
         text: Binding<String>,
         prompt: Text? = nil,
         description: Text? = nil,
-        message: QeetrixFieldMessage? = nil,
+        error: String? = nil,
+        rows: Int = 3,
+        maxRows: Int? = nil,
         isRequired: Bool = false,
         isOptional: Bool = false,
         isReadOnly: Bool = false
     ) {
         self.init(
-            label: Text(titleKey), text: text, prompt: prompt, description: description, message: message, isRequired: isRequired,
-            isOptional: isOptional, isReadOnly: isReadOnly)
+            label: Text(titleKey), text: text, prompt: prompt, description: description, error: error, rows: rows, maxRows: maxRows,
+            isRequired: isRequired, isOptional: isOptional, isReadOnly: isReadOnly)
     }
 
-    /// A multi-line field with a label shown as given, without localisation.
     public init<S: StringProtocol>(
         _ title: S,
         text: Binding<String>,
         prompt: Text? = nil,
         description: Text? = nil,
-        message: QeetrixFieldMessage? = nil,
+        error: String? = nil,
+        rows: Int = 3,
+        maxRows: Int? = nil,
         isRequired: Bool = false,
         isOptional: Bool = false,
         isReadOnly: Bool = false
     ) {
         self.init(
-            label: Text(title), text: text, prompt: prompt, description: description, message: message, isRequired: isRequired,
-            isOptional: isOptional, isReadOnly: isReadOnly)
+            label: Text(title), text: text, prompt: prompt, description: description, error: error, rows: rows, maxRows: maxRows,
+            isRequired: isRequired, isOptional: isOptional, isReadOnly: isReadOnly)
     }
 
-    /// A multi-line field with a `Text` label.
-    ///
-    /// - Parameters:
-    ///   - label: The label above the field, which also names it for VoiceOver.
-    ///   - text: The field's value.
-    ///   - prompt: Placeholder text, shown while the field is empty. Never the only label.
-    ///   - description: Help shown under the field.
-    ///   - message: An error, warning or success message under the field; it also colours the boundary.
-    ///   - isRequired: Marks the label with an asterisk, and tells VoiceOver the field is required.
-    ///   - isOptional: Marks the label "(optional)" instead. Ignored when `isRequired` is true.
-    ///   - isReadOnly: Shows the text without letting it be edited.
     public init(
         label: Text,
         text: Binding<String>,
         prompt: Text? = nil,
         description: Text? = nil,
-        message: QeetrixFieldMessage? = nil,
+        error: String? = nil,
+        rows: Int = 3,
+        maxRows: Int? = nil,
         isRequired: Bool = false,
         isOptional: Bool = false,
         isReadOnly: Bool = false
     ) {
-        context = QeetrixFieldContext(label: label, description: description, message: message, isRequired: isRequired)
+        context = QeetrixFieldContext(label: label, description: description, error: error, isRequired: isRequired)
         self.isOptional = isOptional
         self.text = text
         self.prompt = prompt
+        self.rows = max(1, rows)
+        self.maxRows = maxRows.map { max($0, max(1, rows)) }
         self.isReadOnly = isReadOnly
     }
 
     public var body: some View {
         QeetrixFieldLayout(context: context, isOptional: isOptional) {
-            QeetrixTextareaInput(text: text, prompt: prompt, isReadOnly: isReadOnly)
+            QeetrixTextareaInput(text: text, prompt: prompt, rows: rows, maxRows: maxRows, isReadOnly: isReadOnly)
         }
     }
 }
@@ -93,6 +84,8 @@ public struct QeetrixTextarea: View {
 struct QeetrixTextareaInput: View {
     let text: Binding<String>
     let prompt: Text?
+    let rows: Int
+    let maxRows: Int?
     let isReadOnly: Bool
 
     @FocusState private var isFocused: Bool
@@ -100,10 +93,17 @@ struct QeetrixTextareaInput: View {
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.qeetrixDensity) private var density
     @Environment(\.qeetrixFieldContext) private var context
+    @ScaledMetric(relativeTo: .body) private var lineHeight = QeetrixTextRole.bodyMd.tokens.size * QeetrixTextRole.bodyMd.tokens.lineHeight
+    @ScaledMetric(relativeTo: .body) private var scale: CGFloat = 100
 
     var body: some View {
-        let state = QeetrixFieldState(
-            isEnabled: isEnabled, isReadOnly: isReadOnly, isFocused: isFocused, isHovered: isHovered, tone: context?.message?.tone)
+        let state = QeetrixInputState(
+            isEnabled: isEnabled, isReadOnly: isReadOnly, isFocused: isFocused, isHovered: isHovered, isInvalid: context?.invalid ?? false)
+        // input.css: padding-block (control.lg − 1lh) / 2, so one line sits as in an input; the room
+        // scales with the text, as in every single-line control.
+        let type = QeetrixInputMetrics.textType.tokens
+        let inset = QeetrixControlBlockSize.inset(
+            height: QeetrixInputMetrics.height(density), lineHeight: type.size * CGFloat(type.lineHeight), scale: scale / 100)
         Group {
             if isReadOnly {
                 Text(verbatim: text.wrappedValue)
@@ -114,21 +114,21 @@ struct QeetrixTextareaInput: View {
                     .accessibilityValue(Text(verbatim: text.wrappedValue))
             } else {
                 TextField(
-                    text: text, prompt: (prompt ?? Text(verbatim: "")).foregroundStyle(QeetrixInputTokens.placeholder), axis: .vertical
+                    text: text, prompt: (prompt ?? Text(verbatim: "")).foregroundStyle(QeetrixInputMetrics.placeholder), axis: .vertical
                 ) {
                     context?.label ?? Text(verbatim: "")
                 }
-                .lineLimit(...QeetrixTextareaMetrics.maximumLines)
+                .lineLimit(rows...(maxRows ?? Int.max))
+                .tint(QeetrixColor.borderFocus)
                 .focused($isFocused)
                 .qeetrixFieldControlAccessibility()
             }
         }
-        .qeetrixType(QeetrixTextareaMetrics.textType)
-        .foregroundStyle(QeetrixInputTokens.foreground)
-        .padding(.horizontal, QeetrixWebScale.spacing(2.5))  // px-2.5
-        .padding(.vertical, QeetrixWebScale.spacing(2))  // py-2
-        .frame(maxWidth: .infinity, minHeight: QeetrixTextareaMetrics.minimumHeight(density), alignment: .topLeading)
-        .qeetrixFieldSurface(state)
+        .qeetrixTypeEnvironment(QeetrixInputMetrics.textType)
+        .padding(.horizontal, QeetrixInputMetrics.padding)
+        .padding(.vertical, inset)
+        .frame(maxWidth: .infinity, minHeight: CGFloat(rows) * lineHeight + 2 * inset, alignment: .topLeading)
+        .qeetrixInputSurface(state)
         .contentShape(Rectangle())
         .simultaneousGesture(
             TapGesture().onEnded {
@@ -137,18 +137,4 @@ struct QeetrixTextareaInput: View {
         )
         .onHover { isHovered = $0 }
     }
-}
-
-enum QeetrixTextareaMetrics {
-    /// `text-base leading-normal`.
-    static let textType = QeetrixComponentType.sans(QeetrixWebScale.textBase, .regular, lineHeight: 1.5, scalesLike: .body)
-
-    /// `min-h-[calc(var(--qx-component-input-height)*2)]`: two control heights.
-    static func minimumHeight(_ density: QeetrixDensity) -> CGFloat {
-        2 * QeetrixInputTokens.height(density)
-    }
-
-    /// `max-h-96` — 24 rem, 384 pt — in lines of the field's text at the default size: (384 − 16) ÷ 24.
-    /// A line count rather than a height, so the cap scales with Dynamic Type.
-    static let maximumLines = 15
 }

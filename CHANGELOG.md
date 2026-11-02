@@ -1,5 +1,188 @@
 # Changelog
 
+## Unreleased — the iOS component tickets (QTRX-95 to QTRX-155)
+
+New components for every iOS app built on Qeetrix, and for the native Qeet Auth, each with tests, a
+DocC page and a showcase page, following `@qeetrix/react` 0.4.0 where it has a counterpart. Additive:
+no existing API changed. 38 more icons are pinned for them (68 in all).
+
+### Added
+
+- **Haptics** (QTRX-152): `QeetrixFeedback` — selection, success, warning, error and light impact — on
+  SwiftUI's `sensoryFeedback`, with `.qeetrixFeedback(_:trigger:)` and `play()`; silent when System
+  Haptics is off. `QeetrixSwitch`, `QeetrixCheckbox` and `QeetrixRadioGroup` play selection feedback
+  when a person changes them, not when the app does.
+- **Format** (QTRX-139): `QeetrixFormat`, `@qeetrix/react`'s format family (number, currency, percent,
+  compact, date, date and time, relative time) plus time, all-number dates, ranges, file sizes and
+  durations, with the web's rounding, Gregorian dates and en-IN's lakh grouping; 1,977 cases in 19
+  locales are checked against the web's output, and the differences Apple's locale data makes are
+  listed and pinned. `QeetrixRelativeTime` keeps "2 minutes ago" current on screen.
+- **List item and section header** (QTRX-95): `QeetrixListItem` — a leading avatar or icon, a title, a
+  description and a value; a chevron, a switch or trailing content; a destructive role; the selected
+  tint — in a `List` (`.qeetrixListStyle()`) or a stack, at least 44 pt, read as one element.
+  `QeetrixSectionHeader` labels a group.
+- **Description list** (QTRX-99) and **check list** (QTRX-149): `QeetrixDescriptionList` (rows that
+  stack or sit side by side by width, or 1–4 columns; each pair one element) and `QeetrixCheckList`
+  (passed, failed, not run and running, in an icon and in words; changes announced).
+- **Alert** (QTRX-111): `QeetrixAlert` in info, success, warning and danger, with an optional dismiss,
+  actions and announcement; `QeetrixErrorSummary` is drawn by the same surface.
+- **Empty and data state** (QTRX-97), **skeleton** (QTRX-98), **timeline** (QTRX-100) and **steps**
+  (QTRX-141): `QeetrixEmptyState`, `QeetrixDataState` (loading, failure with Try again, empty, content),
+  `QeetrixSkeleton` (hidden from VoiceOver; its group reads "Loading"), `QeetrixTimeline` (28 pt
+  markers, six tones, a compact variant) and `QeetrixSteps` (done, current, upcoming, failed,
+  attention; a compact "Step 2 of 4" form on narrow screens).
+- **Chip and chip group** (QTRX-117): `@qeetrix/react` 0.4.0's Chip and ChipGroup — selectable or
+  removable, one value or several, wrapping or scrolling.
+- **Segmented control** (QTRX-112), **accordion** (QTRX-118), **page indicator** (QTRX-154) and
+  **avatar group** (QTRX-147): `QeetrixSegmentedControl`, `QeetrixAccordion` (the app owns which
+  sections are open), `QeetrixPageIndicator` (an adjustable "Page 2 of 4") and `QeetrixAvatarGroup`.
+- **Circular progress** (QTRX-109): `QeetrixCircularProgress`, a determinate ring on Progress's track
+  and tones plus warning, for a value or a timer interval; one step a second under Reduce Motion.
+- **QR code** (QTRX-143): `QeetrixQRCode`, with the web's encoder ported so the modules match the web's
+  for the same value and level; dark on white in either scheme.
+- **QR scanner** (QTRX-110) and **permission primer** (QTRX-153): `QeetrixQRScanner` over the app's own
+  camera preview (no AVFoundation in Qeetrix) — target, torch, guidance, the camera's permission states
+  and "Type the key instead" — and `QeetrixPermissionPrimer`, Continue / Not now before the system
+  prompt and Open Settings once denied.
+- **Bottom action bar** (QTRX-150) and **full-screen form** (QTRX-151):
+  `.qeetrixBottomActionBar(primary:secondary:)` above the keyboard and home indicator, and
+  `QeetrixFullScreenForm`, which asks before throwing changes away and is a form sheet on a tablet.
+- **Large title** (QTRX-155), **sidebar and detail** (QTRX-119) and **search field** (QTRX-96):
+  `.qeetrixNavigationBar(background:title: .qeetrix)`, `QeetrixNavigationScaffold` (a tab bar at
+  compact width, a sidebar beside the detail at regular width) and `QeetrixSearchField` with
+  `.qeetrixSearchable(…)`.
+- **Copy button and copy field** (QTRX-140): `QeetrixCopyButton` and `QeetrixCopyField`, confirmed by a
+  check, a light haptic and a "Copied" toast through the screen's toast binding; `isSensitive` keeps
+  the pasteboard entry on the device and removes it after 60 seconds.
+- **OTP code** (QTRX-108): `QeetrixOTPCode` — a one-time code in Fira Code, grouped 123 456 or
+  1234 5678, with its countdown ring turning warning in the last 5 seconds, tap to copy (local only,
+  60 seconds), and the digits read one by one, then the time left; the app computes the code.
+- **Swipe actions** (QTRX-113) and **pull to refresh** (QTRX-114): `.qeetrixSwipeActions(…)` with
+  `QeetrixSwipeAction` — the system's swipe in Qeetrix's tones, a confirmation before a danger action,
+  and the same actions for VoiceOver and in the row's context menu — and `.qeetrixRefreshable(…)`,
+  which says "Updated" (or the app's words) when the system's refresh finishes.
+- **Date picker and range** (QTRX-138): `QeetrixDatePicker` (the system's graphical calendar in
+  Qeetrix's tint, or `QeetrixCalendar` when days are ruled out), `QeetrixDateRangePicker` with presets,
+  and `QeetrixCalendar` and `QeetrixRangeCalendar`, with 44 pt days, year and month views, and keyboard
+  and VoiceOver navigation.
+- **Time picker** (QTRX-146): `QeetrixTimePicker`, the system's time wheel with a minute step, in 12 or
+  24 hours as the device is set.
+- **Stat** (QTRX-142) and **slider** (QTRX-148): `QeetrixStat` and `QeetrixStatGroup` (formatted values,
+  a change up or down said in words, the web's trend line, skeleton loading) and `QeetrixSlider` (one
+  value or a range, each thumb a 44 pt adjustable element).
+- **Searchable picker** (QTRX-144): `QeetrixCombobox`, a choice from a long list in a sheet behind the
+  Select's trigger, with search that ignores case, accents and width, groups, one or several choices,
+  and "No matches".
+- **Attachments** (QTRX-145): `QeetrixFileUpload` and `QeetrixFileRow` — files from Photos, the camera
+  or Files through the system's pickers, checked for type, size and number in the web's words, a row
+  per file with its icon, size, progress, outcome and Remove; the app owns the files and the uploads.
+
+### Changed
+
+- The resource check counts a built-in string looked up as `String(localized:defaultValue:bundle:)` or
+  `LocalizedStringResource(_:defaultValue:bundle:)`, the forms a string with arguments takes.
+- `@qeetrix/react`'s `combobox` CSS is pinned as the searchable picker's reference (55 families).
+- The showcase declares its camera use, so the attachment picker offers the camera on a device.
+
+### Fixed
+
+- A `QeetrixButton` with an icon no longer stretches to share the spare height of a stack it sits in
+  (its icon zone filled the height on offer, so the button grew with it, as the QR scanner's fallback
+  did). A wrapped label still gets its room above and below at the accessibility sizes.
+
+## Unreleased — the move to `@qeetrix/react`
+
+Built from `@qeetrix/tokens` 0.0.13 (`4483f96`), `@qeetrix/icons` 2.1.0 (`e2a8f9f`) and
+`@qeetrix/react` 0.4.0 (`9a765bb`), all from npm and checked against the registry's integrity hashes.
+`@qeetrix/ui` is no longer used. Every old name and its new one is in
+[`Documentation/MIGRATION_QEETRIX_REACT.md`](Documentation/MIGRATION_QEETRIX_REACT.md); the decision
+is ADR 0015. **Source-breaking**: most component initialisers, every token type and the provenance
+record changed.
+
+### Changed
+
+- **Tokens** are generated from `@qeetrix/tokens`' DTCG build, resolved as its resolver says (light
+  and dark × default, comfortable and compact), and checked against the package's pre-resolved files
+  and `tokens.css`. 194 tokens generated, 145 excluded with a reason. Types renamed to the token
+  groups: `QeetrixSpacing` → `QeetrixSpace`, `QeetrixCorner` → `QeetrixRadius`, `QeetrixStroke` →
+  `QeetrixBorderWidth`, `QeetrixElevation` → `QeetrixShadow` (`.qeetrixElevation` →
+  `.qeetrixShadow`); `QeetrixColor` and `QeetrixTextRole` take the new paths' names (109 colours, 18
+  roles); `QeetrixDensity` gives `sizeControlSm/Md/Lg`, `sizeRow`, `spaceFormGap`. New:
+  `QeetrixSpring`, `QeetrixSize.targetMin`, `QeetrixControlSize`. `QeetrixMotion.reducedEasing` is
+  gone. Every value is listed per context in `Documentation/Foundations/token-values.json`.
+- **Typography** follows `@qeetrix/react`: each role's letter style on the `GEOM` axis, optical
+  sizing, CSS half-leading (the role's line on every line), Bold Text one weight step up. The letter
+  style and the exact line height come from each role's token (`$extensions["in.qeet.qeetrix"]`), so
+  every line height is a whole number of points on the 4 pt grid (`body.md` 20 pt, was 20.0004).
+- **Fonts** are the TTFs `@qeetrix/tokens` ships for native platforms (`QeetSans.ttf`,
+  `FiraCode-VF.ttf`), checked against the sha256 and size in its `fonts/native.json`. The previous
+  fonts came from the font projects' releases; the faces are the same.
+- **Icons** come from `@qeetrix/icons` 2.1.0's SVG files and JSON manifest; `chevron-right` added
+  (30). Components draw the sharp shape.
+- **Dark rules and the dark brand hover** (tokens 0.0.13): `borderSubtle` is #2E2E2D and
+  `borderDefault` #383837 in dark (were #1E1E1E and #262625), so separators show on menus, sheets and
+  popovers; dark `bgBrandBoldHover` is #C5430A (was #B73D10), 3:1 on every dark surface.
+- **Components** take `@qeetrix/react`'s names and look: `variant`, `tone` and `size`
+  (`QeetrixControlSize`) as the web has them, the filled field, the button's icon zone, the 3 pt tab
+  bar, ruled sheets, the error summary, and the react message catalogue. Per component, old API and
+  new, in the migration file. Renamed: `QeetrixFieldSet` → `QeetrixFieldset`,
+  `QeetrixFormErrorSummary` → `QeetrixErrorSummary`, `QeetrixToastType` → `QeetrixToastTone`
+  (`.error` → `.danger`), `QeetrixPasswordPurpose` → `QeetrixPasswordAutoComplete`,
+  `QeetrixOTPCharacters` → `QeetrixOTPValidationType`. Field messages are `error: String?`; warnings
+  and successes are gone, as in react.
+- **A selected tab shows its icon filled by default** (`filledWhenSelected` defaults to `true`, as in
+  `@qeetrix/react` 0.4.0, QTRX-168). Pass `false` to keep the outline; an icon with no filled drawing
+  keeps its outline either way.
+- **Dynamic Type.** Single-line controls are the web's height at the default size and scale with the
+  text above it; icon buttons, steppers and icon zones grow with their icons; button labels wrap.
+- **`QeetrixProvenance`** names the three packages (version, gitHead, integrity) and each font's
+  package, file and hashes.
+- **Folders** follow `@qeetrix/react`'s families (`Field/`, `Fieldset/`, `TextField/`, `Radio/`,
+  `Menu/`, `Text/`, `Heading/`).
+- The ui.qeet.in handoff is `Documentation/Website/QEETRIX_REACT_HANDOFF.md` (was
+  `PHASE_4_HANDOFF.md`), with `@qeetrix/react`'s names.
+
+### Added
+
+- `QeetrixHeading`; `QeetrixText` sizes, weights, tones, `mono`, `truncate`, `align`.
+- `tone` on buttons, icon buttons, badges, cards, separators, progress, spinners, menus and menu
+  items; `isFullWidth` on buttons; `tooltip` on icon buttons.
+- Text field `icon`, `startAdornment`, `endAdornment`; number-field adornments and `showsSteppers`;
+  OTP `groups` and `size`; select `size` and `isReadOnly`; radio `orientation`; switch `description`;
+  sheet `intent` and `isDismissible`; popover `title` and `description`; tab `filledWhenSelected` and
+  `badge`.
+
+### Removed
+
+- `QeetrixCardHeader`, `QeetrixCardSize`, the elevated card; `QeetrixButtonSize` (use
+  `QeetrixControlSize`), leading icons and `loadingLabel`; `QeetrixSwitchSize`; `QeetrixProgressSize`;
+  `QeetrixTextVariant` (use `QeetrixText` and `QeetrixHeading`); `QeetrixFieldMessage`; the avatar
+  `xs` size and badge; `QeetrixWebScale` and the component tokens (ADR 0011 is superseded).
+
+### Fixed
+
+- From `@qeetrix/react` 0.4.0: an invalid checkbox, radio or switch keeps the danger edge when checked
+  and hovered, and a chosen invalid radio's ring is the danger colour (QTRX-161); the switch's on thumb
+  is white in dark too, `color.icon.on-brand` (QTRX-162); read-only fields draw the editable
+  `border.strong` line, which holds 3:1 (was `border.subtle`, QTRX-175); the progress track is
+  `color.surface.sunken` in dark, so every tone keeps 3:1 against it (QTRX-176); a card with a header
+  and no content ends at its header, with no empty body or rule (QTRX-174).
+- The sync no longer converts WOFF2 to TTF: `@qeetrix/tokens` 0.0.12 ships the TTFs (QTRX-91). They
+  are byte-identical to the previous conversion.
+- The component manifest is read from `@qeetrix/react`'s `dist/manifest.json`, no longer from the JS
+  bundle (QTRX-92).
+- An avatar is one image named by its name: its initials are no longer listed inside it (iOS 26 and
+  later list them under `children: .ignore`). The password input has a 44 pt target again. The tab
+  rule spans the whole strip. A popover shown as a sheet starts at the top.
+- A popover stays a popover in compact height (any iPhone in landscape). Before, on an iPhone that is
+  compact width in landscape (iPhone SE, 16e, 17), it covered the screen with no grabber and nothing
+  to tap outside, so it could not be dismissed.
+- A select inside `ImageRenderer` no longer stops the process ("accessing attribute in a different
+  namespace"): the menu label no longer reads Dynamic Type itself.
+- Snapshot tests measure a specimen after a layout pass with its traits, and ax3 is AX3 in the
+  traits as in the environment; before, larger text overflowed rows and fields measured at the
+  default size.
+
 ## Unreleased — Phase 4: navigation, overlays and feedback
 
 Built from `@qeetrix/ui` 2.1.6 (`7d7f651`) and `@qeetrix/icons` 1.0.11, unchanged; two more component

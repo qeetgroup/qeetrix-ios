@@ -2,38 +2,39 @@
 
 ## Overview
 
-A person's picture, their initials, or a neutral icon.
+A person, organisation or application: their photo or logo, or their initials — `@qeetrix/react`'s
+Avatar.
 
 ```swift
 HStack {
-    QeetrixAvatar(name: "Asha Rao")
-    QeetrixAvatar(name: "Asha Rao", size: .lg, badge: Text("Online"))
-    QeetrixAvatar(name: "Qeet Group", shape: .square)
+    QeetrixAvatar(name: "Priya Sharma")
+    QeetrixAvatar(name: "Priya Sharma", size: .lg)
+    QeetrixAvatar(name: "Kaveri Foods Private Limited", shape: .square)
 }
 ```
 
-- **Sizes.** `xs` 20, `sm` 24, `default` 32, `lg` 40 and `xl` 48 pt. They are fixed: an avatar is a
-  recognition target, so a person looks the same size everywhere.
-- **Shapes.** `circle` for people; `square` for organisations, workspaces and apps.
-- **Fallbacks.** Without an image, the initials of the name — the first letters of its first and last
-  words — and without a name, the `user-round` icon.
-- **Badge.** A status mark at the bottom-trailing edge.
+- **Size**: `sm` 24, `md` 32 (default), `lg` 40 or `xl` 48 points.
+- **Shape**: `circle` for a person — people are one of the two soft shapes — or `square`, with the
+  controls' 4-point corners, for an organisation, an application or a tenant, so it never reads as a
+  person.
+- **Initials** on `color.bg.neutral.subtle-pressed`, in `label.sm` (`label.md` at `lg` and `xl`): the
+  first character of the first and last words ("Priya Sharma" is "PS"). A company's legal form doesn't
+  count ("Kaveri Foods Private Limited" is "KF"), and a name left with one word takes its first two
+  ("Acme Pvt Ltd" is "AC"). Characters are grapheme clusters, so Indic names stay whole.
+- **Image**: drawn to fill the shape, clipped to it.
 
 ### Accessibility
 
-- VoiceOver reads the avatar as one image called by the name, then the badge's text: "Asha Rao,
-  Online". Colour alone is never the status.
-- Pass `name: nil` when the name is already visible beside the avatar, so it is not read twice. The
-  avatar is then hidden from VoiceOver, unless it has a badge.
+VoiceOver reads the avatar as an image named by `name`. Where the name is shown beside it, pass
+`isDecorative: true` and it is hidden.
 
-### Platform adaptations
+### Platform differences
 
-- **Images.** The web loads a URL and fades the photo in. Here the avatar takes an `Image` your app
-  has already loaded, so caching and errors stay with the app's image pipeline.
-- **Initials at large text sizes.** The initials keep their size, as the avatar does, rather than grow
-  with Dynamic Type and overflow it.
+- **Images.** The web loads `src` and shows the initials while it loads or if it fails; on iOS you pass
+  the `Image` you have, so loading is yours.
+- **Initials size.** The initials sit in a fixed-size graphic, so they don't grow with Dynamic Type.
 
-On the web: [Avatar on ui.qeet.in](https://ui.qeet.in/docs/components/avatar).
+On the web: [Avatar on ui.qeet.in](https://ui.qeet.in/components/avatar/).
 
 ## Topics
 

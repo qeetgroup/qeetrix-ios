@@ -25,15 +25,15 @@ struct FormPatternsPage: View {
             summary: "A registration-style and a settings-style layout. The app validates; the fields present."
         ) {
             DemoSection("Registration") {
-                VStack(alignment: .leading, spacing: density.fieldGap * 1.5) {  // Form: sections 1.5 field gaps apart
-                    QeetrixFormErrorSummary(errors: summaryItems)
-                    QeetrixFieldSet("Your details") {
-                        QeetrixTextField("Full name", text: $name, message: message(.name), isRequired: true)
+                VStack(alignment: .leading, spacing: density.spaceFormGap) {  // Form: fields `space.form.gap` apart
+                    QeetrixErrorSummary(items: summaryItems)
+                    QeetrixFieldset("Your details") {
+                        QeetrixTextField("Full name", text: $name, error: errors[.name], isRequired: true)
                             .focused($focus, equals: .name)
                             .submitLabel(.next)
                             .onSubmit { focus = .email }
                         QeetrixTextField(
-                            "Work email", text: $email, prompt: Text("name@company.com"), message: message(.email), isRequired: true
+                            "Work email", text: $email, prompt: Text("e.g. asha@acme.in"), error: errors[.email], isRequired: true
                         )
                         .focused($focus, equals: .email)
                         .keyboardType(.emailAddress)
@@ -41,10 +41,12 @@ struct FormPatternsPage: View {
                         .textInputAutocapitalization(.never)
                         .submitLabel(.next)
                         .onSubmit { focus = .password }
-                        QeetrixPasswordInput("Password", text: $password, purpose: .new, message: message(.password), isRequired: true)
-                            .focused($focus, equals: .password)
-                            .submitLabel(.done)
-                            .onSubmit(submit)
+                        QeetrixPasswordInput(
+                            "Password", text: $password, autoComplete: .newPassword, error: errors[.password], isRequired: true
+                        )
+                        .focused($focus, equals: .password)
+                        .submitLabel(.done)
+                        .onSubmit(submit)
                         QeetrixSelect(
                             "Role", selection: $role,
                             options: [
@@ -55,10 +57,10 @@ struct FormPatternsPage: View {
                     }
                     QeetrixCheckbox("I agree to the terms", isOn: $accepted)
                     QeetrixFormActions {
-                        QeetrixButton("Reset", variant: .outline) { reset() }
-                        QeetrixButton("Create account", isLoading: isSubmitting, loadingLabel: "Creating account") { submit() }
+                        QeetrixButton("Reset", variant: .ghost, size: .lg) { reset() }
+                        QeetrixButton("Create account", size: .lg, isLoading: isSubmitting) { submit() }
                     }
-                    QeetrixText("Submitted \(submissions) times", variant: .muted)
+                    QeetrixText("Submitted \(submissions) times", size: .sm, tone: .subtle)
                         .accessibilityIdentifier("form-submissions")
                 }
             }
@@ -69,22 +71,18 @@ struct FormPatternsPage: View {
         .scrollDismissesKeyboard(.interactively)
     }
 
-    private var summaryItems: [QeetrixFormErrorSummary.Item] {
+    private var summaryItems: [QeetrixErrorSummary.Item] {
         [Field.name, .email, .password].compactMap { field in
-            errors[field].map { message in QeetrixFormErrorSummary.Item(id: "\(field)", message: message) { focus = field } }
+            errors[field].map { message in QeetrixErrorSummary.Item(id: "\(field)", message: message) { focus = field } }
         }
-    }
-
-    private func message(_ field: Field) -> QeetrixFieldMessage? {
-        errors[field].map { QeetrixFieldMessage(.error, text: $0) }
     }
 
     /// Dummy validation, standing in for the app's own rules.
     private func submit() {
         var found: [Field: String] = [:]
-        if name.trimmingCharacters(in: .whitespaces).isEmpty { found[.name] = "Enter your name." }
-        if !email.contains("@") { found[.email] = "Enter an email address with an @." }
-        if password.count < 12 { found[.password] = "Use at least 12 characters." }
+        if name.trimmingCharacters(in: .whitespaces).isEmpty { found[.name] = "Enter your name" }
+        if !email.contains("@") { found[.email] = "Enter a work email, like asha@acme.in" }
+        if password.count < 12 { found[.password] = "Use at least 12 characters" }
         errors = found
         guard found.isEmpty else {
             focus = [Field.name, .email, .password].first { found[$0] != nil }
@@ -120,8 +118,8 @@ private struct SettingsForm: View {
     @Environment(\.qeetrixDensity) private var density
 
     var body: some View {
-        VStack(alignment: .leading, spacing: density.fieldGap * 1.5) {
-            QeetrixFieldSet("Email", description: Text("What we send you.")) {
+        VStack(alignment: .leading, spacing: density.spaceFormGap) {
+            QeetrixFieldset("Email", description: Text("What we send you.")) {
                 QeetrixSwitch("Weekly digest", isOn: $digest)
                 QeetrixSwitch("Mentions", isOn: $mentions)
                 QeetrixSelect(
@@ -130,15 +128,15 @@ private struct SettingsForm: View {
                 )
                 .disabled(!digest)
             }
-            QeetrixFieldSet("Data") {
+            QeetrixFieldset("Data") {
                 QeetrixNumberField("Keep logs for (days)", value: $retention, in: 7...365)
                 QeetrixTextarea("Note for administrators", text: $note, isOptional: true)
             }
             QeetrixFormActions {
-                QeetrixButton("Save settings") { saved = true }
+                QeetrixButton("Save settings", size: .lg) { saved = true }
             }
             if saved {
-                QeetrixBadge("Saved", variant: .success, icon: .circleCheck)
+                QeetrixBadge("Saved", tone: .success, icon: .circleCheck)
             }
         }
     }

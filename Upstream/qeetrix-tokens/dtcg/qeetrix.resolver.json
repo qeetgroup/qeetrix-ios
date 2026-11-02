@@ -1,0 +1,81 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/resolver.json",
+  "version": "2025.10",
+  "name": "Qeetrix",
+  "description": "The Qeetrix design tokens. One foundation, two orthogonal modifiers: colour scheme and density.",
+  "sets": {
+    "foundation": {
+      "description": "Primitives, mode-independent semantic tokens and component decisions.",
+      "sources": [
+        {
+          "$ref": "./tokens/primitive/color.tokens.json"
+        },
+        {
+          "$ref": "./tokens/primitive/dimension.tokens.json"
+        },
+        {
+          "$ref": "./tokens/primitive/typography.tokens.json"
+        },
+        {
+          "$ref": "./tokens/primitive/motion.tokens.json"
+        },
+        {
+          "$ref": "./tokens/semantic/foundation.tokens.json"
+        },
+        {
+          "$ref": "./tokens/component.tokens.json"
+        }
+      ]
+    }
+  },
+  "modifiers": {
+    "colorScheme": {
+      "description": "Light and dark. Changes colour, shadow only.",
+      "contexts": {
+        "light": [
+          {
+            "$ref": "./tokens/modes/color-scheme/light.tokens.json"
+          }
+        ],
+        "dark": [
+          {
+            "$ref": "./tokens/modes/color-scheme/dark.tokens.json"
+          }
+        ]
+      },
+      "default": "light"
+    },
+    "density": {
+      "description": "Control and row sizes. Changes size and form spacing only.",
+      "contexts": {
+        "default": [
+          {
+            "$ref": "./tokens/modes/density/default.tokens.json"
+          }
+        ],
+        "comfortable": [
+          {
+            "$ref": "./tokens/modes/density/comfortable.tokens.json"
+          }
+        ],
+        "compact": [
+          {
+            "$ref": "./tokens/modes/density/compact.tokens.json"
+          }
+        ]
+      },
+      "default": "default"
+    }
+  },
+  "resolutionOrder": [
+    {
+      "$ref": "#/sets/foundation"
+    },
+    {
+      "$ref": "#/modifiers/colorScheme"
+    },
+    {
+      "$ref": "#/modifiers/density"
+    }
+  ]
+}

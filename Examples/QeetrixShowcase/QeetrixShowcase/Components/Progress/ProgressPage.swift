@@ -7,15 +7,15 @@ struct ProgressPage: View {
     var body: some View {
         ComponentPage(
             title: "Progress",
-            summary: "Task progress. A bar without a known total sweeps; under Reduce Motion it is a still hatch."
+            summary: "A task advancing, on a 4 pt square track. Without a known total a segment slides; under Reduce Motion it fades."
         ) {
             DemoSection("Determinate") {
-                QeetrixProgress("Uploading", value: uploaded)
+                QeetrixProgress("Uploading", value: uploaded, showsValue: true)
                 FlowLayout {
-                    QeetrixButton("Advance", variant: .outline, size: .sm) {
+                    QeetrixButton("Advance", variant: .ghost, size: .sm) {
                         uploaded = min(1, uploaded + 0.2)
                     }
-                    QeetrixButton("Reset", variant: .ghost, size: .sm) {
+                    QeetrixButton("Reset", variant: .ghost, tone: .neutral, size: .sm) {
                         uploaded = 0
                     }
                 }
@@ -23,14 +23,13 @@ struct ProgressPage: View {
             DemoSection("Indeterminate") {
                 QeetrixProgress("Preparing export", value: nil)
             }
-            DemoSection("Sizes") {
-                ForEach(QeetrixProgressSize.allCases, id: \.self) { size in
-                    QeetrixProgress("Size \(size.rawValue)", value: 0.6, size: size, showsValue: false)
-                }
+            DemoSection("How it ended") {
+                QeetrixProgress("Import finished", value: 1, tone: .success, showsValue: true)
+                QeetrixProgress("Import failed", value: 0.62, tone: .danger, showsValue: true)
             }
             DemoSection("The style on a native ProgressView") {
                 ProgressView("Syncing", value: 0.25)
-                    .progressViewStyle(.qeetrix(size: .sm))
+                    .progressViewStyle(.qeetrix(showsValue: true))
             }
         }
     }

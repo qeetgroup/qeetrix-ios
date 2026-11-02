@@ -1,0 +1,111 @@
+@layer qx.base, qx.components, qx.state;
+@import "./base.css";
+@import "./state.css";
+@import "./field.css";
+
+@layer qx.components {
+  .qx-slider {
+    gap: var(--qx-space-gap-xs);
+    flex-direction: column;
+    min-inline-size: 0;
+    display: flex;
+  }
+  
+  .qx-slider-header {
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--qx-space-gap-md);
+    display: flex;
+  }
+  
+  .qx-slider-label {
+    font: var(--qx-typography-label-sm);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    color: var(--qx-color-text-subtle);
+  }
+  
+  .qx-slider-value {
+    font: var(--qx-typography-label-sm);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variant-numeric: tabular-nums;
+    color: var(--qx-color-text-default);
+  }
+  
+  .qx-slider-control {
+    block-size: var(--qx-size-target-min);
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+    align-items: center;
+    padding-inline: 8px;
+    display: flex;
+  }
+  
+  .qx-slider-track {
+    background: var(--qx-color-border-default);
+    block-size: 4px;
+    inline-size: 100%;
+    position: relative;
+  }
+  
+  .qx-slider-indicator {
+    background: var(--qx-color-bg-brand-bold);
+    block-size: 100%;
+  }
+  
+  [data-disabled] .qx-slider-indicator {
+    background: var(--qx-color-bg-disabled);
+  }
+  
+  .qx-slider-thumb {
+    border-radius: var(--qx-radius-sm);
+    background: var(--qx-color-bg-brand-bold);
+    block-size: 16px;
+    inline-size: 16px;
+    box-shadow: 0 0 0 var(--qx-border-width-strong) var(--qx-color-surface-default);
+    cursor: grab;
+    transition-property: background-color;
+    transition-duration: var(--qx-motion-duration-fast);
+    transition-timing-function: var(--qx-motion-easing-standard);
+  }
+  
+  .qx-slider-thumb:hover {
+    background: var(--qx-color-bg-brand-bold-hover);
+  }
+  
+  .qx-slider-thumb[data-dragging] {
+    cursor: grabbing;
+  }
+  
+  .qx-slider-thumb:has(:focus-visible) {
+    outline: var(--qx-focus-ring-width) solid var(--qx-color-border-focus);
+    outline-offset: var(--qx-focus-ring-offset);
+  }
+  
+  .qx-slider-thumb[data-disabled] {
+    background: var(--qx-color-icon-disabled);
+    cursor: not-allowed;
+  }
+  
+  @media (forced-colors: active) {
+    .qx-slider-track, .qx-slider-indicator, .qx-slider-thumb {
+      forced-color-adjust: none;
+    }
+  
+    .qx-slider-track {
+      background: graytext;
+    }
+  
+    .qx-slider-indicator, .qx-slider-thumb {
+      background: highlight;
+    }
+  
+    .qx-slider-thumb {
+      box-shadow: 0 0 0 var(--qx-border-width-strong) Canvas;
+    }
+  
+    .qx-slider-thumb[data-disabled], [data-disabled] .qx-slider-indicator {
+      background: graytext;
+    }
+  }
+}

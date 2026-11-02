@@ -16,11 +16,12 @@ public struct ComponentScaffold {
 
     /// What to scaffold.
     public struct Request: Equatable, Sendable {
-        /// The qeetrix-ui family identifier, e.g. `Button`.
+        /// The `@qeetrix/react` family, in UpperCamelCase: `Button` for the `button` family.
         public var family: String
         /// The iOS component name without the `Qeetrix` prefix, e.g. `IconButton`.
         public var component: String
-        /// The web component's manifest slug; defaults to the component name in kebab case.
+        /// The web part the component implements, when its name differs from the component's, e.g.
+        /// `TextField`; defaults to the component name.
         public var slug: String?
         /// The ui.qeet.in documentation category, e.g. `Actions`.
         public var category: String
@@ -52,8 +53,9 @@ public struct ComponentScaffold {
         ("Utilities", "utilities"),
     ]
 
-    static let manifestPath = "Upstream/qeetrix-ui/component-manifest.json"
-    static let tokensPath = "Upstream/qeetrix-ui/tokens.json"
+    /// `@qeetrix/react`'s component manifest (`dist/manifest.json`), as the sync keeps it.
+    static let manifestPath = "Upstream/qeetrix-react/component-manifest.json"
+    static let tokensPath = "Upstream/qeetrix-tokens/dtcg/light.tokens.json"
     static let landingPath = "Sources/Qeetrix/Qeetrix.docc/Qeetrix.md"
     static let catalogPath = "Examples/QeetrixShowcase/QeetrixShowcase/Support/ShowcaseCatalog.swift"
     static let catalogMarker = "        // new-component: insert above this line"
@@ -73,25 +75,27 @@ public struct ComponentScaffold {
             throw GeneratorError(
                 "Unknown category \"\(request.category)\". Use one of: \(Self.categories.map(\.name).joined(separator: ", ")).")
         }
-        let slug = request.slug ?? Self.kebab(request.component)
-        let entry = try manifestEntry(slug: slug)
-        guard entry.family == request.family else {
+        let part = request.slug ?? request.component
+        let entry = try manifestEntry(part: part)
+        let slug = Self.kebab(part)  // the page on ui.qeet.in: /components/<slug>
+        guard Self.upperCamel(entry.name) == request.family else {
             throw GeneratorError(
-                "\(slug) belongs to the \(entry.family) family in \(Self.manifestPath), not \(request.family). Components live under their web family (ADR 0007)."
+                "\(part) belongs to the \(Self.upperCamel(entry.name)) family (`\(entry.name)`) in \(Self.manifestPath), not \(request.family). Components live under their web family (ADR 0007)."
             )
         }
 
-        let tokenGroup = try componentTokenGroup(slug: slug, family: request.family)
+        let tokenGroup = try componentTokenGroup(slug: entry.name, family: request.family)
         let values: [String: String] = [
             "Family": request.family,
             "Component": request.component,
             "slug": slug,
             "title": Self.title(request.component),
-            "name": entry.name,
+            "name": part,
             "description": entry.description,
             "category": category.name,
             "pageID": Self.kebab(request.component),
-            "tokens": tokenGroup.map { "Qeetrix\(Self.upperCamel($0))Tokens" } ?? "none — semantic tokens only",
+            "tokens": tokenGroup.map { "component.\($0).* in @qeetrix/tokens — add a rule to Scope.swift to generate it" }
+                ?? "none — semantic tokens only",
         ]
 
         var problems: [String] = []
@@ -133,12 +137,6 @@ public struct ComponentScaffold {
                 contents: catalog.replacingOccurrences(of: Self.catalogMarker + "\n", with: line + "\n" + Self.catalogMarker + "\n")))
         changes.append(Change(kind: .update, path: Self.landingPath, contents: try Self.addTopic(topic, under: category.name, in: landing)))
 
-        if let tokenGroup {
-            let pinsText = try read(Lock.pinsPath)
-            if let updated = try Self.addComponentTokens(tokenGroup, to: pinsText) {
-                changes.append(Change(kind: .update, path: Lock.pinsPath, contents: updated))
-            }
-        }
         return changes
     }
 
@@ -167,28 +165,29 @@ public struct ComponentScaffold {
     }
 
     struct ManifestEntry {
-        let family: String
+        /// The family, kebab-case: `button`.
         let name: String
+        let status: String
         let description: String
     }
 
-    func manifestEntry(slug: String) throws -> ManifestEntry {
-        let json = try JSONSerialization.jsonObject(with: Data(try read(Self.manifestPath).utf8)) as? [String: Any]
-        let components = json?["components"] as? [[String: Any]] ?? []
-        guard let entry = components.first(where: { $0["slug"] as? String == slug }) else {
+    /// The manifest family that exports `part` (a component name such as `IconButton`).
+    func manifestEntry(part: String) throws -> ManifestEntry {
+        let families = try JSONSerialization.jsonObject(with: Data(try read(Self.manifestPath).utf8)) as? [[String: Any]] ?? []
+        guard let entry = families.first(where: { ($0["parts"] as? [String] ?? []).contains(part) }) else {
             throw GeneratorError(
-                "No component \"\(slug)\" in \(Self.manifestPath). Pass the web slug with --slug (for example --slug input for TextField).")
+                "No family in \(Self.manifestPath) exports \(part). Pass the web part with --slug (for example --slug TextField).")
         }
-        return ManifestEntry(
-            family: entry["category"] as? String ?? "", name: entry["name"] as? String ?? slug,
-            description: entry["description"] as? String ?? "")
+        let name = entry["name"] as? String ?? ""
+        let status = entry["status"] as? String ?? ""
+        return ManifestEntry(name: name, status: status, description: "The \(part) of `@qeetrix/react`'s \(name) family (\(status)).")
     }
 
-    /// The `component.<group>` token group for the component, if qeetrix-ui defines one: the slug's own
-    /// group, or else the family's (Icon Button uses `component.button`).
+    /// The `component.<group>` token group of `@qeetrix/tokens` for the component, if it has one: the
+    /// family's own group.
     func componentTokenGroup(slug: String, family: String) throws -> String? {
         let json = try JSONSerialization.jsonObject(with: Data(try read(Self.tokensPath).utf8)) as? [String: Any]
-        let groups = ((json?["light"] as? [String: Any])?["component"] as? [String: Any]) ?? [:]
+        let groups = (json?["component"] as? [String: Any]) ?? [:]
         return [slug, Self.kebab(family)].first { groups[$0] != nil }
     }
 
@@ -229,25 +228,6 @@ public struct ComponentScaffold {
             lines.insert(contentsOf: ["### \(category)", "", topic, ""], at: theme)
         }
         return lines.joined(separator: "\n")
-    }
-
-    /// Adds `group` to `Upstream/pins.json`'s `componentTokens`, keeping the list sorted and the rest of
-    /// the file byte for byte. `nil` when it is already there.
-    static func addComponentTokens(_ group: String, to pins: String) throws -> String? {
-        guard let start = pins.range(of: "\"componentTokens\": ["), let end = pins[start.upperBound...].range(of: "]") else {
-            throw GeneratorError("\(Lock.pinsPath) has no componentTokens list.")
-        }
-        let body = pins[start.upperBound..<end.lowerBound]
-        var groups = body.split(separator: ",").map {
-            $0.trimmingCharacters(in: .whitespacesAndNewlines).trimmingCharacters(in: CharacterSet(charactersIn: "\""))
-        }
-        .filter { !$0.isEmpty }
-        guard !groups.contains(group) else { return nil }
-        groups.append(group)
-        groups.sort()
-        let indent = "      "
-        let list = "\n" + groups.map { "\(indent)\"\($0)\"" }.joined(separator: ",\n") + "\n    "
-        return pins.replacingCharacters(in: start.upperBound..<end.lowerBound, with: list)
     }
 
     // MARK: Names

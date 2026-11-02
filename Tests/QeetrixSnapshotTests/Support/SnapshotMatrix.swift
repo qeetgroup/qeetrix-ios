@@ -19,11 +19,12 @@
         var dynamicTypeSize: DynamicTypeSize { self == .largeText ? .accessibility3 : .large }
         var layoutDirection: LayoutDirection { self == .rightToLeft ? .rightToLeft : .leftToRight }
 
-        var traits: UITraitCollection {
+        @MainActor var traits: UITraitCollection {
             UITraitCollection { traits in
                 traits.displayScale = SnapshotEnvironment.scale
                 traits.userInterfaceStyle = self == .dark ? .dark : .light
-                traits.preferredContentSizeCategory = self == .largeText ? .accessibilityExtraExtraExtraLarge : .large
+                // AX3, as the environment's dynamicTypeSize: the size pass and the drawing pass agree.
+                traits.preferredContentSizeCategory = self == .largeText ? .accessibilityExtraLarge : .large
                 traits.layoutDirection = self == .rightToLeft ? .rightToLeft : .leftToRight
                 traits.horizontalSizeClass = .compact
             }
@@ -71,24 +72,23 @@
             .appendingPathComponent(testFile.deletingLastPathComponent().lastPathComponent)
             .appendingPathComponent(testFile.deletingPathExtension().lastPathComponent)
         for configuration in SnapshotConfiguration.allCases {
+            let content = specimen.padding(16).frame(width: SnapshotEnvironment.width, alignment: .topLeading)
+            let height = measuredHeight(
+                of: content.background(QeetrixColor.surfaceCanvas).modifier(SnapshotEnvironmentModifier(configuration: configuration)),
+                traits: configuration.traits)
+            // Top-aligned on a full canvas: where the drawing pass lays a specimen out a point or two
+            // shorter than the measuring pass (fields backed by UIKit text views), the image ends in
+            // canvas rather than in a blank band.
             let view =
-                specimen
-                .padding(16)
-                .frame(width: SnapshotEnvironment.width, alignment: .topLeading)
+                content
+                .frame(maxHeight: .infinity, alignment: .top)
                 .background(QeetrixColor.surfaceCanvas)
-                .environment(\.colorScheme, configuration.colorScheme)
-                .environment(\.dynamicTypeSize, configuration.dynamicTypeSize)
-                .environment(\.layoutDirection, configuration.layoutDirection)
-                // Pinned in the environment as well as the traits: the size pass and the drawing pass
-                // must agree, or a size-class-dependent view is measured at one size and drawn at another.
-                .environment(\.horizontalSizeClass, .compact)
-                .environment(\.locale, Locale(identifier: "en_US"))
-                .transaction { $0.disablesAnimations = true }
+                .modifier(SnapshotEnvironmentModifier(configuration: configuration))
             let failure = verifySnapshot(
                 of: view,
                 as: .image(
                     precision: SnapshotEnvironment.precision, perceptualPrecision: SnapshotEnvironment.perceptualPrecision,
-                    layout: .sizeThatFits,
+                    layout: .fixed(width: SnapshotEnvironment.width, height: height),
                     traits: configuration.traits),
                 named: configuration.rawValue,
                 snapshotDirectory: directory.path,
@@ -101,6 +101,49 @@
                         fileID: "\(fileID)", filePath: "\(filePath)", line: Int(line), column: Int(column)))
             }
         }
+    }
+
+    /// A specimen's configuration in the SwiftUI environment.
+    struct SnapshotEnvironmentModifier: ViewModifier {
+        let configuration: SnapshotConfiguration
+
+        func body(content: Content) -> some View {
+            content
+                .environment(\.colorScheme, configuration.colorScheme)
+                .environment(\.dynamicTypeSize, configuration.dynamicTypeSize)
+                .environment(\.layoutDirection, configuration.layoutDirection)
+                // Pinned in the environment as well as the traits: the size pass and the drawing pass
+                // must agree, or a size-class-dependent view is measured at one size and drawn at another.
+                .environment(\.horizontalSizeClass, .compact)
+                .environment(\.locale, Locale(identifier: "en_US"))
+                .transaction { $0.disablesAnimations = true }
+        }
+    }
+
+    /// The height `view` is drawn at. swift-snapshot-testing's `.sizeThatFits` measures a hosting
+    /// controller that has never been laid out, where controls still have their default-text-size
+    /// layout, so at AX3 a specimen came out at its default height with larger text overflowing it.
+    /// Measuring after a layout pass in a window with the same traits agrees with the drawing.
+    @MainActor
+    func measuredHeight(of view: some View, traits: UITraitCollection) -> CGFloat {
+        let host = UIHostingController(rootView: view)
+        host.safeAreaRegions = []
+        host.traitOverrides.preferredContentSizeCategory = traits.preferredContentSizeCategory
+        host.traitOverrides.userInterfaceStyle = traits.userInterfaceStyle
+        host.traitOverrides.layoutDirection = traits.layoutDirection
+        host.traitOverrides.horizontalSizeClass = traits.horizontalSizeClass
+        host.traitOverrides.displayScale = traits.displayScale
+        let bounds = CGRect(x: 0, y: 0, width: SnapshotEnvironment.width, height: 10_000)
+        let window = UIWindow(frame: bounds)
+        window.rootViewController = host
+        window.isHidden = false
+        host.view.frame = bounds
+        host.view.setNeedsLayout()
+        host.view.layoutIfNeeded()
+        let size = host.sizeThatFits(in: CGSize(width: SnapshotEnvironment.width, height: .greatestFiniteMagnitude))
+        window.isHidden = true
+        window.rootViewController = nil
+        return ceil(size.height)
     }
 
     /// Lays out children left to right (right to left under RTL), wrapping onto new lines — so a row

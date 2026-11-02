@@ -17,7 +17,7 @@ final class MenuUITests: XCTestCase {
         XCTAssertFalse(app.buttons["Duplicate"].isEnabled, "A disabled item is shown dimmed and cannot be chosen")
         XCTAssertTrue(app.buttons["Share"].exists)
         delete.tap()
-        XCTAssertFalse(delete.waitForExistence(timeout: 2))
+        XCTAssertTrue(delete.waitForNonExistence(timeout: 3))
         XCTAssertTrue(app.staticTexts["menu-result"].waitForLabel("Last action: delete"))
     }
 

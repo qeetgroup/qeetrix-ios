@@ -1,0 +1,90 @@
+{
+  "primitive": {
+    "space": {
+      "100": {
+        "$value": {
+          "value": 0.25,
+          "unit": "rem"
+        }
+      },
+      "200": {
+        "$value": {
+          "value": 0.5,
+          "unit": "rem"
+        }
+      },
+      "300": {
+        "$value": {
+          "value": 0.75,
+          "unit": "rem"
+        }
+      },
+      "400": {
+        "$value": {
+          "value": 1,
+          "unit": "rem"
+        }
+      },
+      "500": {
+        "$value": {
+          "value": 1.25,
+          "unit": "rem"
+        }
+      },
+      "600": {
+        "$value": {
+          "value": 1.5,
+          "unit": "rem"
+        }
+      },
+      "800": {
+        "$value": {
+          "value": 2,
+          "unit": "rem"
+        }
+      },
+      "1200": {
+        "$value": {
+          "value": 3,
+          "unit": "rem"
+        }
+      },
+      "1600": {
+        "$value": {
+          "value": 4,
+          "unit": "rem"
+        }
+      },
+      "$type": "dimension",
+      "$description": "The spacing scale: a 4px grid, in rem so it follows the reader's font size. Names count quarter-steps of 4px (100 = 4px, 400 = 16px)."
+    },
+    "radius": {
+      "$type": "dimension",
+      "$description": "The corner scale. Qeetrix is square: 2px for small marks, 4px for every control and surface, and full only for people and status (avatars, radios, status tags).",
+      "0": {
+        "$value": {
+          "value": 0,
+          "unit": "px"
+        }
+      },
+      "50": {
+        "$value": {
+          "value": 2,
+          "unit": "px"
+        }
+      },
+      "100": {
+        "$value": {
+          "value": 4,
+          "unit": "px"
+        }
+      },
+      "full": {
+        "$value": {
+          "value": 9999,
+          "unit": "px"
+        }
+      }
+    }
+  }
+}

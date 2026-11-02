@@ -6,30 +6,36 @@ import Testing
 @MainActor
 @Suite("Textarea")
 struct TextareaTests {
-    @Test("Starts two control heights tall, at every density")
-    func minimumHeight() {
-        for density in QeetrixDensity.allCases {
-            #expect(QeetrixTextareaMetrics.minimumHeight(density) == 2 * density.controlHeight)
+    @Test("Rows: at least one; max rows never below rows")
+    func rows() {
+        let textarea = QeetrixTextarea("Notes", text: .constant(""), rows: 0, maxRows: 0)
+        #expect(textarea.rows == 1)
+        #expect(textarea.maxRows == 1)
+        #expect(QeetrixTextarea("Notes", text: .constant("")).rows == 3)
+        #expect(QeetrixTextarea("Notes", text: .constant(""), rows: 4, maxRows: 8).maxRows == 8)
+    }
+
+    @Test("More rows, a taller box: one body.md line (20 pt) per row")
+    func height() throws {
+        func height(_ rows: Int) throws -> Int {
+            try #require(
+                Rendered(
+                    QeetrixTextareaInput(text: .constant(""), prompt: nil, rows: rows, maxRows: nil, isReadOnly: false).frame(width: 300))
+            ).height
         }
+        let three = try height(3)
+        let five = try height(5)
+        #expect(abs(five - three - 40) <= 1)
+        // One line sits as in an input: rows × 20 + (control.lg − 20).
+        #expect(abs(three - (3 * 20 + 20)) <= 1)
     }
 
-    @Test("Grows to the web's 24 rem cap — 15 lines of 16 pt text at 1.5 — then scrolls")
-    func cap() {
-        let tokens = QeetrixTextareaMetrics.textType.tokens
-        #expect(tokens.size == 16)
-        #expect(tokens.lineHeight == 1.5)
-        let padding = 2 * QeetrixWebScale.spacing(2)
-        #expect(CGFloat(QeetrixTextareaMetrics.maximumLines) * tokens.size * tokens.lineHeight + padding <= 384)
-        #expect(CGFloat(QeetrixTextareaMetrics.maximumLines + 1) * tokens.size * tokens.lineHeight + padding > 384)
-    }
-
-    @Test("Renders editable, read-only and with a message")
+    @Test("Textareas render empty, filled, read-only and with an error")
     func renders() {
-        #expect(ImageRenderer(content: QeetrixTextarea("Note", text: .constant("Line one\nLine two")).frame(width: 300)).cgImage != nil)
         #expect(
-            ImageRenderer(content: QeetrixTextarea("Note", text: .constant("Fixed"), isReadOnly: true).frame(width: 300)).cgImage != nil)
-        #expect(
-            ImageRenderer(content: QeetrixTextarea("Note", text: .constant(""), message: .error("Required")).frame(width: 300)).cgImage
-                != nil)
+            ImageRenderer(content: QeetrixTextarea("Notes", text: .constant(""), prompt: Text("e.g. Deliver after 5 pm")).frame(width: 300))
+                .cgImage != nil)
+        #expect(ImageRenderer(content: QeetrixTextarea("Notes", text: .constant("Hi"), error: "Too long").frame(width: 300)).cgImage != nil)
+        #expect(ImageRenderer(content: QeetrixTextarea("Notes", text: .constant("Hi"), isReadOnly: true).frame(width: 300)).cgImage != nil)
     }
 }

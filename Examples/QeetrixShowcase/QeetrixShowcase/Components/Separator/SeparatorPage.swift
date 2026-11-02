@@ -5,29 +5,31 @@ struct SeparatorPage: View {
     var body: some View {
         ComponentPage(
             title: "Separator",
-            summary: "A 1 pt rule between groups. Decorative: spacing and headings carry the grouping."
+            summary: "A 1 pt rule between groups. Decorative by default: spacing and headings carry the grouping."
         ) {
-            DemoSection("Default") {
-                QeetrixText("Profile")
-                QeetrixSeparator()
-                QeetrixText("Security")
-            }
-            DemoSection("Muted, between items in a section") {
-                VStack(alignment: .leading, spacing: QeetrixSpacing.s) {
+            DemoSection("Subtle, the default") {
+                VStack(alignment: .leading, spacing: QeetrixSpace.gapSm) {
                     QeetrixText("MacBook Pro")
-                    QeetrixSeparator(variant: .muted)
+                    QeetrixSeparator()
                     QeetrixText("iPhone")
-                    QeetrixSeparator(variant: .muted)
+                    QeetrixSeparator()
                     QeetrixText("iPad")
                 }
             }
+            DemoSection("Default and strong") {
+                QeetrixText("Profile")
+                QeetrixSeparator(tone: .default)
+                QeetrixText("Security")
+                QeetrixSeparator(tone: .strong)
+                QeetrixText("Billing")
+            }
             DemoSection("Vertical") {
-                HStack(spacing: QeetrixSpacing.m) {
-                    QeetrixText("Docs", variant: .small)
-                    QeetrixSeparator(.vertical)
-                    QeetrixText("API", variant: .small)
-                    QeetrixSeparator(.vertical)
-                    QeetrixText("Status", variant: .small)
+                HStack(spacing: QeetrixSpace.gapMd) {
+                    QeetrixText("Docs", size: .sm)
+                    QeetrixSeparator(.vertical, tone: .default)
+                    QeetrixText("API", size: .sm)
+                    QeetrixSeparator(.vertical, tone: .default)
+                    QeetrixText("Status", size: .sm)
                 }
                 .fixedSize(horizontal: false, vertical: true)
             }

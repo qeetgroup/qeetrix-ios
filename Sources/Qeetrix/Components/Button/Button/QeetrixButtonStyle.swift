@@ -1,32 +1,24 @@
 import SwiftUI
 
-/// The styles of a Qeetrix button, as on the web.
+/// A button's emphasis, as `@qeetrix/react`'s `ButtonVariant` (design rules §7).
 public enum QeetrixButtonVariant: String, CaseIterable, Sendable {
-    /// The primary action: the one Qeet-orange button on a surface.
-    case `default`
-    /// The workhorse beside a primary action — dialog footers, forms, toolbars.
-    case outline
-    /// A neutral filled action.
-    case secondary
-    /// Chrome-less, for toolbars, rows and dense headers.
+    /// Primary: the Ember fill. The one main action in a region.
+    case solid
+    /// Secondary: the warm graphite fill. The main alternative, such as Export or Save draft.
+    case soft
+    /// Tertiary: no fill, Ember text, an Ember tint when pressed. Everything else: Cancel, Back.
     case ghost
-    /// Quiet at rest — danger text on the error surface — and solid danger on press.
-    case destructive
-    /// Looks like a link.
-    case link
 }
 
-/// The sizes of a Qeetrix button, as on the web. `default` follows the density
-/// (`qeetrixDensity(_:)`); the others are fixed heights.
-public enum QeetrixButtonSize: String, CaseIterable, Sendable {
-    /// 24 pt.
-    case xs
-    /// 28 pt.
-    case sm
-    /// The density's control height: 28, 32 or 36 pt.
-    case `default`
-    /// 36 pt.
-    case lg
+/// A button's meaning, as `@qeetrix/react`'s `ButtonTone`.
+public enum QeetrixButtonTone: String, CaseIterable, Sendable {
+    /// The default.
+    case brand
+    /// The confirming action of a destructive flow; it replaces the primary, never sits beside it.
+    case danger
+    /// Utility actions in toolbars and headers, whose icons stay neutral. A solid or soft neutral
+    /// button looks like a soft one.
+    case neutral
 }
 
 /// The Qeetrix button treatment for any SwiftUI `Button`, `NavigationLink`, `ShareLink` or other
@@ -37,32 +29,35 @@ public enum QeetrixButtonSize: String, CaseIterable, Sendable {
 ///     .buttonStyle(.qeetrix())
 ///
 /// NavigationLink("Billing", value: Route.billing)
-///     .buttonStyle(.qeetrix(.outline, size: .sm))
+///     .buttonStyle(.qeetrix(.ghost, size: .sm))
 /// ```
 ///
-/// The label takes the size's text style; size icons in a custom label with
-/// ``QeetrixButtonStyle/iconSize(for:)``. ``QeetrixButton`` adds icons and a loading state on top of
-/// this style.
+/// The label takes the size's text style and is laid out label first, with no icon zone. Use
+/// ``QeetrixButton`` for the trailing icon, its zone and the loading state.
 public struct QeetrixButtonStyle: ButtonStyle {
     let variant: QeetrixButtonVariant
-    let size: QeetrixButtonSize
-    var layout = Layout.text(leadingIcon: false, trailingIcon: false)
+    let tone: QeetrixButtonTone
+    let size: QeetrixControlSize
+    var layout = Layout.text
     var isLoading = false
 
     enum Layout: Hashable {
-        /// A text label, with an icon or the busy indicator at either end tightening that side's padding.
-        case text(leadingIcon: Bool, trailingIcon: Bool)
+        /// A label, followed by the icon zone when the button has an icon or is loading.
+        case text
+        case textWithZone
         /// A square holding one icon.
         case icon
     }
 
-    public init(_ variant: QeetrixButtonVariant = .default, size: QeetrixButtonSize = .default) {
+    public init(_ variant: QeetrixButtonVariant = .solid, tone: QeetrixButtonTone = .brand, size: QeetrixControlSize = .md) {
         self.variant = variant
+        self.tone = tone
         self.size = size
     }
 
-    init(_ variant: QeetrixButtonVariant, size: QeetrixButtonSize, layout: Layout, isLoading: Bool) {
+    init(_ variant: QeetrixButtonVariant, tone: QeetrixButtonTone, size: QeetrixControlSize, layout: Layout, isLoading: Bool) {
         self.variant = variant
+        self.tone = tone
         self.size = size
         self.layout = layout
         self.isLoading = isLoading
@@ -72,16 +67,18 @@ public struct QeetrixButtonStyle: ButtonStyle {
         QeetrixButtonStyleBody(style: self, configuration: configuration)
     }
 
-    /// The icon size for a button size: 12 pt at `xs`, 14 pt at `sm`, 16 pt otherwise.
-    public static func iconSize(for size: QeetrixButtonSize) -> QeetrixIconSize {
-        QeetrixButtonMetrics(size: size, density: .default).iconSize
+    /// The icon size inside a button of `size`: 16 pt, or 20 pt at `lg`.
+    nonisolated public static func iconSize(for size: QeetrixControlSize) -> QeetrixIconSize {
+        size == .lg ? .md : .sm
     }
 }
 
 extension ButtonStyle where Self == QeetrixButtonStyle {
     /// The Qeetrix button style.
-    public static func qeetrix(_ variant: QeetrixButtonVariant = .default, size: QeetrixButtonSize = .default) -> QeetrixButtonStyle {
-        QeetrixButtonStyle(variant, size: size)
+    public static func qeetrix(
+        _ variant: QeetrixButtonVariant = .solid, tone: QeetrixButtonTone = .brand, size: QeetrixControlSize = .md
+    ) -> QeetrixButtonStyle {
+        QeetrixButtonStyle(variant, tone: tone, size: size)
     }
 }
 
@@ -93,130 +90,89 @@ enum QeetrixButtonState: Hashable {
     case disabled
 }
 
-/// Size metrics: web classes, and the button's component tokens where it has them.
+/// Size metrics (button.css): the height from the density, the inline padding, the gap to the icon
+/// zone, the zone's padding either side of the icon, and the rule's height.
 struct QeetrixButtonMetrics {
     let height: CGFloat
-    /// `px-*`.
+    /// `padding-inline` before the label (and after it, without a zone).
     let padding: CGFloat
-    /// `ps-*` / `pe-*` on the side that holds an icon.
-    let iconSidePadding: CGFloat
-    /// `gap-*`.
+    /// `gap` between the label and the zone.
     let gap: CGFloat
-    let corner: CGFloat
+    /// The zone's `padding-inline`, each side of the icon.
+    let zonePadding: CGFloat
+    /// The rule: `size.icon.xs` / `sm` / `md`.
+    let ruleHeight: CGFloat
     let type: QeetrixTypeSpec
     let iconSize: QeetrixIconSize
+    let spinnerSize: QeetrixSpinnerSize
 
-    init(size: QeetrixButtonSize, density: QeetrixDensity) {
-        let label = QeetrixComponentType.ui(QeetrixWebScale.textSM, .medium, scalesLike: .body)  // font-ui text-sm font-medium
+    init(size: QeetrixControlSize, density: QeetrixDensity) {
+        height = density.controlHeight(size)
+        iconSize = QeetrixButtonStyle.iconSize(for: size)
+        spinnerSize = size == .lg ? .lg : .md
         switch size {
-        case .xs:
-            // h-6 gap-1 px-2 text-xs, ps-1.5 / pe-1.5 beside an icon, icons size-3
-            height = QeetrixWebScale.spacing(6)
-            padding = QeetrixWebScale.spacing(2)
-            iconSidePadding = QeetrixWebScale.spacing(1.5)
-            gap = QeetrixWebScale.spacing(1)
-            corner = QeetrixButtonTokens.cornerXs
-            type = QeetrixComponentType.ui(QeetrixWebScale.textXS, .medium, scalesLike: .caption)
-            iconSize = QeetrixIconSize(QeetrixWebScale.spacing(3))
         case .sm:
-            // h-7 gap-1 px-2.5 at the small font size, ps-1.5 / pe-1.5 beside an icon, icons size-3.5
-            height = QeetrixWebScale.spacing(7)
-            padding = QeetrixWebScale.spacing(2.5)
-            iconSidePadding = QeetrixWebScale.spacing(1.5)
-            gap = QeetrixWebScale.spacing(1)
-            corner = QeetrixButtonTokens.cornerSm
-            type = QeetrixComponentType.ui(
-                QeetrixWebScale.TextStep(size: QeetrixButtonTokens.fontSizeSm, lineHeight: QeetrixWebScale.textSM.lineHeight), .medium,
-                scalesLike: .footnote)
-            iconSize = QeetrixIconSize(QeetrixWebScale.spacing(3.5))
-        case .default:
-            // h-(button height) gap-1.5 px-2.5, ps-2 / pe-2 beside an icon, icons size-4
-            height = QeetrixButtonTokens.height(density)
-            padding = QeetrixWebScale.spacing(2.5)
-            iconSidePadding = QeetrixWebScale.spacing(2)
-            gap = QeetrixWebScale.spacing(1.5)
-            corner = QeetrixButtonTokens.corner
-            type = label
-            iconSize = QeetrixIconSize(QeetrixWebScale.spacing(4))
+            padding = 10
+            gap = 8
+            zonePadding = 8
+            ruleHeight = QeetrixIconSize.xs.points
+            // font-size and line-height of label.sm, weight of label.md (both 500)
+            type = QeetrixComponentType.role(.labelSm, QeetrixTextRole.labelMd.tokens.weight)
+        case .md:
+            padding = 14
+            gap = 12
+            zonePadding = 10
+            ruleHeight = QeetrixIconSize.sm.points
+            type = QeetrixComponentType.role(.labelMd)
         case .lg:
-            // h-9 gap-1.5 px-3, ps-2.5 / pe-2.5 beside an icon, icons size-4
-            height = QeetrixWebScale.spacing(9)
-            padding = QeetrixWebScale.spacing(3)
-            iconSidePadding = QeetrixWebScale.spacing(2.5)
-            gap = QeetrixWebScale.spacing(1.5)
-            corner = QeetrixButtonTokens.corner
-            type = label
-            iconSize = QeetrixIconSize(QeetrixWebScale.spacing(4))
+            padding = 16
+            gap = 14
+            zonePadding = 12
+            ruleHeight = QeetrixIconSize.md.points
+            type = QeetrixComponentType.role(.labelMd)
         }
     }
 }
 
-/// A variant's colours in one state.
-struct QeetrixButtonColors {
-    var background = QeetrixComponentColor(light: .rgba(.clear), dark: .rgba(.clear))
-    var foreground = QeetrixComponentColor(.textPrimary)
-    var border = QeetrixComponentColor(light: .rgba(.clear), dark: .rgba(.clear))
-    /// `shadow-xs` at rest on the filled variants; `active:shadow-none`.
-    var elevation = QeetrixElevation.flat
-    var opacity = 1.0
-    var isUnderlined = false
+/// A variant and tone's colours in one state (button.css).
+struct QeetrixButtonColors: Equatable {
+    var background: QeetrixColor?
+    var foreground: QeetrixColor
 
-    static func colors(_ variant: QeetrixButtonVariant, _ state: QeetrixButtonState) -> QeetrixButtonColors {
-        var colors = QeetrixButtonColors()
-        let engaged = state == .hovered || state == .pressed
-        let resting: QeetrixElevation = state == .pressed ? .flat : .rampXs
-        switch variant {
-        case .default:
-            if state == .disabled {
-                // An unavailable action carries no brand emphasis: the neutral fill at full opacity.
-                colors.background = QeetrixComponentColor(.surfaceInteractive)
-                colors.foreground = QeetrixComponentColor(.textDisabled)
-                return colors
-            }
-            colors.background =
-                switch state {
-                case .hovered: QeetrixButtonTokens.primaryBackgroundHover
-                case .pressed: QeetrixButtonTokens.primaryBackgroundActive
-                default: QeetrixButtonTokens.primaryBackground
-                }
-            colors.foreground = QeetrixButtonTokens.primaryForeground
-            colors.elevation = resting
-        case .outline:
-            colors.border = QeetrixButtonTokens.outlineBorder
-            colors.background =
-                switch state {
-                case .hovered: QeetrixComponentColor(.surfaceInteractiveHover)
-                case .pressed: QeetrixComponentColor(.surfaceInteractiveActive)
-                default: QeetrixButtonTokens.outlineBackground
-                }
-            colors.elevation = resting
-        case .secondary:
-            colors.background =
-                switch state {
-                case .hovered: QeetrixComponentColor(.surfaceInteractiveHover)
-                case .pressed: QeetrixComponentColor(.surfaceInteractiveActive)
-                default: QeetrixComponentColor(.surfaceInteractive)
-                }
-            colors.foreground = QeetrixComponentColor(.textOnSubtle)
-            colors.elevation = resting
-        case .ghost:
-            switch state {
-            case .hovered: colors.background = QeetrixComponentColor(.surfaceInteractiveHover)
-            case .pressed: colors.background = QeetrixComponentColor(.surfaceInteractiveActive)
-            default: break
-            }
-        case .destructive:
-            colors.background = QeetrixComponentColor(engaged ? .feedbackErrorStrong : .feedbackErrorSubtle)
-            colors.foreground = QeetrixComponentColor(engaged ? .textOnFeedbackStrong : .textDanger)
-        case .link:
-            // Touch has no hover, so a press shows the hover treatment.
-            colors.foreground = QeetrixComponentColor(engaged ? .textLinkHover : .textLink)
-            colors.isUnderlined = engaged
-        }
+    static func colors(_ variant: QeetrixButtonVariant, _ tone: QeetrixButtonTone, _ state: QeetrixButtonState) -> QeetrixButtonColors {
         if state == .disabled {
-            colors.opacity = QeetrixOpacity.disabled
+            return QeetrixButtonColors(background: variant == .ghost ? nil : .bgDisabled, foreground: .textDisabled)
         }
-        return colors
+        switch (variant, tone) {
+        case (.solid, .brand):
+            return QeetrixButtonColors(
+                background: state == .pressed ? .bgBrandBoldPressed : state == .hovered ? .bgBrandBoldHover : .bgBrandBold,
+                foreground: .textOnBrand)
+        case (.soft, .brand), (.solid, .neutral), (.soft, .neutral):
+            // A solid or soft neutral button looks like soft, in every state:
+            // `.qx-button[data-tone="neutral"]:not([data-variant="ghost"])` and its `:hover` and
+            // `:active` rules (QTRX-157).
+            return QeetrixButtonColors(
+                background: state == .pressed ? .bgNeutralBoldPressed : state == .hovered ? .bgNeutralBoldHover : .bgNeutralBold,
+                foreground: .textInverse)
+        case (.solid, .danger), (.soft, .danger):
+            return QeetrixButtonColors(
+                background: state == .pressed ? .bgDangerBoldPressed : state == .hovered ? .bgDangerBoldHover : .bgDangerBold,
+                foreground: .textOnBold)
+        case (.ghost, .brand):
+            return QeetrixButtonColors(
+                background: state == .pressed ? .bgBrandSubtlePressed : state == .hovered ? .bgBrandSubtle : nil, foreground: .textBrand)
+        case (.ghost, .danger):
+            // `.qx-button[data-tone="danger"][data-variant="ghost"]:is(:hover, :active)`: the danger
+            // tint, never the brand's; the tokens have no `bg.danger.subtle-pressed` (QTRX-158).
+            return QeetrixButtonColors(background: state == .resting ? nil : .bgDangerSubtle, foreground: .textDanger)
+        case (.ghost, .neutral):
+            switch state {
+            case .pressed: return QeetrixButtonColors(background: .bgNeutralSubtlePressed, foreground: .textDefault)
+            case .hovered: return QeetrixButtonColors(background: .bgNeutralSubtle, foreground: .textDefault)
+            default: return QeetrixButtonColors(background: nil, foreground: .textSubtle)
+            }
+        }
     }
 }
 
@@ -224,21 +180,22 @@ struct QeetrixButtonStyleBody: View {
     let style: QeetrixButtonStyle
     let configuration: ButtonStyleConfiguration
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.isFocused) private var isFocused
     @Environment(\.qeetrixDensity) private var density
     @Environment(\.qeetrixButtonFillsWidth) private var fillsWidth
+    /// An icon button's square grows with its icon, which scales with Dynamic Type.
+    @ScaledMetric(relativeTo: .body) private var iconScale: CGFloat = 100
     @State private var isHovered = false
 
     var body: some View {
         let metrics = QeetrixButtonMetrics(size: style.size, density: density)
         let state = Self.state(isEnabled: isEnabled, isPressed: configuration.isPressed, isHovered: isHovered, isLoading: style.isLoading)
-        let colors = QeetrixButtonColors.colors(style.variant, state)
-        let shape = RoundedRectangle(cornerRadius: metrics.corner)
-        sized(configuration.label.qeetrixType(metrics.type), metrics: metrics)
+        let colors = QeetrixButtonColors.colors(style.variant, style.tone, state)
+        let shape = RoundedRectangle(cornerRadius: QeetrixRadius.control)
+        sized(configuration.label.qeetrixTypeEnvironment(metrics.type), metrics: metrics)
             .foregroundStyle(colors.foreground)
-            .underline(colors.isUnderlined)
-            .qeetrixElevation(colors.elevation, fill: colors.background, in: shape)
-            .overlay { shape.strokeBorder(colors.border, lineWidth: QeetrixStroke.hairline) }
-            .opacity(colors.opacity)
+            .background { if let background = colors.background { shape.fill(background) } }
+            .overlay { if isFocused { QeetrixInnerFocusFrame(shape: shape) } }
             .qeetrixHitArea()
             .onHover { isHovered = $0 }
             .qeetrixAnimation(.standard, .fast, value: state)
@@ -248,21 +205,19 @@ struct QeetrixButtonStyleBody: View {
     private func sized(_ label: some View, metrics: QeetrixButtonMetrics) -> some View {
         switch style.layout {
         case .icon:
-            label.frame(width: metrics.height, height: metrics.height)  // size-*
-        case .text(let leadingIcon, let trailingIcon):
+            label.frame(width: metrics.height * iconScale / 100, height: metrics.height * iconScale / 100)
+        case .text, .textWithZone:
             label
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.leading, leadingIcon ? metrics.iconSidePadding : metrics.padding)
-                .padding(.trailing, trailingIcon ? metrics.iconSidePadding : metrics.padding)
-                // The web height is fixed; here it is a minimum, so larger text grows the button.
-                .padding(.vertical, QeetrixWebScale.spacing(1))
-                .frame(maxWidth: fillsWidth ? .infinity : nil, minHeight: metrics.height)
+                .padding(.leading, metrics.padding)
+                .padding(.trailing, style.layout == .text ? metrics.padding : 0)
+                // The web height is fixed; here larger text grows the button, keeping its room above
+                // and below the label.
+                .qeetrixControlBlockSize(metrics.height, type: metrics.type)
+                .frame(maxWidth: fillsWidth ? .infinity : nil, alignment: .leading)
         }
     }
 
-    /// A busy button keeps its colours — busy is not unavailable — and ignores the pointer; a disabled
-    /// one fades.
+    /// A busy button keeps its colours — busy is not unavailable — and ignores the pointer.
     static func state(isEnabled: Bool, isPressed: Bool, isHovered: Bool, isLoading: Bool) -> QeetrixButtonState {
         if isLoading { return .resting }
         if !isEnabled { return .disabled }
@@ -271,13 +226,27 @@ struct QeetrixButtonStyleBody: View {
     }
 }
 
+/// Keyboard focus on a button: the 2 pt Ember frame inside its edge, with a 1 pt surface-coloured gap
+/// between it and the fill (design rules §10; button.css `:focus-visible`).
+struct QeetrixInnerFocusFrame<S: InsettableShape>: View {
+    let shape: S
+
+    var body: some View {
+        ZStack {
+            shape.strokeBorder(QeetrixColor.surfaceDefault, lineWidth: QeetrixFocus.ringWidth + QeetrixBorderWidth.default)
+            shape.strokeBorder(QeetrixColor.borderFocus, lineWidth: QeetrixFocus.ringWidth)
+        }
+        .accessibilityHidden(true)
+    }
+}
+
 private struct QeetrixButtonFillsWidthKey: EnvironmentKey {
     static let defaultValue = false
 }
 
 extension EnvironmentValues {
-    /// Text buttons stretch to the width they are offered — set by ``QeetrixFormActions`` on compact
-    /// width, where actions stack full-width.
+    /// Text buttons stretch to the width they are offered — set by `isFullWidth`, and by
+    /// ``QeetrixFormActions`` on compact width, where actions stack full width.
     var qeetrixButtonFillsWidth: Bool {
         get { self[QeetrixButtonFillsWidthKey.self] }
         set { self[QeetrixButtonFillsWidthKey.self] = newValue }

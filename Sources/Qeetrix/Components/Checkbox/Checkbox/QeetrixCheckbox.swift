@@ -1,63 +1,44 @@
 import SwiftUI
 
-/// A checkbox: a label, an optional description, and the Qeetrix box at the leading edge.
+/// A checkbox with its label, as `@qeetrix/react`'s Checkbox: it turns one option on or off, or picks
+/// several (design rules §9).
 ///
 /// ```swift
-/// QeetrixCheckbox("Email me about product updates", isOn: $updates)
-/// QeetrixCheckbox("Accept the terms", isOn: $accepted, description: Text("You can read them at any time."))
+/// QeetrixCheckbox("Email me receipts", isOn: $receipts)
+/// QeetrixCheckbox("Select all", sources: $invoices, isOn: \.isSelected)  // mixed when some are on
 /// ```
 ///
-/// For a checkbox that stands for a group, pass the items it controls: it shows a minus while some of
-/// them are on (mixed), and a tap turns them all on, then all off — SwiftUI's own mixed-toggle
-/// behaviour.
-///
-/// ```swift
-/// QeetrixCheckbox("All notifications", sources: $channels, isOn: \.isOn)
-/// ```
-///
-/// It is a `Toggle` with ``QeetrixCheckboxToggleStyle``. The whole row is the target, at least 44 pt tall;
-/// VoiceOver reads a native toggle with its label and state — the system's own mixed state for a group
-/// checkbox — and the description as its hint. Group several under a ``QeetrixFieldSet``.
+/// A 16 pt box with 2 pt corners and a 1 pt `color.border.strong` edge on `color.bg.input`; checked or
+/// mixed, an Ember fill with a white sharp tick or dash (stroke 3). The label follows the control and
+/// the whole row toggles it, with ``QeetrixFeedback/selection`` feedback. In a group with an error the
+/// box takes the danger edge, checked too.
+/// Disabled, it takes `color.bg.disabled` and the disabled mark. VoiceOver reads it as the system's toggle, with the
+/// description as its hint. Settings that apply at once use ``QeetrixSwitch``; this one is for choices
+/// a Save step confirms.
 public struct QeetrixCheckbox: View {
     let toggle: Toggle<Text>
     let description: Text?
 
-    /// A checkbox with a localised label.
     public init(_ titleKey: LocalizedStringKey, isOn: Binding<Bool>, description: Text? = nil) {
         self.init(toggle: Toggle(titleKey, isOn: isOn), description: description)
     }
 
-    /// A checkbox with a label shown as given, without localisation.
     public init<S: StringProtocol>(_ title: S, isOn: Binding<Bool>, description: Text? = nil) {
         self.init(toggle: Toggle(title, isOn: isOn), description: description)
     }
 
-    /// A checkbox with a `Text` label.
     public init(label: Text, isOn: Binding<Bool>, description: Text? = nil) {
         self.init(toggle: Toggle(isOn: isOn) { label }, description: description)
     }
 
-    /// A checkbox standing for the items in `sources`: checked when all of them are on, mixed when some
-    /// are, unchecked when none are. Toggling it sets them all.
-    ///
-    /// - Parameters:
-    ///   - titleKey: The localised label.
-    ///   - sources: The items the checkbox controls.
-    ///   - isOn: The path from an item to its on/off binding.
-    ///   - description: Help shown under the label.
+    /// A parent checkbox for several: on when all are, mixed when some are — the web's `parent`.
     public init<C: RandomAccessCollection & Sendable>(
         _ titleKey: LocalizedStringKey, sources: C, isOn: KeyPath<C.Element, Binding<Bool>> & Sendable, description: Text? = nil
     ) {
         self.init(toggle: Toggle(titleKey, sources: sources, isOn: isOn), description: description)
     }
 
-    /// A checkbox with a `Text` label standing for the items in `sources`.
-    ///
-    /// - Parameters:
-    ///   - label: The label.
-    ///   - sources: The items the checkbox controls.
-    ///   - isOn: The path from an item to its on/off binding.
-    ///   - description: Help shown under the label.
+    /// A parent checkbox for several, with a `Text` label.
     public init<C: RandomAccessCollection & Sendable>(
         label: Text, sources: C, isOn: KeyPath<C.Element, Binding<Bool>> & Sendable, description: Text? = nil
     ) {
@@ -76,12 +57,7 @@ public struct QeetrixCheckbox: View {
     }
 }
 
-/// The Qeetrix checkbox for any `Toggle`.
-///
-/// ```swift
-/// Toggle("Remember this device", isOn: $remember)
-///     .toggleStyle(.qeetrixCheckbox)
-/// ```
+/// The Qeetrix checkbox look for any `Toggle`.
 public struct QeetrixCheckboxToggleStyle: ToggleStyle {
     let description: Text?
 
@@ -99,7 +75,7 @@ public struct QeetrixCheckboxToggleStyle: ToggleStyle {
 }
 
 extension ToggleStyle where Self == QeetrixCheckboxToggleStyle {
-    /// The Qeetrix checkbox.
+    /// The Qeetrix checkbox style.
     public static var qeetrixCheckbox: QeetrixCheckboxToggleStyle { QeetrixCheckboxToggleStyle() }
 }
 
@@ -108,30 +84,34 @@ struct QeetrixCheckboxBody: View {
     let description: Text?
     @State private var isHovered = false
     @Environment(\.isEnabled) private var isEnabled
-    @Environment(\.qeetrixGroupMessage) private var groupMessage
+    @Environment(\.isFocused) private var isFocused
+    @Environment(\.qeetrixGroupIsInvalid) private var isInvalid
+    /// The person's changes: each plays the selection feedback, and a change the app makes doesn't.
+    @State private var changes = 0
 
     var body: some View {
-        QeetrixSelectionRow(description: description, isEnabled: isEnabled) {
+        QeetrixChoiceRow(description: description, isEnabled: isEnabled) {
             QeetrixCheckboxBox(
-                mark: QeetrixCheckboxMark(isOn: configuration.isOn, isMixed: configuration.isMixed), isHovered: isHovered && isEnabled,
-                tone: groupMessage?.tone)
+                mark: QeetrixCheckboxMark(isOn: configuration.isOn, isMixed: configuration.isMixed), isHovered: isHovered,
+                isEnabled: isEnabled, isInvalid: isInvalid, isFocused: isFocused)
         } label: {
             configuration.label
         }
         .onTapGesture {
             guard isEnabled else { return }
             configuration.isOn.toggle()
+            changes += 1
         }
         .onHover { isHovered = $0 }
         .accessibilityRepresentation {
-            Toggle(isOn: configuration.$isOn) { configuration.label }
+            Toggle(isOn: QeetrixFeedback.counting(configuration.$isOn, in: $changes)) { configuration.label }
         }
         .accessibilityHint(description ?? Text(verbatim: ""))
-        .modifier(QeetrixGroupMessageAccessibility())
+        .modifier(QeetrixGroupErrorAccessibility())
+        .qeetrixFeedback(.selection, trigger: changes)
     }
 }
 
-/// What the box shows.
 enum QeetrixCheckboxMark: Equatable {
     case unchecked
     case checked
@@ -142,80 +122,47 @@ enum QeetrixCheckboxMark: Equatable {
     }
 }
 
-/// The 16 pt box: the field fill and control boundary at rest, the brand fill with the `border-brand`
-/// edge and a white glyph when checked or mixed — the glyph, not the colour, carries the state.
+/// The 16 pt box (checkbox.css).
 struct QeetrixCheckboxBox: View {
     let mark: QeetrixCheckboxMark
     let isHovered: Bool
-    let tone: QeetrixFieldMessage.Tone?
-
-    var body: some View {
-        let shape = RoundedRectangle(cornerRadius: QeetrixCorner.sm)  // rounded-(--qx-corner-sm)
-        ZStack {
-            shape.fill(mark == .unchecked ? QeetrixInputTokens.background : QeetrixComponentColor(.actionPrimary))
-            shape.strokeBorder(border, lineWidth: QeetrixStroke.hairline)
-            if mark != .unchecked {
-                QeetrixIcon(
-                    mark == .mixed ? .minus : .check, size: QeetrixIconSize(QeetrixWebScale.spacing(3)), stroke: QeetrixIconStroke(3)
-                )
-                .foregroundStyle(QeetrixColor.textOnBrand)  // text-primary-foreground
-            }
-        }
-        .frame(width: QeetrixWebScale.spacing(4), height: QeetrixWebScale.spacing(4))  // size-4
-        .qeetrixAnimation(.standard, .fast, value: mark)
-    }
-
-    var border: QeetrixComponentColor {
-        if tone == .error { return QeetrixInputTokens.borderInvalid }
-        if mark != .unchecked { return QeetrixComponentColor(.borderBrand) }
-        return isHovered ? QeetrixInputTokens.borderHover : QeetrixInputTokens.border
-    }
-}
-
-/// A checkbox or radio row: the control, then the label and description 8 pt after it — the web's
-/// horizontal `Field`. At least 44 pt tall, the whole row the target; faded when disabled.
-struct QeetrixSelectionRow<Control: View, Label: View>: View {
-    let description: Text?
     let isEnabled: Bool
-    let control: Control
-    let label: Label
+    let isInvalid: Bool
+    var isFocused = false
 
-    init(description: Text?, isEnabled: Bool, @ViewBuilder control: () -> Control, @ViewBuilder label: () -> Label) {
-        self.description = description
-        self.isEnabled = isEnabled
-        self.control = control()
-        self.label = label()
-    }
+    static let side: CGFloat = 16
+    /// The mark: 12 pt, stroke 3, sharp.
+    static let markSize = QeetrixIconSize.xs2
+    static let markStroke = QeetrixIconStroke(3)
 
     var body: some View {
-        let offset = QeetrixSelectionMetrics.baselineOffset
-        HStack(alignment: .firstTextBaseline, spacing: QeetrixWebScale.spacing(2)) {  // gap-2
-            control
-                .alignmentGuide(.firstTextBaseline) { dimensions in
-                    // Centre the 16 pt control on the first line of the 14 pt label.
-                    dimensions[VerticalAlignment.center] + offset
-                }
-            VStack(alignment: .leading, spacing: QeetrixWebScale.spacing(0.5)) {  // FieldContent gap-0.5
-                label
-                    .qeetrixType(QeetrixFieldMetrics.labelType)
-                    .foregroundStyle(QeetrixColor.textPrimary)
-                if let description {
-                    description
-                        .qeetrixType(QeetrixFieldMetrics.captionType)
-                        .foregroundStyle(QeetrixColor.textTertiary)
-                }
+        let shape = RoundedRectangle(cornerRadius: QeetrixRadius.sm)
+        ZStack {
+            shape.fill(fill)
+            shape.strokeBorder(border, lineWidth: QeetrixBorderWidth.default)
+            if mark != .unchecked {
+                QeetrixIcon(mark == .mixed ? .minus : .check, size: Self.markSize, stroke: Self.markStroke, shape: .sharp, relativeTo: nil)
+                    .foregroundStyle(isEnabled ? QeetrixColor.iconOnBrand : QeetrixColor.iconDisabled)
             }
-            .fixedSize(horizontal: false, vertical: true)
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(.vertical, QeetrixWebScale.spacing(1))
-        .frame(minHeight: QeetrixAccessibility.minimumTouchTarget)
-        .contentShape(Rectangle())
-        .opacity(isEnabled ? 1 : QeetrixOpacity.disabled)
+        .frame(width: Self.side, height: Self.side)
+        .overlay { if isFocused { QeetrixOuterFocusFrame(shape: shape) } }
+        .qeetrixAnimation(.standard, .fast, value: mark)
+        .qeetrixAnimation(.standard, .fast, value: isHovered)
     }
-}
 
-enum QeetrixSelectionMetrics {
-    /// From the middle of a 14 pt line to its baseline: about a third of the size.
-    static let baselineOffset: CGFloat = QeetrixWebScale.textSM.size * 0.32
+    var fill: QeetrixColor {
+        if !isEnabled { return .bgDisabled }
+        if mark == .unchecked { return .bgInput }
+        return isHovered ? .bgBrandBoldHover : .bgBrandBold
+    }
+
+    var border: QeetrixColor {
+        if !isEnabled { return .borderDisabled }
+        // `.qx-checkbox[data-invalid]` follows the checked and hover rules: an invalid box keeps the
+        // danger edge checked and hovered, on its Ember fill (QTRX-161).
+        if isInvalid { return .borderDanger }
+        if mark != .unchecked { return isHovered ? .bgBrandBoldHover : .bgBrandBold }
+        return isHovered ? .borderStrongHover : .borderStrong
+    }
 }

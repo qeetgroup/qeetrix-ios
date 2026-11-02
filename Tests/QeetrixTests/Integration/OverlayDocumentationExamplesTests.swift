@@ -2,7 +2,7 @@ import Qeetrix  // public API only, as a reader of the documentation would write
 import SwiftUI
 import Testing
 
-// The examples from the Phase 4 pages of Sources/Qeetrix/Qeetrix.docc — Components/Tabs.md,
+// The examples from the navigation and overlay pages of Sources/Qeetrix/Qeetrix.docc — Components/Tabs.md,
 // NavigationBars.md, AlertDialog.md, ConfirmationDialog.md, Sheet.md, Popover.md, Menu.md, Toast.md,
 // Overlays.md and the system-chrome section of Icons.md — copied verbatim inside views that supply the
 // names they use.
@@ -27,9 +27,13 @@ private struct NavigationExamples: View {
                 selection: $section,
                 tabs: [
                     QeetrixTab("Overview", value: Section.overview),
-                    QeetrixTab("Activity", value: Section.activity, icon: .bell),
+                    QeetrixTab("Activity", value: Section.activity, icon: .bell, badge: 3),
                     QeetrixTab("Archive", value: Section.archive, isDisabled: true),
                 ])
+            QeetrixTabs(
+                selection: $section,
+                tabs: [QeetrixTab("Overview", value: Section.overview), QeetrixTab("Activity", value: Section.activity)],
+                variant: .contained)
             switch section {
             case .overview: Text("Overview")
             case .activity: Text("Activity")
@@ -75,11 +79,12 @@ private struct OverlayExamples: View {
     @State private var isEditing = false
     @State private var draft = ""
     @State private var showsRoles = false
+    @State private var isRevoking = false
     let hasChanges = false
 
     var body: some View {
         VStack {
-            QeetrixButton("Delete workspace", variant: .destructive) {
+            QeetrixButton("Delete workspace", tone: .danger) {
                 alert = QeetrixAlertDialog(
                     "Delete this workspace?",
                     message: Text("Its projects and files are removed for everyone."),
@@ -87,7 +92,7 @@ private struct OverlayExamples: View {
             }
             .qeetrixAlertDialog($alert)
 
-            QeetrixButton("Share report", variant: .outline) {
+            QeetrixButton("Share report", variant: .soft) {
                 share = QeetrixConfirmationDialog(
                     "Share the Q3 summary",
                     actions: [
@@ -97,25 +102,36 @@ private struct OverlayExamples: View {
             }
             .qeetrixConfirmationDialog($share)
 
-            QeetrixIconButton(.info, label: "About roles") { showsRoles = true }
-                .qeetrixPopover(isPresented: $showsRoles) {
-                    Text("Roles").qeetrixTextStyle(.label)
-                    Text("Admins can invite members and manage billing.")
+            QeetrixIconButton(.info, label: "About roles", tone: .neutral) { showsRoles = true }
+                .qeetrixPopover(isPresented: $showsRoles, title: Text("Roles"), description: Text("Who can do what.")) {
+                    QeetrixText("Admins can invite members and manage billing.")
                 }
 
-            QeetrixMenu(icon: .ellipsis, label: "More actions") {
-                QeetrixMenuItem("Rename", icon: .pencil) { rename() }
+            QeetrixMenu("Export", icon: .share2) {
+                QeetrixMenuItem("Export as CSV", icon: .copy, description: Text("Opens in a spreadsheet")) { export() }
+            }
+
+            QeetrixMenu(icon: .ellipsis, label: "Actions for Priya Sharma") {
+                QeetrixMenuItem("Edit", icon: .pencil) { rename() }
                 QeetrixMenuItem("Share", icon: .share2) { shareItem() }
                 Divider()
-                QeetrixMenuItem("Delete", icon: .trash, role: .destructive) { confirmDelete() }
+                QeetrixMenuItem("Remove from Acme", icon: .trash, tone: .danger) { confirmDelete() }
             }
         }
         .qeetrixSheet(isPresented: $isEditing, isDismissDisabled: hasChanges) {
-            QeetrixSheetContent("Edit profile", description: Text("Your team sees these details."), onClose: close) {
-                QeetrixTextField("Display name", text: $draft)
+            QeetrixSheetContent("Edit address", description: Text("Used on every invoice."), isDismissible: !hasChanges, onClose: close) {
+                QeetrixTextField("Street", text: $draft)
             } actions: {
-                QeetrixButton("Cancel", variant: .outline) { close() }
-                QeetrixButton("Save") { save() }
+                QeetrixButton("Cancel", variant: .ghost, size: .lg) { close() }
+                QeetrixButton("Save", size: .lg) { save() }
+            }
+        }
+        .qeetrixSheet(isPresented: $isRevoking) {
+            QeetrixSheetContent("Revoke this API key?", intent: .danger, isDismissible: false) {
+                QeetrixText("Apps using it stop working at once.")
+            } actions: {
+                QeetrixButton("Cancel", variant: .ghost, size: .lg) { isRevoking = false }
+                QeetrixButton("Revoke key", tone: .danger, size: .lg) { revoke() }
             }
         }
     }
@@ -128,6 +144,8 @@ private struct OverlayExamples: View {
     func confirmDelete() {}
     func close() {}
     func save() {}
+    func export() {}
+    func revoke() {}
 }
 
 /// Toast.md.
@@ -140,6 +158,7 @@ private struct ToastExample: View {
             .onAppear {
                 toast = .success("Settings saved")
                 toast = QeetrixToast(.info, title: "Conversation archived", action: .init("Undo") { unarchive() })
+                toast = QeetrixToast(.danger, title: "Couldn't send the invoice", description: "Check the address and try again.")
             }
     }
 
@@ -157,7 +176,7 @@ private struct DocumentRow: View {
             Text(document.title)
             Spacer()
             QeetrixMenu(icon: .ellipsis, label: "Actions for \(document.title)") {
-                QeetrixMenuItem("Delete", icon: .trash, role: .destructive) {
+                QeetrixMenuItem("Delete", icon: .trash, tone: .danger) {
                     confirmDelete = QeetrixConfirmationDialog(
                         "Delete \(document.title)?",
                         actions: [
@@ -178,9 +197,9 @@ private struct DocumentRow: View {
 }
 
 @MainActor
-@Suite("Phase 4 documentation examples")
+@Suite("Navigation and overlay documentation examples")
 struct OverlayDocumentationExamplesTests {
-    @Test("Every Phase 4 example compiles against the public API and renders, in both themes")
+    @Test("Every navigation and overlay example compiles against the public API and renders, in both themes")
     func examplesRender() {
         for theme in [QeetrixThemeMode.light, .dark] {
             #expect(ImageRenderer(content: OverlayExamples().frame(width: 390).qeetrixThemeMode(theme)).cgImage != nil)

@@ -1,0 +1,57 @@
+@layer qx.base, qx.components, qx.state;
+@import "./base.css";
+@import "./state.css";
+
+@layer qx.components {
+  .qx-spinner {
+    border: 2px solid;
+    border-radius: var(--qx-radius-full);
+    block-size: 16px;
+    inline-size: 16px;
+    animation-name: qx-spinner-turn;
+    animation-duration: calc(2 * var(--qx-motion-duration-slower));
+    animation-timing-function: var(--qx-motion-easing-linear);
+    border-inline-end-color: #0000;
+    flex: none;
+    animation-iteration-count: infinite;
+    display: inline-block;
+  }
+  
+  .qx-spinner[data-size="sm"] {
+    block-size: 14px;
+    inline-size: 14px;
+  }
+  
+  .qx-spinner[data-size="lg"] {
+    block-size: 20px;
+    inline-size: 20px;
+  }
+  
+  .qx-spinner[data-size="xl"] {
+    block-size: 24px;
+    inline-size: 24px;
+  }
+  
+  .qx-spinner[data-tone="brand"] {
+    color: var(--qx-color-icon-brand);
+  }
+  
+  @keyframes qx-spinner-turn {
+    to {
+      rotate: 1turn;
+    }
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .qx-spinner {
+      border-inline-end-color: currentColor;
+      animation: 1.6s ease-in-out infinite qx-spinner-fade;
+    }
+  }
+  
+  @keyframes qx-spinner-fade {
+    50% {
+      opacity: .35;
+    }
+  }
+}

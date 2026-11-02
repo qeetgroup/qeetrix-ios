@@ -14,36 +14,43 @@ struct ComponentFoundationTests {
         #expect(large == CGRect(x: 0, y: 0, width: 120, height: 48))
     }
 
-    @Test("The web scale restates Tailwind's defaults")
-    func webScale() {
-        #expect(QeetrixWebScale.spacing(2.5) == 10)
-        #expect(QeetrixWebScale.textSM.size == 14)
-        #expect(abs(QeetrixWebScale.textSM.lineHeight * 14 - 20) < 1e-9)
-        #expect(abs(QeetrixWebScale.textXS.lineHeight * 12 - 16) < 1e-9)
-        #expect(abs(QeetrixWebScale.textLG.lineHeight * 18 - 28) < 1e-9)
+    @Test("Control sizes take their height from the density")
+    func controlSizes() {
+        #expect(QeetrixControlSize.allCases.map(\.rawValue) == ["sm", "md", "lg"])
+        for density in QeetrixDensity.allCases {
+            #expect(density.controlHeight(.sm) == density.sizeControlSm)
+            #expect(density.controlHeight(.md) == density.sizeControlMd)
+            #expect(density.controlHeight(.lg) == density.sizeControlLg)
+        }
     }
 
-    @Test("A component colour resolves per scheme: one semantic colour, or a value per theme")
-    func componentColor() {
-        var light = EnvironmentValues()
-        light.colorScheme = .light
-        var dark = EnvironmentValues()
-        dark.colorScheme = .dark
-        let semantic = QeetrixComponentColor(.actionPrimary)
-        #expect(semantic.resolve(in: light) == QeetrixColor.actionPrimary.resolve(in: light))
-        #expect(semantic.resolve(in: dark) == QeetrixColor.actionPrimary.resolve(in: dark))
-        // The outline button's background: the surface in light, a translucent wash in dark.
-        let outline = QeetrixButtonTokens.outlineBackground
-        #expect(outline.resolve(in: light) == QeetrixColor.surfaceDefault.resolve(in: light))
-        #expect(outline.resolve(in: dark).opacity < 1)
+    @Test("Text tones are @qeetrix/react's, each its text token")
+    func textTones() {
+        #expect(
+            QeetrixTextTone.allCases.map(\.rawValue)
+                == ["default", "subtle", "subtlest", "disabled", "inverse", "brand", "danger", "success", "warning", "info"])
+        for tone in QeetrixTextTone.allCases {
+            #expect(tone.color.rawValue == "color.text.\(tone.rawValue)")
+        }
+        #expect(QeetrixTextAlign.start.textAlignment == .leading)
+        #expect(QeetrixTextAlign.end.frameAlignment == .trailing)
     }
 
-    @Test("Component text styles scale like their curve; fixed ones do not")
-    func scaling() {
-        let fixed = QeetrixComponentType.ui(QeetrixWebScale.textSM, .medium, scalesLike: nil)
+    @Test("Component text styles are roles, at another weight where the web changes it; fixed ones don't scale")
+    func types() {
+        #expect(QeetrixComponentType.role(.labelMd) == QeetrixTypeSpec(.labelMd))
+        let selected = QeetrixComponentType.role(.labelMd, .semibold)
+        #expect(selected.tokens.weight == .semibold && selected.tokens.size == 14)
+        let fixed = QeetrixComponentType.fixed(.labelSm)
         #expect(fixed.textStyle == nil)
         #expect(fixed.fixedSize == fixed)
-        #expect(QeetrixComponentType.ui(QeetrixWebScale.textSM, .medium, scalesLike: .body).fixedSize.textStyle == nil)
-        #expect(QeetrixComponentType.role(.caption, .medium).textStyle == QeetrixTextRole.caption.textStyle)
+    }
+
+    @Test("Options are identified by their value")
+    func options() {
+        let option = QeetrixOption("Monthly", value: 1, description: Text("Billed each month"), isDisabled: true)
+        #expect(option.id == 1)
+        #expect(option.isDisabled)
+        #expect(option.description != nil)
     }
 }

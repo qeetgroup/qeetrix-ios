@@ -1,34 +1,47 @@
 # Theming
 
-Draw in the Qeetrix light and dark themes, follow the system, and fix a theme for part of a screen.
+Draw in the Qeetrix light and dark colour schemes, follow the system, and fix a scheme for part of a
+screen.
 
 ## Overview
 
-Qeetrix has two themes, light and dark, and one brand. A view's theme comes from its SwiftUI colour
-scheme, so it follows the device setting, the app's choice and any override above it, and changes
-live. There is no global theme object.
+Qeetrix has two colour schemes, light and dark — `@qeetrix/tokens`' `colorScheme` modifier — and one
+brand. A view's scheme comes from its SwiftUI colour scheme, so it follows the device setting, the
+app's choice and any override above it, and changes live. There is no global theme object.
 
-## Choose the app's theme
+## Choose the app's scheme
 
-``QeetrixThemeMode`` has the web's three modes: `light`, `dark` and `system`. Apply one at the root
-with `.qeetrixThemeMode(_:)`. It sets the window's colour scheme, so system UI such as sheets,
+``QeetrixThemeMode`` has the web's three colour schemes: `light`, `dark` and `system`. Apply one at the
+root with `.qeetrixThemeMode(_:)`. It sets the window's colour scheme, so system UI such as sheets,
 alerts, the status bar and the keyboard matches. `.system` follows the device.
 
 ## Use semantic colours
 
 ``QeetrixColor`` is a `ShapeStyle`. Use it wherever SwiftUI accepts one, and it resolves to the right
-value for the view's theme:
+value for the view's scheme:
 
 ```swift
 Text("Payment received")
     .foregroundStyle(QeetrixColor.textSuccess)
-    .padding(QeetrixSpacing.m)
-    .background(QeetrixColor.feedbackSuccessSubtle, in: RoundedRectangle(cornerRadius: QeetrixCorner.chip))
+    .padding(QeetrixSpace.insetMd)
+    .background(QeetrixColor.bgSuccessSubtle, in: RoundedRectangle(cornerRadius: QeetrixRadius.control))
 ```
 
-Colours are named for their role (`textPrimary`, `surfaceElevated`, `borderControl`), not for their
-hue. Raw palette values are deliberately not available. Pair text and backgrounds by role: those
-pairs meet WCAG 2.2 AA contrast in both themes.
+Colours are named for their role — `surfaceRaised`, `bgNeutralSubtle`, `textSubtle`, `borderStrong`,
+`iconBrand` — never for their hue, and raw palette values are deliberately not available. Where each
+may appear is a design rule (design rules §4):
+
+- **Ember** (`bgBrandBold`, `borderBrand`, `textBrand`) only for the primary action, focus, the current
+  item, checked controls and links — never for large surfaces, decoration or status.
+- **Ember tint** (`bgBrandSubtle`, `bgSelected`) for selected rows and a ghost button's press.
+- **Warm graphite** (`bgNeutralBold`) for the secondary action.
+- **Neutral tints** (`bgNeutralSubtle` and its `Hover` and `Pressed` steps) for field fills and pressed
+  backgrounds.
+- **Status colours** (`danger`, `warning`, `success`, `info`) for status only, always with a word or an
+  icon.
+- The page is `surfaceCanvas`; content sits on `surfaceRaised`.
+
+The pairs the tokens are designed for meet WCAG 2.2 AA contrast in both schemes.
 
 Where an API takes a `Color` rather than a `ShapeStyle`, read the theme from the environment:
 
@@ -39,15 +52,15 @@ struct HairlineRule: View {
     var body: some View {
         Rectangle()
             .fill(theme.color(.borderDefault))
-            .frame(height: QeetrixStroke.hairline)
+            .frame(height: QeetrixBorderWidth.default)
     }
 }
 ```
 
-## Fix a theme for part of a screen
+## Fix a scheme for part of a screen
 
-`.qeetrixTheme(_:)` draws a subtree in one theme, whatever the app's. Use it for previews and
-side-by-side specimens:
+`.qeetrixTheme(_:)` draws a subtree in one scheme, whatever the app's — the counterpart of a
+`data-qx-color-scheme` attribute on a section. Use it for previews and side-by-side specimens:
 
 ```swift
 HStack {
@@ -58,6 +71,6 @@ HStack {
 
 ## Increased contrast
 
-``QeetrixTheme/contrast`` reports the user's Increased Contrast setting. Qeetrix does not define
-separate high-contrast values yet, so colours are the same under both settings. The standard values
-already meet AA contrast.
+``QeetrixTheme/contrast`` reports the user's Increased Contrast setting. `@qeetrix/tokens` has no
+contrast context yet, so colours are the same under both settings; the standard values already meet AA
+contrast.

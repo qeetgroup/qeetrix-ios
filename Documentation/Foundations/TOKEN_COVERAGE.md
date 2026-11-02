@@ -2,64 +2,58 @@
 
 # Token coverage
 
-Source: `@qeetrix/ui@2.1.6` (git `7d7f651`), themes `light`, `dark`.
+Source: `@qeetrix/tokens@0.0.13` (git `4483f96`), its DTCG build resolved by
+`qeetrix.resolver.json`: colour schemes `light`, `dark`, densities `default`, `comfortable`, `compact`.
+Every value is checked against the package's pre-resolved `light.tokens.json` and `dark.tokens.json` and against `tokens.css`.
 
-290 tokens are generated as Swift; 593 are not. The rule is in
-[`Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift`](../../Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift).
+194 tokens are generated as Swift; 145 are not. The rule is in
+[`Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift`](../../Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift);
+every value is listed in [`token-values.json`](token-values.json).
 
 ## Generated
 
-| Group | Tokens | Swift |
-|:--|--:|:--|
-| `color` | 84 | `QeetrixColor` |
-| `elevation` | 14 | `QeetrixElevation` |
-| `typography` | 53 | `QeetrixTextRole` |
-| `font.weight` | 4 | `QeetrixFontWeight` |
-| `font.geometry` | 4 | `QeetrixFontGeometry` |
-| `space` | 11 | `QeetrixSpacing` |
-| `corner` | 10 | `QeetrixCorner` |
-| `stroke.width` | 3 | `QeetrixStroke` |
-| `focus` | 3 | `QeetrixFocus` |
-| `state.opacity` | 1 | `QeetrixOpacity` |
-| `icon.size` | 4 | `QeetrixIconSize` |
-| `icon.stroke` | 2 | `QeetrixIconStroke` |
-| `density` | 12 | `QeetrixDensity` |
-| `motion` | 12 | `QeetrixDuration`, `QeetrixEasing`, `QeetrixMotion` |
-| `component.avatar` | 6 | internal `QeetrixAvatarTokens` |
-| `component.badge` | 8 | internal `QeetrixBadgeTokens` |
-| `component.button` | 11 | internal `QeetrixButtonTokens` |
-| `component.card` | 11 | internal `QeetrixCardTokens` |
-| `component.dialog` | 6 | internal `QeetrixDialogTokens` |
-| `component.input` | 13 | internal `QeetrixInputTokens` |
-| `component.popover` | 5 | internal `QeetrixPopoverTokens` |
-| `component.progress` | 2 | internal `QeetrixProgressTokens` |
-| `component.switch` | 6 | internal `QeetrixSwitchTokens` |
-| `component.typography` | 5 | internal `QeetrixTypographyTokens` |
+| Swift | Tokens | Follows | Paths |
+|:--|--:|:--|:--|
+| `QeetrixColor` | 109 | colorScheme | `color.surface.*`, `color.bg.*`, `color.text.*`, `color.icon.*`, `color.border.*`, `color.overlay.*`, `color.selection`, `color.dataviz.*`, `color.code.*` |
+| `QeetrixShadow` | 5 | colorScheme | `shadow.raised`, `shadow.raised-hover`, `shadow.overlay`, `shadow.modal`, `shadow.inset` |
+| `QeetrixTextRole` | 18 | — | `typography.display.*`, `typography.heading.*`, `typography.title.*`, `typography.body.*`, `typography.label.*`, `typography.code.*` |
+| `QeetrixFontWeight` | 3 | — | `primitive.font.*` |
+| `QeetrixFontGeometry` | 3 | — | `font.geometry.*` |
+| `QeetrixSpace` | 14 | — | `space.inset.*`, `space.gap.*`, `space.layout.*` |
+| `QeetrixSize` | 1 | — | `size.target.*` |
+| `QeetrixIconSize` | 5 | — | `size.icon.*` |
+| `QeetrixRadius` | 9 | — | `radius.none`, `radius.sm`, `radius.tooltip`, `radius.control`, `radius.surface`, `radius.overlay`, `radius.modal`, `radius.chip`, `radius.full` |
+| `QeetrixBorderWidth` | 3 | — | `border.width.*` |
+| `QeetrixFocus` | 2 | — | `focus.ring.*` |
+| `QeetrixDuration` | 5 | — | `motion.duration.*` |
+| `QeetrixEasing` | 5 | — | `motion.easing.*` |
+| `QeetrixSpring` | 4 | — | `motion.spring.*` |
+| `QeetrixOpacity` | 1 | — | `opacity.disabled` |
+| `QeetrixIconStroke` | 2 | — | `icon.stroke.*` |
+| `QeetrixDensity` | 5 | density | `size.control.*`, `size.row`, `space.form.*` |
 
 ## Not generated
 
 | Reason | Tokens | Examples |
 |:--|--:|:--|
-| Primitive — not exposed. Semantic tokens carry the decision; product code never reads a raw scale or palette value. | 428 | `color.neutral.0`, `color.neutral.50`, `color.neutral.100`, … |
-| Not in the Phase 1 foundation set. | 1 | `gradient.surface-fade` |
-| Resolves through the active density — read QeetrixDensity instead. | 4 | `control.height`, `control.row-height`, `control.cell-padding-y`, … |
-| 50% is a shape, not a length — use Circle or Capsule. | 1 | `corner.circle` |
-| A CSS border-style keyword; SwiftUI strokes are solid unless dashed explicitly. | 1 | `focus.ring-style` |
-| Web stacking order. SwiftUI zIndex only orders siblings, so a global scale has no meaning. | 15 | `z.base`, `z.dropdown`, `z.sticky`, … |
-| Component tokens for a component iOS does not implement yet. Adopted groups are listed in Upstream/pins.json. | 143 | `component.accordion.trigger-padding-block`, `component.accordion.divider`, `component.accordion.focus-bleed`, … |
+| Primitive — not exposed. The semantic tokens carry the decision; product code never reads a raw palette or scale value. | 119 | `primitive.color.graphite.0`, `primitive.color.graphite.25`, `primitive.color.graphite.50`, … |
+| Resolved into each typography role; the bundled faces are QeetrixFontFamily. Indic scripts fall back through CoreText's system cascade, as on the web without Noto Sans. | 4 | `font.family.heading`, `font.family.sans`, `font.family.mono`, … |
+| Web stacking order. SwiftUI zIndex only orders siblings, and the system presents overlays, so a global scale has no meaning. | 10 | `z.base`, `z.sticky`, `z.dropdown`, … |
+| Web window size classes. iOS lays out by its own size classes (horizontalSizeClass), which the system sets. | 4 | `breakpoint.medium`, `breakpoint.expanded`, `breakpoint.large`, … |
+| Geometry of a component iOS does not implement (sidebar, tour, command palette, timeline). | 8 | `component.sidebar.width.expanded`, `component.sidebar.width.collapsed`, `component.sidebar.width.mobile`, … |
 
 ## Colours outside sRGB
 
-These convert outside sRGB. They are emitted in Display P3, which is how Safari paints them on an iPhone.
+These convert outside sRGB. They are drawn in Display P3, which is how Safari paints them on an iPhone.
 
-| Token | Theme | Handling |
+| Token | Scheme | Handling |
 |:--|:--|:--|
-| `color.data.categorical.1` | dark | inside P3 — drawn in Display P3 |
-| `color.data.categorical.2` | light | inside P3 — drawn in Display P3 |
-| `color.data.categorical.4` | dark | inside P3 — drawn in Display P3 |
-| `color.data.categorical.6` | light | inside P3 — drawn in Display P3 |
-| `color.data.categorical.7` | light | inside P3 — drawn in Display P3 |
-| `color.data.categorical.7` | dark | inside P3 — drawn in Display P3 |
-| `color.rating.filled` | light | inside P3 — drawn in Display P3 |
-| `color.rating.filled` | dark | inside P3 — drawn in Display P3 |
-| `color.syntax.literal` | dark | inside P3 — drawn in Display P3 |
+| `color.dataviz.categorical.2` | light | inside P3 — drawn in Display P3 |
+
+## Not in tokens.css
+
+Generated from the DTCG build, with no `--qx-*` variable to check against:
+
+- `primitive.font.weight.regular`
+- `primitive.font.weight.medium`
+- `primitive.font.weight.semibold`

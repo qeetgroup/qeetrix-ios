@@ -7,16 +7,18 @@ licence texts are in this repository as listed.
 
 | Font | Version | Licence | Licence file |
 |:--|:--|:--|:--|
-| Cal Sans, variable (`CalSansVF.ttf`), used as "Qeet Sans" | v2.011, [calcom/sans](https://github.com/calcom/sans) | SIL Open Font License 1.1 | [`CalSans-OFL.txt`](../Sources/Qeetrix/Resources/Fonts/CalSans-OFL.txt) |
+| Cal Sans, variable (`QeetSans.ttf`), used as "Qeet Sans" | v2.011, [calcom/sans](https://github.com/calcom/sans) | SIL Open Font License 1.1 | [`QeetSans-OFL.txt`](../Sources/Qeetrix/Resources/Fonts/QeetSans-OFL.txt) |
 | Fira Code, variable (`FiraCode-VF.ttf`) | 6.2, [tonsky/FiraCode](https://github.com/tonsky/FiraCode) | SIL Open Font License 1.1 | [`FiraCode-OFL.txt`](../Sources/Qeetrix/Resources/Fonts/FiraCode-OFL.txt) |
 
-The font files are bundled unmodified, each beside its licence. The licence files are copied verbatim
-from the font projects at those tags. Neither declares a Reserved Font Name.
+Both files are the TrueType fonts [`@qeetrix/tokens`](https://www.npmjs.com/package/@qeetrix/tokens)
+0.0.13 ships for native platforms (`dist/fonts/`, made losslessly from the package's WOFF2 files with
+fontTools 4.68.0), bundled unmodified, each beside the licence file the package ships with it. Neither
+licence declares a Reserved Font Name.
 
 ## Icon artwork (`Sources/Qeetrix/Icons/Generated/`)
 
-The icon path data is converted from the SVG drawings of
-[qeetrix-icons](https://github.com/qeetgroup/qeetrix-icons) 1.0.11 (commit `331cd85`):
+The icon path data is converted from the SVG files of
+[`@qeetrix/icons`](https://www.npmjs.com/package/@qeetrix/icons) 2.1.0 (gitHead `e2a8f9f`):
 
 - the MIT-licensed Qeet Group package;
 - its round outlines are [Lucide](https://lucide.dev) 1.52.0, under the ISC License;
@@ -40,13 +42,9 @@ app that depends on Qeetrix does not resolve them (ADR 0009). Reviewed versions 
 | [swift-issue-reporting](https://github.com/pointfreeco/swift-issue-reporting) | 2.1.2 | MIT |
 | [swift-syntax](https://github.com/swiftlang/swift-syntax) | 604.0.0 | Apache 2.0 with Runtime Library Exception |
 
-## Tailwind CSS default values
-
-`QeetrixWebScale` restates, as numbers, the default spacing step, type steps, line heights and spin
-duration of [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss) 4.3.3 (MIT), which qeetrix-ui's
-components use. No Tailwind code is included.
-
 ## Design tokens
 
-Token values are generated from [`@qeetrix/ui`](https://www.npmjs.com/package/@qeetrix/ui) 2.1.6, Qeet
-Group's own package.
+Token values are generated from [`@qeetrix/tokens`](https://www.npmjs.com/package/@qeetrix/tokens)
+0.0.13, and component metrics and colours restated from the CSS of
+[`@qeetrix/react`](https://www.npmjs.com/package/@qeetrix/react) 0.4.0 — Qeet Group's own packages,
+under the MIT License ([`Upstream/qeetrix-tokens/LICENSE`](../Upstream/qeetrix-tokens/LICENSE)).

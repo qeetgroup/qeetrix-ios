@@ -1,0 +1,42 @@
+{
+  "size": {
+    "$type": "dimension",
+    "control": {
+      "$description": "Control heights per density, on the 4px grid. Comfortable reaches 44px, the touch-friendly size; compact never goes below the 24px minimum target.",
+      "sm": {
+        "$value": {
+          "value": 1.5,
+          "unit": "rem"
+        }
+      },
+      "md": {
+        "$value": {
+          "value": 1.75,
+          "unit": "rem"
+        }
+      },
+      "lg": {
+        "$value": {
+          "value": 2,
+          "unit": "rem"
+        }
+      }
+    },
+    "row": {
+      "$value": {
+        "value": 2,
+        "unit": "rem"
+      },
+      "$description": "Table and list row height per density."
+    }
+  },
+  "space": {
+    "form": {
+      "gap": {
+        "$type": "dimension",
+        "$value": "{primitive.space.300}",
+        "$description": "Space between form fields per density."
+      }
+    }
+  }
+}

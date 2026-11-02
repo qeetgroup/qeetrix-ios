@@ -6,17 +6,19 @@ import Testing
 @MainActor
 @Suite("Toast")
 struct ToastTests {
-    @Test("Durations follow the web: 5 s, 10 s for warnings, errors and actions")
+    @Test("Durations follow ToastProvider: 5 s; a danger toast stays until dismissed")
     func durations() {
         let action = QeetrixToast.Action("Undo") {}
         func duration(_ toast: QeetrixToast, voiceOver: Bool = false) -> Duration? {
             QeetrixToastPolicy.duration(for: toast, voiceOverRunning: voiceOver)
         }
+        #expect(QeetrixToastTone.allCases.map(\.rawValue) == ["info", "success", "warning", "danger"])
         #expect(duration(QeetrixToast(.info, title: "Archived")) == .seconds(5))
         #expect(duration(QeetrixToast(.success, title: "Saved")) == .seconds(5))
-        #expect(duration(QeetrixToast(.warning, title: "Saved offline")) == .seconds(10))
-        #expect(duration(QeetrixToast(.error, title: "Not saved")) == .seconds(10))
-        #expect(duration(QeetrixToast(.info, title: "Archived", action: action)) == .seconds(10))
+        #expect(duration(QeetrixToast(.warning, title: "Saved offline")) == .seconds(5))
+        #expect(duration(QeetrixToast(.info, title: "Archived", action: action)) == .seconds(5))
+        #expect(duration(QeetrixToast(.danger, title: "Not saved")) == nil)
+        #expect(duration(QeetrixToast(.danger, title: "Not saved", duration: .seconds(3))) == nil, "Danger ignores a duration")
         #expect(duration(QeetrixToast(.success, title: "Saved", duration: .seconds(3))) == .seconds(3))
         #expect(duration(QeetrixToast(.success, title: "Saved", duration: .zero)) == nil, "Zero stays until dismissed")
     }
@@ -28,7 +30,7 @@ struct ToastTests {
         #expect(QeetrixToastPolicy.duration(for: QeetrixToast(.info, title: "Archived"), voiceOverRunning: true) == .seconds(5))
     }
 
-    @Test("A repeat is the same type, title, description and presence of an action")
+    @Test("A repeat is the same tone, title, description and presence of an action")
     func repeats() {
         let saved = QeetrixToast(.success, title: "Saved")
         #expect(QeetrixToastPolicy.isRepeat(QeetrixToast(.success, title: "Saved"), of: saved))
@@ -38,9 +40,9 @@ struct ToastTests {
         #expect(!QeetrixToastPolicy.isRepeat(QeetrixToast(.success, title: "Saved", action: .init("View") {}), of: saved))
     }
 
-    @Test("The announcement reads the title and description; errors are high priority")
+    @Test("The announcement reads the title and description; danger is high priority")
     func announcement() {
-        let error = QeetrixToastPolicy.announcement(for: QeetrixToast(.error, title: "Not saved", description: "Try again."))
+        let error = QeetrixToastPolicy.announcement(for: QeetrixToast(.danger, title: "Not saved", description: "Try again."))
         #expect(String(error.characters) == "Not saved. Try again.")
         #expect(error.accessibilitySpeechAnnouncementPriority == .high)
         let success = QeetrixToastPolicy.announcement(for: QeetrixToast(.success, title: "Saved"))
@@ -52,7 +54,7 @@ struct ToastTests {
     func replaces() {
         var state = QeetrixToastState()
         let first = QeetrixToast(.success, title: "Saved")
-        let second = QeetrixToast(.error, title: "Not sent")
+        let second = QeetrixToast(.danger, title: "Not sent")
         let announcedFirst = state.present(first)
         let announcedSecond = state.present(second)
         #expect(announcedFirst?.id == first.id)
@@ -132,26 +134,19 @@ struct ToastTests {
         #expect(state.shown == nil)
     }
 
-    @Test("Status icons, colours and accents per type")
+    @Test("toast.css: each tone's own sharp icon, its status edge, a 360 pt viewport")
     func metrics() {
-        #expect(QeetrixToastMetrics.icon(.info) == .info)
-        #expect(QeetrixToastMetrics.icon(.success) == .circleCheck)
-        #expect(QeetrixToastMetrics.icon(.warning) == .triangleAlert)
-        #expect(QeetrixToastMetrics.icon(.error) == .circleX)
-        #expect(QeetrixToastMetrics.accent(.info) == nil)
-        #expect(QeetrixToastMetrics.accent(.error) == .feedbackError)
-        #expect(QeetrixToastMetrics.titleColor(.info) == .textPrimary)
-        #expect(QeetrixToastMetrics.titleColor(.success) == .textSuccess)
-        #expect(QeetrixToastMetrics.maximumWidth == 384)
-        #expect(QeetrixToastMetrics.titleType.tokens.size == 14)
+        #expect(QeetrixToastTone.allCases.map(QeetrixToastMetrics.icon) == [.info, .circleCheck, .triangleAlert, .circleAlert])
+        #expect(QeetrixToastTone.allCases.map(QeetrixToastMetrics.accent) == [.iconInfo, .iconSuccess, .iconWarning, .iconDanger])
+        #expect(QeetrixToastMetrics.maximumWidth == 360)
     }
 
-    @Test("Every type renders, light and dark, with and without an action")
+    @Test("Every tone renders, light and dark, with and without an action")
     func renders() {
         @AccessibilityFocusState var focus: QeetrixToastFocus?
-        for type in QeetrixToastType.allCases {
+        for tone in QeetrixToastTone.allCases {
             for scheme in [ColorScheme.light, .dark] {
-                let toast = QeetrixToast(type, title: "Title", description: "Description", action: .init("Undo") {})
+                let toast = QeetrixToast(tone, title: "Title", description: "Description", action: .init("Undo") {})
                 let view = QeetrixToastView(toast: toast, focus: $focus, close: {}, act: {})
                     .frame(width: 358).environment(\.colorScheme, scheme)
                 #expect(ImageRenderer(content: view).cgImage != nil)
@@ -159,12 +154,23 @@ struct ToastTests {
         }
     }
 
-    @Test("The info, success, warning and error shortcuts")
+    @Test("A toast is the overlay surface with the tone's 3 pt edge on its start side")
+    func drawn() throws {
+        @AccessibilityFocusState var focus: QeetrixToastFocus?
+        let view = QeetrixToastView(toast: QeetrixToast(.danger, title: "Not saved"), focus: $focus, close: {}, act: {})
+            .frame(width: 300).padding(20).background(Color.white).environment(\.colorScheme, .light)
+        let image = try #require(Rendered(view))
+        let middle = image.height / 2
+        #expect(close(QeetrixTheme.light.resolve(.iconDanger).bytes, image.pixel(21, middle)))
+        #expect(close(QeetrixTheme.light.resolve(.surfaceOverlay).bytes, image.pixel(150, 22)))
+    }
+
+    @Test("The info, success, warning and danger shortcuts")
     func shortcuts() {
-        #expect(QeetrixToast.info("Archived").type == .info)
+        #expect(QeetrixToast.info("Archived").tone == .info)
         #expect(QeetrixToast.success("Saved").title == "Saved")
-        #expect(QeetrixToast.warning("Saved offline").type == .warning)
-        #expect(QeetrixToast.error("Not saved").type == .error)
+        #expect(QeetrixToast.warning("Saved offline").tone == .warning)
+        #expect(QeetrixToast.danger("Not saved").tone == .danger)
         #expect(QeetrixToast.success("Saved").id != QeetrixToast.success("Saved").id)
     }
 }

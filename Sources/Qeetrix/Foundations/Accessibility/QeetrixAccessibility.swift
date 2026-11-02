@@ -9,7 +9,7 @@ public enum QeetrixAccessibility {
 
     /// The WCAG 2.x contrast ratio of a foreground over a background, from 1 to 21. A translucent
     /// foreground is composited over the background first (in gamma-encoded sRGB, as browsers and
-    /// qeetrix-ui's contrast gate do); the background is treated as opaque.
+    /// @qeetrix/tokens' contrast tests do); the background is treated as opaque.
     public static func contrastRatio(_ foreground: Color.Resolved, on background: Color.Resolved) -> Double {
         let alpha = Double(foreground.opacity)
         func channel(_ f: Float, _ b: Float) -> Double {

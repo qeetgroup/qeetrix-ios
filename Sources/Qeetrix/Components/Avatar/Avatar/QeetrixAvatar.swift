@@ -1,14 +1,11 @@
 import SwiftUI
 
-/// The sizes of ``QeetrixAvatar``, as on the web. Fixed steps, not density- or Dynamic Type-scaled:
-/// an avatar is a recognition target, so a person looks the same size everywhere.
+/// The sizes of ``QeetrixAvatar``, as `@qeetrix/react`'s `AvatarSize`.
 public enum QeetrixAvatarSize: String, CaseIterable, Sendable {
-    /// 20 pt.
-    case xs
     /// 24 pt.
     case sm
-    /// 32 pt.
-    case `default`
+    /// 32 pt, the default.
+    case md
     /// 40 pt.
     case lg
     /// 48 pt.
@@ -17,163 +14,106 @@ public enum QeetrixAvatarSize: String, CaseIterable, Sendable {
     /// The avatar's width and height.
     public var points: CGFloat {
         switch self {
-        case .xs: QeetrixWebScale.spacing(5)  // size-5
-        case .sm: QeetrixWebScale.spacing(6)  // size-6
-        case .default: QeetrixWebScale.spacing(8)  // size-8
-        case .lg: QeetrixWebScale.spacing(10)  // size-10
-        case .xl: QeetrixWebScale.spacing(12)  // size-12
+        case .sm: 24
+        case .md: 32
+        case .lg: 40
+        case .xl: 48
         }
     }
 }
 
-/// The shapes of ``QeetrixAvatar``.
+/// Who an avatar stands for, as `@qeetrix/react`'s `AvatarShape`.
 public enum QeetrixAvatarShape: String, CaseIterable, Sendable {
-    /// For people.
+    /// A person: people are one of the two soft shapes (design rules §3).
     case circle
-    /// For organisations, workspaces and apps, so they never read as people.
+    /// An organisation, an application or a tenant, with the controls' 4 pt corners, so it never
+    /// reads as a person.
     case square
 }
 
-/// A person's picture, their initials, or a neutral icon.
+/// A person, organisation or application: their photo or logo, or their initials on a neutral fill —
+/// `@qeetrix/react`'s Avatar.
 ///
 /// ```swift
-/// QeetrixAvatar(name: "Asha Rao")                                  // "AR"
-/// QeetrixAvatar(name: "Asha Rao", image: photo, size: .lg, badge: Text("Online"))
-/// QeetrixAvatar(name: "Qeet Group", shape: .square)
+/// QeetrixAvatar(name: "Priya Sharma", image: Image("priya"))
+/// QeetrixAvatar(name: "Kaveri Foods Private Limited", size: .lg, shape: .square)  // "KF"
 /// ```
 ///
-/// Without an image it shows the initials of `name` — the first letters of its first and last words —
-/// and without a name the `user-round` icon. VoiceOver reads the avatar as one image called by the
-/// name, followed by the badge's text; colour alone is never the status. Pass `name: nil` when the
-/// name is already visible beside the avatar, so it is not read twice: the avatar is then hidden from
-/// VoiceOver unless it has a badge.
+/// The initials are the first characters of the first and last words ("Priya Sharma" is "PS"); a
+/// company's legal form doesn't count, and a name left with one word takes its first two. They are
+/// grapheme clusters, so Indic names stay whole. VoiceOver reads the avatar as an image named by
+/// `name`; with `isDecorative`, where the name is shown beside it, it is hidden.
 public struct QeetrixAvatar: View {
-    let name: String?
+    let name: String
     let image: Image?
     let size: QeetrixAvatarSize
     let shape: QeetrixAvatarShape
-    let badge: Text?
-    @Environment(\.colorScheme) private var colorScheme
+    let isDecorative: Bool
 
-    /// - Parameters:
-    ///   - name: The person's or organisation's display name: the initials and the VoiceOver label.
-    ///   - image: A picture, already loaded; it fills the avatar.
-    ///   - size: One of the fixed sizes.
-    ///   - shape: `circle` for people, `square` for organisations, workspaces and apps.
-    ///   - badge: The status the badge mark stands for, such as "Online". The mark is drawn at the
-    ///     bottom-trailing edge and the text is read by VoiceOver.
     public init(
-        name: String?, image: Image? = nil, size: QeetrixAvatarSize = .default, shape: QeetrixAvatarShape = .circle, badge: Text? = nil
+        name: String, image: Image? = nil, size: QeetrixAvatarSize = .md, shape: QeetrixAvatarShape = .circle, isDecorative: Bool = false
     ) {
         self.name = name
         self.image = image
         self.size = size
         self.shape = shape
-        self.badge = badge
+        self.isDecorative = isDecorative
     }
 
     public var body: some View {
         let side = size.points
-        let outline = Self.outline(shape)
+        let outline = QeetrixAvatarOutline(shape: shape)
         ZStack {
+            outline.fill(QeetrixColor.bgNeutralSubtlePressed)
             if let image {
                 image
                     .resizable()
                     .scaledToFill()
                     .frame(width: side, height: side)
             } else {
-                outline.fill(QeetrixAvatarTokens.fallbackBackground)
-                fallback(side: side)
-                    .foregroundStyle(QeetrixAvatarTokens.fallbackForeground)
+                Text(verbatim: Self.initials(name))
+                    .qeetrixTypeEnvironment(Self.initialsType(size))
+                    .foregroundStyle(QeetrixColor.textDefault)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
             }
         }
         .frame(width: side, height: side)
         .clipShape(outline)
-        .overlay {
-            // A hairline that keeps a pale photo from bleeding into a pale surface, and a dark one
-            // into a dark surface; it blends, so it never reads as a drawn border.
-            outline
-                .strokeBorder(QeetrixColor.borderDefault, lineWidth: QeetrixStroke.hairline)
-                .blendMode(colorScheme == .dark ? .lighten : .darken)
-        }
-        .overlay(alignment: .bottomTrailing) {
-            if badge != nil {
-                badgeMark
-            }
-        }
-        .modifier(QeetrixAvatarAccessibility(name: name, badge: badge))
+        .modifier(QeetrixAvatarAccessibility(name: name, isDecorative: isDecorative))
     }
 
-    @ViewBuilder
-    private func fallback(side: CGFloat) -> some View {
-        if let name, case let initials = Self.initials(name), !initials.isEmpty {
-            Text(verbatim: initials)
-                .qeetrixType(Self.initialsType(size))
-                .lineLimit(1)
-                .minimumScaleFactor(0.5)
-        } else {
-            QeetrixIcon(.userRound, size: QeetrixIconSize(side * 0.55))  // [&>svg]:size-[55%]
-        }
+    /// Legal forms that end a company's name, with or without dots ("Acme Pvt. Ltd." is Acme), as on
+    /// the web.
+    static let legalForms: Set<String> = [
+        "pvt", "private", "ltd", "limited", "llp", "opc", "inc", "incorporated", "llc", "plc", "corp", "co", "gmbh", "pte", "pty",
+    ]
+
+    static func isLegalForm(_ word: Substring) -> Bool {
+        legalForms.contains(word.filter { $0 != "." && $0 != "," }.lowercased())
     }
 
-    private var badgeMark: some View {
-        let metrics = Self.badgeMetrics(size)
-        let outset = shape == .square ? QeetrixWebScale.spacing(0.5) : 0  // -inset-e-0.5 -bottom-0.5
-        return Circle()
-            .fill(QeetrixAvatarTokens.badgeBackground)
-            .frame(width: metrics.size, height: metrics.size)
-            .background {
-                Circle()
-                    .fill(QeetrixAvatarTokens.ring)
-                    .padding(-metrics.ring)  // ring-2, ring-1 at xs
-            }
-            .offset(x: outset, y: outset)
-            .flipsForRightToLeftLayoutDirection(true)
-    }
-
-    static func outline(_ shape: QeetrixAvatarShape) -> QeetrixAvatarOutline {
-        QeetrixAvatarOutline(shape: shape)
-    }
-
-    /// Up to two initials: the first character of the first and the last word, upper-cased for the
-    /// current locale. One word gives one initial ("Priya" is "P"); a name in a script without word
-    /// spaces gives its first character.
+    /// The first grapheme of the first and last words, skipping trailing legal forms; one word left
+    /// gives its first two.
     static func initials(_ name: String) -> String {
         let words = name.split(whereSeparator: \.isWhitespace)
-        guard let first = words.first?.first else { return "" }
-        let last = words.count > 1 ? words.last?.first.map(String.init) ?? "" : ""
-        return (String(first) + last).uppercased(with: .current)
-    }
-
-    /// `font-ui font-medium` at `text-micro` (xs, sm), `text-sm`, `text-base` (lg) or `text-lg` (xl),
-    /// fixed so the initials never outgrow the avatar.
-    static func initialsType(_ size: QeetrixAvatarSize) -> QeetrixTypeSpec {
-        let micro = QeetrixTextRole.micro.tokens
-        let step: QeetrixWebScale.TextStep =
-            switch size {
-            case .xs, .sm: .init(size: micro.size, lineHeight: micro.lineHeight)
-            case .default: QeetrixWebScale.textSM
-            case .lg: QeetrixWebScale.textBase
-            case .xl: QeetrixWebScale.textLG
-            }
-        return QeetrixComponentType.ui(step, .medium, scalesLike: nil)
-    }
-
-    /// The badge mark's diameter and ring: `size-1.5 ring-1` at xs, then `size-2`, `size-2.5`,
-    /// `size-3`, `size-3.5` with `ring-2`.
-    static func badgeMetrics(_ size: QeetrixAvatarSize) -> (size: CGFloat, ring: CGFloat) {
-        switch size {
-        case .xs: (QeetrixWebScale.spacing(1.5), 1)
-        case .sm: (QeetrixWebScale.spacing(2), 2)
-        case .default: (QeetrixWebScale.spacing(2.5), 2)
-        case .lg: (QeetrixWebScale.spacing(3), 2)
-        case .xl: (QeetrixWebScale.spacing(3.5), 2)
+        guard let first = words.first else { return "" }
+        var kept = words.count
+        while kept > 1, isLegalForm(words[kept - 1]) { kept -= 1 }
+        if kept == 1, kept < words.count {
+            return String(first.prefix(2)).uppercased(with: .current)
         }
+        let last = kept > 1 ? String(words[kept - 1].prefix(1)) : ""
+        return (String(first.prefix(1)) + last).uppercased(with: .current)
+    }
+
+    /// `label.sm`, or `label.md` at `lg` and `xl`, at its token size: the initials sit in a fixed-size
+    /// graphic, so they don't grow with Dynamic Type.
+    static func initialsType(_ size: QeetrixAvatarSize) -> QeetrixTypeSpec {
+        QeetrixComponentType.fixed(size == .lg || size == .xl ? .labelMd : .labelSm)
     }
 }
 
-/// A circle, or a square with corners of 25% of its side (`avatar.corner-square`). Insetting keeps
-/// the corners concentric, so the hairline drawn inside follows the edge exactly.
 struct QeetrixAvatarOutline: InsettableShape {
     let shape: QeetrixAvatarShape
     var inset: CGFloat = 0
@@ -184,8 +124,7 @@ struct QeetrixAvatarOutline: InsettableShape {
         case .circle:
             return Path(ellipseIn: inner)
         case .square:
-            let radius = max(0, min(rect.width, rect.height) * QeetrixAvatarTokens.cornerSquare - inset)
-            return Path(roundedRect: inner, cornerRadius: radius)
+            return Path(roundedRect: inner, cornerRadius: max(0, QeetrixRadius.control - inset))
         }
     }
 
@@ -197,22 +136,21 @@ struct QeetrixAvatarOutline: InsettableShape {
 }
 
 private struct QeetrixAvatarAccessibility: ViewModifier {
-    let name: String?
-    let badge: Text?
+    let name: String
+    let isDecorative: Bool
 
     func body(content: Content) -> some View {
-        switch (name, badge) {
-        case (nil, nil):
+        if isDecorative {
             content.accessibilityHidden(true)
-        case (let name?, let badge):
+        } else {
+            // One image named by `name`. A representation rather than `children: .ignore`, which on
+            // iOS 26 and later still lists the initials as a text inside the image.
             content
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(badge.map { Text(verbatim: name + ", ") + $0 } ?? Text(verbatim: name))
-                .accessibilityAddTraits(.isImage)
-        case (nil, let badge?):
-            content
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(badge)
+                .accessibilityRepresentation {
+                    Color.clear
+                        .accessibilityLabel(Text(verbatim: name))
+                        .accessibilityAddTraits(.isImage)
+                }
         }
     }
 }
