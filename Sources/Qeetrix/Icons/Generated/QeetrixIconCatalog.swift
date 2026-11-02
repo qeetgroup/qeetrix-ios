@@ -6,454 +6,551 @@ import CoreGraphics
 /// The Qeetrix icons available natively: the ones the components and the showcase use, not the
 /// full catalogue. Names are `@qeetrix/icons`' (Lucide's) names; raw values are the exact
 /// upstream names.
-public enum QeetrixIconName: String, CaseIterable, Sendable {
+///
+/// An open set of names, like `Notification.Name`, rather than an enum: adding an icon is an
+/// addition, not a source-breaking change for code that switches over icons (ADR 0016). Switch
+/// with a `default` case; `allCases` lists the catalogue.
+public struct QeetrixIconName: RawRepresentable, Hashable, CaseIterable, Sendable {
+    /// The upstream name, such as `chevron-down`.
+    public let rawValue: String
+
+    /// The icon named `rawValue` in the catalogue, or `nil` for a name it doesn't have.
+    public init?(rawValue: String) {
+        guard Self.allCases.contains(where: { $0.rawValue == rawValue }) else { return nil }
+        self.rawValue = rawValue
+    }
+
+    private init(_ rawValue: String) {
+        self.rawValue = rawValue
+    }
+
     /// `archive` — `ArchiveIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case archive
+    public static let archive = QeetrixIconName("archive")
 
     /// `arrow-down` — `ArrowDownIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case arrowDown = "arrow-down"
+    public static let arrowDown = QeetrixIconName("arrow-down")
 
     /// `arrow-up` — `ArrowUpIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case arrowUp = "arrow-up"
+    public static let arrowUp = QeetrixIconName("arrow-up")
 
     /// `bell` — `BellIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case bell
+    public static let bell = QeetrixIconName("bell")
 
     /// `bell-off` — `BellOffIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case bellOff = "bell-off"
+    public static let bellOff = QeetrixIconName("bell-off")
 
     /// `calendar` — `CalendarIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case calendar
+    public static let calendar = QeetrixIconName("calendar")
 
     /// `camera` — `CameraIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case camera
+    public static let camera = QeetrixIconName("camera")
 
     /// `camera-off` — `CameraOffIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case cameraOff = "camera-off"
+    public static let cameraOff = QeetrixIconName("camera-off")
 
     /// `check` — `CheckIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case check
+    public static let check = QeetrixIconName("check")
 
     /// `chevron-down` — `ChevronDownIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case chevronDown = "chevron-down"
+    public static let chevronDown = QeetrixIconName("chevron-down")
 
     /// `chevron-left` — `ChevronLeftIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case chevronLeft = "chevron-left"
+    public static let chevronLeft = QeetrixIconName("chevron-left")
 
     /// `chevron-right` — `ChevronRightIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case chevronRight = "chevron-right"
+    public static let chevronRight = QeetrixIconName("chevron-right")
 
     /// `chevron-up` — `ChevronUpIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case chevronUp = "chevron-up"
+    public static let chevronUp = QeetrixIconName("chevron-up")
 
     /// `chevrons-up-down` — `ChevronsUpDownIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case chevronsUpDown = "chevrons-up-down"
+    public static let chevronsUpDown = QeetrixIconName("chevrons-up-down")
 
     /// `circle-alert` — `CircleAlertIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case circleAlert = "circle-alert"
+    public static let circleAlert = QeetrixIconName("circle-alert")
 
     /// `circle-check` — `CircleCheckIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case circleCheck = "circle-check"
+    public static let circleCheck = QeetrixIconName("circle-check")
 
     /// `circle-dashed` — `CircleDashedIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case circleDashed = "circle-dashed"
+    public static let circleDashed = QeetrixIconName("circle-dashed")
 
     /// `circle-plus` — `CirclePlusIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case circlePlus = "circle-plus"
+    public static let circlePlus = QeetrixIconName("circle-plus")
 
     /// `circle-x` — `CircleXIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case circleX = "circle-x"
+    public static let circleX = QeetrixIconName("circle-x")
 
     /// `clock` — `ClockIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case clock
+    public static let clock = QeetrixIconName("clock")
 
     /// `cloud-upload` — `CloudUploadIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case cloudUpload = "cloud-upload"
+    public static let cloudUpload = QeetrixIconName("cloud-upload")
 
     /// `contact-round` — `ContactRoundIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case contactRound = "contact-round"
+    public static let contactRound = QeetrixIconName("contact-round")
 
     /// `copy` — `CopyIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case copy
+    public static let copy = QeetrixIconName("copy")
 
     /// `database` — `DatabaseIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case database
+    public static let database = QeetrixIconName("database")
 
     /// `ellipsis` — `EllipsisIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case ellipsis
+    public static let ellipsis = QeetrixIconName("ellipsis")
 
     /// `eye` — `EyeIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case eye
+    public static let eye = QeetrixIconName("eye")
 
     /// `eye-off` — `EyeOffIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case eyeOff = "eye-off"
+    public static let eyeOff = QeetrixIconName("eye-off")
 
     /// `file` — `FileIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case file
+    public static let file = QeetrixIconName("file")
 
     /// `file-archive` — `FileArchiveIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case fileArchive = "file-archive"
+    public static let fileArchive = QeetrixIconName("file-archive")
 
     /// `file-code` — `FileCodeIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case fileCode = "file-code"
+    public static let fileCode = QeetrixIconName("file-code")
 
     /// `file-image` — `FileImageIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case fileImage = "file-image"
+    public static let fileImage = QeetrixIconName("file-image")
 
     /// `file-spreadsheet` — `FileSpreadsheetIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case fileSpreadsheet = "file-spreadsheet"
+    public static let fileSpreadsheet = QeetrixIconName("file-spreadsheet")
 
     /// `file-text` — `FileTextIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case fileText = "file-text"
+    public static let fileText = QeetrixIconName("file-text")
 
     /// `flashlight` — `FlashlightIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case flashlight
+    public static let flashlight = QeetrixIconName("flashlight")
 
     /// `flashlight-off` — `FlashlightOffIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case flashlightOff = "flashlight-off"
+    public static let flashlightOff = QeetrixIconName("flashlight-off")
 
     /// `folder` — `FolderIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case folder
+    public static let folder = QeetrixIconName("folder")
 
     /// `house` — `HouseIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case house
+    public static let house = QeetrixIconName("house")
 
     /// `image` — `ImageIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case image
+    public static let image = QeetrixIconName("image")
 
     /// `image-plus` — `ImagePlusIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case imagePlus = "image-plus"
+    public static let imagePlus = QeetrixIconName("image-plus")
 
     /// `inbox` — `InboxIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case inbox
+    public static let inbox = QeetrixIconName("inbox")
 
     /// `info` — `InfoIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case info
+    public static let info = QeetrixIconName("info")
 
     /// `key-round` — `KeyRoundIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case keyRound = "key-round"
+    public static let keyRound = QeetrixIconName("key-round")
 
     /// `keyboard` — `KeyboardIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case keyboard
+    public static let keyboard = QeetrixIconName("keyboard")
 
     /// `loader-circle` — `LoaderCircleIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case loaderCircle = "loader-circle"
+    public static let loaderCircle = QeetrixIconName("loader-circle")
 
     /// `lock` — `LockIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case lock
+    public static let lock = QeetrixIconName("lock")
 
     /// `map-pin` — `MapPinIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case mapPin = "map-pin"
+    public static let mapPin = QeetrixIconName("map-pin")
 
     /// `menu` — `MenuIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case menu
+    public static let menu = QeetrixIconName("menu")
 
     /// `minus` — `MinusIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case minus
+    public static let minus = QeetrixIconName("minus")
 
     /// `navigation` — `NavigationIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case navigation
+    public static let navigation = QeetrixIconName("navigation")
 
     /// `panel-right` — `PanelRightIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case panelRight = "panel-right"
+    public static let panelRight = QeetrixIconName("panel-right")
 
     /// `paperclip` — `PaperclipIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case paperclip
+    public static let paperclip = QeetrixIconName("paperclip")
 
     /// `pencil` — `PencilIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case pencil
+    public static let pencil = QeetrixIconName("pencil")
 
     /// `pin` — `PinIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case pin
+    public static let pin = QeetrixIconName("pin")
 
     /// `plus` — `PlusIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case plus
+    public static let plus = QeetrixIconName("plus")
 
     /// `refresh-cw` — `RefreshCwIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case refreshCw = "refresh-cw"
+    public static let refreshCw = QeetrixIconName("refresh-cw")
 
     /// `scan-line` — `ScanLineIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case scanLine = "scan-line"
+    public static let scanLine = QeetrixIconName("scan-line")
 
     /// `search` — `SearchIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case search
+    public static let search = QeetrixIconName("search")
 
     /// `send` — `SendIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled. Mirrors in right-to-left layouts.
-    case send
+    public static let send = QeetrixIconName("send")
 
     /// `server` — `ServerIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case server
+    public static let server = QeetrixIconName("server")
 
     /// `settings` — `SettingsIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case settings
+    public static let settings = QeetrixIconName("settings")
 
     /// `share-2` — `Share2Icon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case share2 = "share-2"
+    public static let share2 = QeetrixIconName("share-2")
 
     /// `smartphone` — `SmartphoneIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case smartphone
+    public static let smartphone = QeetrixIconName("smartphone")
 
     /// `trash` — `TrashIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case trash
+    public static let trash = QeetrixIconName("trash")
 
     /// `triangle-alert` — `TriangleAlertIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case triangleAlert = "triangle-alert"
+    public static let triangleAlert = QeetrixIconName("triangle-alert")
 
     /// `user-plus` — `UserPlusIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case userPlus = "user-plus"
+    public static let userPlus = QeetrixIconName("user-plus")
 
     /// `user-round` — `UserRoundIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
-    case userRound = "user-round"
+    public static let userRound = QeetrixIconName("user-round")
 
     /// `wifi-off` — `WifiOffIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case wifiOff = "wifi-off"
+    public static let wifiOff = QeetrixIconName("wifi-off")
 
     /// `x` — `XIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
-    case x
+    public static let x = QeetrixIconName("x")
+
+    /// Every icon in the catalogue, in name order.
+    public static let allCases: [QeetrixIconName] = [
+        .archive,
+        .arrowDown,
+        .arrowUp,
+        .bell,
+        .bellOff,
+        .calendar,
+        .camera,
+        .cameraOff,
+        .check,
+        .chevronDown,
+        .chevronLeft,
+        .chevronRight,
+        .chevronUp,
+        .chevronsUpDown,
+        .circleAlert,
+        .circleCheck,
+        .circleDashed,
+        .circlePlus,
+        .circleX,
+        .clock,
+        .cloudUpload,
+        .contactRound,
+        .copy,
+        .database,
+        .ellipsis,
+        .eye,
+        .eyeOff,
+        .file,
+        .fileArchive,
+        .fileCode,
+        .fileImage,
+        .fileSpreadsheet,
+        .fileText,
+        .flashlight,
+        .flashlightOff,
+        .folder,
+        .house,
+        .image,
+        .imagePlus,
+        .inbox,
+        .info,
+        .keyRound,
+        .keyboard,
+        .loaderCircle,
+        .lock,
+        .mapPin,
+        .menu,
+        .minus,
+        .navigation,
+        .panelRight,
+        .paperclip,
+        .pencil,
+        .pin,
+        .plus,
+        .refreshCw,
+        .scanLine,
+        .search,
+        .send,
+        .server,
+        .settings,
+        .share2,
+        .smartphone,
+        .trash,
+        .triangleAlert,
+        .userPlus,
+        .userRound,
+        .wifiOff,
+        .x,
+    ]
+
+    /// The icons whose drawing mirrors in right-to-left layouts (`directionality: "mirror"` upstream).
+    static let mirrored: Set<QeetrixIconName> = [.send]
 
     /// Whether the drawing mirrors in right-to-left layouts (`directionality: "mirror"` upstream).
     public var mirrorsInRightToLeft: Bool {
-        switch self {
-        case .send: true
-        default: false
-        }
+        Self.mirrored.contains(self)
     }
 }
 
 extension QeetrixIconName {
     /// The drawing for a shape and variant, or `nil` when `@qeetrix/icons` does not draw that combination.
     func drawing(_ shape: QeetrixIconShape, _ variant: QeetrixIconVariant) -> QeetrixIconDrawing? {
-        switch (self, shape, variant) {
-        case (.archive, .round, .outline): QeetrixIconDrawings.archiveRoundOutline
-        case (.archive, .round, .filled): QeetrixIconDrawings.archiveRoundFilled
-        case (.archive, .sharp, .outline): QeetrixIconDrawings.archiveSharpOutline
-        case (.archive, .sharp, .filled): QeetrixIconDrawings.archiveSharpFilled
-        case (.arrowDown, .round, .outline): QeetrixIconDrawings.arrowDownRoundOutline
-        case (.arrowDown, .sharp, .outline): QeetrixIconDrawings.arrowDownSharpOutline
-        case (.arrowUp, .round, .outline): QeetrixIconDrawings.arrowUpRoundOutline
-        case (.arrowUp, .sharp, .outline): QeetrixIconDrawings.arrowUpSharpOutline
-        case (.bell, .round, .outline): QeetrixIconDrawings.bellRoundOutline
-        case (.bell, .round, .filled): QeetrixIconDrawings.bellRoundFilled
-        case (.bell, .sharp, .outline): QeetrixIconDrawings.bellSharpOutline
-        case (.bell, .sharp, .filled): QeetrixIconDrawings.bellSharpFilled
-        case (.bellOff, .round, .outline): QeetrixIconDrawings.bellOffRoundOutline
-        case (.bellOff, .round, .filled): QeetrixIconDrawings.bellOffRoundFilled
-        case (.bellOff, .sharp, .outline): QeetrixIconDrawings.bellOffSharpOutline
-        case (.bellOff, .sharp, .filled): QeetrixIconDrawings.bellOffSharpFilled
-        case (.calendar, .round, .outline): QeetrixIconDrawings.calendarRoundOutline
-        case (.calendar, .round, .filled): QeetrixIconDrawings.calendarRoundFilled
-        case (.calendar, .sharp, .outline): QeetrixIconDrawings.calendarSharpOutline
-        case (.calendar, .sharp, .filled): QeetrixIconDrawings.calendarSharpFilled
-        case (.camera, .round, .outline): QeetrixIconDrawings.cameraRoundOutline
-        case (.camera, .round, .filled): QeetrixIconDrawings.cameraRoundFilled
-        case (.camera, .sharp, .outline): QeetrixIconDrawings.cameraSharpOutline
-        case (.camera, .sharp, .filled): QeetrixIconDrawings.cameraSharpFilled
-        case (.cameraOff, .round, .outline): QeetrixIconDrawings.cameraOffRoundOutline
-        case (.cameraOff, .sharp, .outline): QeetrixIconDrawings.cameraOffSharpOutline
-        case (.check, .round, .outline): QeetrixIconDrawings.checkRoundOutline
-        case (.check, .sharp, .outline): QeetrixIconDrawings.checkSharpOutline
-        case (.chevronDown, .round, .outline): QeetrixIconDrawings.chevronDownRoundOutline
-        case (.chevronDown, .sharp, .outline): QeetrixIconDrawings.chevronDownSharpOutline
-        case (.chevronLeft, .round, .outline): QeetrixIconDrawings.chevronLeftRoundOutline
-        case (.chevronLeft, .sharp, .outline): QeetrixIconDrawings.chevronLeftSharpOutline
-        case (.chevronRight, .round, .outline): QeetrixIconDrawings.chevronRightRoundOutline
-        case (.chevronRight, .sharp, .outline): QeetrixIconDrawings.chevronRightSharpOutline
-        case (.chevronUp, .round, .outline): QeetrixIconDrawings.chevronUpRoundOutline
-        case (.chevronUp, .sharp, .outline): QeetrixIconDrawings.chevronUpSharpOutline
-        case (.chevronsUpDown, .round, .outline): QeetrixIconDrawings.chevronsUpDownRoundOutline
-        case (.chevronsUpDown, .sharp, .outline): QeetrixIconDrawings.chevronsUpDownSharpOutline
-        case (.circleAlert, .round, .outline): QeetrixIconDrawings.circleAlertRoundOutline
-        case (.circleAlert, .round, .filled): QeetrixIconDrawings.circleAlertRoundFilled
-        case (.circleAlert, .sharp, .outline): QeetrixIconDrawings.circleAlertSharpOutline
-        case (.circleAlert, .sharp, .filled): QeetrixIconDrawings.circleAlertSharpFilled
-        case (.circleCheck, .round, .outline): QeetrixIconDrawings.circleCheckRoundOutline
-        case (.circleCheck, .round, .filled): QeetrixIconDrawings.circleCheckRoundFilled
-        case (.circleCheck, .sharp, .outline): QeetrixIconDrawings.circleCheckSharpOutline
-        case (.circleCheck, .sharp, .filled): QeetrixIconDrawings.circleCheckSharpFilled
-        case (.circleDashed, .round, .outline): QeetrixIconDrawings.circleDashedRoundOutline
-        case (.circleDashed, .sharp, .outline): QeetrixIconDrawings.circleDashedSharpOutline
-        case (.circlePlus, .round, .outline): QeetrixIconDrawings.circlePlusRoundOutline
-        case (.circlePlus, .round, .filled): QeetrixIconDrawings.circlePlusRoundFilled
-        case (.circlePlus, .sharp, .outline): QeetrixIconDrawings.circlePlusSharpOutline
-        case (.circlePlus, .sharp, .filled): QeetrixIconDrawings.circlePlusSharpFilled
-        case (.circleX, .round, .outline): QeetrixIconDrawings.circleXRoundOutline
-        case (.circleX, .round, .filled): QeetrixIconDrawings.circleXRoundFilled
-        case (.circleX, .sharp, .outline): QeetrixIconDrawings.circleXSharpOutline
-        case (.circleX, .sharp, .filled): QeetrixIconDrawings.circleXSharpFilled
-        case (.clock, .round, .outline): QeetrixIconDrawings.clockRoundOutline
-        case (.clock, .round, .filled): QeetrixIconDrawings.clockRoundFilled
-        case (.clock, .sharp, .outline): QeetrixIconDrawings.clockSharpOutline
-        case (.clock, .sharp, .filled): QeetrixIconDrawings.clockSharpFilled
-        case (.cloudUpload, .round, .outline): QeetrixIconDrawings.cloudUploadRoundOutline
-        case (.cloudUpload, .sharp, .outline): QeetrixIconDrawings.cloudUploadSharpOutline
-        case (.contactRound, .round, .outline): QeetrixIconDrawings.contactRoundRoundOutline
-        case (.contactRound, .round, .filled): QeetrixIconDrawings.contactRoundRoundFilled
-        case (.contactRound, .sharp, .outline): QeetrixIconDrawings.contactRoundSharpOutline
-        case (.contactRound, .sharp, .filled): QeetrixIconDrawings.contactRoundSharpFilled
-        case (.copy, .round, .outline): QeetrixIconDrawings.copyRoundOutline
-        case (.copy, .round, .filled): QeetrixIconDrawings.copyRoundFilled
-        case (.copy, .sharp, .outline): QeetrixIconDrawings.copySharpOutline
-        case (.copy, .sharp, .filled): QeetrixIconDrawings.copySharpFilled
-        case (.database, .round, .outline): QeetrixIconDrawings.databaseRoundOutline
-        case (.database, .round, .filled): QeetrixIconDrawings.databaseRoundFilled
-        case (.database, .sharp, .outline): QeetrixIconDrawings.databaseSharpOutline
-        case (.database, .sharp, .filled): QeetrixIconDrawings.databaseSharpFilled
-        case (.ellipsis, .round, .outline): QeetrixIconDrawings.ellipsisRoundOutline
-        case (.ellipsis, .sharp, .outline): QeetrixIconDrawings.ellipsisSharpOutline
-        case (.eye, .round, .outline): QeetrixIconDrawings.eyeRoundOutline
-        case (.eye, .round, .filled): QeetrixIconDrawings.eyeRoundFilled
-        case (.eye, .sharp, .outline): QeetrixIconDrawings.eyeSharpOutline
-        case (.eye, .sharp, .filled): QeetrixIconDrawings.eyeSharpFilled
-        case (.eyeOff, .round, .outline): QeetrixIconDrawings.eyeOffRoundOutline
-        case (.eyeOff, .round, .filled): QeetrixIconDrawings.eyeOffRoundFilled
-        case (.eyeOff, .sharp, .outline): QeetrixIconDrawings.eyeOffSharpOutline
-        case (.eyeOff, .sharp, .filled): QeetrixIconDrawings.eyeOffSharpFilled
-        case (.file, .round, .outline): QeetrixIconDrawings.fileRoundOutline
-        case (.file, .round, .filled): QeetrixIconDrawings.fileRoundFilled
-        case (.file, .sharp, .outline): QeetrixIconDrawings.fileSharpOutline
-        case (.file, .sharp, .filled): QeetrixIconDrawings.fileSharpFilled
-        case (.fileArchive, .round, .outline): QeetrixIconDrawings.fileArchiveRoundOutline
-        case (.fileArchive, .sharp, .outline): QeetrixIconDrawings.fileArchiveSharpOutline
-        case (.fileCode, .round, .outline): QeetrixIconDrawings.fileCodeRoundOutline
-        case (.fileCode, .round, .filled): QeetrixIconDrawings.fileCodeRoundFilled
-        case (.fileCode, .sharp, .outline): QeetrixIconDrawings.fileCodeSharpOutline
-        case (.fileCode, .sharp, .filled): QeetrixIconDrawings.fileCodeSharpFilled
-        case (.fileImage, .round, .outline): QeetrixIconDrawings.fileImageRoundOutline
-        case (.fileImage, .sharp, .outline): QeetrixIconDrawings.fileImageSharpOutline
-        case (.fileSpreadsheet, .round, .outline): QeetrixIconDrawings.fileSpreadsheetRoundOutline
-        case (.fileSpreadsheet, .round, .filled): QeetrixIconDrawings.fileSpreadsheetRoundFilled
-        case (.fileSpreadsheet, .sharp, .outline): QeetrixIconDrawings.fileSpreadsheetSharpOutline
-        case (.fileSpreadsheet, .sharp, .filled): QeetrixIconDrawings.fileSpreadsheetSharpFilled
-        case (.fileText, .round, .outline): QeetrixIconDrawings.fileTextRoundOutline
-        case (.fileText, .round, .filled): QeetrixIconDrawings.fileTextRoundFilled
-        case (.fileText, .sharp, .outline): QeetrixIconDrawings.fileTextSharpOutline
-        case (.fileText, .sharp, .filled): QeetrixIconDrawings.fileTextSharpFilled
-        case (.flashlight, .round, .outline): QeetrixIconDrawings.flashlightRoundOutline
-        case (.flashlight, .round, .filled): QeetrixIconDrawings.flashlightRoundFilled
-        case (.flashlight, .sharp, .outline): QeetrixIconDrawings.flashlightSharpOutline
-        case (.flashlight, .sharp, .filled): QeetrixIconDrawings.flashlightSharpFilled
-        case (.flashlightOff, .round, .outline): QeetrixIconDrawings.flashlightOffRoundOutline
-        case (.flashlightOff, .sharp, .outline): QeetrixIconDrawings.flashlightOffSharpOutline
-        case (.folder, .round, .outline): QeetrixIconDrawings.folderRoundOutline
-        case (.folder, .round, .filled): QeetrixIconDrawings.folderRoundFilled
-        case (.folder, .sharp, .outline): QeetrixIconDrawings.folderSharpOutline
-        case (.folder, .sharp, .filled): QeetrixIconDrawings.folderSharpFilled
-        case (.house, .round, .outline): QeetrixIconDrawings.houseRoundOutline
-        case (.house, .round, .filled): QeetrixIconDrawings.houseRoundFilled
-        case (.house, .sharp, .outline): QeetrixIconDrawings.houseSharpOutline
-        case (.house, .sharp, .filled): QeetrixIconDrawings.houseSharpFilled
-        case (.image, .round, .outline): QeetrixIconDrawings.imageRoundOutline
-        case (.image, .round, .filled): QeetrixIconDrawings.imageRoundFilled
-        case (.image, .sharp, .outline): QeetrixIconDrawings.imageSharpOutline
-        case (.image, .sharp, .filled): QeetrixIconDrawings.imageSharpFilled
-        case (.imagePlus, .round, .outline): QeetrixIconDrawings.imagePlusRoundOutline
-        case (.imagePlus, .sharp, .outline): QeetrixIconDrawings.imagePlusSharpOutline
-        case (.inbox, .round, .outline): QeetrixIconDrawings.inboxRoundOutline
-        case (.inbox, .round, .filled): QeetrixIconDrawings.inboxRoundFilled
-        case (.inbox, .sharp, .outline): QeetrixIconDrawings.inboxSharpOutline
-        case (.inbox, .sharp, .filled): QeetrixIconDrawings.inboxSharpFilled
-        case (.info, .round, .outline): QeetrixIconDrawings.infoRoundOutline
-        case (.info, .round, .filled): QeetrixIconDrawings.infoRoundFilled
-        case (.info, .sharp, .outline): QeetrixIconDrawings.infoSharpOutline
-        case (.info, .sharp, .filled): QeetrixIconDrawings.infoSharpFilled
-        case (.keyRound, .round, .outline): QeetrixIconDrawings.keyRoundRoundOutline
-        case (.keyRound, .round, .filled): QeetrixIconDrawings.keyRoundRoundFilled
-        case (.keyRound, .sharp, .outline): QeetrixIconDrawings.keyRoundSharpOutline
-        case (.keyRound, .sharp, .filled): QeetrixIconDrawings.keyRoundSharpFilled
-        case (.keyboard, .round, .outline): QeetrixIconDrawings.keyboardRoundOutline
-        case (.keyboard, .round, .filled): QeetrixIconDrawings.keyboardRoundFilled
-        case (.keyboard, .sharp, .outline): QeetrixIconDrawings.keyboardSharpOutline
-        case (.keyboard, .sharp, .filled): QeetrixIconDrawings.keyboardSharpFilled
-        case (.loaderCircle, .round, .outline): QeetrixIconDrawings.loaderCircleRoundOutline
-        case (.loaderCircle, .sharp, .outline): QeetrixIconDrawings.loaderCircleSharpOutline
-        case (.lock, .round, .outline): QeetrixIconDrawings.lockRoundOutline
-        case (.lock, .round, .filled): QeetrixIconDrawings.lockRoundFilled
-        case (.lock, .sharp, .outline): QeetrixIconDrawings.lockSharpOutline
-        case (.lock, .sharp, .filled): QeetrixIconDrawings.lockSharpFilled
-        case (.mapPin, .round, .outline): QeetrixIconDrawings.mapPinRoundOutline
-        case (.mapPin, .round, .filled): QeetrixIconDrawings.mapPinRoundFilled
-        case (.mapPin, .sharp, .outline): QeetrixIconDrawings.mapPinSharpOutline
-        case (.mapPin, .sharp, .filled): QeetrixIconDrawings.mapPinSharpFilled
-        case (.menu, .round, .outline): QeetrixIconDrawings.menuRoundOutline
-        case (.menu, .sharp, .outline): QeetrixIconDrawings.menuSharpOutline
-        case (.minus, .round, .outline): QeetrixIconDrawings.minusRoundOutline
-        case (.minus, .sharp, .outline): QeetrixIconDrawings.minusSharpOutline
-        case (.navigation, .round, .outline): QeetrixIconDrawings.navigationRoundOutline
-        case (.navigation, .round, .filled): QeetrixIconDrawings.navigationRoundFilled
-        case (.navigation, .sharp, .outline): QeetrixIconDrawings.navigationSharpOutline
-        case (.navigation, .sharp, .filled): QeetrixIconDrawings.navigationSharpFilled
-        case (.panelRight, .round, .outline): QeetrixIconDrawings.panelRightRoundOutline
-        case (.panelRight, .round, .filled): QeetrixIconDrawings.panelRightRoundFilled
-        case (.panelRight, .sharp, .outline): QeetrixIconDrawings.panelRightSharpOutline
-        case (.panelRight, .sharp, .filled): QeetrixIconDrawings.panelRightSharpFilled
-        case (.paperclip, .round, .outline): QeetrixIconDrawings.paperclipRoundOutline
-        case (.paperclip, .sharp, .outline): QeetrixIconDrawings.paperclipSharpOutline
-        case (.pencil, .round, .outline): QeetrixIconDrawings.pencilRoundOutline
-        case (.pencil, .round, .filled): QeetrixIconDrawings.pencilRoundFilled
-        case (.pencil, .sharp, .outline): QeetrixIconDrawings.pencilSharpOutline
-        case (.pencil, .sharp, .filled): QeetrixIconDrawings.pencilSharpFilled
-        case (.pin, .round, .outline): QeetrixIconDrawings.pinRoundOutline
-        case (.pin, .round, .filled): QeetrixIconDrawings.pinRoundFilled
-        case (.pin, .sharp, .outline): QeetrixIconDrawings.pinSharpOutline
-        case (.pin, .sharp, .filled): QeetrixIconDrawings.pinSharpFilled
-        case (.plus, .round, .outline): QeetrixIconDrawings.plusRoundOutline
-        case (.plus, .sharp, .outline): QeetrixIconDrawings.plusSharpOutline
-        case (.refreshCw, .round, .outline): QeetrixIconDrawings.refreshCwRoundOutline
-        case (.refreshCw, .sharp, .outline): QeetrixIconDrawings.refreshCwSharpOutline
-        case (.scanLine, .round, .outline): QeetrixIconDrawings.scanLineRoundOutline
-        case (.scanLine, .sharp, .outline): QeetrixIconDrawings.scanLineSharpOutline
-        case (.search, .round, .outline): QeetrixIconDrawings.searchRoundOutline
-        case (.search, .round, .filled): QeetrixIconDrawings.searchRoundFilled
-        case (.search, .sharp, .outline): QeetrixIconDrawings.searchSharpOutline
-        case (.search, .sharp, .filled): QeetrixIconDrawings.searchSharpFilled
-        case (.send, .round, .outline): QeetrixIconDrawings.sendRoundOutline
-        case (.send, .round, .filled): QeetrixIconDrawings.sendRoundFilled
-        case (.send, .sharp, .outline): QeetrixIconDrawings.sendSharpOutline
-        case (.send, .sharp, .filled): QeetrixIconDrawings.sendSharpFilled
-        case (.server, .round, .outline): QeetrixIconDrawings.serverRoundOutline
-        case (.server, .round, .filled): QeetrixIconDrawings.serverRoundFilled
-        case (.server, .sharp, .outline): QeetrixIconDrawings.serverSharpOutline
-        case (.server, .sharp, .filled): QeetrixIconDrawings.serverSharpFilled
-        case (.settings, .round, .outline): QeetrixIconDrawings.settingsRoundOutline
-        case (.settings, .round, .filled): QeetrixIconDrawings.settingsRoundFilled
-        case (.settings, .sharp, .outline): QeetrixIconDrawings.settingsSharpOutline
-        case (.settings, .sharp, .filled): QeetrixIconDrawings.settingsSharpFilled
-        case (.share2, .round, .outline): QeetrixIconDrawings.share2RoundOutline
-        case (.share2, .round, .filled): QeetrixIconDrawings.share2RoundFilled
-        case (.share2, .sharp, .outline): QeetrixIconDrawings.share2SharpOutline
-        case (.share2, .sharp, .filled): QeetrixIconDrawings.share2SharpFilled
-        case (.smartphone, .round, .outline): QeetrixIconDrawings.smartphoneRoundOutline
-        case (.smartphone, .round, .filled): QeetrixIconDrawings.smartphoneRoundFilled
-        case (.smartphone, .sharp, .outline): QeetrixIconDrawings.smartphoneSharpOutline
-        case (.smartphone, .sharp, .filled): QeetrixIconDrawings.smartphoneSharpFilled
-        case (.trash, .round, .outline): QeetrixIconDrawings.trashRoundOutline
-        case (.trash, .round, .filled): QeetrixIconDrawings.trashRoundFilled
-        case (.trash, .sharp, .outline): QeetrixIconDrawings.trashSharpOutline
-        case (.trash, .sharp, .filled): QeetrixIconDrawings.trashSharpFilled
-        case (.triangleAlert, .round, .outline): QeetrixIconDrawings.triangleAlertRoundOutline
-        case (.triangleAlert, .round, .filled): QeetrixIconDrawings.triangleAlertRoundFilled
-        case (.triangleAlert, .sharp, .outline): QeetrixIconDrawings.triangleAlertSharpOutline
-        case (.triangleAlert, .sharp, .filled): QeetrixIconDrawings.triangleAlertSharpFilled
-        case (.userPlus, .round, .outline): QeetrixIconDrawings.userPlusRoundOutline
-        case (.userPlus, .round, .filled): QeetrixIconDrawings.userPlusRoundFilled
-        case (.userPlus, .sharp, .outline): QeetrixIconDrawings.userPlusSharpOutline
-        case (.userPlus, .sharp, .filled): QeetrixIconDrawings.userPlusSharpFilled
-        case (.userRound, .round, .outline): QeetrixIconDrawings.userRoundRoundOutline
-        case (.userRound, .round, .filled): QeetrixIconDrawings.userRoundRoundFilled
-        case (.userRound, .sharp, .outline): QeetrixIconDrawings.userRoundSharpOutline
-        case (.userRound, .sharp, .filled): QeetrixIconDrawings.userRoundSharpFilled
-        case (.wifiOff, .round, .outline): QeetrixIconDrawings.wifiOffRoundOutline
-        case (.wifiOff, .sharp, .outline): QeetrixIconDrawings.wifiOffSharpOutline
-        case (.x, .round, .outline): QeetrixIconDrawings.xRoundOutline
-        case (.x, .sharp, .outline): QeetrixIconDrawings.xSharpOutline
-        default: nil
-        }
+        QeetrixIconDrawings.table[QeetrixIconDrawingKey(name: self, shape: shape, variant: variant)]
     }
+}
+
+struct QeetrixIconDrawingKey: Hashable, Sendable {
+    let name: QeetrixIconName
+    let shape: QeetrixIconShape
+    let variant: QeetrixIconVariant
 }
 
 /// Path data in the 24-unit grid, converted from the pinned SVG files: arcs and smooth curves
 /// are already expanded to cubic Béziers.
 enum QeetrixIconDrawings {
+    /// Every drawing, by icon, shape and variant.
+    static let table: [QeetrixIconDrawingKey: QeetrixIconDrawing] = [
+        QeetrixIconDrawingKey(name: .archive, shape: .round, variant: .outline): QeetrixIconDrawings.archiveRoundOutline,
+        QeetrixIconDrawingKey(name: .archive, shape: .round, variant: .filled): QeetrixIconDrawings.archiveRoundFilled,
+        QeetrixIconDrawingKey(name: .archive, shape: .sharp, variant: .outline): QeetrixIconDrawings.archiveSharpOutline,
+        QeetrixIconDrawingKey(name: .archive, shape: .sharp, variant: .filled): QeetrixIconDrawings.archiveSharpFilled,
+        QeetrixIconDrawingKey(name: .arrowDown, shape: .round, variant: .outline): QeetrixIconDrawings.arrowDownRoundOutline,
+        QeetrixIconDrawingKey(name: .arrowDown, shape: .sharp, variant: .outline): QeetrixIconDrawings.arrowDownSharpOutline,
+        QeetrixIconDrawingKey(name: .arrowUp, shape: .round, variant: .outline): QeetrixIconDrawings.arrowUpRoundOutline,
+        QeetrixIconDrawingKey(name: .arrowUp, shape: .sharp, variant: .outline): QeetrixIconDrawings.arrowUpSharpOutline,
+        QeetrixIconDrawingKey(name: .bell, shape: .round, variant: .outline): QeetrixIconDrawings.bellRoundOutline,
+        QeetrixIconDrawingKey(name: .bell, shape: .round, variant: .filled): QeetrixIconDrawings.bellRoundFilled,
+        QeetrixIconDrawingKey(name: .bell, shape: .sharp, variant: .outline): QeetrixIconDrawings.bellSharpOutline,
+        QeetrixIconDrawingKey(name: .bell, shape: .sharp, variant: .filled): QeetrixIconDrawings.bellSharpFilled,
+        QeetrixIconDrawingKey(name: .bellOff, shape: .round, variant: .outline): QeetrixIconDrawings.bellOffRoundOutline,
+        QeetrixIconDrawingKey(name: .bellOff, shape: .round, variant: .filled): QeetrixIconDrawings.bellOffRoundFilled,
+        QeetrixIconDrawingKey(name: .bellOff, shape: .sharp, variant: .outline): QeetrixIconDrawings.bellOffSharpOutline,
+        QeetrixIconDrawingKey(name: .bellOff, shape: .sharp, variant: .filled): QeetrixIconDrawings.bellOffSharpFilled,
+        QeetrixIconDrawingKey(name: .calendar, shape: .round, variant: .outline): QeetrixIconDrawings.calendarRoundOutline,
+        QeetrixIconDrawingKey(name: .calendar, shape: .round, variant: .filled): QeetrixIconDrawings.calendarRoundFilled,
+        QeetrixIconDrawingKey(name: .calendar, shape: .sharp, variant: .outline): QeetrixIconDrawings.calendarSharpOutline,
+        QeetrixIconDrawingKey(name: .calendar, shape: .sharp, variant: .filled): QeetrixIconDrawings.calendarSharpFilled,
+        QeetrixIconDrawingKey(name: .camera, shape: .round, variant: .outline): QeetrixIconDrawings.cameraRoundOutline,
+        QeetrixIconDrawingKey(name: .camera, shape: .round, variant: .filled): QeetrixIconDrawings.cameraRoundFilled,
+        QeetrixIconDrawingKey(name: .camera, shape: .sharp, variant: .outline): QeetrixIconDrawings.cameraSharpOutline,
+        QeetrixIconDrawingKey(name: .camera, shape: .sharp, variant: .filled): QeetrixIconDrawings.cameraSharpFilled,
+        QeetrixIconDrawingKey(name: .cameraOff, shape: .round, variant: .outline): QeetrixIconDrawings.cameraOffRoundOutline,
+        QeetrixIconDrawingKey(name: .cameraOff, shape: .sharp, variant: .outline): QeetrixIconDrawings.cameraOffSharpOutline,
+        QeetrixIconDrawingKey(name: .check, shape: .round, variant: .outline): QeetrixIconDrawings.checkRoundOutline,
+        QeetrixIconDrawingKey(name: .check, shape: .sharp, variant: .outline): QeetrixIconDrawings.checkSharpOutline,
+        QeetrixIconDrawingKey(name: .chevronDown, shape: .round, variant: .outline): QeetrixIconDrawings.chevronDownRoundOutline,
+        QeetrixIconDrawingKey(name: .chevronDown, shape: .sharp, variant: .outline): QeetrixIconDrawings.chevronDownSharpOutline,
+        QeetrixIconDrawingKey(name: .chevronLeft, shape: .round, variant: .outline): QeetrixIconDrawings.chevronLeftRoundOutline,
+        QeetrixIconDrawingKey(name: .chevronLeft, shape: .sharp, variant: .outline): QeetrixIconDrawings.chevronLeftSharpOutline,
+        QeetrixIconDrawingKey(name: .chevronRight, shape: .round, variant: .outline): QeetrixIconDrawings.chevronRightRoundOutline,
+        QeetrixIconDrawingKey(name: .chevronRight, shape: .sharp, variant: .outline): QeetrixIconDrawings.chevronRightSharpOutline,
+        QeetrixIconDrawingKey(name: .chevronUp, shape: .round, variant: .outline): QeetrixIconDrawings.chevronUpRoundOutline,
+        QeetrixIconDrawingKey(name: .chevronUp, shape: .sharp, variant: .outline): QeetrixIconDrawings.chevronUpSharpOutline,
+        QeetrixIconDrawingKey(name: .chevronsUpDown, shape: .round, variant: .outline): QeetrixIconDrawings.chevronsUpDownRoundOutline,
+        QeetrixIconDrawingKey(name: .chevronsUpDown, shape: .sharp, variant: .outline): QeetrixIconDrawings.chevronsUpDownSharpOutline,
+        QeetrixIconDrawingKey(name: .circleAlert, shape: .round, variant: .outline): QeetrixIconDrawings.circleAlertRoundOutline,
+        QeetrixIconDrawingKey(name: .circleAlert, shape: .round, variant: .filled): QeetrixIconDrawings.circleAlertRoundFilled,
+        QeetrixIconDrawingKey(name: .circleAlert, shape: .sharp, variant: .outline): QeetrixIconDrawings.circleAlertSharpOutline,
+        QeetrixIconDrawingKey(name: .circleAlert, shape: .sharp, variant: .filled): QeetrixIconDrawings.circleAlertSharpFilled,
+        QeetrixIconDrawingKey(name: .circleCheck, shape: .round, variant: .outline): QeetrixIconDrawings.circleCheckRoundOutline,
+        QeetrixIconDrawingKey(name: .circleCheck, shape: .round, variant: .filled): QeetrixIconDrawings.circleCheckRoundFilled,
+        QeetrixIconDrawingKey(name: .circleCheck, shape: .sharp, variant: .outline): QeetrixIconDrawings.circleCheckSharpOutline,
+        QeetrixIconDrawingKey(name: .circleCheck, shape: .sharp, variant: .filled): QeetrixIconDrawings.circleCheckSharpFilled,
+        QeetrixIconDrawingKey(name: .circleDashed, shape: .round, variant: .outline): QeetrixIconDrawings.circleDashedRoundOutline,
+        QeetrixIconDrawingKey(name: .circleDashed, shape: .sharp, variant: .outline): QeetrixIconDrawings.circleDashedSharpOutline,
+        QeetrixIconDrawingKey(name: .circlePlus, shape: .round, variant: .outline): QeetrixIconDrawings.circlePlusRoundOutline,
+        QeetrixIconDrawingKey(name: .circlePlus, shape: .round, variant: .filled): QeetrixIconDrawings.circlePlusRoundFilled,
+        QeetrixIconDrawingKey(name: .circlePlus, shape: .sharp, variant: .outline): QeetrixIconDrawings.circlePlusSharpOutline,
+        QeetrixIconDrawingKey(name: .circlePlus, shape: .sharp, variant: .filled): QeetrixIconDrawings.circlePlusSharpFilled,
+        QeetrixIconDrawingKey(name: .circleX, shape: .round, variant: .outline): QeetrixIconDrawings.circleXRoundOutline,
+        QeetrixIconDrawingKey(name: .circleX, shape: .round, variant: .filled): QeetrixIconDrawings.circleXRoundFilled,
+        QeetrixIconDrawingKey(name: .circleX, shape: .sharp, variant: .outline): QeetrixIconDrawings.circleXSharpOutline,
+        QeetrixIconDrawingKey(name: .circleX, shape: .sharp, variant: .filled): QeetrixIconDrawings.circleXSharpFilled,
+        QeetrixIconDrawingKey(name: .clock, shape: .round, variant: .outline): QeetrixIconDrawings.clockRoundOutline,
+        QeetrixIconDrawingKey(name: .clock, shape: .round, variant: .filled): QeetrixIconDrawings.clockRoundFilled,
+        QeetrixIconDrawingKey(name: .clock, shape: .sharp, variant: .outline): QeetrixIconDrawings.clockSharpOutline,
+        QeetrixIconDrawingKey(name: .clock, shape: .sharp, variant: .filled): QeetrixIconDrawings.clockSharpFilled,
+        QeetrixIconDrawingKey(name: .cloudUpload, shape: .round, variant: .outline): QeetrixIconDrawings.cloudUploadRoundOutline,
+        QeetrixIconDrawingKey(name: .cloudUpload, shape: .sharp, variant: .outline): QeetrixIconDrawings.cloudUploadSharpOutline,
+        QeetrixIconDrawingKey(name: .contactRound, shape: .round, variant: .outline): QeetrixIconDrawings.contactRoundRoundOutline,
+        QeetrixIconDrawingKey(name: .contactRound, shape: .round, variant: .filled): QeetrixIconDrawings.contactRoundRoundFilled,
+        QeetrixIconDrawingKey(name: .contactRound, shape: .sharp, variant: .outline): QeetrixIconDrawings.contactRoundSharpOutline,
+        QeetrixIconDrawingKey(name: .contactRound, shape: .sharp, variant: .filled): QeetrixIconDrawings.contactRoundSharpFilled,
+        QeetrixIconDrawingKey(name: .copy, shape: .round, variant: .outline): QeetrixIconDrawings.copyRoundOutline,
+        QeetrixIconDrawingKey(name: .copy, shape: .round, variant: .filled): QeetrixIconDrawings.copyRoundFilled,
+        QeetrixIconDrawingKey(name: .copy, shape: .sharp, variant: .outline): QeetrixIconDrawings.copySharpOutline,
+        QeetrixIconDrawingKey(name: .copy, shape: .sharp, variant: .filled): QeetrixIconDrawings.copySharpFilled,
+        QeetrixIconDrawingKey(name: .database, shape: .round, variant: .outline): QeetrixIconDrawings.databaseRoundOutline,
+        QeetrixIconDrawingKey(name: .database, shape: .round, variant: .filled): QeetrixIconDrawings.databaseRoundFilled,
+        QeetrixIconDrawingKey(name: .database, shape: .sharp, variant: .outline): QeetrixIconDrawings.databaseSharpOutline,
+        QeetrixIconDrawingKey(name: .database, shape: .sharp, variant: .filled): QeetrixIconDrawings.databaseSharpFilled,
+        QeetrixIconDrawingKey(name: .ellipsis, shape: .round, variant: .outline): QeetrixIconDrawings.ellipsisRoundOutline,
+        QeetrixIconDrawingKey(name: .ellipsis, shape: .sharp, variant: .outline): QeetrixIconDrawings.ellipsisSharpOutline,
+        QeetrixIconDrawingKey(name: .eye, shape: .round, variant: .outline): QeetrixIconDrawings.eyeRoundOutline,
+        QeetrixIconDrawingKey(name: .eye, shape: .round, variant: .filled): QeetrixIconDrawings.eyeRoundFilled,
+        QeetrixIconDrawingKey(name: .eye, shape: .sharp, variant: .outline): QeetrixIconDrawings.eyeSharpOutline,
+        QeetrixIconDrawingKey(name: .eye, shape: .sharp, variant: .filled): QeetrixIconDrawings.eyeSharpFilled,
+        QeetrixIconDrawingKey(name: .eyeOff, shape: .round, variant: .outline): QeetrixIconDrawings.eyeOffRoundOutline,
+        QeetrixIconDrawingKey(name: .eyeOff, shape: .round, variant: .filled): QeetrixIconDrawings.eyeOffRoundFilled,
+        QeetrixIconDrawingKey(name: .eyeOff, shape: .sharp, variant: .outline): QeetrixIconDrawings.eyeOffSharpOutline,
+        QeetrixIconDrawingKey(name: .eyeOff, shape: .sharp, variant: .filled): QeetrixIconDrawings.eyeOffSharpFilled,
+        QeetrixIconDrawingKey(name: .file, shape: .round, variant: .outline): QeetrixIconDrawings.fileRoundOutline,
+        QeetrixIconDrawingKey(name: .file, shape: .round, variant: .filled): QeetrixIconDrawings.fileRoundFilled,
+        QeetrixIconDrawingKey(name: .file, shape: .sharp, variant: .outline): QeetrixIconDrawings.fileSharpOutline,
+        QeetrixIconDrawingKey(name: .file, shape: .sharp, variant: .filled): QeetrixIconDrawings.fileSharpFilled,
+        QeetrixIconDrawingKey(name: .fileArchive, shape: .round, variant: .outline): QeetrixIconDrawings.fileArchiveRoundOutline,
+        QeetrixIconDrawingKey(name: .fileArchive, shape: .sharp, variant: .outline): QeetrixIconDrawings.fileArchiveSharpOutline,
+        QeetrixIconDrawingKey(name: .fileCode, shape: .round, variant: .outline): QeetrixIconDrawings.fileCodeRoundOutline,
+        QeetrixIconDrawingKey(name: .fileCode, shape: .round, variant: .filled): QeetrixIconDrawings.fileCodeRoundFilled,
+        QeetrixIconDrawingKey(name: .fileCode, shape: .sharp, variant: .outline): QeetrixIconDrawings.fileCodeSharpOutline,
+        QeetrixIconDrawingKey(name: .fileCode, shape: .sharp, variant: .filled): QeetrixIconDrawings.fileCodeSharpFilled,
+        QeetrixIconDrawingKey(name: .fileImage, shape: .round, variant: .outline): QeetrixIconDrawings.fileImageRoundOutline,
+        QeetrixIconDrawingKey(name: .fileImage, shape: .sharp, variant: .outline): QeetrixIconDrawings.fileImageSharpOutline,
+        QeetrixIconDrawingKey(name: .fileSpreadsheet, shape: .round, variant: .outline): QeetrixIconDrawings.fileSpreadsheetRoundOutline,
+        QeetrixIconDrawingKey(name: .fileSpreadsheet, shape: .round, variant: .filled): QeetrixIconDrawings.fileSpreadsheetRoundFilled,
+        QeetrixIconDrawingKey(name: .fileSpreadsheet, shape: .sharp, variant: .outline): QeetrixIconDrawings.fileSpreadsheetSharpOutline,
+        QeetrixIconDrawingKey(name: .fileSpreadsheet, shape: .sharp, variant: .filled): QeetrixIconDrawings.fileSpreadsheetSharpFilled,
+        QeetrixIconDrawingKey(name: .fileText, shape: .round, variant: .outline): QeetrixIconDrawings.fileTextRoundOutline,
+        QeetrixIconDrawingKey(name: .fileText, shape: .round, variant: .filled): QeetrixIconDrawings.fileTextRoundFilled,
+        QeetrixIconDrawingKey(name: .fileText, shape: .sharp, variant: .outline): QeetrixIconDrawings.fileTextSharpOutline,
+        QeetrixIconDrawingKey(name: .fileText, shape: .sharp, variant: .filled): QeetrixIconDrawings.fileTextSharpFilled,
+        QeetrixIconDrawingKey(name: .flashlight, shape: .round, variant: .outline): QeetrixIconDrawings.flashlightRoundOutline,
+        QeetrixIconDrawingKey(name: .flashlight, shape: .round, variant: .filled): QeetrixIconDrawings.flashlightRoundFilled,
+        QeetrixIconDrawingKey(name: .flashlight, shape: .sharp, variant: .outline): QeetrixIconDrawings.flashlightSharpOutline,
+        QeetrixIconDrawingKey(name: .flashlight, shape: .sharp, variant: .filled): QeetrixIconDrawings.flashlightSharpFilled,
+        QeetrixIconDrawingKey(name: .flashlightOff, shape: .round, variant: .outline): QeetrixIconDrawings.flashlightOffRoundOutline,
+        QeetrixIconDrawingKey(name: .flashlightOff, shape: .sharp, variant: .outline): QeetrixIconDrawings.flashlightOffSharpOutline,
+        QeetrixIconDrawingKey(name: .folder, shape: .round, variant: .outline): QeetrixIconDrawings.folderRoundOutline,
+        QeetrixIconDrawingKey(name: .folder, shape: .round, variant: .filled): QeetrixIconDrawings.folderRoundFilled,
+        QeetrixIconDrawingKey(name: .folder, shape: .sharp, variant: .outline): QeetrixIconDrawings.folderSharpOutline,
+        QeetrixIconDrawingKey(name: .folder, shape: .sharp, variant: .filled): QeetrixIconDrawings.folderSharpFilled,
+        QeetrixIconDrawingKey(name: .house, shape: .round, variant: .outline): QeetrixIconDrawings.houseRoundOutline,
+        QeetrixIconDrawingKey(name: .house, shape: .round, variant: .filled): QeetrixIconDrawings.houseRoundFilled,
+        QeetrixIconDrawingKey(name: .house, shape: .sharp, variant: .outline): QeetrixIconDrawings.houseSharpOutline,
+        QeetrixIconDrawingKey(name: .house, shape: .sharp, variant: .filled): QeetrixIconDrawings.houseSharpFilled,
+        QeetrixIconDrawingKey(name: .image, shape: .round, variant: .outline): QeetrixIconDrawings.imageRoundOutline,
+        QeetrixIconDrawingKey(name: .image, shape: .round, variant: .filled): QeetrixIconDrawings.imageRoundFilled,
+        QeetrixIconDrawingKey(name: .image, shape: .sharp, variant: .outline): QeetrixIconDrawings.imageSharpOutline,
+        QeetrixIconDrawingKey(name: .image, shape: .sharp, variant: .filled): QeetrixIconDrawings.imageSharpFilled,
+        QeetrixIconDrawingKey(name: .imagePlus, shape: .round, variant: .outline): QeetrixIconDrawings.imagePlusRoundOutline,
+        QeetrixIconDrawingKey(name: .imagePlus, shape: .sharp, variant: .outline): QeetrixIconDrawings.imagePlusSharpOutline,
+        QeetrixIconDrawingKey(name: .inbox, shape: .round, variant: .outline): QeetrixIconDrawings.inboxRoundOutline,
+        QeetrixIconDrawingKey(name: .inbox, shape: .round, variant: .filled): QeetrixIconDrawings.inboxRoundFilled,
+        QeetrixIconDrawingKey(name: .inbox, shape: .sharp, variant: .outline): QeetrixIconDrawings.inboxSharpOutline,
+        QeetrixIconDrawingKey(name: .inbox, shape: .sharp, variant: .filled): QeetrixIconDrawings.inboxSharpFilled,
+        QeetrixIconDrawingKey(name: .info, shape: .round, variant: .outline): QeetrixIconDrawings.infoRoundOutline,
+        QeetrixIconDrawingKey(name: .info, shape: .round, variant: .filled): QeetrixIconDrawings.infoRoundFilled,
+        QeetrixIconDrawingKey(name: .info, shape: .sharp, variant: .outline): QeetrixIconDrawings.infoSharpOutline,
+        QeetrixIconDrawingKey(name: .info, shape: .sharp, variant: .filled): QeetrixIconDrawings.infoSharpFilled,
+        QeetrixIconDrawingKey(name: .keyRound, shape: .round, variant: .outline): QeetrixIconDrawings.keyRoundRoundOutline,
+        QeetrixIconDrawingKey(name: .keyRound, shape: .round, variant: .filled): QeetrixIconDrawings.keyRoundRoundFilled,
+        QeetrixIconDrawingKey(name: .keyRound, shape: .sharp, variant: .outline): QeetrixIconDrawings.keyRoundSharpOutline,
+        QeetrixIconDrawingKey(name: .keyRound, shape: .sharp, variant: .filled): QeetrixIconDrawings.keyRoundSharpFilled,
+        QeetrixIconDrawingKey(name: .keyboard, shape: .round, variant: .outline): QeetrixIconDrawings.keyboardRoundOutline,
+        QeetrixIconDrawingKey(name: .keyboard, shape: .round, variant: .filled): QeetrixIconDrawings.keyboardRoundFilled,
+        QeetrixIconDrawingKey(name: .keyboard, shape: .sharp, variant: .outline): QeetrixIconDrawings.keyboardSharpOutline,
+        QeetrixIconDrawingKey(name: .keyboard, shape: .sharp, variant: .filled): QeetrixIconDrawings.keyboardSharpFilled,
+        QeetrixIconDrawingKey(name: .loaderCircle, shape: .round, variant: .outline): QeetrixIconDrawings.loaderCircleRoundOutline,
+        QeetrixIconDrawingKey(name: .loaderCircle, shape: .sharp, variant: .outline): QeetrixIconDrawings.loaderCircleSharpOutline,
+        QeetrixIconDrawingKey(name: .lock, shape: .round, variant: .outline): QeetrixIconDrawings.lockRoundOutline,
+        QeetrixIconDrawingKey(name: .lock, shape: .round, variant: .filled): QeetrixIconDrawings.lockRoundFilled,
+        QeetrixIconDrawingKey(name: .lock, shape: .sharp, variant: .outline): QeetrixIconDrawings.lockSharpOutline,
+        QeetrixIconDrawingKey(name: .lock, shape: .sharp, variant: .filled): QeetrixIconDrawings.lockSharpFilled,
+        QeetrixIconDrawingKey(name: .mapPin, shape: .round, variant: .outline): QeetrixIconDrawings.mapPinRoundOutline,
+        QeetrixIconDrawingKey(name: .mapPin, shape: .round, variant: .filled): QeetrixIconDrawings.mapPinRoundFilled,
+        QeetrixIconDrawingKey(name: .mapPin, shape: .sharp, variant: .outline): QeetrixIconDrawings.mapPinSharpOutline,
+        QeetrixIconDrawingKey(name: .mapPin, shape: .sharp, variant: .filled): QeetrixIconDrawings.mapPinSharpFilled,
+        QeetrixIconDrawingKey(name: .menu, shape: .round, variant: .outline): QeetrixIconDrawings.menuRoundOutline,
+        QeetrixIconDrawingKey(name: .menu, shape: .sharp, variant: .outline): QeetrixIconDrawings.menuSharpOutline,
+        QeetrixIconDrawingKey(name: .minus, shape: .round, variant: .outline): QeetrixIconDrawings.minusRoundOutline,
+        QeetrixIconDrawingKey(name: .minus, shape: .sharp, variant: .outline): QeetrixIconDrawings.minusSharpOutline,
+        QeetrixIconDrawingKey(name: .navigation, shape: .round, variant: .outline): QeetrixIconDrawings.navigationRoundOutline,
+        QeetrixIconDrawingKey(name: .navigation, shape: .round, variant: .filled): QeetrixIconDrawings.navigationRoundFilled,
+        QeetrixIconDrawingKey(name: .navigation, shape: .sharp, variant: .outline): QeetrixIconDrawings.navigationSharpOutline,
+        QeetrixIconDrawingKey(name: .navigation, shape: .sharp, variant: .filled): QeetrixIconDrawings.navigationSharpFilled,
+        QeetrixIconDrawingKey(name: .panelRight, shape: .round, variant: .outline): QeetrixIconDrawings.panelRightRoundOutline,
+        QeetrixIconDrawingKey(name: .panelRight, shape: .round, variant: .filled): QeetrixIconDrawings.panelRightRoundFilled,
+        QeetrixIconDrawingKey(name: .panelRight, shape: .sharp, variant: .outline): QeetrixIconDrawings.panelRightSharpOutline,
+        QeetrixIconDrawingKey(name: .panelRight, shape: .sharp, variant: .filled): QeetrixIconDrawings.panelRightSharpFilled,
+        QeetrixIconDrawingKey(name: .paperclip, shape: .round, variant: .outline): QeetrixIconDrawings.paperclipRoundOutline,
+        QeetrixIconDrawingKey(name: .paperclip, shape: .sharp, variant: .outline): QeetrixIconDrawings.paperclipSharpOutline,
+        QeetrixIconDrawingKey(name: .pencil, shape: .round, variant: .outline): QeetrixIconDrawings.pencilRoundOutline,
+        QeetrixIconDrawingKey(name: .pencil, shape: .round, variant: .filled): QeetrixIconDrawings.pencilRoundFilled,
+        QeetrixIconDrawingKey(name: .pencil, shape: .sharp, variant: .outline): QeetrixIconDrawings.pencilSharpOutline,
+        QeetrixIconDrawingKey(name: .pencil, shape: .sharp, variant: .filled): QeetrixIconDrawings.pencilSharpFilled,
+        QeetrixIconDrawingKey(name: .pin, shape: .round, variant: .outline): QeetrixIconDrawings.pinRoundOutline,
+        QeetrixIconDrawingKey(name: .pin, shape: .round, variant: .filled): QeetrixIconDrawings.pinRoundFilled,
+        QeetrixIconDrawingKey(name: .pin, shape: .sharp, variant: .outline): QeetrixIconDrawings.pinSharpOutline,
+        QeetrixIconDrawingKey(name: .pin, shape: .sharp, variant: .filled): QeetrixIconDrawings.pinSharpFilled,
+        QeetrixIconDrawingKey(name: .plus, shape: .round, variant: .outline): QeetrixIconDrawings.plusRoundOutline,
+        QeetrixIconDrawingKey(name: .plus, shape: .sharp, variant: .outline): QeetrixIconDrawings.plusSharpOutline,
+        QeetrixIconDrawingKey(name: .refreshCw, shape: .round, variant: .outline): QeetrixIconDrawings.refreshCwRoundOutline,
+        QeetrixIconDrawingKey(name: .refreshCw, shape: .sharp, variant: .outline): QeetrixIconDrawings.refreshCwSharpOutline,
+        QeetrixIconDrawingKey(name: .scanLine, shape: .round, variant: .outline): QeetrixIconDrawings.scanLineRoundOutline,
+        QeetrixIconDrawingKey(name: .scanLine, shape: .sharp, variant: .outline): QeetrixIconDrawings.scanLineSharpOutline,
+        QeetrixIconDrawingKey(name: .search, shape: .round, variant: .outline): QeetrixIconDrawings.searchRoundOutline,
+        QeetrixIconDrawingKey(name: .search, shape: .round, variant: .filled): QeetrixIconDrawings.searchRoundFilled,
+        QeetrixIconDrawingKey(name: .search, shape: .sharp, variant: .outline): QeetrixIconDrawings.searchSharpOutline,
+        QeetrixIconDrawingKey(name: .search, shape: .sharp, variant: .filled): QeetrixIconDrawings.searchSharpFilled,
+        QeetrixIconDrawingKey(name: .send, shape: .round, variant: .outline): QeetrixIconDrawings.sendRoundOutline,
+        QeetrixIconDrawingKey(name: .send, shape: .round, variant: .filled): QeetrixIconDrawings.sendRoundFilled,
+        QeetrixIconDrawingKey(name: .send, shape: .sharp, variant: .outline): QeetrixIconDrawings.sendSharpOutline,
+        QeetrixIconDrawingKey(name: .send, shape: .sharp, variant: .filled): QeetrixIconDrawings.sendSharpFilled,
+        QeetrixIconDrawingKey(name: .server, shape: .round, variant: .outline): QeetrixIconDrawings.serverRoundOutline,
+        QeetrixIconDrawingKey(name: .server, shape: .round, variant: .filled): QeetrixIconDrawings.serverRoundFilled,
+        QeetrixIconDrawingKey(name: .server, shape: .sharp, variant: .outline): QeetrixIconDrawings.serverSharpOutline,
+        QeetrixIconDrawingKey(name: .server, shape: .sharp, variant: .filled): QeetrixIconDrawings.serverSharpFilled,
+        QeetrixIconDrawingKey(name: .settings, shape: .round, variant: .outline): QeetrixIconDrawings.settingsRoundOutline,
+        QeetrixIconDrawingKey(name: .settings, shape: .round, variant: .filled): QeetrixIconDrawings.settingsRoundFilled,
+        QeetrixIconDrawingKey(name: .settings, shape: .sharp, variant: .outline): QeetrixIconDrawings.settingsSharpOutline,
+        QeetrixIconDrawingKey(name: .settings, shape: .sharp, variant: .filled): QeetrixIconDrawings.settingsSharpFilled,
+        QeetrixIconDrawingKey(name: .share2, shape: .round, variant: .outline): QeetrixIconDrawings.share2RoundOutline,
+        QeetrixIconDrawingKey(name: .share2, shape: .round, variant: .filled): QeetrixIconDrawings.share2RoundFilled,
+        QeetrixIconDrawingKey(name: .share2, shape: .sharp, variant: .outline): QeetrixIconDrawings.share2SharpOutline,
+        QeetrixIconDrawingKey(name: .share2, shape: .sharp, variant: .filled): QeetrixIconDrawings.share2SharpFilled,
+        QeetrixIconDrawingKey(name: .smartphone, shape: .round, variant: .outline): QeetrixIconDrawings.smartphoneRoundOutline,
+        QeetrixIconDrawingKey(name: .smartphone, shape: .round, variant: .filled): QeetrixIconDrawings.smartphoneRoundFilled,
+        QeetrixIconDrawingKey(name: .smartphone, shape: .sharp, variant: .outline): QeetrixIconDrawings.smartphoneSharpOutline,
+        QeetrixIconDrawingKey(name: .smartphone, shape: .sharp, variant: .filled): QeetrixIconDrawings.smartphoneSharpFilled,
+        QeetrixIconDrawingKey(name: .trash, shape: .round, variant: .outline): QeetrixIconDrawings.trashRoundOutline,
+        QeetrixIconDrawingKey(name: .trash, shape: .round, variant: .filled): QeetrixIconDrawings.trashRoundFilled,
+        QeetrixIconDrawingKey(name: .trash, shape: .sharp, variant: .outline): QeetrixIconDrawings.trashSharpOutline,
+        QeetrixIconDrawingKey(name: .trash, shape: .sharp, variant: .filled): QeetrixIconDrawings.trashSharpFilled,
+        QeetrixIconDrawingKey(name: .triangleAlert, shape: .round, variant: .outline): QeetrixIconDrawings.triangleAlertRoundOutline,
+        QeetrixIconDrawingKey(name: .triangleAlert, shape: .round, variant: .filled): QeetrixIconDrawings.triangleAlertRoundFilled,
+        QeetrixIconDrawingKey(name: .triangleAlert, shape: .sharp, variant: .outline): QeetrixIconDrawings.triangleAlertSharpOutline,
+        QeetrixIconDrawingKey(name: .triangleAlert, shape: .sharp, variant: .filled): QeetrixIconDrawings.triangleAlertSharpFilled,
+        QeetrixIconDrawingKey(name: .userPlus, shape: .round, variant: .outline): QeetrixIconDrawings.userPlusRoundOutline,
+        QeetrixIconDrawingKey(name: .userPlus, shape: .round, variant: .filled): QeetrixIconDrawings.userPlusRoundFilled,
+        QeetrixIconDrawingKey(name: .userPlus, shape: .sharp, variant: .outline): QeetrixIconDrawings.userPlusSharpOutline,
+        QeetrixIconDrawingKey(name: .userPlus, shape: .sharp, variant: .filled): QeetrixIconDrawings.userPlusSharpFilled,
+        QeetrixIconDrawingKey(name: .userRound, shape: .round, variant: .outline): QeetrixIconDrawings.userRoundRoundOutline,
+        QeetrixIconDrawingKey(name: .userRound, shape: .round, variant: .filled): QeetrixIconDrawings.userRoundRoundFilled,
+        QeetrixIconDrawingKey(name: .userRound, shape: .sharp, variant: .outline): QeetrixIconDrawings.userRoundSharpOutline,
+        QeetrixIconDrawingKey(name: .userRound, shape: .sharp, variant: .filled): QeetrixIconDrawings.userRoundSharpFilled,
+        QeetrixIconDrawingKey(name: .wifiOff, shape: .round, variant: .outline): QeetrixIconDrawings.wifiOffRoundOutline,
+        QeetrixIconDrawingKey(name: .wifiOff, shape: .sharp, variant: .outline): QeetrixIconDrawings.wifiOffSharpOutline,
+        QeetrixIconDrawingKey(name: .x, shape: .round, variant: .outline): QeetrixIconDrawings.xRoundOutline,
+        QeetrixIconDrawingKey(name: .x, shape: .sharp, variant: .outline): QeetrixIconDrawings.xSharpOutline,
+    ]
+
     /// `svg/round-outline/archive.svg`
     static let archiveRoundOutline = QeetrixIconDrawing(
         miterLimit: 4,

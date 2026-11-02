@@ -69,7 +69,7 @@ struct ButtonPage: View {
             }
             DemoSection("The style on native controls") {
                 FlowLayout {
-                    Button("Native button") {}
+                    Button("Native style") {}
                         .buttonStyle(.qeetrix(.soft))
                     ShareLink(item: URL(string: "https://ui.qeet.in")!) {
                         Text("Share link")

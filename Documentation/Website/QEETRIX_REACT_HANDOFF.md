@@ -1,7 +1,7 @@
 # ui.qeet.in handoff: Qeetrix for iOS, by `@qeetrix/react` component
 
 For whoever maintains the component pages on ui.qeet.in (`qeetrix-docs`). Qeetrix for iOS now follows
-`@qeetrix/react` 0.4.0, `@qeetrix/tokens` 0.0.13 and `@qeetrix/icons` 2.1.0 (ADR 0015), so each page can
+`@qeetrix/react` 0.4.0, `@qeetrix/tokens` 0.0.13 and `@qeetrix/icons` 2.1.0 (ADR 0018), so each page can
 gain an **iOS** section under the same name. Nothing here is published: qeetrix-ios has no release, and
 nothing should be documented as installable until it does.
 

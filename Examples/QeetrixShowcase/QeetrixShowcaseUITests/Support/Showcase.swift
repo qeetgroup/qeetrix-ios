@@ -23,6 +23,12 @@ extension XCUIElement {
         coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).withOffset(CGVector(dx: 0, dy: points)).tap()
     }
 
+    /// Taps `points` outside this element's frame, below its bottom edge: in a field's padding, under the
+    /// line of text the element covers.
+    func tapBelow(by points: CGFloat) {
+        coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 1)).withOffset(CGVector(dx: 0, dy: points)).tap()
+    }
+
     /// Scrolls the app until this element is on screen: slow drags of a third of the screen, without
     /// a swipe's momentum, which on a small screen (iPhone SE) carried the element past the top. Drags
     /// back down when the element is above the middle of the screen.
@@ -39,6 +45,17 @@ extension XCUIElement {
 }
 
 extension XCUIElement {
+    var hasKeyboardFocus: Bool {
+        (value(forKey: "hasKeyboardFocus") as? Bool) ?? false
+    }
+
+    /// Waits until this element has the keyboard focus. Focus set from a tap gesture lands a moment
+    /// after the tap, on a busy simulator up to a few seconds.
+    func waitForKeyboardFocus(timeout: TimeInterval = 5) -> Bool {
+        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hasKeyboardFocus == true"), object: self)
+        return XCTWaiter().wait(for: [expectation], timeout: timeout) == .completed
+    }
+
     /// Waits until this element's label is `label`. A system dialog runs its action after its dismissal
     /// animation, so what the action changes appears a moment after the tap.
     func waitForLabel(_ label: String, timeout: TimeInterval = 5) -> Bool {
@@ -66,6 +83,12 @@ extension XCUIApplication {
         } else {
             coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.08)).tap()
         }
+    }
+
+    /// Ends a search: the search bar's Cancel button, which iOS 27 shows as Close.
+    func endSearch() {
+        let cancel = buttons["Cancel"]
+        if cancel.exists { cancel.tap() } else { buttons["Close"].tap() }
     }
 
     /// Goes back one page with the system's edge swipe, which every navigation stack supports — the back

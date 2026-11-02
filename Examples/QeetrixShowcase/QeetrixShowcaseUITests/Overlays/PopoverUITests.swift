@@ -5,6 +5,13 @@ final class PopoverUITests: XCTestCase {
         continueAfterFailure = false
     }
 
+    /// Back to portrait for the next test. XCTest calls teardown off the main actor, and the device is the
+    /// main actor's, so the reset hops to it (a Swift 6 data-race warning otherwise).
+    override func tearDown() async throws {
+        await MainActor.run { XCUIDevice.shared.orientation = .portrait }
+        try await super.tearDown()
+    }
+
     private let roles = "Admins can invite members and manage billing. Members can view and edit projects."
 
     @MainActor

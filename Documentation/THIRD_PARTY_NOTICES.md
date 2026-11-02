@@ -26,7 +26,10 @@ The icon path data is converted from the SVG files of
   License.
 
 The complete notice, including the Lucide and Feather licences, is reproduced verbatim in
-[`Upstream/qeetrix-icons/LICENSE`](../Upstream/qeetrix-icons/LICENSE).
+[`Upstream/qeetrix-icons/LICENSE`](../Upstream/qeetrix-icons/LICENSE), and bundled in the library's
+resources as
+[`Licenses/qeetrix-icons-LICENSE.txt`](../Sources/Qeetrix/Resources/Licenses/qeetrix-icons-LICENSE.txt),
+so every app that ships the icons ships the notice. Both copies are pinned by the lock.
 
 ## Test-only dependencies (not distributed)
 

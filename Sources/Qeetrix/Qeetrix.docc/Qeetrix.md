@@ -36,6 +36,9 @@ struct Greeting: View {
 ### Essentials
 
 - <doc:GettingStarted>
+- <doc:Installing>
+- <doc:Migrating>
+- <doc:Troubleshooting>
 
 ### Foundations
 
@@ -123,6 +126,8 @@ struct Greeting: View {
 
 ### Data display
 
+- <doc:Collections>
+- <doc:Searching>
 - ``QeetrixAvatar``
 - ``QeetrixBadge``
 - ``QeetrixChip``

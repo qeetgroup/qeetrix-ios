@@ -93,19 +93,20 @@ public struct IconEmitter {
         let names = try icons.map { try SwiftNames.identifier([$0.name], context: "icon \($0.name)") }
         try SwiftNames.requireUnique(Array(zip(names, icons.map(\.name))), scope: "QeetrixIconName")
 
-        var cases: [String] = []
-        var switchCases: [String] = []
+        var members: [String] = []
+        var tableEntries: [String] = []
         var drawings: [String] = []
         for (name, icon) in zip(names, icons) {
             let keys = icon.drawings.map(\.key).joined(separator: ", ")
-            let raw = name == icon.name ? "" : " = \(swiftString(icon.name))"
-            cases.append(
-                "    /// `\(icon.name)` — `\(icon.componentName)` in \(package.name). Drawings: \(keys).\(icon.mirrors ? " Mirrors in right-to-left layouts." : "")\n    case \(SwiftNames.declaration(name))\(raw)\n"
+            members.append(
+                "    /// `\(icon.name)` — `\(icon.componentName)` in \(package.name). Drawings: \(keys).\(icon.mirrors ? " Mirrors in right-to-left layouts." : "")\n    public static let \(SwiftNames.declaration(name)) = QeetrixIconName(\(swiftString(icon.name)))\n"
             )
             for (key, drawing) in icon.drawings {
                 let parts = key.split(separator: "-").map(String.init)
                 let constant = try SwiftNames.identifier([icon.name] + parts, context: "\(icon.name) \(key)")
-                switchCases.append("        case (.\(name), .\(parts[0]), .\(parts[1])): QeetrixIconDrawings.\(constant)\n")
+                tableEntries.append(
+                    "        QeetrixIconDrawingKey(name: .\(name), shape: .\(parts[0]), variant: .\(parts[1])): QeetrixIconDrawings.\(constant),\n"
+                )
                 var elements = ""
                 for element in drawing.elements {
                     let fill = element.fill ? (element.evenOdd ? ".evenOdd" : ".nonZero") : "nil"
@@ -123,10 +124,7 @@ public struct IconEmitter {
             }
         }
         let mirrored = zip(names, icons).filter { $0.1.mirrors }.map { ".\($0.0)" }
-        let mirrorBody =
-            mirrored.isEmpty
-            ? "        false\n"
-            : "        switch self {\n        case \(mirrored.joined(separator: ", ")): true\n        default: false\n        }\n"
+        let allCases = names.map { "        .\($0),\n" }.joined()
 
         return GeneratedFile(
             path: Self.path,
@@ -139,25 +137,58 @@ public struct IconEmitter {
                 /// The Qeetrix icons available natively: the ones the components and the showcase use, not the
                 /// full catalogue. Names are `@qeetrix/icons`' (Lucide's) names; raw values are the exact
                 /// upstream names.
-                public enum QeetrixIconName: String, CaseIterable, Sendable {
-                \(cases.joined(separator: "\n"))
+                ///
+                /// An open set of names, like `Notification.Name`, rather than an enum: adding an icon is an
+                /// addition, not a source-breaking change for code that switches over icons (ADR 0016). Switch
+                /// with a `default` case; `allCases` lists the catalogue.
+                public struct QeetrixIconName: RawRepresentable, Hashable, CaseIterable, Sendable {
+                    /// The upstream name, such as `chevron-down`.
+                    public let rawValue: String
+
+                    /// The icon named `rawValue` in the catalogue, or `nil` for a name it doesn't have.
+                    public init?(rawValue: String) {
+                        guard Self.allCases.contains(where: { $0.rawValue == rawValue }) else { return nil }
+                        self.rawValue = rawValue
+                    }
+
+                    private init(_ rawValue: String) {
+                        self.rawValue = rawValue
+                    }
+
+                \(members.joined(separator: "\n"))
+                    /// Every icon in the catalogue, in name order.
+                    public static let allCases: [QeetrixIconName] = [
+                \(allCases)    ]
+
+                    /// The icons whose drawing mirrors in right-to-left layouts (`directionality: "mirror"` upstream).
+                    static let mirrored: Set<QeetrixIconName> = [\(mirrored.joined(separator: ", "))]
+
                     /// Whether the drawing mirrors in right-to-left layouts (`directionality: "mirror"` upstream).
                     public var mirrorsInRightToLeft: Bool {
-                \(mirrorBody)    }
+                        Self.mirrored.contains(self)
+                    }
                 }
 
                 extension QeetrixIconName {
                     /// The drawing for a shape and variant, or `nil` when `@qeetrix/icons` does not draw that combination.
                     func drawing(_ shape: QeetrixIconShape, _ variant: QeetrixIconVariant) -> QeetrixIconDrawing? {
-                        switch (self, shape, variant) {
-                \(switchCases.joined())        default: nil
-                        }
+                        QeetrixIconDrawings.table[QeetrixIconDrawingKey(name: self, shape: shape, variant: variant)]
                     }
+                }
+
+                struct QeetrixIconDrawingKey: Hashable, Sendable {
+                    let name: QeetrixIconName
+                    let shape: QeetrixIconShape
+                    let variant: QeetrixIconVariant
                 }
 
                 /// Path data in the 24-unit grid, converted from the pinned SVG files: arcs and smooth curves
                 /// are already expanded to cubic Béziers.
                 enum QeetrixIconDrawings {
+                    /// Every drawing, by icon, shape and variant.
+                    static let table: [QeetrixIconDrawingKey: QeetrixIconDrawing] = [
+                \(tableEntries.joined())    ]
+
                 \(drawings.joined(separator: "\n"))}
 
                 """)

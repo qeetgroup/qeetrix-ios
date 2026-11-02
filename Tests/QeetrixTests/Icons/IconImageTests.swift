@@ -46,3 +46,37 @@ struct IconImageTests {
         #expect(QeetrixIconImageCache.images.count <= QeetrixIconImageCache.capacity)
     }
 }
+
+/// What an app can rely on from icon names (ADR 0016).
+@Suite("Icon names")
+struct IconNameContractTests {
+    @Test("Raw values are the upstream names; an unknown name is nil")
+    func rawValues() {
+        #expect(QeetrixIconName(rawValue: "chevron-down") == .chevronDown)
+        #expect(QeetrixIconName.chevronDown.rawValue == "chevron-down")
+        #expect(QeetrixIconName(rawValue: "no-such-icon") == nil)
+    }
+
+    @Test("allCases is the catalogue, in name order, without duplicates")
+    func catalogue() {
+        let names = QeetrixIconName.allCases.map(\.rawValue)
+        #expect(names == names.sorted())
+        #expect(Set(names).count == names.count)
+        #expect(names.count == 37)
+    }
+
+    @Test("A switch with a default case — how apps match icons — keeps compiling as the catalogue grows")
+    func matching() {
+        func label(_ icon: QeetrixIconName) -> String {
+            switch icon {
+            case .bell: "bell"
+            case .send: "send"
+            default: "other"
+            }
+        }
+        #expect(label(.bell) == "bell")
+        #expect(label(.x) == "other")
+        #expect(QeetrixIconName.send.mirrorsInRightToLeft)
+        #expect(!QeetrixIconName.bell.mirrorsInRightToLeft)
+    }
+}

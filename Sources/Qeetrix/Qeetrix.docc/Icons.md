@@ -38,6 +38,9 @@ to the outline.
 The names are `@qeetrix/icons`' names, which are Lucide's. The library carries the icons its components
 and the showcase use (``QeetrixIconName``), not the whole catalogue.
 
+The set grows, so ``QeetrixIconName`` is an open set of names, not an enum: adding an icon never
+breaks your code. A `switch` over icon names needs a `default` case.
+
 ## In system chrome
 
 Tab items, toolbar buttons and menu items accept only an `Image`. `Image(qeetrix:size:shape:variant:stroke:)`

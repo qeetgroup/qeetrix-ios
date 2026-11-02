@@ -5,13 +5,17 @@ same tokens, typeface, themes and icons as the web's
 [`@qeetrix/tokens`](https://github.com/qeetgroup/qeetrix-tokens) and
 [`@qeetrix/icons`](https://github.com/qeetgroup/qeetrix-icons), generated from those npm packages rather
 than copied from them, and components that look and behave like
-[`@qeetrix/react`](https://github.com/qeetgroup/qeetrix-react)'s (ADR 0015).
+[`@qeetrix/react`](https://github.com/qeetgroup/qeetrix-react)'s (ADR 0018).
 
-**Status: Phase 4b, migrated to `@qeetrix/react` 0.4.0, with the iOS component tickets in progress.** The foundations (tokens, theming, typography,
-icons, accessibility helpers), the core components, the form controls and patterns, and tabs, navigation
-chrome, dialogs, sheets, popovers, menus and toasts, each with tests, a DocC page and a showcase page
-([PHASES.md](PHASES.md)). Every old name and its new one:
-[Documentation/MIGRATION_QEETRIX_REACT.md](Documentation/MIGRATION_QEETRIX_REACT.md).
+**Status: migrated to `@qeetrix/react` 0.4.0, with the iOS component tickets built; release candidate
+0.1.0-rc.1 prepared and not released.** No version is tagged yet; the
+[candidate report](Documentation/Releases/RELEASE_CANDIDATE_REPORT.md) predates this merge and is redone
+before a tag. The foundations (tokens, theming, typography, icons, accessibility helpers), the core
+components, the form controls and patterns, navigation and overlays, and list rows, states, chips,
+pickers and the Qeet Auth pieces, each with tests, a DocC page and a showcase page
+([PHASES.md](PHASES.md)). Every component is **Beta**: tested and audited by machine, not yet checked on a
+device or released ([the release-readiness gaps](Documentation/Quality/RELEASE_READINESS_GAPS.md)). Every
+old name and its new one: [Documentation/MIGRATION_QEETRIX_REACT.md](Documentation/MIGRATION_QEETRIX_REACT.md).
 
 ## What is in it
 
@@ -60,6 +64,15 @@ chrome, dialogs, sheets, popovers, menus and toasts, each with tests, a DocC pag
 | Popover | `.qeetrixPopover(isPresented:…)` | Popover |
 | Menu | `QeetrixMenu`, `QeetrixMenuItem` | Menu, ContextMenu |
 | Toast | `QeetrixToast`, `.qeetrixToast(_:)` | Toast |
+| List item | `QeetrixListItem`, `QeetrixListItemIcon`, `.qeetrixListRow()`, `.buttonStyle(.qeetrixListItem)`, `QeetrixSectionHeader` | — (iOS list rows) |
+| Description list | `QeetrixDescriptionList`, `QeetrixDescriptionItem` | Description List |
+| Accordion | `QeetrixAccordion`, `QeetrixAccordionItem`, `.disclosureGroupStyle(.qeetrix)` | Accordion, Collapsible |
+| Empty state | `QeetrixEmptyState` | Empty State |
+| Data state | `QeetrixDataState`, `QeetrixDataFailure`, `QeetrixDataLoadingRows` | Data State |
+| Skeleton | `QeetrixSkeleton`, `QeetrixSkeletonText` | Skeleton |
+| Chip | `QeetrixChip`, `QeetrixChipGroup` | Chip |
+| Timeline | `QeetrixTimeline`, `QeetrixTimelineItem` | Timeline |
+| Search | native `.searchable` with `QeetrixEmptyState` and `QeetrixChipGroup` | — |
 
 #### Added for the iOS component tickets (QTRX-95 to QTRX-155)
 
@@ -123,14 +136,17 @@ Mac during development; macOS is not a supported product platform.
 ## Install
 
 In Xcode, choose **File › Add Package Dependencies…** and enter the repository URL. In a package
-manifest:
+manifest, once a version is tagged:
 
 ```swift
-.package(url: "https://github.com/qeetgroup/qeetrix-ios.git", branch: "main")
+// Before 1.0 a minor version may break source, so take patches only.
+.package(url: "https://github.com/qeetgroup/qeetrix-ios.git", .upToNextMinor(from: "0.1.0"))
 ```
 
-Then add `Qeetrix` to your target's dependencies. Nothing else is needed at build time; the package
-does not need the web repositories.
+Then add the `Qeetrix` product to your target. Nothing else is needed at build time: no web
+repositories, Node.js or generator. Until the first tag, only a branch or revision can be used, for
+evaluation. Versions, requirements and access to the private repository:
+[Documentation/Releases/DISTRIBUTION.md](Documentation/Releases/DISTRIBUTION.md).
 
 ## Use
 
@@ -205,6 +221,9 @@ swift test --package-path Tools/QeetrixGen      # generator
 Scripts/verify.sh                               # snapshot matches lock; generated files current
 Scripts/lint.sh                                 # swift-format, strict
 Scripts/api-check.sh                            # public API matches Documentation/API
+Scripts/api-compat.sh origin/main               # no source-breaking change against main
+Scripts/consumer-check.sh                       # an independent app installs the package by version
+Scripts/release-check.sh 0.1.0-rc.1             # every release gate, with evidence (publishes nothing)
 Scripts/docs.sh                                 # DocC documentation, warnings as errors
 Scripts/check.sh                                # all of the above that runs without a simulator, and more
 ```
@@ -219,8 +238,13 @@ TEST_RUNNER_SNAPSHOT_TESTING_RECORD=all xcodebuild test -scheme Qeetrix -only-te
 xcodebuild test -scheme Qeetrix -only-testing:QeetrixSnapshotTests \
   -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"   # compare with them
 xcodebuild test -project Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase \
-  -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"   # UI tests
+  -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"   # UI tests and the accessibility audit
 ```
+
+The UI tests include `AccessibilityAuditUITests`, Apple's accessibility audit over every showcase page,
+which fails on any issue it doesn't exclude with a reason. Quality reports — accessibility,
+localization, performance, security and privacy, API compatibility, test coverage — are in
+[Documentation/Quality](Documentation/Quality/PHASE_6_AUDIT.md).
 
 The showcase app, `Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj`, shows every foundation and
 component in both themes and at any text size, grouped as ui.qeet.in groups them. It depends on this
@@ -244,14 +268,17 @@ See [CONTRIBUTING.md](CONTRIBUTING.md#upstream-sync).
 
 ## Known limitations
 
-- **Scope.** Thirty components and patterns, of `@qeetrix/react`'s 86 component families. 30 icons are
-  included, and no logos. Some components are partial — the select has no multiple choice, tabs are
+- **Scope.** 71 components and patterns with a DocC page each (77 showcase pages), against
+  `@qeetrix/react`'s 87 component families. 68 icons are included, and no logos. Some components are partial — the select has no multiple choice, tabs are
   horizontal only, the password field has no Caps Lock warning; the
   [migration notes](Documentation/MIGRATION_QEETRIX_REACT.md#components) list each gap.
 - **System-drawn overlays.** Alerts, confirmation dialogs, sheets, popovers and menus are drawn by iOS:
   their material and font are the system's (ADR 0014). One toast shows at a time, and there is no
   separate centred dialog or inline alert yet.
 - **Snapshots are local.** Baselines are not committed, so CI does not compare snapshots (ADR 0013).
+- **Built-in strings are English.** The library's 109 strings ("Loading", "Required", "Close"…) have no
+  translations yet, so a localised app hears them in English
+  ([localization report](Documentation/Quality/LOCALIZATION_REPORT.md)).
 - **Increased contrast.** `@qeetrix/tokens` defines no contrast context yet, so colours are the same
   under Increased Contrast. Every designed pair meets WCAG 2.2 AA in both schemes, and the tests check
   this.
@@ -265,8 +292,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md#upstream-sync).
 - **Component geometry is not a token.** Padding, gaps and corner details come from `@qeetrix/react`'s
   CSS, restated in each component; the drift check can't see a change to them, but a version bump
   shows the CSS diff in `Upstream/qeetrix-react/css/`.
-- **Verification.** Simulator tests ran on iOS 27.1 (the iPhone Duo) and iOS 26.5 (iPhone SE, 16e, 17,
-  Air, 17 Pro Max, iPad (A16), iPad mini). No iOS 17 runtime was available, so behaviour on iOS 17 is
+- **Verification.** Simulator tests ran on iOS 27.1 (the iPhone Duo). The move to `@qeetrix/react` also
+  ran on iOS 26.5 (iPhone 17, iPad (A16), iPhone SE, iPhone 16e), before the component tickets; the
+  device pass of the merged library is still to do. No iOS 17 runtime was available, so behaviour on iOS 17 is
   compiled against but not run. VoiceOver, Bold Text and Full Keyboard Access have been checked through
   their semantics in tests and UI tests, not by a person on a device.
 

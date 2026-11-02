@@ -32,6 +32,19 @@ final class PasswordInputUITests: XCTestCase {
         XCTAssertEqual(app.staticTexts["password-length"].label, "9 characters")
     }
 
+    /// The whole field is the target, as for a text field: a tap on its padding, or just outside a field
+    /// drawn shorter than 44 pt, focuses it — not only a tap on the line of text (Phase 6, finding A11Y-1).
+    @MainActor
+    func testATapOnTheFieldsPaddingFocusesIt() {
+        let app = Showcase.launch("password-input")
+        let secure = app.secureTextFields["Password, Required"]
+        XCTAssertTrue(secure.waitForExistence(timeout: 5))
+        XCTAssertFalse(secure.hasKeyboardFocus)
+        secure.tapBelow(by: 8)
+        XCTAssertTrue(secure.waitForKeyboardFocus(), "A tap on the field's padding focuses it")
+        XCTAssertGreaterThanOrEqual(secure.frame.height, 36, "The field's element is the field, not its line of text")
+    }
+
     @MainActor
     func testAppOwnedVisibilityAndDisabled() {
         let app = Showcase.launch("password-input")

@@ -99,6 +99,7 @@ struct QeetrixSelectTrigger<Value: Hashable>: View {
     // Read here, not inside the menu's label (see `qeetrixControlBlockSize(_:lineHeight:scale:)`).
     @ScaledMetric(relativeTo: .body) private var bodyScale: CGFloat = 100
     @ScaledMetric(relativeTo: .footnote) private var footnoteScale: CGFloat = 100
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         let selected = options.first { $0.value == selection.wrappedValue }
@@ -129,7 +130,9 @@ struct QeetrixSelectTrigger<Value: Hashable>: View {
                     Text(verbatim: "X").hidden()
                     (selected?.title ?? placeholder ?? Text(verbatim: ""))
                         .foregroundStyle(selected == nil ? QeetrixInputMetrics.placeholder : state.foreground)
-                        .lineLimit(1)
+                        // line-clamp-1, except at the accessibility sizes, where one line would cut the value
+                        // short: there it wraps and the trigger grows.
+                        .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 QeetrixIcon(.chevronDown, size: .sm, shape: .sharp)

@@ -2,7 +2,7 @@
 
 Qeetrix for iOS moved from `@qeetrix/ui` 2.1.6 to the `@qeetrix/react` design system on 2026-10-30.
 This file maps every old name to its new one and records every decision the move needed. The
-decision record is [ADR 0015](Decisions/0015-qeetrix-react-tokens-and-icons-from-npm.md); the Android
+decision record is [ADR 0018](Decisions/0018-qeetrix-react-tokens-and-icons-from-npm.md); the Android
 library keeps a file of the same name, so the two can be compared.
 
 ## Inputs
@@ -186,7 +186,7 @@ follows each manifest entry's `directionality`.
 
 Every component is done to the extent the platform allows; *partial* means a `@qeetrix/react`
 feature has no iOS counterpart yet, listed beside it. Folders now follow `@qeetrix/react`'s families
-(ADR 0007, 0015): `DropdownMenu/Menu` → `Menu/Menu`, `Input/Field` → `Field/Field`,
+(ADR 0007, 0018): `DropdownMenu/Menu` → `Menu/Menu`, `Input/Field` → `Field/Field`,
 `Input/FieldSet` → `Fieldset/Fieldset`, `Input/TextField` → `TextField/TextField`,
 `RadioGroup/RadioGroup` → `Radio/RadioGroup`, `Typography/Text` → `Text/Text` and `Heading/Heading`.
 `OTPInput` keeps its folder name, the case-insensitive spelling of the `otp-input` family.
@@ -233,7 +233,7 @@ feature has no iOS counterpart yet, listed beside it. Folders now follow `@qeetr
 ## Decisions
 
 The shared decisions (pins, DTCG tokens, fonts, icons, components, platform conventions, this file)
-are in ADR 0015. These are the ones the migration needed beyond them:
+are in ADR 0018. These are the ones the migration needed beyond them:
 
 1. **Fonts, then and now.** On 0.0.11 the WOFF2s were converted with fontTools 4.68.0 (pure wheel)
    and brotli 1.2.1, hash-pinned, in `.build/font-conversion`, losslessly (`recalcTimestamp=False`, no
@@ -259,7 +259,7 @@ are in ADR 0015. These are the ones the migration needed beyond them:
    axis (700).
 6. **`label.caps` tracking** (0.66 px at 11 px) scales with the text size.
 7. **Text takes CSS half-leading**, negative where a role's line is shorter than the font's natural
-   line (ADR 0015 §9). Containers set their type without it.
+   line (ADR 0018 §9). Containers set their type without it.
 8. **Dynamic Type curves** for the 18 roles (table above), by purpose and nearest size.
 9. **Folder names follow `@qeetrix/react`'s families**; `OTPInput` keeps its spelling because a
    case-only rename isn't reliable on macOS's case-insensitive volumes.

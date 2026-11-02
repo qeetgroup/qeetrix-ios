@@ -34,9 +34,3 @@ final class FormPatternsUITests: XCTestCase {
         wait(for: [focused], timeout: 3)
     }
 }
-
-extension XCUIElement {
-    var hasKeyboardFocus: Bool {
-        (value(forKey: "hasKeyboardFocus") as? Bool) ?? false
-    }
-}

@@ -1,12 +1,13 @@
 import CoreText
 import SwiftUI
+import os
 
 extension QeetrixTextRole {
     /// The Dynamic Type text style this role scales with. Token sizes are the sizes at the default
     /// ("Large") content size; Dynamic Type scales them along the curve of the matching system style.
     ///
     /// This mapping is a platform decision, not a token: it pairs each role with the system style of
-    /// the nearest purpose and size (ADR 0015).
+    /// the nearest purpose and size (ADR 0018).
     public var textStyle: Font.TextStyle {
         switch self {
         case .displayLg, .displayMd, .displaySm, .headingLg: .largeTitle
@@ -54,7 +55,7 @@ public struct QeetrixTextMetrics: Hashable, Sendable {
     ///   - size: The point size, typically already scaled by Dynamic Type. Defaults to the token size.
     ///   - legibilityWeight: The environment's Bold Text setting.
     public init(role: QeetrixTextRole, size: CGFloat? = nil, legibilityWeight: LegibilityWeight? = nil) {
-        let resolved = QeetrixResolvedType(tokens: role.tokens, size: size, legibilityWeight: legibilityWeight)
+        let resolved = QeetrixResolvedType.resolved(tokens: role.tokens, size: size, legibilityWeight: legibilityWeight)
         self.role = role
         pointSize = resolved.pointSize
         weight = resolved.weight
@@ -136,6 +137,31 @@ struct QeetrixResolvedType: Sendable {
         halfLeading = leading / 2
     }
 
+    /// The resolved type for these values, built once and then reused. Every text in the library resolves
+    /// its style on each update, and building a variable font and measuring it costs about 0.1 ms — five
+    /// milliseconds for a screen of list rows (Documentation/Quality/PERFORMANCE_REPORT.md). The cache is
+    /// bounded: roles, Dynamic Type sizes and Bold Text give a few hundred entries in practice, and
+    /// reaching the capacity empties it.
+    static func resolved(tokens: QeetrixTextRoleTokens, size: CGFloat?, legibilityWeight: LegibilityWeight?) -> QeetrixResolvedType {
+        let key = CacheKey(tokens: tokens, size: size ?? tokens.size, isBold: legibilityWeight == .bold)
+        if let hit = cache.withLock({ $0[key] }) { return hit }
+        let resolved = QeetrixResolvedType(tokens: tokens, size: size, legibilityWeight: legibilityWeight)
+        cache.withLock { entries in
+            if entries.count >= cacheCapacity { entries.removeAll() }
+            entries[key] = resolved
+        }
+        return resolved
+    }
+
+    struct CacheKey: Hashable, Sendable {
+        let tokens: QeetrixTextRoleTokens
+        let size: CGFloat
+        let isBold: Bool
+    }
+
+    static let cacheCapacity = 512
+    static let cache = OSAllocatedUnfairLock(initialState: [CacheKey: QeetrixResolvedType]())
+
     static func systemWeight(_ weight: QeetrixFontWeight) -> Font.Weight {
         switch weight.value {
         case ..<350: .light
@@ -173,7 +199,7 @@ struct QeetrixTextStyleModifier: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        let resolved = QeetrixResolvedType(
+        let resolved = QeetrixResolvedType.resolved(
             tokens: spec.tokens, size: spec.textStyle == nil ? spec.tokens.size : size, legibilityWeight: legibilityWeight)
         content
             .font(resolved.font)

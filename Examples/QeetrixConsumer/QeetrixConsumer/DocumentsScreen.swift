@@ -2,7 +2,7 @@ import Qeetrix
 import SwiftUI
 
 /// A searchable collection as an app builds one: the app's data and filtering, a native `List` and
-/// `searchable`, rows built from Qeetrix text and badges, and a no-results message.
+/// `searchable`, Qeetrix rows, and Qeetrix's no-results state.
 struct DocumentsScreen: View {
     struct Document: Identifiable {
         let id: Int
@@ -27,31 +27,19 @@ struct DocumentsScreen: View {
         List {
             Section {
                 if results.isEmpty {
-                    VStack(spacing: QeetrixSpace.gapSm) {
-                        QeetrixIcon(.search, size: .lg, shape: .sharp)
-                            .foregroundStyle(QeetrixColor.iconSubtle)
-                        QeetrixHeading("No documents found", level: 2, size: .titleSm)
-                        QeetrixText("Try another search.", tone: .subtle)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, QeetrixSpace.layoutSm)
-                    .listRowBackground(Color.clear)
+                    QeetrixEmptyState("No documents found", description: "Try another search.", icon: .search, size: .section)
+                        .listRowBackground(Color.clear)
                 } else {
                     ForEach(results) { document in
-                        HStack(spacing: QeetrixSpace.gapMd) {
+                        QeetrixListItem(document.title, description: Text(verbatim: document.owner)) {
                             QeetrixAvatar(name: document.owner, size: .sm, isDecorative: true)
-                            VStack(alignment: .leading, spacing: 2) {
-                                QeetrixText(document.title, weight: .medium, tone: .default)
-                                QeetrixText(document.owner, size: .sm, tone: .subtle)
-                            }
-                            Spacer(minLength: QeetrixSpace.gapSm)
+                        } trailing: {
                             QeetrixBadge(document.isActive ? "Active" : "Archived", tone: document.isActive ? .success : .neutral)
                         }
-                        .accessibilityElement(children: .combine)
                     }
                 }
             } header: {
-                ConsumerSectionHeader(title: Text("Documents: \(results.count)"))
+                QeetrixSectionHeader(title: Text("Documents: \(results.count)"), isRuled: false)
                     .accessibilityIdentifier("documents-count")
             }
         }

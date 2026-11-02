@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// One choice in a ``QeetrixRadioGroup`` or a ``QeetrixSelect``: the value it selects, its title, an
-/// optional description, and whether it can be chosen.
+/// One choice in a ``QeetrixRadioGroup``, a ``QeetrixSelect`` or a ``QeetrixChipGroup``: the value it
+/// selects, its title, an optional description, and whether it can be chosen.
 ///
 /// ```swift
 /// let plans = [

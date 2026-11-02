@@ -30,12 +30,19 @@ Scripts/check.sh              # generator tests, drift, format, warnings, depend
 sim="platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"
 xcodebuild test -scheme Qeetrix -destination "$sim"     # unit and snapshot tests on iOS
 xcodebuild test -project Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj \
-  -scheme QeetrixShowcase -destination "$sim"           # UI tests
+  -scheme QeetrixShowcase -destination "$sim"           # UI tests and the accessibility audit
 Scripts/docs.sh               # DocC, warnings as errors
+Scripts/api-compat.sh origin/main   # no source-breaking change against main (CI: pull requests)
 ```
 
 `Scripts/lint.sh --fix` rewrites formatting; `Scripts/api-check.sh --update` accepts an intended API
-change, which then needs a CHANGELOG entry.
+change, which then needs a CHANGELOG entry. A change `api-compat.sh` reports as breaking needs a
+decision record, its lines in `Documentation/API/breaking-changes-allowlist.txt`, and a migration note
+in the CHANGELOG (`Documentation/Quality/API_COMPATIBILITY.md`).
+
+A new issue from `AccessibilityAuditUITests` is fixed, not excluded. An exclusion is for an audit that
+is wrong about the component; it names the issue narrowly and says why
+(`Documentation/Quality/ACCESSIBILITY_REPORT.md`).
 
 ## Documentation
 
@@ -56,8 +63,9 @@ Each fact lives in one place. Link to it rather than copying it.
   drawings and logging stay internal. A public API change shows up in `Scripts/api-check.sh`; note it in
   `CHANGELOG.md`.
 - **Concurrency.** Swift 6 language mode, strict. No global mutable state. Shared caches are `static
-  let`s of `Sendable` values. The one exception is a cache of rendered images, which is main-actor
-  isolated and bounded (`QeetrixIconImageCache`, for `Image(qeetrix:)`).
+  let`s of `Sendable` values. Two caches change after launch, and both are bounded: rendered images,
+  main-actor isolated (`QeetrixIconImageCache`, for `Image(qeetrix:)`), and resolved typefaces, behind
+  an `OSAllocatedUnfairLock` (`QeetrixResolvedType`).
 - **Comments.** Say why: the token, the platform rule or the upstream fact behind a decision.
 
 ## Tests
@@ -81,10 +89,18 @@ only the public API goes in `Tests/QeetrixTests/Integration`, without `@testable
 - **UI tests** (`Examples/QeetrixShowcase/QeetrixShowcaseUITests`, XCTest) drive the showcase: taps,
   typing, toggles, touch-target size and what VoiceOver is given.
 
+## Releases
+
+Releases follow `Documentation/Releases/RELEASE_CHECKLIST.md`. `Scripts/release-check.sh <version>` runs
+every gate and keeps the evidence; tagging and publishing are the owner's steps, never automation's.
+A change that affects consumers belongs in the CHANGELOG, and a source-breaking one also in the release
+notes with its migration (`Documentation/Releases/RELEASE_POLICY.md`). Keep `Examples/QeetrixConsumer`
+on the public API only: it is the stand-in for a real app.
+
 ## Upstream sync
 
 Tokens, fonts, icons and the component manifest come from three npm packages and are never edited
-here: `@qeetrix/tokens`, `@qeetrix/icons` and `@qeetrix/react` (ADR 0015).
+here: `@qeetrix/tokens`, `@qeetrix/icons` and `@qeetrix/react` (ADR 0018).
 
 1. Make the change upstream (qeetrix-tokens, qeetrix-icons or qeetrix-react) and publish it.
 2. Update `Upstream/pins.json`: a package version, the icon list, or the `@qeetrix/react` families

@@ -249,7 +249,7 @@ public struct QeetrixTimelineItem: View {
 enum QeetrixTimelineMetrics {
     /// `component.timeline.marker-size`, 28px (`Upstream/qeetrix-tokens/dtcg/tokens/component.tokens.json`):
     /// timeline.css's `grid-template-columns: 28px …` and `.qx-timeline-marker { block-size: 28px }`.
-    /// Restated: iOS doesn't generate component tokens (ADR 0015 §4).
+    /// Restated: iOS doesn't generate component tokens (ADR 0018 §4).
     static let markerSize: CGFloat = 28
     /// timeline.css, compact: `grid-template-columns: 6px …`, `.qx-timeline-marker { block-size: 6px }`.
     static let dot: CGFloat = 6

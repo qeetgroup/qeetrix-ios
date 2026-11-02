@@ -24,6 +24,8 @@ let package = Package(
             resources: [
                 // Copied as folders so the bundle keeps each font beside its licence.
                 .copy("Resources/Fonts"),
+                // Notices that must travel with the library: the icon artwork's (the fonts' are in Fonts).
+                .copy("Resources/Licenses"),
                 .copy("Resources/Metadata"),
                 .process("Resources/Localization"),
             ]

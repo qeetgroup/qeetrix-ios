@@ -20,6 +20,7 @@ struct AppNavigationPage: View {
                     NavigationBarDetail()
                 } label: {
                     QeetrixText("Open a detail page")
+                        .qeetrixMinimumTouchTarget()
                 }
                 QeetrixText(
                     "It sets qeetrixNavigationBar(background: .canvas) and a toolbar button with a Qeetrix icon.", size: .sm, tone: .subtle)

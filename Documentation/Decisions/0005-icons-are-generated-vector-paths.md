@@ -1,6 +1,6 @@
 # 0005 — Icons are generated vector paths
 
-**Status:** Accepted, 2026-10-18. Amended by ADR 0015: the drawings come from `@qeetrix/icons` on npm.
+**Status:** Accepted, 2026-10-18. Amended by ADR 0018: the drawings come from `@qeetrix/icons` on npm.
 
 ## Context
 

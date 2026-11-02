@@ -1,8 +1,13 @@
-# 0015 — Built from `@qeetrix/react`, `@qeetrix/tokens` and `@qeetrix/icons`
+# 0018 — Built from `@qeetrix/react`, `@qeetrix/tokens` and `@qeetrix/icons`
 
 **Status:** Accepted, 2026-10-30. Supersedes ADRs 0002 and 0011; amends 0004, 0005, 0007, 0010, 0012
 and 0014. Brought to `@qeetrix/tokens` 0.0.13, `@qeetrix/icons` 2.1.0 and `@qeetrix/react` 0.4.0 the
-same day, before release: decisions 1, 2, 5 and 6 say how.
+same day, before release: decisions 1, 2, 5 and 6 say how. Merged with Phases 5–7 on 2026-11-02, it also
+amends ADR 0015: the iOS component tickets (QTRX-95 to QTRX-155) re-specify Phase 5's list item, section
+header, description list, accordion, empty and data states, skeleton, chip and timeline from
+`@qeetrix/react`, replacing the Phase 5 implementations and their shared layout helpers (0015's
+decision 9), and QTRX-96 adds `QeetrixSearchField` beside the system's `searchable` (decision 6).
+Written as ADR 0015 on its branch; renumbered when Phases 5–7, which took 0015–0017, were merged.
 
 ## Context
 

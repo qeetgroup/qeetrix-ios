@@ -27,7 +27,7 @@ jobs:
     runs-on: macos-26
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0, pinned by commit
       - name: Select Xcode
         run: |
           sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
@@ -49,13 +49,20 @@ jobs:
         run: swift test
       - name: Public API matches the committed baseline
         run: Scripts/api-check.sh
+      # Swift's own checker: a pull request may not break source compatibility with its target branch,
+      # except for breaks a decision record accepted (Documentation/API/breaking-changes-allowlist.txt).
+      - name: Source compatibility with the target branch
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch --depth=1 origin "${{ github.base_ref }}"
+          Scripts/api-compat.sh "origin/${{ github.base_ref }}"
 
   ios:
     name: iOS build, unit tests, docs
     runs-on: macos-26
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0, pinned by commit
       - name: Select Xcode
         run: sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
       - name: Pick a simulator
@@ -76,17 +83,18 @@ jobs:
   showcase:
     name: Showcase build and UI tests
     runs-on: macos-26
-    timeout-minutes: 45
+    # The UI tests include the accessibility audit gate: 64 minutes locally (TEST_COVERAGE.md).
+    timeout-minutes: 100
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0, pinned by commit
       - name: Select Xcode
         run: sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
       - name: Pick a simulator
         id: simulator
         run: echo "id=$(Scripts/ci-simulator.sh)" >> "$GITHUB_OUTPUT"
-      - name: Build the showcase with warnings as errors
+      - name: Build the showcase and its UI tests with warnings as errors
         run: |
-          xcodebuild build -project Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase \
+          xcodebuild build-for-testing -project Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase \
             -destination "platform=iOS Simulator,id=${{ steps.simulator.outputs.id }}" \
             -derivedDataPath .build/showcase SWIFT_TREAT_WARNINGS_AS_ERRORS=YES
       - name: UI tests (interaction and accessibility semantics)
@@ -95,6 +103,19 @@ jobs:
             -destination "platform=iOS Simulator,id=${{ steps.simulator.outputs.id }}" \
             -derivedDataPath .build/showcase
 
+  consumer:
+    name: An independent app installs the package by version
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0, pinned by commit
+      - name: Select Xcode
+        run: sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
+      # Commits and tags the checkout in a throwaway repository under $RUNNER_TEMP, never this one, then
+      # resolves, tests and builds the consumer app against that tag.
+      - name: Consumer check
+        run: Scripts/consumer-check.sh 0.0.0-ci.1 "$RUNNER_TEMP/consumer"
+
   upstream:
     name: Pinned upstream still matches the lock
     # Networked, so it runs on a schedule, on demand, and when the pins or lock change.
@@ -102,7 +123,7 @@ jobs:
     runs-on: macos-26
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0, pinned by commit
       - name: Skip unless Upstream/ changed (pull requests)
         if: github.event_name == 'pull_request'
         id: changed

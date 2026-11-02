@@ -1,7 +1,8 @@
 {
-  "$comment": "What qeetrix-ios is built from: three npm packages, each fetched by Scripts/sync-upstream.sh from the registry, checked against the registry's integrity hash, and recorded in upstream.lock.json with the sha256 of every file taken from it. Edit a pin, then run the sync; nothing else in Upstream/ is edited by hand. Paths are relative to the repository root, or to the package tarball (package/...).",
+  "$comment": "What qeetrix-ios is built from: three npm packages, each fetched by Scripts/sync-upstream.sh from the registry, checked against the registry's integrity hash, and recorded in upstream.lock.json with the sha256 of every file taken from it. Edit a pin, then run the sync; nothing else in Upstream/ is edited by hand. Paths are relative to the repository root, or to the package tarball (package/...). Each licence is the reviewed licence of what is taken, as an SPDX expression, and goes into the release SBOM (qeetrix-gen sbom).",
   "tokens": {
     "package": "@qeetrix/tokens",
+    "licence": "MIT",
     "version": "0.0.13",
     "files": {
       "package/dist/dtcg/": "Upstream/qeetrix-tokens/dtcg/",
@@ -18,6 +19,7 @@
         "webFamily": "Qeet Sans",
         "ttf": "QeetSans.ttf",
         "destination": "Sources/Qeetrix/Resources/Fonts/QeetSans.ttf",
+        "licence": "OFL-1.1",
         "licenseDestination": "Sources/Qeetrix/Resources/Fonts/QeetSans-OFL.txt"
       },
       {
@@ -25,13 +27,16 @@
         "webFamily": "Fira Code",
         "ttf": "FiraCode-VF.ttf",
         "destination": "Sources/Qeetrix/Resources/Fonts/FiraCode-VF.ttf",
+        "licence": "OFL-1.1",
         "licenseDestination": "Sources/Qeetrix/Resources/Fonts/FiraCode-OFL.txt"
       }
     ]
   },
   "icons": {
     "package": "@qeetrix/icons",
+    "licence": "MIT AND ISC",
     "version": "2.1.0",
+    "licenseDestination": "Sources/Qeetrix/Resources/Licenses/qeetrix-icons-LICENSE.txt",
     "icons": [
       "archive",
       "arrow-down",
@@ -105,8 +110,9 @@
   },
   "react": {
     "package": "@qeetrix/react",
+    "licence": "MIT",
     "version": "0.4.0",
-    "$comment": "The component manifest (dist/manifest.json) and the families iOS implements: their compiled CSS is kept as the reference for each component's parts, metrics and states (ADR 0015), so a version bump shows exactly what changed on the web.",
+    "$comment": "The component manifest (dist/manifest.json) and the families iOS implements: their compiled CSS is kept as the reference for each component's parts, metrics and states (ADR 0018), so a version bump shows exactly what changed on the web.",
     "families": [
       "accordion",
       "avatar",

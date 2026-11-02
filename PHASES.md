@@ -9,20 +9,105 @@ boundaries, not commitments of scope.
 | 2 — Core components | Text, Separator, Card, Badge, Button, Icon button, Spinner, Progress, Avatar, Switch, Text field, with their `component.*` tokens; the component template and scaffold; snapshot and UI tests; CI gates | Done |
 | 3 — Inputs and forms | Field and field set, textarea, password, one-time code, checkbox, radio group, select, number field; form actions and error summary | Done |
 | 4 — Navigation, overlays, feedback | Tabs; navigation and tab bar styling; alert and confirmation dialogs; sheets; popovers; menus; toasts | Done |
-| **4a — The move to `@qeetrix/react`** | Tokens from `@qeetrix/tokens`' DTCG build, fonts and icons from npm; every component re-specified to its `@qeetrix/react` counterpart; ADR 0015, [MIGRATION_QEETRIX_REACT.md](Documentation/MIGRATION_QEETRIX_REACT.md) | Done, except the device pass |
-| **4b — The iOS component tickets** | QTRX-95 to QTRX-155: list rows, states, chips, pickers, the Qeet Auth pieces (OTP code, QR code and scanner, permission primer), haptics and formatting; see the [CHANGELOG](CHANGELOG.md) | **Current** |
-| 5 — Data display and advanced | Lists, tables, charts and the other data components | Planned |
-| 6 — Accessibility and maturity | Device-verified VoiceOver, Switch Control and keyboard; increased-contrast values (with upstream); performance | Planned |
-| 7 — Documentation and release | DocC catalogue, docs on ui.qeet.in, versioned releases | Planned |
+| 5 — Data display, collections, content states | List rows and section headers; description list; accordion; empty, data and skeleton states; chips; timeline; native search integration | Done |
+| 6 — Quality, accessibility and performance hardening | Audit of Phases 1–5: accessibility audit gate, localization and right-to-left, measured performance, security and privacy, source compatibility, maturity matrix and release-readiness gaps | Done |
+| 7 — Production readiness and release | Consumer integration, distribution, versioning and release policy, licensing and SBOM, release verification and workflow, DocC installation guides, the 0.1.0-rc.1 candidate and its go/no-go | **Current: candidate prepared, not released** |
+| 8 — The move to `@qeetrix/react` | Tokens from `@qeetrix/tokens`' DTCG build, fonts and icons from npm; every component re-specified to its `@qeetrix/react` counterpart; ADR 0018, [MIGRATION_QEETRIX_REACT.md](Documentation/MIGRATION_QEETRIX_REACT.md) | Done, except the device pass |
+| **9 — The iOS component tickets** | QTRX-95 to QTRX-155: list rows, states, chips, pickers, the Qeet Auth pieces (OTP code, QR code and scanner, permission primer), haptics and formatting; see the [CHANGELOG](CHANGELOG.md) | **Current** |
 
-## Phase 4a — the move to `@qeetrix/react`
+## Phase 8 — the move to `@qeetrix/react`
 
-Phases 1 to 4 were built from `@qeetrix/ui` 2.1.6. Phase 4a moves the whole library to
-`@qeetrix/tokens` 0.0.13, `@qeetrix/icons` 2.1.0 and `@qeetrix/react` 0.4.0 (ADR 0015). What each
+Phases 1 to 7 were built from `@qeetrix/ui` 2.1.6. Phase 8 moves the whole library to
+`@qeetrix/tokens` 0.0.13, `@qeetrix/icons` 2.1.0 and `@qeetrix/react` 0.4.0 (ADR 0018). What each
 component does and does not have yet — `multiple` and groups on the select, vertical tabs, the
 Caps Lock warning, menu shortcuts and submenus, a toast stack, dialog widths, the field's help
 button, the number field's `largeStep` and `format`, Meter, CheckboxGroup, a fieldset error, choice
 tiles — is in the migration file's component table.
+
+## Phase 7 — what is done and what is not
+
+Done, and verified on the Mac and the iOS 27.1 iPhone simulator:
+
+- **Consumer integration.** An independent app, `Examples/QeetrixConsumer`, installs the package by
+  version from a tagged throwaway repository, passes its UI tests (including Apple's accessibility
+  audit), and builds for devices in Release with Qeetrix's resources.
+- **Release engineering.**
+  - `Scripts/release-check.sh` and the hand-run "Release candidate verification" workflow; neither
+    publishes anything.
+  - The consumer check in CI.
+  - A CycloneDX bill of materials.
+- **Policies.** Distribution (ADR 0017), release, support, checklist and rollback in
+  `Documentation/Releases/`, and `.github/SECURITY.md`.
+- **Licensing.** The icon artwork's notice now ships in the resource bundle; licences reviewed.
+- **Documentation.** DocC *Installing and updating*, *Migrating* and *Troubleshooting*; release notes;
+  the ui.qeet.in handoff.
+- **The candidate:** 0.1.0-rc.1, with its report and decision in
+  `Documentation/Releases/RELEASE_CANDIDATE_REPORT.md`.
+
+Not done, and not to be done without the owner:
+
+- tagging, pushing or publishing anything;
+- choosing a licence;
+- installing an iOS 17 runtime.
+
+Still to verify: iOS 17, iPad, devices and assistive technology by a person, CI on GitHub (blocked by
+billing), installation from GitHub by a real tag, and a first real app (Qeet ID Auth is React Native).
+
+## Phase 6 — what is done and what is not
+
+Done, and verified on the Mac and the iOS 27.1 iPhone simulator:
+
+- **Audit** of every component across accessibility, localization, performance, reliability, security
+  and privacy, API stability, tests, tokens, documentation and CI. The findings, each fixed with a
+  regression test or recorded as a gap, are in `Documentation/Quality/PHASE_6_AUDIT.md`.
+- **Fixes:** the password field's touch target; icons and the select at the largest text sizes; the
+  right-to-left timeline connector; cached text resolution; the open set of icon names (ADR 0016, the one breaking change); workflow actions pinned by
+  commit; a named web metric; two showcase targets and labels.
+- **Gates:** Apple's accessibility audit over every showcase page (`AccessibilityAuditUITests`), source
+  compatibility against the target branch (`Scripts/api-compat.sh`), and pinned actions.
+- **Reports** in `Documentation/Quality/` and a ui.qeet.in handoff.
+
+Not done, by scope: new components, and Phase 7's documentation site and release.
+
+Still to verify — the release-readiness gaps (`Documentation/Quality/RELEASE_READINESS_GAPS.md`):
+
+- VoiceOver, Full Keyboard Access and Switch Control on a device;
+- an iPad and an iOS 17 runtime, neither of which can be created on this Mac;
+- performance on a device;
+- the CI workflow on GitHub, where Actions are blocked by billing.
+
+## Phase 5 — what is done and what is not
+
+> Phases 8 and 9 replaced this phase's implementations: the move to `@qeetrix/react` and the iOS
+> component tickets re-specified every component listed here (ADR 0018). What follows is the record
+> of Phase 5 as it was.
+
+Done, and verified on the Mac and the iOS 27.1 iPhone simulator:
+
+- **Components:**
+  - list rows, with `qeetrixListRow()` and the section header;
+  - the description list;
+  - the accordion and its disclosure style;
+  - the empty state, the data state and the skeleton;
+  - chips and chip groups;
+  - the timeline.
+- **Search** is native `searchable`, with the no-results state and chips; there is no wrapper.
+- **Tests:** behaviour tests, snapshot specimens (compared locally), UI tests (including reflow at an
+  accessibility size), and a 5,000-row scrolling measurement on the simulator.
+- **Decisions and handoffs:** ADR 0015 and a ui.qeet.in handoff.
+
+Deferred, with the reasons in ADR 0015:
+
+- a data table (native `Table` on iPad; rows and a description list on iPhone);
+- image presentation (`Image`, `AsyncImage`, `.aspectRatio`).
+
+Not done, by scope: the web's `Feed`, `TreeView`, `FilterBar`, `Pagination`, `Stat` and charts.
+
+Still to verify:
+
+- VoiceOver speech for rows, accordions and the data state on a device;
+- performance on a device (the simulator figures are not a device's);
+- an iPad, an iOS 17 runtime, and the CI workflow on GitHub.
 
 ## Phase 4 — what is done and what is not
 
@@ -45,7 +130,7 @@ Deferred, with the reasons in ADR 0014:
 
 - a separate centred `QeetrixDialog` (the sheet is the dialog);
 - `QeetrixSnackbar` (the toast with an action covers it);
-- the inline `QeetrixAlert` (built in phase 4b, QTRX-111);
+- the inline `QeetrixAlert` (built in Phase 9, QTRX-111);
 - a stack of toasts;
 - styling the system menu surface (`component.menu`).
 

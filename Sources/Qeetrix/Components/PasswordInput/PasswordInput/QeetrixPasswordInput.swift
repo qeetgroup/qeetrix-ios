@@ -131,8 +131,12 @@ struct QeetrixPasswordField: View {
         .padding(.trailing, QeetrixSpace.gapXs)
         .qeetrixControlBlockSize(QeetrixInputMetrics.height(density), type: QeetrixInputMetrics.textType)
         .qeetrixInputSurface(state)
-        // A 44 pt target, as the text field's.
+        // A 44 pt target, as the text field's: a tap on the padding, or just outside a short field, focuses
+        // it. The reveal button keeps its own tap, which a child's gesture wins over this one.
         .qeetrixHitArea()
+        .onTapGesture {
+            if isEnabled { isFocused = true }
+        }
         .onHover { isHovered = $0 }
     }
 

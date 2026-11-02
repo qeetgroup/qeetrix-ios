@@ -118,4 +118,19 @@ struct DocumentationExamplesTests {
         #expect(provenance.tokens.version == "0.0.13")
         #expect(provenance.components.version == "0.4.0")
     }
+
+    @Test("Migrating.md — a switch over icon names, with the default case it now needs")
+    func iconSwitch() {
+        var shown: [String] = []
+        func showNotifications() { shown.append("notifications") }
+        func showSettings() { shown.append("settings") }
+        for icon in [QeetrixIconName.bell, .settings, .inbox] {
+            switch icon {
+            case .bell: showNotifications()
+            case .settings: showSettings()
+            default: break
+            }
+        }
+        #expect(shown == ["notifications", "settings"])
+    }
 }

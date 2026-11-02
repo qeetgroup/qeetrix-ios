@@ -58,7 +58,7 @@ struct SidebarTests {
         for density in QeetrixDensity.allCases {
             #expect(QeetrixSidebarMetrics.rowHeight(density) == max(44, density.sizeControlLg))
         }
-        // component.sidebar.width-expanded, which iOS restates rather than generates (ADR 0015).
+        // component.sidebar.width-expanded, which iOS restates rather than generates (ADR 0018).
         let root = try Repository.stylesheet(block: ":root")
         #expect(root["--qx-component-sidebar-width-expanded"] == "16rem")
         #expect(QeetrixSidebarMetrics.width == 256, "16rem")
