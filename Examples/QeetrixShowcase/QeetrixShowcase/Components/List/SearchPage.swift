@@ -1,7 +1,7 @@
 import Qeetrix
 import SwiftUI
 
-/// Native `.searchable` over a list, a chip filter, and the no-results state. The page filters; Qeetrix
+/// The system search bar (`searchable`) over a list, a chip filter, and the no-results state. The page filters; Qeetrix
 /// presents.
 struct SearchPage: View {
     @State private var query = ""
@@ -24,17 +24,15 @@ struct SearchPage: View {
                     options: [QeetrixOption("All", value: ShowcaseDocument.Status?.none)]
                         + ShowcaseDocument.Status.allCases.map { QeetrixOption($0.rawValue, value: Optional($0)) }
                 )
-                .padding(.horizontal, QeetrixSpacing.l)
-                .padding(.vertical, QeetrixSpacing.s)
+                .padding(.horizontal, QeetrixSpace.insetLg)
+                .padding(.vertical, QeetrixSpace.gapSm)
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
             }
             Section {
                 if results.isEmpty {
-                    QeetrixEmptyState(
-                        "No results", description: Text("Nothing matches your search and filter."), variant: .noResults, size: .sm
-                    ) {
-                        QeetrixButton("Clear search and filter", variant: .outline, size: .sm) {
+                    QeetrixEmptyState("No results", description: "Nothing matches your search and filter.", icon: .search, size: .section) {
+                        QeetrixButton("Clear search and filter", variant: .soft, size: .sm) {
                             query = ""
                             status = nil
                         }
@@ -42,16 +40,18 @@ struct SearchPage: View {
                     .listRowBackground(Color.clear)
                 } else {
                     ForEach(results) { document in
-                        QeetrixListItem(document.title, description: Text(document.owner), icon: .fileText) {
-                            QeetrixBadge(document.status.rawValue, variant: document.status == .active ? .success : .secondary)
+                        QeetrixListItem(document.title, description: Text(verbatim: document.owner)) {
+                            QeetrixListItemIcon(.fileText)
+                        } trailing: {
+                            QeetrixBadge(document.status.rawValue, tone: document.status == .active ? .success : .neutral)
                         }
                     }
                 }
             } header: {
-                QeetrixSectionHeader(title: Text("Documents: \(results.count)"))
+                QeetrixSectionHeader(title: Text("Documents: \(results.count)"), isRuled: false)
                     .accessibilityIdentifier("search-count")
             } footer: {
-                QeetrixText("Submitted: \(submitted)", variant: .muted).accessibilityIdentifier("search-submitted")
+                QeetrixText("Submitted: \(submitted)", tone: .subtle).accessibilityIdentifier("search-submitted")
             }
         }
         .scrollContentBackground(.hidden)

@@ -1,13 +1,16 @@
 # Searching a collection
 
-Native search over your data, with Qeetrix filters and a no-results state.
+Search over your data, with Qeetrix filters and a no-results state.
 
 ## Overview
 
-Search is SwiftUI's `searchable(text:placement:prompt:)`: the system draws the field, its keyboard, its
+For a list in a `NavigationStack`, search is the system's search bar: `qeetrixSearchable(text:placement:prompt:searchDelay:onSearch:)`
+is SwiftUI's `searchable` with Qeetrix's search behaviour — it asks once per pause in typing, at once on
+the Search key, and with "" when the text is cleared. The system draws the field, its keyboard, its
 clear and cancel buttons and its placement in the navigation bar, and VoiceOver knows it as a search
-field. Qeetrix doesn't add a second search field. It provides what goes around the search: chips that
-filter and the state for no results.
+field. Where the field belongs in the content instead — in a sheet, a card or a sidebar — use a
+``QeetrixSearchField``, which behaves the same. Around either, Qeetrix provides chips that filter and the
+state for no results.
 
 ```swift
 struct Documents: View {
@@ -23,27 +26,29 @@ struct Documents: View {
         List {
             QeetrixChipGroup("Status", selection: $status, options: statusOptions)
             if results.isEmpty {
-                QeetrixEmptyState("No results", description: Text("Nothing matches your search."), variant: .noResults, size: .sm) {
-                    QeetrixButton("Clear search", variant: .outline, size: .sm) { query = ""; status = nil }
+                QeetrixEmptyState("No results", description: "Nothing matches your search.", icon: .search, size: .section) {
+                    QeetrixButton("Clear search", variant: .soft, size: .sm) { query = ""; status = nil }
                 }
             }
-            ForEach(results) { document in QeetrixListItem(document.title, icon: .fileText) }
+            ForEach(results) { document in
+                QeetrixListItem(document.title) { QeetrixListItemIcon(.fileText) }
+            }
         }
-        .searchable(text: $query, prompt: Text("Search documents"))
+        .qeetrixSearchable(text: $query, prompt: Text("Search documents"))
     }
 }
 ```
 
 ## What is yours
 
-- **Matching.** Filter in memory, query a database or call a server: Qeetrix never sees the query.
-- **Timing.** Debounce, cancel stale requests and show progress as your data source needs; a
-  ``QeetrixDataState`` shows the loading and failure branches.
-- **Submission.** `onSubmit(of: .search)` runs when the person presses Search.
+- **Matching.** Filter in memory, query a database or call a server: Qeetrix never sees your data. A
+  short local list can filter on every change of the binding; a server is asked from `onSearch`.
+- **Timing.** `onSearch` waits for a pause (`searchDelay`, 300 ms by default). Cancel stale requests and
+  show progress as your data source needs; a ``QeetrixDataState`` shows the loading and failure branches.
 - **Scope and suggestions.** `searchScopes` and `searchSuggestions` are SwiftUI's, and work as they do in
   any app.
 
 ## No results
 
-Show a ``QeetrixEmptyState`` with `variant: .noResults` in place of the rows, say what was searched for,
-and offer a way back — clearing the search, or the filters. It is not an error.
+Show a ``QeetrixEmptyState`` in place of the rows, say what was searched for, and offer a way back —
+clearing the search, or the filters. It is not an error.

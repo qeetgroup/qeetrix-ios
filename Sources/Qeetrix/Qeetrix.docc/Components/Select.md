@@ -2,30 +2,32 @@
 
 ## Overview
 
-One choice from a list, in the system's menu. Use it for more options than fit as a
-``QeetrixRadioGroup``. Search, multiple selection and options loaded from a server are not part of it.
+Pick one option from a short list, up to about 15, with its label, help text and error —
+`@qeetrix/react`'s Select in a Field.
 
 ```swift
 QeetrixSelect("Country", selection: $country, options: countries, placeholder: Text("Choose a country"))
 ```
 
-- The field shows the selected option's title, or the placeholder while the selection matches no option.
-- Tapping it opens the native menu: the current choice has a checkmark, long lists scroll, disabled
-  options are listed but cannot be chosen, and descriptions appear as subtitles.
-- A message colours its boundary; `disabled(_:)` dims it.
+- **The trigger** looks like a field (design rules §8): the filled box with its bottom line, the value
+  in `body.md` or the placeholder in `color.text.subtlest`, and a trailing 16-point sharp chevron in
+  `color.icon.default`.
+- **Size**: `lg` (default) is the field height; `md` and `sm` give a toolbar's height beside buttons of
+  the same size, `sm` with `body.sm`.
+- **States**: the field's invalid, read-only and disabled looks.
 
 ### Accessibility
 
-VoiceOver reads a button named by the label, with the selected title — or the placeholder — as its
-value. The menu and its items are the system's.
+VoiceOver reads the trigger as a pop-up button named by the label, with the chosen option as its value.
 
 ### Platform differences
 
-The web `Select` draws its own popup list. iOS uses the system menu, which keeps scrolling, Dynamic
-Type, VoiceOver and keyboard behaviour native — the same choice the web makes with `NativeSelect` on
-mobile.
+The list is the system menu (ADR 0012): its surface, font and highlight are the system's, the chosen
+option carries the system checkmark, and disabled options are dimmed. The web's popup — a menu surface
+with an Ember check and a 2-point Ember edge on the highlighted option — and multiple selection have no
+iOS counterpart.
 
-On the web: [Select on ui.qeet.in](https://ui.qeet.in/docs/components/select).
+On the web: [Select on ui.qeet.in](https://ui.qeet.in/components/select/).
 
 ## Topics
 

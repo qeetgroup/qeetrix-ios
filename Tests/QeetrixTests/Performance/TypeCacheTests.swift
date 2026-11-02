@@ -26,7 +26,7 @@ struct TypeCacheTests {
 
     @Test("Bold Text is part of the key: the regular and bold resolutions stay apart")
     func boldIsKeyed() {
-        let tokens = QeetrixTextRole.body.tokens
+        let tokens = QeetrixTextRole.bodyMd.tokens
         let regular = QeetrixResolvedType.resolved(tokens: tokens, size: 17, legibilityWeight: nil)
         let bold = QeetrixResolvedType.resolved(tokens: tokens, size: 17, legibilityWeight: .bold)
         #expect(bold.weight > regular.weight)
@@ -34,7 +34,7 @@ struct TypeCacheTests {
 
     @Test("The cache is bounded")
     func bounded() {
-        let tokens = QeetrixTextRole.caption.tokens
+        let tokens = QeetrixTextRole.bodySm.tokens
         for step in 0..<(QeetrixResolvedType.cacheCapacity + 40) {
             _ = QeetrixResolvedType.resolved(tokens: tokens, size: 200 + CGFloat(step) / 8, legibilityWeight: nil)
         }

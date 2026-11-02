@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// An alert that interrupts to ask for a decision or to report something that needs one — the web's
-/// `AlertDialog`, presented as the system alert.
+/// An alert that interrupts to ask for a decision or to report something that needs one —
+/// `@qeetrix/react`'s Dialog with a `danger` or `warning` intent (an alert dialog), presented as the
+/// system alert.
 ///
 /// Describe the alert as a value and present it by setting it:
 ///

@@ -1,8 +1,9 @@
 # Architecture
 
 Qeetrix for iOS is one Swift package with one library module, `Qeetrix`, built from the same sources
-of truth as the web: the published `@qeetrix/ui` token build and the `qeetrix-icons` drawings. Nothing
-visual is authored here. This repository turns those artifacts into typed SwiftUI API.
+of truth as the web: `@qeetrix/tokens`, `@qeetrix/icons` and `@qeetrix/react`, as published on npm
+(ADR 0018). Nothing visual is authored here. This repository turns those artifacts into typed SwiftUI
+API, and follows `@qeetrix/react`'s components and design rules.
 
 ## Layout
 
@@ -10,17 +11,15 @@ visual is authored here. This repository turns those artifacts into typed SwiftU
 Package.swift                 the library: product Qeetrix, iOS 17 (+ macOS 14 as a dev host)
 Sources/Qeetrix/
 ├── Tokens/                   token value types, provenance — and Generated/ (never edited)
-├── Foundations/              behaviour over tokens: Colors, Typography, Sizing, Elevation, Motion, Accessibility
+├── Foundations/              behaviour over tokens: Colors, Typography, Sizing, Shadow, Motion, Accessibility
 ├── Theme/                    theme mode, theme, environment; the navigation bar styling
 ├── Icons/                    QeetrixIcon, its drawing types, Image(qeetrix:) for system chrome — and
 │                             Generated/ (never edited)
-├── Components/<Family>/<Component>/   the components, one folder per qeetrix-ui family; Shared/ for
-│                             what several families use (component text styles, hit area, spinning,
-│                             text-input traits, the option model, dialog actions, rules between
-│                             stacked items, the wrapping row layout); Input/Field/ for the field layer
-│                             every input builds on; List/ for the iOS-only list row and section header
-├── Internal/                 implementation details (colour storage, component colours, the web
-│                             scale, built-in strings, logging)
+├── Components/<Family>/<Component>/   the components, one folder per @qeetrix/react family; Shared/
+│                             for what several families use (component text styles, text tones, hit
+│                             area, text-input traits, the option model, dialog actions); Field/Field
+│                             and Input/Input for the field layer every input builds on
+├── Internal/                 implementation details (colour storage, built-in strings, logging)
 ├── Resources/                Fonts/ (TTF + licence), Licenses/ (the icon artwork's notice),
 │                             Metadata/token-provenance.json, Localization/<language>.lproj (built-in strings)
 └── Qeetrix.docc/             API and usage documentation (DocC): landing page, foundation guides,
@@ -33,7 +32,8 @@ Examples/QeetrixConsumer/     an independent app using the public API only, as a
                               Scripts/consumer-check.sh installs the package into it by version
 Tools/QeetrixGen/             the build tool: its own Swift package (Sources/QeetrixGenCore, Tests)
 Tools/dependency-allowlist.json   the reviewed test-only dependencies, versions and licences
-Upstream/                     pins.json (edited), upstream.lock.json (written by sync), pinned inputs
+Upstream/                     pins.json (edited), upstream.lock.json (written by sync), the pinned
+                              inputs: qeetrix-tokens/, qeetrix-icons/, qeetrix-react/
 Scripts/                      the commands people and CI run: sync-upstream, generate, verify, lint,
                               warnings, dependencies, resources, api-check, api-compat, docs,
                               check, new-component, ci-simulator, consumer-check, release-check, sbom
@@ -45,15 +45,16 @@ Documentation/
 │                             report, release notes, compatibility matrix and bill of materials
 ├── Quality/                  the Phase 6 audit and its reports: maturity, accessibility,
 │                             localization, performance, security, API compatibility, coverage, gaps
-├── Foundations/ API/         generated: token coverage, public API baseline; API/ also holds the
-│                             accepted source breaks (breaking-changes-allowlist.txt)
+├── Foundations/ API/         generated: token coverage, token values, public API baseline; API/ also
+│                             holds the accepted source breaks (breaking-changes-allowlist.txt)
+├── MIGRATION_QEETRIX_REACT.md   old → new names and decisions of the @qeetrix/react migration
 ├── CROSS_PLATFORM_CONTRACT.md
 └── THIRD_PARTY_NOTICES.md    licences of the bundled fonts and the icon artwork
 .github/                      CI workflow, CODEOWNERS, PR and issue templates
 ```
 
-Components live under `Sources/Qeetrix/Components/<Family>/<Component>/`, one folder per qeetrix-ui
-family; no folder exists before its first component. The rules for a component are in
+Components live under `Sources/Qeetrix/Components/<Family>/<Component>/`, one folder per
+`@qeetrix/react` family; no folder exists before its first component. The rules for a component are in
 [Documentation/Standards/COMPONENT_CONTRACT.md](Documentation/Standards/COMPONENT_CONTRACT.md), and its
 API conventions in [ADR 0010](Documentation/Decisions/0010-component-api-conventions.md).
 Decisions behind this layout are in [Documentation/Decisions](Documentation/Decisions/README.md).
@@ -70,19 +71,20 @@ Internal supports every layer; nothing depends on Theme except apps.
 ```
 
 - **Tokens** (`Tokens/`, `Tokens/Generated/`) hold values only. The generated files declare the typed
-  token API (`QeetrixColor`, `QeetrixSpacing`, `QeetrixTextRole`, …) and the internal per-theme tables
+  token API (`QeetrixColor`, `QeetrixSpace`, `QeetrixTextRole`, …) and the internal per-scheme tables
   (`QeetrixLightTokens`, `QeetrixDarkTokens`). They depend only on the value types in
   `QeetrixTokens.swift` and on `Internal/`.
 - **Foundations** give tokens behaviour: `QeetrixColor` becomes a `ShapeStyle`, `QeetrixTextRole` gets
-  a font and Dynamic Type, `QeetrixElevation` gets drawn, easings become `Animation`s. Foundations read
+  a font and Dynamic Type, `QeetrixShadow` gets drawn, easings become `Animation`s. Foundations read
   the SwiftUI environment directly (`colorScheme`, `legibilityWeight`, `accessibilityReduceMotion`), never
   the Theme layer.
 - **Theme** is the environment surface apps use: `QeetrixThemeMode`, `QeetrixTheme`, and the modifiers
   that set them. It is built from Foundations.
 - **Icons** use the icon tokens (size, stroke) and their own generated catalogue.
-- **Inputs** are built on one field layer (`Components/Input/Field`): `QeetrixField` lays out the label,
-  description and message and passes them, through the environment, to the native control inside, which
-  carries them for VoiceOver; `QeetrixFieldSurface` draws every bordered input's states. Each input wraps
+- **Inputs** are built on one field layer (`Components/Field/Field`): `QeetrixField` lays out the label,
+  description and error and passes them, through the environment, to the native control inside, which
+  carries them for VoiceOver; `QeetrixInputSurface` (`Components/Input/Input`) draws every filled input's
+  states — fill, bottom line, focus and invalid frames. Each input wraps
   the system control — `SecureField`, `TextField`, `Toggle`, `Menu` — rather than imitating it (ADR 0012).
 - **Overlays and navigation** wrap the system presentations — `.alert`, `.confirmationDialog`, `.sheet`,
   `.popover`, `Menu`, `TabView`, the navigation bar — and are driven by a binding the presenting view
@@ -90,13 +92,13 @@ Internal supports every layer; nothing depends on Theme except apps.
   router or global state; the toast host's lifecycle is a value type (`QeetrixToastState`) with a
   view-scoped timer.
 - **Data display** presents what the app passes and keeps nothing: rows, details, accordions, chips,
-  timelines and the empty, loading and failure states go inside SwiftUI's own `List`, `Section`,
-  `DisclosureGroup` and `searchable`, which are not wrapped (ADR 0015).
-- **Components** are built from semantic and component tokens, the foundations' modifiers and icons.
-  Their type comes from `QeetrixTypeSpec` — a role, or a component text style the web sets with
-  utility classes — resolved by the same code as `qeetrixTextStyle(_:)`, so Dynamic Type and Bold Text
-  behave identically. Component tokens and `QeetrixWebScale` are internal (ADR 0011). Components read
-  the environment (`isEnabled`, `qeetrixDensity`, `colorScheme`), not the Theme layer.
+  timelines and the empty, loading and failure states go inside SwiftUI's own `List` and `Section`
+  (ADR 0015, amended by 0018).
+- **Components** are built from semantic tokens, the foundations' modifiers and icons, with the
+  lengths `@qeetrix/react`'s CSS writes as literals restated beside the CSS rule they come from (ADR
+  0018). Their type comes from `QeetrixTypeSpec` — a role, or a role at another weight — resolved by the
+  same code as `qeetrixTextStyle(_:)`, so Dynamic Type and Bold Text behave identically. Components read
+  the environment (`isEnabled`, `isFocused`, `qeetrixDensity`, `colorScheme`), not the Theme layer.
 - The library depends on no other package and on no Qeet product. Its only package dependency is
   test-only (SnapshotTesting, ADR 0009), which apps never resolve. The example app and the tests depend
   on the library, never the reverse.
@@ -108,71 +110,60 @@ would justify it are in [ADR 0001](Documentation/Decisions/0001-one-package-one-
 ## Design-token pipeline
 
 ```text
-@qeetrix/ui (npm, published)        calcom/sans · tonsky/FiraCode      qeetrix-icons (git commit)
-  tokens.json · tokens.css · index.css    native TTF + OFL                 SVGs + manifest entries
-                └───────── Scripts/sync-upstream.sh (verify, copy, lock) ─────────┘
+@qeetrix/tokens (npm)                     @qeetrix/icons (npm)          @qeetrix/react (npm)
+  dist/dtcg/** · tokens.css · fonts/*.ttf    svg/**/*.svg · manifest.json  manifest.json · css/<family>.css
+                └────────── Scripts/sync-upstream.sh (integrity, native.json, lock) ──────────┘
                                          ↓
                     Upstream/ + Resources/Fonts + upstream.lock.json
                                          ↓   Scripts/generate.sh (offline, deterministic)
         Tokens/Generated/*.swift · Icons/Generated/*.swift · Metadata/token-provenance.json
-                       Documentation/Foundations/TOKEN_COVERAGE.md
+            Documentation/Foundations/TOKEN_COVERAGE.md · token-values.json
 ```
 
-**Input.** The input is the published output of qeetrix-ui's own Style Dictionary build, not the DTCG
-source. That keeps one compiler of record:
+**Input.** The DTCG build of `@qeetrix/tokens`: its resolver, every source file it names, and the two
+schemes it publishes pre-resolved (`light.tokens.json`, `dark.tokens.json`), plus `tokens.css`. Each
+tarball is checked against the npm registry's integrity hash; the lock records its version and the
+commit it was published from (`gitHead`).
 
-- `tokens.json` holds the values per theme.
-- `tokens.css` defines what is consumable: its `--qx-*` names are the semantic and component layers,
-  and primitives are deliberately absent.
-- `index.css` is read for the `--radius-*` scale only.
+**Resolution.** `Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/DTCG.swift` does what the resolver
+says: the `foundation` set, then the `colorScheme` context, then the `density` context, later sources
+replacing tokens at the same path, `$type` inherited from groups, every `{alias}` followed. It resolves
+all six contexts (light and dark × default, comfortable, compact) and fails unless:
 
-The sync checks the tarball against the npm registry's integrity hash and records the version and the
-git commit it was published from.
+- light/default and dark/default reproduce the package's pre-resolved files token for token;
+- every context has the same token paths;
+- the modifiers are exactly `colorScheme` (light, dark) and `density` — a new modifier or scheme needs
+  a mapping first;
+- `tokens.css` agrees with every generated token it declares, in `:root`, each
+  `[data-qx-color-scheme]` and each `[data-qx-density]` block, evaluated by the strict CSS reader.
 
-**Scope.** `Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift` decides what is generated:
+**Scope.** `Tokens/Scope.swift` decides what is generated, by path:
 
-- Included: the consumable layer, minus z-indices (no SwiftUI meaning), gradients (not yet a
-  foundation) and component token groups no component uses yet.
-- Component tokens are generated per group, for the groups listed in `Upstream/pins.json`
-  (`componentTokens`) — today avatar, badge, button, card, input, progress, switch and typography — as
-  internal `Qeetrix<Group>Tokens` enums. A colour that names a semantic colour stays that
-  `QeetrixColor`; a density-resolved size stays a function of `QeetrixDensity`. qeetrix-ui 2.1.6
-  defines 41 groups covering 40 of its 97 families; the other 57 families use semantic tokens only
-  ([ADR 0002](Documentation/Decisions/0002-tokens-from-the-published-qeetrix-ui-build.md),
-  [ADR 0011](Documentation/Decisions/0011-component-tokens-and-web-metrics.md)).
-- Also included: the non-colour primitive scales qeetrix-ui itself exposes to code in
-  `token-values.ts`, namely spacing, icon size and stroke, stroke width, font weight and font geometry.
-- Palette primitives are never generated, so product code cannot reach a raw colour.
-- Every upstream token is either generated or excluded with a reason. A new consumable group with no
-  rule fails generation.
+- the semantic layer — everything outside `primitive.*` — into typed groups (`QeetrixColor`,
+  `QeetrixShadow`, `QeetrixTextRole`, `QeetrixSpace`, `QeetrixRadius`, `QeetrixBorderWidth`,
+  `QeetrixFocus`, `QeetrixOpacity`, `QeetrixIconSize`, `QeetrixIconStroke`, `QeetrixSize`,
+  `QeetrixDuration`, `QeetrixEasing`, `QeetrixSpring`, `QeetrixFontGeometry`, and `QeetrixDensity` for
+  the density-dependent sizes);
+- of the primitives, only the font weight scale the type roles use;
+- excluded with a reason: palette and scale primitives, font families (resolved into the roles),
+  z-indices, breakpoints, and the component tokens of components iOS doesn't have.
 
-**Values.** A strict CSS evaluator resolves what Style Dictionary leaves unresolved:
-
-- `var()` with fallbacks, `calc()`, `min()`;
-- `px` (one CSS px is one point) and `rem` (16 pt, because qeetrix-ui never sets a root font size);
-- `oklch()`, `rgb()`, and `color-mix(in oklab, …)` with CSS Color 5 premultiplied mixing;
-- `box-shadow` lists, cubic-bézier easings, and font stacks.
-
-Any other syntax fails with the token named.
+A token that matches no rule fails generation. Only colours and shadows may follow the colour scheme,
+and only the density group the density. Reduce Motion's durations come from `tokens.css`'s
+`prefers-reduced-motion` block, which the DTCG build has no context for.
 
 **Colour conversion** follows the CSS Color 4 reference matrices (OKLCH → OKLab → XYZ):
 
-- A colour inside sRGB is emitted as sRGB, so it matches the web's hex exactly. The tests check the
-  brand values #F26D0E, #D04800 and #B73D10.
-- A colour outside sRGB but inside Display P3 is emitted as Display P3, which is what Safari paints on
-  an iPhone. Nine values, across seven tokens, fall in this group.
-- A colour outside P3 would be gamut-mapped with the CSS Color 4 algorithm. None is today.
-- Components are rounded to six decimals, so the output is byte-stable.
+- a colour inside sRGB is emitted as sRGB and must round to the package's own `hex` (±1 per channel);
+- a colour outside sRGB but inside Display P3 is emitted as Display P3, which is what Safari paints on
+  an iPhone — one value today, `color.dataviz.categorical.2` in light;
+- a colour outside P3 would be gamut-mapped with the CSS Color 4 algorithm; none is today;
+- components are rounded to six decimals, so the output is byte-stable.
 
-**Checks.** Generation fails on:
-
-- unresolved references or cycles;
-- unsupported syntax;
-- light/dark key parity breaks;
-- a theme other than light/dark;
-- `tokens.json` and `tokens.css` disagreeing on any consumable value;
-- two tokens folding to one Swift name;
-- any snapshot file not matching its lock.
+**Outputs.** Besides the Swift, `Documentation/Foundations/token-values.json` lists every generated
+token with its source file, alias, Swift name, CSS variable and value in each context it varies over,
+for diffing against another platform's build; `TOKEN_COVERAGE.md` explains what is and isn't
+generated.
 
 `Scripts/verify.sh` regenerates in memory and byte-compares with what is committed. That makes it the
 drift check, the determinism check, and the guard against hand edits.
@@ -194,38 +185,45 @@ drift check, the determinism check, and the guard against hand edits.
 
 | Web family | File | Source | Proof it is the web's font |
 |:--|:--|:--|:--|
-| Qeet Sans | `CalSansVF.ttf` | calcom/sans `v2.011` | The release's `CalSansVF.woff2` is byte-identical to `@qeetrix/ui`'s `QeetSans.woff2` |
-| Fira Code | `FiraCode-VF.ttf` | tonsky/FiraCode `6.2` | The release's `FiraCode-VF.woff2` is byte-identical to `@qeetrix/ui`'s |
+| Qeet Sans | `QeetSans.ttf` | `@qeetrix/tokens` `fonts/QeetSans.ttf` (Cal Sans 2.011) | its sha256 and size match `fonts/native.json`, which names the package's full `QeetSans.woff2` it was made from (the web loads per-script subsets of it), whose sha256 the sync checks too |
+| Fira Code | `FiraCode-VF.ttf` | `@qeetrix/tokens` `fonts/FiraCode-VF.ttf` (Fira Code 6.2) | the same, against `FiraCode-VF.woff2` |
 
-- **Why TTF.** WOFF2 is a web container, so iOS bundles the native TTF from the same release. The sync
-  refuses a TTF whose WOFF2 sibling differs from what the web ships.
-- **Licences.** The licence files are taken verbatim from each font project at the pinned tag and are
-  bundled beside the fonts.
+- **Why TTF.** WOFF2 is a web container; the package ships TrueType for native platforms (fontTools'
+  decompression of its WOFF2, every glyph and axis kept).
+- **Licences.** The package's own licence files, bundled beside the fonts.
 - **Loading.** `QeetrixFontRegistry` registers the fonts process-wide, once, and builds every font from
   the descriptor CoreText reads out of the bundled file. Fonts are never looked up by PostScript name:
   name lookups on this variable font returned a synthesised instance in testing.
-- **Axes.** Each role sets `wght` (weight), `GEOM` (letter style: `ui` 25 for text, `base` 50 for
-  headings, as on the web), `opsz` (the scaled point size, the web's `font-optical-sizing: auto`) and
-  `ital` 0.
+- **Axes.** Each role sets `wght` (weight), `GEOM` (the letter style its token names:
+  `font.geometry.display` 100 for display sizes, `.heading` 50 for headings and titles, `.body` 0 for
+  body text and labels), `opsz` (the scaled point size, the web's `font-optical-sizing: auto`) and
+  `ital` 0. YTAS and SHRP keep their defaults, as on the web.
+- **Line height.** A role's line height is exact, the length its token gives on the 4 pt grid (20 pt
+  for `body.md`, not 14 × 1.4286). It applies to every line: `lineSpacing` between lines, and CSS's
+  half-leading above the first and below the last, so one line is the role's height.
 - **Failure.** A failed registration is logged and reported by `register()`. Text then falls back to
   the system font at the same weight, never silently.
 - **Caching.** Building a font from a variation descriptor is the costly part of drawing text, and
   SwiftUI asks for it on every update. `QeetrixResolvedType` caches the result by role tokens, size and
   Bold Text, behind a lock, up to 512 entries (`Documentation/Quality/PERFORMANCE_REPORT.md`).
 - **Other scripts.** Scripts the fonts do not cover, such as the Indic scripts, fall back through
-  CoreText's system cascade, as browsers do.
+  CoreText's system cascade, as browsers do without Noto Sans.
 
 ## Icons
 
-The pinned SVGs are parsed at generation time, not at run time.
+The pinned icons' SVG files are read at generation time, not at run time.
 
-- **Supported subset.** The parser accepts `path` (every command; arcs become cubics per SVG F.6),
+- **Input.** `@qeetrix/icons` publishes every drawing as an SVG file and its catalogue as JSON. The
+  sync keeps each pinned icon's manifest entry and the files of the drawings it lists, verbatim
+  (`Upstream/qeetrix-icons/svg/<shape>-<variant>/<name>.svg`); a file the entry doesn't list, or a
+  listed one that is missing, fails the sync and the generator.
+- **Supported subset.** The SVG parser accepts `path` (every command; arcs become cubics per SVG F.6),
   `line`, `circle`, `ellipse`, `rect`, `polyline` and `polygon`, painted only in `currentColor`.
 - **Rejected.** Transforms, groups, gradients, hard-coded colours and per-element stroke widths fail
   generation.
 - **Output.** Each drawing becomes path commands in the 24-unit grid. `QeetrixIcon` draws them in a
   `Canvas`: the stroke width is the icon-stroke token scaled with the icon, as on the web, and the
-  colour is the inherited foreground style.
+  colour is the inherited foreground style. Components draw the sharp shape (design rules §16).
 - **Why not an asset catalogue.** Generated paths keep vectors exact, let the stroke token apply at
   run time, need no asset compiler, and can be tested on any host.
 - **Names.** `QeetrixIconName` is a generated struct with one static property per icon, not an enum, so
@@ -234,9 +232,11 @@ The pinned SVGs are parsed at generation time, not at run time.
 
 ## Public API principles
 
-- Every public name starts `Qeetrix` and follows the token's own name, for example `color.text.on-brand`
-  → `QeetrixColor.textOnBrand`. Raw values are the upstream names.
-- Defaults match the web: an icon is `md`/`regular`/round outline, and the theme mode is `.system`.
+- Every public name starts `Qeetrix` and follows the token's own name, for example `color.bg.brand.bold`
+  → `QeetrixColor.bgBrandBold`. Raw values are the upstream names. Component parameters follow
+  `@qeetrix/react`'s props (`variant`, `tone`, `size`).
+- Defaults match the web: an icon is `md`/`regular`/round outline, a button `solid`/`brand`/`md`, and
+  the theme mode is `.system`.
 - Behaviour is exposed as SwiftUI modifiers, `ShapeStyle`s and styles (`ButtonStyle`, `ToggleStyle`,
   `ProgressViewStyle`); a component's named view is built on its style (ADR 0010).
 - Implementation types are internal: colour storage, per-theme tables, icon drawings and logging.
@@ -250,44 +250,36 @@ The pinned SVGs are parsed at generation time, not at run time.
 
 ## Upstream observations
 
-These were found while building on qeetrix-ui 2.1.6. None is changed here; they are recorded so
-upstream can decide.
+Found while building on `@qeetrix/tokens` 0.0.12, `@qeetrix/icons` 2.0.0 and `@qeetrix/react` 0.3.0,
+and reported as QTRX tickets: the icons' SVG files and JSON manifest (QTRX-188), each typography role's
+letter style in its token (QTRX-186), the neutral and ghost danger button states (QTRX-157, QTRX-158)
+and four places where the design documents disagreed with the CSS (QTRX-159, QTRX-162, QTRX-169,
+QTRX-171). Tokens 0.0.13, icons 2.1.0, react 0.4.0 and the specs fixed every one, so iOS carries no
+upstream workaround; the migration file lists each.
 
-- `tokens.json` is not fully resolved. 191 values still hold CSS `var()`, `calc()` or `min()`, and the
-  semantic `corner.*` tokens resolve through Tailwind's `--radius-*` variables, which live in
-  `index.css` outside the DTCG graph. iOS evaluates them from the published CSS; a token-only consumer
-  could not.
-- `control.*` resolves through CSS density variables rather than token references.
-- qeetrix-ui's `fonts/FiraCode-OFL.txt` is a reflowed copy of the OFL, not Fira Code's own `LICENSE`.
-  iOS bundles the upstream file verbatim.
-- The web family "Qeet Sans" is a CSS alias. Inside the file the family is "Cal Sans" and the default
-  instance is `CalSans-Regular`.
-- Releases up to 2.1.5 shipped the earlier Cal Sans v1.100 webfonts without their OFL text; 2.1.6
-  fixes this.
-- Component geometry is not in the token contract. Heights, padding, gaps and type steps come from
-  Tailwind utility classes in each component's source, so a change to them changes the web without
-  changing `tokens.json` (ADR 0011).
-- The shadcn bridge colours (`--secondary`, `--muted-foreground`, …) are emitted into `tokens.css` as
-  literal OKLCH values, not references; their meaning is only in `src/tokens/theme/*/bridge.json`,
-  which is not published. iOS maps them to the semantic tokens that file names.
-- `component-manifest.json` calls a component's family its `category`; the ui.qeet.in documentation
-  category (Actions, Forms & inputs, …) is not in the manifest.
+Two things look like gaps and aren't:
 
+- `@qeetrix/icons` marks the arrows and chevrons `directionality: "preserve"` on purpose: a physical
+  arrow never mirrors, and the call site decides when a direction should follow the reading order.
+- The DTCG build states the Reduce Motion rule (every duration 0 ms) without a context for it; the
+  generator reads `tokens.css`'s `prefers-reduced-motion` block and checks it says the same.
 ## Open design questions
 
 These are not decided here, because they are design decisions:
 
 - **Body size.** Web body text is 14 px; iOS's default body is 17 pt. Qeetrix keeps the web's sizes and
   scales them with Dynamic Type.
-- **Touch targets.** The densities' control heights (28 / 32 / 36) are pointer-sized. Components keep
-  the web's drawn size and extend their hit area to 44 pt without moving layout, as the web Switch
-  does; adjacent controls closer than 44 pt can therefore share a target edge. Whether iOS should
-  draw controls at 44 pt instead is a design decision.
-- **Field text.** Text fields use the web's 16 pt mobile field size, not the 14 pt body size.
-- **Switch layout.** Label leading, switch trailing, as iOS lays out a toggle; the web places the
-  switch where the form puts it.
+- **Touch targets.** The default density's control heights (28 / 32 / 40) are pointer-sized; only the
+  comfortable density reaches 44 pt, the design rules' touch size. Components keep the web's drawn
+  size and extend their hit area to 44 pt without moving layout; adjacent controls closer than 44 pt
+  can therefore share a target edge. Whether iOS screens should default to the comfortable density is
+  a design decision.
+- **Field text.** Fields use the web's 14 pt `body.md`, as `@qeetrix/react` does (the previous 16 pt
+  mobile size came from `@qeetrix/ui`).
+- **Switch layout.** The control first and the label after it, as the design rules say; iOS settings
+  usually put the switch at the trailing edge.
 - **Selection rows.** Checkbox, radio and switch rows are 44 pt tall and flush; the web draws 16 px
-  controls 12 px apart with 24 px pointer targets.
+  controls in 24 px rows 4 px apart.
 - **Extended hit areas can overlap.** Controls drawn under 44 pt and placed closer than 44 pt apart
   share target space: a UI test caught a tap on one error-summary link landing on the next. Components
   that stack (selection rows, summary links) use full 44 pt rows instead; buttons in tightly wrapped
@@ -303,4 +295,4 @@ These are not decided here, because they are design decisions:
 - **Density in component tokens.** Tokens built on `control.*` (accordion padding, timeline gaps) resolve
   at the default density, so a compact subtree doesn't tighten them as it does on the web.
 - **System menu surfaces.** Menus, alerts and confirmation dialogs keep the system's font and material,
-  so the `component.menu` tokens have no iOS use yet.
+  so `@qeetrix/react`'s menu surface, Ember highlight edge and shortcuts have no iOS use yet.

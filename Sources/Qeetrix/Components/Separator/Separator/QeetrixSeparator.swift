@@ -1,57 +1,60 @@
 import SwiftUI
 
-/// The weights of ``QeetrixSeparator``, as on the web.
-public enum QeetrixSeparatorVariant: String, CaseIterable, Sendable {
-    /// The border colour. Divides sections, groups and toolbars.
+/// A separator's strength, as `@qeetrix/react`'s Separator `tone`.
+public enum QeetrixSeparatorTone: String, CaseIterable, Sendable {
+    /// `color.border.subtle`, the default.
+    case subtle
+    /// `color.border.default`.
     case `default`
-    /// The subtle border colour, one step quieter. Divides items inside a section — rows of a list,
-    /// metadata in a card — where a default rule would draw more lines than the content.
-    case muted
+    /// `color.border.strong`.
+    case strong
+
+    var color: QeetrixColor {
+        switch self {
+        case .subtle: .borderSubtle
+        case .default: .borderDefault
+        case .strong: .borderStrong
+        }
+    }
 }
 
-/// A 1 pt rule between groups of content.
-///
-/// Horizontal separators fill the available width; vertical ones fill the height their container
-/// proposes, so inside an `HStack` give the stack a height or let its content set one.
+/// A 1 pt line (`border.width.default`) between groups of content — `@qeetrix/react`'s Separator.
 ///
 /// ```swift
-/// VStack(spacing: QeetrixSpacing.m) {
-///     QeetrixText("Profile", variant: .h3)
-///     QeetrixSeparator()
-///     QeetrixText("Your name and photo are visible to your team.")
-/// }
+/// QeetrixSeparator()
+/// QeetrixSeparator(.vertical, tone: .default)
 /// ```
 ///
-/// The web separator carries `role="separator"`. VoiceOver has no separator trait, so here it is hidden
-/// from VoiceOver, like the system's own list separators; grouping is carried by spacing and headings,
-/// never by the rule alone.
+/// A vertical separator stretches to its row. It is decorative by default — hidden from VoiceOver,
+/// the web's `decorative` — since spacing and headings already group the content; pass
+/// `isDecorative: false` where the boundary itself carries meaning, and VoiceOver reads it as a
+/// separator.
 public struct QeetrixSeparator: View {
     let orientation: Axis
-    let variant: QeetrixSeparatorVariant
+    let tone: QeetrixSeparatorTone
+    let isDecorative: Bool
 
-    public init(_ orientation: Axis = .horizontal, variant: QeetrixSeparatorVariant = .default) {
+    public init(_ orientation: Axis = .horizontal, tone: QeetrixSeparatorTone = .subtle, isDecorative: Bool = true) {
         self.orientation = orientation
-        self.variant = variant
+        self.tone = tone
+        self.isDecorative = isDecorative
     }
 
     public var body: some View {
-        Rectangle()
-            .fill(Self.color(variant))
+        let line = Rectangle()
+            .fill(tone.color)
             .frame(
-                width: orientation == .vertical ? QeetrixStroke.hairline : nil,
-                height: orientation == .horizontal ? QeetrixStroke.hairline : nil
+                width: orientation == .vertical ? QeetrixBorderWidth.default : nil,
+                height: orientation == .horizontal ? QeetrixBorderWidth.default : nil
             )
             .frame(
                 maxWidth: orientation == .horizontal ? .infinity : nil,
                 maxHeight: orientation == .vertical ? .infinity : nil
             )
-            .accessibilityHidden(true)
-    }
-
-    static func color(_ variant: QeetrixSeparatorVariant) -> QeetrixColor {
-        switch variant {
-        case .default: .borderDefault  // bg-border
-        case .muted: .borderSubtle  // bg-border-subtle
+        if isDecorative {
+            line.accessibilityHidden(true)
+        } else {
+            line.accessibilityElement().accessibilityLabel(Text(verbatim: "")).accessibilityAddTraits(.isStaticText)
         }
     }
 }

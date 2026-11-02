@@ -2,40 +2,36 @@ import Qeetrix
 import SwiftUI
 
 struct EmptyStatePage: View {
-    @State private var created = 0
+    @State private var added = 0
 
     var body: some View {
         ComponentPage(
             title: "Empty state",
-            summary: "What a surface shows when there is nothing to show. The variant says why; the words and actions are the app's."
+            summary: "The message where content would be: a 24 pt icon, what's missing, why, and the way forward."
         ) {
-            DemoSection("First use") {
-                QeetrixCard {
+            DemoSection("A screen: no accounts yet") {
+                QeetrixEmptyState(
+                    "No accounts yet", description: "Add an account to sign in with this phone.", icon: .userPlus, level: 2
+                ) {
+                    QeetrixButton("Add account", icon: .plus) { added += 1 }
+                } footer: {
+                    Text("Or scan the code on qeet.in")
+                }
+                QeetrixText("Added: \(added)", size: .sm, tone: .subtle).accessibilityIdentifier("empty-state-added")
+            }
+            DemoSection("A section: no pending approvals") {
+                QeetrixCard(title: Text("Approvals")) {
                     QeetrixEmptyState(
-                        "No invoices yet", description: Text("Invoices appear here once you bill a customer."), variant: .firstUse,
-                        icon: .fileText
-                    ) {
-                        QeetrixButton("Create invoice") { created += 1 }
-                    }
-                }
-                QeetrixText("Created: \(created)", variant: .muted).accessibilityIdentifier("empty-created")
-            }
-            DemoSection("No results, small") {
-                QeetrixCard {
-                    QeetrixEmptyState("No results", description: Text("Nothing matches “roadmap”."), variant: .noResults, size: .sm)
+                        "No pending approvals", description: "Sign-in requests from your accounts appear here.", icon: .inbox,
+                        size: .section)
                 }
             }
-            DemoSection("No permission") {
-                QeetrixCard {
-                    QeetrixEmptyState(
-                        "You can't see these reports", description: Text("Ask a workspace admin for access."), variant: .noPermission)
-                }
-            }
-            DemoSection("Error") {
-                QeetrixCard {
-                    QeetrixEmptyState("Couldn't load reports", description: Text("Check your connection and try again."), variant: .error) {
-                        QeetrixButton("Try again", leadingIcon: .refreshCw, variant: .outline) {}
-                    }
+            DemoSection("Danger: offline") {
+                QeetrixEmptyState(
+                    "You're offline", description: "Connect to the internet to see your accounts.", icon: .wifiOff, size: .section,
+                    tone: .danger
+                ) {
+                    QeetrixButton("Try again", variant: .soft) {}
                 }
             }
         }

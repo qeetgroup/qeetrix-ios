@@ -2,9 +2,17 @@ import Qeetrix
 import SwiftUI
 
 struct DataStatePage: View {
-    enum Phase: String, CaseIterable, Hashable {
-        case loading = "Loading", failed = "Failed", empty = "Empty", content = "Content"
+    enum Phase: String, CaseIterable, Identifiable {
+        case loading = "Loading"
+        case failed = "Failed"
+        case offline = "Offline"
+        case empty = "Empty"
+        case loaded = "Loaded"
+
+        var id: Self { self }
     }
+
+    struct LoadFailure: Error {}
 
     @State private var phase = Phase.loading
     @State private var retries = 0
@@ -12,38 +20,43 @@ struct DataStatePage: View {
     var body: some View {
         ComponentPage(
             title: "Data state",
-            summary:
-                "The loading, failure and empty branches of one surface, so none is forgotten. The app owns the state; nothing is fetched here."
+            summary: "Loading, then a failure, then empty, then the content, in that order. Loading keeps the failure's height."
         ) {
-            DemoSection("Branch") {
-                QeetrixTabs(selection: $phase, tabs: Phase.allCases.map { QeetrixTab($0.rawValue, value: $0) })
-                QeetrixCard {
+            DemoSection("State") {
+                FlowLayout {
+                    ForEach(Phase.allCases) { option in
+                        QeetrixButton(option.rawValue, variant: option == phase ? .soft : .ghost, tone: .neutral, size: .sm) {
+                            phase = option
+                        }
+                    }
+                }
+                QeetrixText("Retries: \(retries)", size: .sm, tone: .subtle).accessibilityIdentifier("data-state-retries")
+            }
+            DemoSection("Accounts") {
+                QeetrixCard(title: Text("Accounts")) {
                     QeetrixDataState(
-                        isLoading: phase == .loading, isEmpty: phase == .empty,
-                        failure: phase == .failed
-                            ? QeetrixDataFailure("Couldn't load members.") {
-                                retries += 1
-                                phase = .content
-                            } : nil
+                        isLoading: phase == .loading, error: phase == .failed || phase == .offline ? LoadFailure() : nil,
+                        isEmpty: phase == .empty, failure: phase == .offline ? offline : .standard, onRetry: { retries += 1 }
                     ) {
-                        VStack(spacing: 0) {
-                            ForEach(["Asha Rao", "Ravi Kumar", "Meera Iyer"], id: \.self) { name in
-                                QeetrixListItem(name) {
-                                } leading: {
-                                    QeetrixAvatar(name: name, size: .sm)
+                        VStack(alignment: .leading, spacing: QeetrixSpace.gapMd) {
+                            ForEach(["Priya Sharma · Qeet ID", "Priya Sharma · Qeet Pay"], id: \.self) { account in
+                                HStack(spacing: QeetrixSpace.gapMd) {
+                                    QeetrixAvatar(name: "Priya Sharma", size: .sm)
+                                    QeetrixText(account)
                                 }
                             }
                         }
-                        .accessibilityIdentifier("data-content")
-                    } loading: {
-                        QeetrixDataLoadingRows(rows: 3)
-                    } empty: {
-                        QeetrixEmptyState("No members yet", description: Text("Invite people to this workspace."), size: .sm)
+                    } emptyState: {
+                        QeetrixEmptyState(
+                            "No accounts yet", description: "Add an account to sign in with this phone.", icon: .userPlus, size: .section)
                     }
                 }
-                QeetrixText("Retries: \(retries)", variant: .muted).accessibilityIdentifier("data-retries")
             }
         }
+    }
+
+    var offline: QeetrixDataStateFailure {
+        QeetrixDataStateFailure(title: "You're offline", description: "Connect to the internet to see your accounts.", icon: .wifiOff)
     }
 }
 

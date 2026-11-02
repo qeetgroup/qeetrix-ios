@@ -1,0 +1,10 @@
+@layer qx.base, qx.components, qx.state;
+@import "../base.css";
+@import "../state.css";
+
+@layer qx.components {
+  .qx-relative-time {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+}

@@ -4,41 +4,62 @@
 
 A focused task over the current screen — a form, filters, details — presented with
 `qeetrixSheet(isPresented:detents:isDismissDisabled:onDismiss:content:)` or its `item:` form, and laid
-out with this view.
+out with this view. On iOS the sheet stands in for both `@qeetrix/react`'s Drawer and its Dialog
+(ADR 0014).
 
 ```swift
 .qeetrixSheet(isPresented: $isEditing, isDismissDisabled: hasChanges) {
-    QeetrixSheetContent("Edit profile", description: Text("Your team sees these details."), onClose: close) {
-        QeetrixTextField("Display name", text: $draft)
+    QeetrixSheetContent("Edit address", description: Text("Used on every invoice."), isDismissible: !hasChanges, onClose: close) {
+        QeetrixTextField("Street", text: $draft)
     } actions: {
-        QeetrixButton("Cancel", variant: .outline) { close() }
-        QeetrixButton("Save") { save() }
+        QeetrixButton("Cancel", variant: .ghost, size: .lg) { close() }
+        QeetrixButton("Save", size: .lg) { save() }
     }
 }
 ```
 
-- **The surface.** On iPhone the sheet rises from the bottom to its detents, with a grab handle when
-  there is more than one: the web's `Drawer`. On iPad it is the centred form sheet: the web's `Dialog`.
-  The background and corner come from the `component.dialog` tokens.
-- **The layout.** The title is a heading, with an optional description and a Close button. The content
-  scrolls when it is taller than the sheet. The actions are placed as ``QeetrixFormActions`` places them,
-  and stay above the keyboard.
-- **Dismissal.** A swipe down, a tap outside on iPad, Close, or your own buttons dismiss the sheet, and
-  `isPresented` (or `item`) becomes `false` (or `nil`). `isDismissDisabled` refuses the swipe and the tap
-  outside — while a form has unsaved changes, say. `onClose` replaces Close's dismissal, so you can ask
-  first. `onDismiss` runs once afterwards, however the sheet was dismissed.
+- **The surface**: `color.surface.overlay` with 4-point corners, from the bottom on iPhone and as a
+  form sheet on iPad.
+- **The layout** (drawer.css): a header with the title (`title.md`), an optional description (`body.md`,
+  `color.text.subtle`) and Close at its end; the body, which scrolls; and a footer with the actions,
+  end-aligned, tertiary first. 24 points of padding (`space.inset.xl`, 16 above and below the actions)
+  and 1-point `color.border.subtle` rules under the header and above the footer, which stay put while
+  the body scrolls.
+- **Intent.** Where the sheet is the web's Dialog — a decision that interrupts — give it an `intent`:
+  the Dialog's 3-point line across its top, Ember for a standard dialog (`.standard`), red for a
+  destructive one (`.danger`), amber for a warning (`.warning`):
+
+  ```swift
+  .qeetrixSheet(isPresented: $isRevoking) {
+      QeetrixSheetContent("Revoke this API key?", intent: .danger, isDismissible: false) {
+          QeetrixText("Apps using it stop working at once.")
+      } actions: {
+          QeetrixButton("Cancel", variant: .ghost, size: .lg) { isRevoking = false }
+          QeetrixButton("Revoke key", tone: .danger, size: .lg) { revoke() }
+      }
+  }
+  ```
+- **Dismissal.** A swipe down, Close, or your own buttons dismiss it, and `isPresented` (or `item`)
+  becomes `false` (or `nil`). Close — a neutral ghost icon button named "Close" — calls `onClose`, or
+  dismisses the sheet. With `isDismissible: false` there's no Close: pair it with the sheet's
+  `isDismissDisabled`, as for an unsaved form, the web's `dismissible={false}`.
 
 ### Accessibility
 
-The sheet is modal for VoiceOver. The title is a heading and Close a labelled button, both at the top,
-so the sheet's purpose and the way out come first.
+The sheet is modal: VoiceOver moves into it and reads the title as a heading. Close is named "Close".
 
 ### Platform differences
 
-The web has four modal surfaces (`Dialog`, `AlertDialog`, `Drawer` and `Sheet`); iOS has the sheet and
-the alert. A centred dialog on iPhone is not provided: there the bottom sheet is the platform's modal
-for a task. The web's side `Sheet` has no iPhone equivalent; on iPad a sheet or a split view takes its
-place.
+- **Presentation** is the system sheet: detents, the swipe, the keyboard and the grab handle are the
+  system's. The web's drawer slides in from the side and its dialog is centred; iOS presents both as a
+  sheet. A centred, non-sheet dialog is deferred until a product needs one (ADR 0014).
+- **Shadow.** The system draws the sheet's own edge; the web's `shadow.modal` isn't repeated.
 
-On the web: [Dialog](https://ui.qeet.in/docs/components/dialog) and
-[Drawer](https://ui.qeet.in/docs/components/drawer) on ui.qeet.in.
+On the web: [Drawer](https://ui.qeet.in/components/drawer/) and
+[Dialog](https://ui.qeet.in/components/dialog/) on ui.qeet.in.
+
+## Topics
+
+### Intent
+
+- ``QeetrixDialogIntent``

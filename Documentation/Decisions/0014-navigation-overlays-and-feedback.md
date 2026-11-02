@@ -1,6 +1,6 @@
 # 0014 — Navigation, overlays and feedback: native presentation, state owned by the app
 
-**Status:** Accepted (Phase 4, 2026-10-19). Builds on ADRs 0010 and 0011.
+**Status:** Accepted (Phase 4, 2026-10-19). Builds on ADRs 0010 and 0011. Amended by ADR 0018: toasts have a `tone`, time out after 5 s and never when `danger`; the sheet takes the dialog intent line.
 
 ## Context
 

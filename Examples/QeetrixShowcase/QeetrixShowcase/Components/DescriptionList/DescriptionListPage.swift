@@ -2,37 +2,60 @@ import Qeetrix
 import SwiftUI
 
 struct DescriptionListPage: View {
+    @State private var layout = QeetrixDescriptionListLayout.rows
+    @State private var columns = 2
+    @State private var displayName = "Acme"
+
     var body: some View {
         ComponentPage(
             title: "Description list",
-            summary: "Labelled details of one thing. Terms are quiet; values are the data. The app formats the values."
+            summary: "Facts about one record as term and value pairs. Rows stack on a phone and sit side by side where there is room."
         ) {
-            DemoSection("Horizontal, divided") {
-                QeetrixCard {
-                    QeetrixDescriptionList(isDivided: true) { details }
+            DemoSection("An approval request") {
+                QeetrixDescriptionList {
+                    QeetrixDescriptionItem("App", value: "Qeet Pay console")
+                    QeetrixDescriptionItem("Place", value: "Bengaluru, India")
+                    QeetrixDescriptionItem("Device", value: "MacBook Pro · Safari")
+                    QeetrixDescriptionItem("Time", value: "30 Oct 2026, 10:42")
+                    QeetrixDescriptionItem("Status") { QeetrixBadge("Pending", tone: .warning) }
                 }
-                QeetrixText("Term beside value in regular width (iPad, landscape); stacked on a portrait iPhone.", variant: .muted)
             }
-            DemoSection("Vertical") {
-                QeetrixDescriptionList(layout: .vertical) { details }
+            DemoSection("Empty values, a description and an action") {
+                QeetrixDescriptionList {
+                    QeetrixDescriptionItem("Phone", value: nil)
+                    QeetrixDescriptionItem(
+                        "Display name", value: displayName, description: Text("Shown in the top bar and in invitations.")
+                    ) {
+                        QeetrixButton("Change", variant: .ghost, size: .sm) {
+                            displayName = displayName == "Acme" ? "Acme Labs" : "Acme"
+                        }
+                    }
+                }
             }
-            DemoSection("Grid") {
-                QeetrixDescriptionList(layout: .grid) {
-                    QeetrixDescriptionItem("Plan", value: Text("Team"))
-                    QeetrixDescriptionItem("Region", value: Text(verbatim: "Mumbai"))
-                    QeetrixDescriptionItem("Created", value: Text(verbatim: "12 October 2026"))
-                    QeetrixDescriptionItem("Owner", value: Text(verbatim: "Asha Rao"))
+            DemoSection("Layout") {
+                Picker("Layout", selection: $layout) {
+                    ForEach(QeetrixDescriptionListLayout.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                }
+                .pickerStyle(.segmented)
+                if layout == .columns {
+                    Stepper("At most \(columns) columns", value: $columns, in: 1...4)
+                }
+                QeetrixDescriptionList(layout: layout, columns: columns) {
+                    QeetrixDescriptionItem("Actor", value: "priya@acme.in")
+                    QeetrixDescriptionItem("Event", value: "Signed in")
+                    QeetrixDescriptionItem("IP address", value: "203.0.113.24")
+                    QeetrixDescriptionItem("Phone", value: "+91 98765 43210")
+                }
+            }
+            DemoSection("In a card") {
+                QeetrixCard(title: Text("Audit event")) {
+                    QeetrixDescriptionList {
+                        QeetrixDescriptionItem("Actor", value: "priya@acme.in")
+                        QeetrixDescriptionItem("Event", value: "Passkey added")
+                    }
                 }
             }
         }
-    }
-
-    @ViewBuilder
-    private var details: some View {
-        QeetrixDescriptionItem("Workspace", value: Text(verbatim: "Qeet Design"))
-        QeetrixDescriptionItem("Plan", value: Text("Team, billed monthly"))
-        QeetrixDescriptionItem("Identifier", value: Text(verbatim: "ws_7f3a9c2e8b1d4f60a5e2c9d71b3f8a04"))
-        QeetrixDescriptionItem("Status") { QeetrixBadge("Active", variant: .success) }
     }
 }
 

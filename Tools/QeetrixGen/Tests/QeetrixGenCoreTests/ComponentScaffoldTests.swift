@@ -4,8 +4,8 @@ import Testing
 @testable import QeetrixGenCore
 
 /// `new-component`, run in throwaway copies of the repository's real inputs — the templates, the pinned
-/// manifest and tokens, the pins, the DocC landing page and the showcase catalogue — never in the
-/// repository itself.
+/// `@qeetrix/react` manifest and `@qeetrix/tokens` build, the pins, the DocC landing page and the
+/// showcase catalogue — never in the repository itself.
 @Suite("Component scaffold")
 struct ComponentScaffoldTests {
     /// A temporary root holding copies of the files the scaffold reads.
@@ -26,7 +26,21 @@ struct ComponentScaffoldTests {
                 try FileManager.default.copyItem(at: SnapshotTests.root.appendingPathComponent(path), to: target)
             }
             try write("Sources/Qeetrix/Components/Button/Button/QeetrixButton.swift", "public struct QeetrixButton {}\n")
+            // The landing page and catalogue are the real ones, which grow as components are built: forget
+            // the ones these tests scaffold, so each test sees them as new.
+            let marks: [(path: String, mark: (String) -> String)] = [
+                (ComponentScaffold.landingPath, { name in "``Qeetrix\(name)``" }),
+                (ComponentScaffold.catalogPath, { name in "\(name)Page()" }),
+            ]
+            for (path, mark) in marks {
+                let lines = try read(path).components(separatedBy: "\n")
+                let kept = lines.filter { line in !Self.scaffolded.contains { line.contains(mark($0)) } }
+                try write(path, kept.joined(separator: "\n"))
+            }
         }
+
+        /// The components the tests scaffold.
+        static let scaffolded = ["Slider", "TextArea", "CommandPalette", "Calendar", "Kbd"]
 
         func write(_ path: String, _ text: String) throws {
             let url = root.appendingPathComponent(path)
@@ -65,7 +79,7 @@ struct ComponentScaffoldTests {
         let source = try fixture.read("Sources/Qeetrix/Components/Slider/Slider/QeetrixSlider.swift")
         #expect(source.contains("public struct QeetrixSlider: View"))
         #expect(source.contains("#error(\"QeetrixSlider is a scaffold"), "An unfinished scaffold must not build")
-        #expect(source.contains("https://ui.qeet.in/docs/components/slider"))
+        #expect(source.contains("https://ui.qeet.in/components/slider"))
         #expect(!source.contains("{{"), "Every placeholder is filled")
         #expect(try fixture.read("Tests/QeetrixTests/Components/Slider/SliderTests.swift").contains("Issue.record("))
         #expect(try fixture.read("Tests/QeetrixSnapshotTests/Slider/SliderSnapshotTests.swift").contains("assertSpecimen("))
@@ -81,33 +95,42 @@ struct ComponentScaffoldTests {
             catalog.contains("ShowcaseEntry(\"slider\", \"Slider\", .forms) { SliderPage() },\n" + ComponentScaffold.catalogMarker))
     }
 
-    @Test("A web slug that differs from the iOS name, and a family's shared token group")
-    func slugAndFamilyTokens() throws {
+    @Test("A web part named differently from the iOS component, in a family without component tokens")
+    func slugAndFamily() throws {
         let fixture = try Fixture()
         defer { fixture.remove() }
         let scaffold = ComponentScaffold(root: fixture.root)
-        let changes = try scaffold.plan(.init(family: "Input", component: "TextArea", slug: "textarea", category: "Forms & inputs"))
-        #expect(changes.contains { $0.path == "Sources/Qeetrix/Components/Input/TextArea/QeetrixTextArea.swift" })
-        #expect(changes.first { $0.path.hasSuffix("QeetrixTextArea.swift") }?.contents.contains("QeetrixInputTokens") == true)
-        #expect(!changes.contains { $0.path == Lock.pinsPath }, "input is already adopted")
+        let changes = try scaffold.plan(.init(family: "Input", component: "TextArea", slug: "Textarea", category: "Forms & inputs"))
+        let source = try #require(changes.first { $0.path == "Sources/Qeetrix/Components/Input/TextArea/QeetrixTextArea.swift" })
+        #expect(source.contents.contains("none — semantic tokens only"))
+        #expect(source.contents.contains("https://ui.qeet.in/components/textarea"))
+        #expect(!changes.contains { $0.path == Lock.pinsPath }, "the scaffold never edits the pins")
     }
 
-    @Test("A component with its own tokens adopts them in the pins, sorted, leaving the rest of the file alone")
-    func adoptsTokens() throws {
+    @Test("A family with component tokens in @qeetrix/tokens names them")
+    func componentTokens() throws {
         let fixture = try Fixture()
         defer { fixture.remove() }
-        let before = try fixture.read(Lock.pinsPath)
-        let changes = try ComponentScaffold(root: fixture.root).plan(.init(family: "Kbd", component: "Kbd", category: "Data display"))
-        let pins = try #require(changes.first { $0.path == Lock.pinsPath }).contents
-        #expect(pins.contains("\"input\",\n      \"kbd\",\n      \"popover\""))
-        let untouched = { (text: String) in text.components(separatedBy: "\"componentTokens\"")[0] }
-        #expect(untouched(pins) == untouched(before))
+        // A family iOS doesn't implement yet (timeline and sidebar now exist).
+        let changes = try ComponentScaffold(root: fixture.root).plan(
+            .init(family: "CommandPalette", component: "CommandPalette", category: "Overlays"))
+        let source = try #require(changes.first { $0.path.hasSuffix("QeetrixCommandPalette.swift") })
+        #expect(source.contents.contains("component.command-palette.* in @qeetrix/tokens"))
     }
 
     @Test("A category without components yet gets its heading, before the foundation topics")
     func newCategory() throws {
         let fixture = try Fixture()
         defer { fixture.remove() }
+        // Empty "Date & time" in the fixture, whatever the real landing page and catalogue hold by now.
+        var lines = try fixture.read(ComponentScaffold.landingPath).components(separatedBy: "\n")
+        if let start = lines.firstIndex(of: "### Date & time") {
+            let end = lines[(start + 1)...].firstIndex { $0.hasPrefix("### ") } ?? lines.endIndex
+            lines.removeSubrange(start..<end)
+        }
+        try fixture.write(ComponentScaffold.landingPath, lines.joined(separator: "\n"))
+        let catalog = try fixture.read(ComponentScaffold.catalogPath).components(separatedBy: "\n")
+        try fixture.write(ComponentScaffold.catalogPath, catalog.filter { !$0.contains("CalendarPage()") }.joined(separator: "\n"))
         let changes = try ComponentScaffold(root: fixture.root).plan(
             .init(family: "Calendar", component: "Calendar", category: "Date & time"))
         let landing = try #require(changes.first { $0.path == ComponentScaffold.landingPath }).contents

@@ -2,53 +2,43 @@
 
 ## Overview
 
-The field every Qeetrix input is built on: a label, the control, a description and a validation
-message, with the web `Field`'s 6 pt rhythm.
+A form row for any control — `@qeetrix/react`'s Field: the label above the control, then help text or
+the error that replaces it, 4 points apart (design rules §8).
 
-Use it to give any control — a native `Picker`, `Stepper`, `DatePicker` or your own — the same label,
-description and message as the Qeetrix inputs. Don't wrap a Qeetrix input in it: ``QeetrixTextField``,
-``QeetrixPasswordInput``, ``QeetrixSelect`` and the others take a label and lay out their own field.
+The Qeetrix inputs already build themselves on a field: give them a label and they lay it out. Use
+`QeetrixField` for any other control, such as a native `Stepper` or `DatePicker`:
 
 ```swift
-QeetrixField("Seats", description: Text("You can add more later."), isRequired: true) {
+QeetrixField("Seats", description: Text("You can add more later.")) {
     Stepper("\(seats) seats", value: $seats, in: 1...25)
 }
 ```
 
-### States and validation
+- **Label**: `label.sm` in `color.text.subtle` (`color.text.disabled` when disabled). `isOptional`
+  appends "(optional)" in `color.text.subtlest`; fields carry no asterisks, so `isRequired` only tells
+  VoiceOver. `isLabelHidden` hides it visually and keeps it for VoiceOver — only for a toolbar search
+  with a visible icon.
+- **Description**: `body.sm` in `color.text.subtle`; a disabled field's description dims to
+  `color.text.subtlest`, not the disabled colour, since it often says why.
+- **Error**: replaces the description while it shows — a sharp 16-point `circle-alert` in
+  `color.icon.danger`, then the message in `body.sm`, `color.text.danger`. It marks a Qeetrix control
+  inside invalid (its 2-point danger frame); `isInvalid` does that without a message.
 
-- **Required and optional.** `isRequired` adds an asterisk to the label; `isOptional` adds "(optional)"
-  instead — the better convention when most fields of a form are required.
-- **Messages.** A ``QeetrixFieldMessage`` — error, warning or success — appears under the control with
-  its icon, and colours a Qeetrix control's boundary. The label is never repainted: the message says what
-  is wrong. Messages are the app's; the field validates nothing.
-- **Disabled.** `disabled(_:)` dims the label with the control.
-
-Colours, type and spacing come from the theme and follow light, dark and Increased Contrast like every
-other component.
+Validation is yours: the field only presents the error it is given. Word errors as what to do
+("Enter a work email").
 
 ### Accessibility
 
-The control carries the field for VoiceOver, so the relationship never rests on position:
-
-- its name is the label, with "Required" for a required field;
-- the description is its hint;
-- the message is attached as content VoiceOver reads with it, whatever the hints setting;
-- a new or changed message is announced.
-
-The description and message also follow as text in reading order, as on the web. A Qeetrix control
-applies all of this itself; a native control inside the field is named by the label.
+For VoiceOver the control carries the field: its name is the label (with "Required"), the description
+is its hint, and the error is attached to it as content VoiceOver reads with it, whatever the hints
+setting. A new error is announced.
 
 ### Platform differences
 
-The web associates label, description and message by element ids (`aria-labelledby`,
-`aria-describedby`, `aria-errormessage`). iOS has no such references, so the field passes them to the
-control through the environment and the control carries them.
+- **Required.** The web announces the native `required` attribute; here "Required" is part of the
+  control's name, because a hint can be switched off.
+- **Announcements.** The web links the error with `aria-describedby`; iOS posts a new error as an
+  announcement.
+- **Help.** The web's ⓘ help popover beside the label (`help`) has no iOS counterpart yet.
 
-On the web: [Field on ui.qeet.in](https://ui.qeet.in/docs/components/field).
-
-## See Also
-
-- ``QeetrixFieldMessage``
-- ``QeetrixFieldSet``
-- <doc:Forms>
+On the web: [Input and Field on ui.qeet.in](https://ui.qeet.in/components/input/).

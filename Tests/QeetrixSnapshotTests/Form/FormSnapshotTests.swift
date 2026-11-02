@@ -1,29 +1,28 @@
 #if os(iOS)
-    import Qeetrix
     import SwiftUI
     import Testing
+
+    @testable import Qeetrix
 
     @MainActor
     @Suite("Form snapshots")
     struct FormSnapshotTests {
-        @Test("An error summary, a field set and the actions")
+        @Test("An error summary, a fieldset and the actions")
         func registration() {
             assertSpecimen(
-                VStack(alignment: .leading, spacing: 24) {
-                    QeetrixFormErrorSummary(errors: [
-                        .init(id: "name", message: "Enter your name.") {},
-                        .init(id: "email", message: "Enter an email address with an @.") {},
+                VStack(alignment: .leading, spacing: 16) {
+                    QeetrixErrorSummary(items: [
+                        .init(id: "email", message: "Enter a work email") {},
+                        .init(id: "pan", message: "Enter the PAN as 10 characters") {},
                     ])
-                    QeetrixFieldSet("Your details") {
-                        QeetrixTextField(
-                            "Full name", text: .constant(""), message: QeetrixFieldMessage(.error, text: "Enter your name."),
-                            isRequired: true)
-                        QeetrixSwitch("Weekly digest", isOn: .constant(true))
-                        QeetrixSwitch("Mentions", isOn: .constant(false))
+                    QeetrixFieldset("Business details", description: Text("As registered with the tax office.")) {
+                        QeetrixTextField("Work email", text: .constant(""), error: "Enter a work email")
+                        QeetrixTextField("PAN", text: .constant("ABCDE"), error: "Enter the PAN as 10 characters")
+                        QeetrixTextField("Trade name", text: .constant(""), prompt: Text("e.g. Acme Pvt Ltd"), isOptional: true)
                     }
                     QeetrixFormActions {
-                        QeetrixButton("Reset", variant: .outline) {}
-                        QeetrixButton("Create account") {}
+                        QeetrixButton("Save draft", variant: .ghost, size: .lg) {}
+                        QeetrixButton("Register", size: .lg) {}
                     }
                 }
             )

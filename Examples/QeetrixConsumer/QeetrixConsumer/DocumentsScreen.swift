@@ -27,17 +27,19 @@ struct DocumentsScreen: View {
         List {
             Section {
                 if results.isEmpty {
-                    QeetrixEmptyState("No documents found", description: Text("Try another search."), variant: .noResults)
+                    QeetrixEmptyState("No documents found", description: "Try another search.", icon: .search, size: .section)
                         .listRowBackground(Color.clear)
                 } else {
                     ForEach(results) { document in
-                        QeetrixListItem(document.title, description: Text(verbatim: document.owner), icon: .fileText) {
-                            QeetrixBadge(document.isActive ? "Active" : "Archived", variant: document.isActive ? .success : .secondary)
+                        QeetrixListItem(document.title, description: Text(verbatim: document.owner)) {
+                            QeetrixAvatar(name: document.owner, size: .sm, isDecorative: true)
+                        } trailing: {
+                            QeetrixBadge(document.isActive ? "Active" : "Archived", tone: document.isActive ? .success : .neutral)
                         }
                     }
                 }
             } header: {
-                QeetrixSectionHeader(title: Text("Documents: \(results.count)"))
+                QeetrixSectionHeader(title: Text("Documents: \(results.count)"), isRuled: false)
                     .accessibilityIdentifier("documents-count")
             }
         }

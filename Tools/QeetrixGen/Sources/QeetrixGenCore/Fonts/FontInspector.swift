@@ -23,8 +23,9 @@ public struct FontSpec: Equatable, Sendable {
     public let family: String
     /// The family name the web's CSS uses for it, e.g. `Qeet Sans`.
     public let webFamily: String
-    public let repository: String
-    public let tag: String
+    /// The npm package and the TTF's path in it.
+    public let package: String
+    public let source: String
     /// The file name without extension inside `Resources/Fonts`.
     public let resourceName: String
     public let info: FontInfo

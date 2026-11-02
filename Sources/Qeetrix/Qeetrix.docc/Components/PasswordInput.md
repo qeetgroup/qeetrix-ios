@@ -2,47 +2,41 @@
 
 ## Overview
 
-A password field with a reveal toggle, built on the system's `SecureField`.
+A password or secret with its label, help text and error, and a Show password toggle at its end —
+`@qeetrix/react`'s PasswordInput in a Field.
 
 ```swift
-QeetrixPasswordInput("Password", text: $password, purpose: .current, isRequired: true)
+QeetrixPasswordInput("Password", text: $password, isRequired: true)
     .submitLabel(.go)
     .onSubmit(signIn)
+QeetrixPasswordInput("Client secret", text: $secret, autoComplete: .off)
 ```
 
-Use `purpose: .current` to sign in and `.new` to sign up or reset a password. For a numeric PIN or a
-code sent to the person, use ``QeetrixOTPInput``.
-
-### Secure entry and AutoFill
-
-- It is a native `SecureField`, so the system's secure entry applies: the text is masked, cannot be
-  copied, and is hidden from screen recordings.
-- `purpose` sets the content type Password AutoFill reads: the saved password to sign in, a strong
-  suggested password and the offer to save it when creating one. AutoFill is never switched off.
-- Autocapitalisation and autocorrection are off, so a password is never sent to a spelling service.
-- The component keeps no copy of the password: it lives in your binding only. It never logs, stores or
-  describes it. Strength meters and password rules are the app's.
-
-### The reveal toggle
-
-The toggle after the field shows the password as plain text and hides it again. It is named for what it
-will do — "Show password", "Hide password" — and keeps the keyboard and the text where they were. It is
-disabled with the field; `showsToggle: false` leaves it out.
+- **The box** is the Qeetrix field, with the toggle — a neutral `sm` ``QeetrixIconButton``, eye ↔
+  eye-off — 4 points from its end.
+- **Hidden by default**: people may not be alone. Pass `isVisible` to own the state.
+- **AutoFill**: `autoComplete` is `currentPassword` (default, to sign in), `newPassword` (to create
+  one) or `off` (a secret that isn't the user's password, such as an API key).
+- Spelling, capitals and correction are off. Paste and password managers work, and there is no length
+  cap (WCAG 3.3.8).
 
 ### Accessibility
 
-VoiceOver reads a secure text field named by the label, and never its contents; revealed, it reads a
-plain text field, as the person chose. The toggle is a 44 pt target.
+- The toggle is named "Show password" and read as selected while the password shows; using it announces
+  "Password shown" or "Password hidden". The keyboard stays with the field.
+- The field is marked privacy-sensitive.
 
 ### Platform differences
 
-The web re-masks a revealed password when its form submits, to keep it out of browser form history. iOS
-has no form history, so the password stays as the person left it.
+- **Caps Lock.** The web warns "Caps Lock is on" while typing; iOS has no reliable way to read Caps Lock
+  from a text field, so there is no warning.
+- **Hide on submit.** The web hides the password again when its form is submitted; on iOS a form is
+  yours, so set `isVisible` to `false` when you submit.
 
-On the web: [Password Input on ui.qeet.in](https://ui.qeet.in/docs/components/password-input).
+On the web: [Password input on ui.qeet.in](https://ui.qeet.in/components/password-input/).
 
 ## Topics
 
-### Purpose
+### Options
 
-- ``QeetrixPasswordPurpose``
+- ``QeetrixPasswordAutoComplete``

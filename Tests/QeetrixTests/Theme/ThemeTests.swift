@@ -5,7 +5,7 @@ import Testing
 
 @Suite("Theme")
 struct ThemeTests {
-    @Test("Theme modes use the web ThemeProvider's values")
+    @Test("Theme modes use @qeetrix/react's ColorScheme values")
     func modes() {
         #expect(Set(QeetrixThemeMode.allCases.map(\.rawValue)) == ["light", "dark", "system"])
         #expect(QeetrixThemeMode.light.colorScheme == .light)
@@ -27,17 +27,17 @@ struct ThemeTests {
         Rectangle().fill(color).frame(width: 4, height: 4)
     }
 
-    @Test("A subtree override draws that theme's values, and nests")
+    @Test("A subtree override draws that scheme's values, and nests")
     @MainActor
     func overrides() throws {
         let dark = try #require(Rendered(swatch(.surfaceDefault).qeetrixTheme(.dark)))
         #expect(close(QeetrixTheme.dark.resolve(.surfaceDefault).bytes, dark.pixel(1, 1)))
 
-        let nested = try #require(Rendered(swatch(.textPrimary).qeetrixTheme(.light).qeetrixTheme(.dark)))
-        #expect(close(QeetrixTheme.light.resolve(.textPrimary).bytes, nested.pixel(1, 1)))
+        let nested = try #require(Rendered(swatch(.textDefault).qeetrixTheme(.light).qeetrixTheme(.dark)))
+        #expect(close(QeetrixTheme.light.resolve(.textDefault).bytes, nested.pixel(1, 1)))
 
-        let inherited = try #require(Rendered(VStack { swatch(.textPrimary) }.environment(\.colorScheme, .dark)))
-        #expect(close(QeetrixTheme.dark.resolve(.textPrimary).bytes, inherited.pixel(1, 1)))
+        let inherited = try #require(Rendered(VStack { swatch(.textDefault) }.environment(\.colorScheme, .dark)))
+        #expect(close(QeetrixTheme.dark.resolve(.textDefault).bytes, inherited.pixel(1, 1)))
     }
 
     @Test("qeetrixThemeMode publishes the mode to its subtree")
@@ -51,11 +51,23 @@ struct ThemeTests {
         #expect(image.pixel(0, 0).r == 0)
     }
 
-    @Test("A theme gives Color and resolved access to every semantic colour")
+    @Test("A theme gives Color and resolved access to every semantic colour and shadow")
     func themeAccess() {
         for color in QeetrixColor.allCases {
             #expect(QeetrixTheme.dark.resolve(color) == color.rgba(for: .dark).resolved)
         }
-        #expect(QeetrixTheme.light.layers(.raised) == QeetrixElevation.raised.layers(for: .light))
+        #expect(QeetrixTheme.light.layers(.overlay) == QeetrixShadow.overlay.layers(for: .light))
+    }
+
+    @Test("Density: default unless set, and the setting reaches the subtree")
+    @MainActor
+    func density() throws {
+        #expect(EnvironmentValues().qeetrixDensity == .default)
+        struct Probe: View {
+            @Environment(\.qeetrixDensity) private var density
+            var body: some View { Color.black.frame(width: density.sizeControlLg, height: 2) }
+        }
+        #expect(try #require(Rendered(Probe().qeetrixDensity(.comfortable))).width == 44)
+        #expect(try #require(Rendered(Probe().qeetrixDensity(.compact))).width == 32)
     }
 }

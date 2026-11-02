@@ -1,0 +1,163 @@
+@layer qx.base, qx.components, qx.state;
+@import "../base.css";
+@import "../state.css";
+@import "../button.css";
+@import "../visually-hidden.css";
+
+@layer qx.components {
+  .qx-alert {
+    align-items: flex-start;
+    gap: var(--qx-space-gap-md);
+    padding: var(--qx-space-inset-md) var(--qx-space-inset-sm) var(--qx-space-inset-md)
+      var(--qx-space-inset-md);
+    border-inline-start: var(--qx-border-width-accent) solid var(--qx-color-icon-info);
+    background: var(--qx-color-bg-info-subtle);
+    color: var(--qx-color-text-default);
+    font: var(--qx-typography-body-md);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    display: flex;
+  }
+  
+  .qx-alert[data-tone="success"] {
+    border-inline-start-color: var(--qx-color-icon-success);
+    background: var(--qx-color-bg-success-subtle);
+  }
+  
+  .qx-alert[data-tone="warning"] {
+    border-inline-start-color: var(--qx-color-icon-warning);
+    background: var(--qx-color-bg-warning-subtle);
+  }
+  
+  .qx-alert[data-tone="danger"] {
+    border-inline-start-color: var(--qx-color-icon-danger);
+    background: var(--qx-color-bg-danger-subtle);
+  }
+  
+  .qx-alert-icon {
+    color: var(--qx-color-icon-info);
+    flex: none;
+    margin-block-start: 2px;
+  }
+  
+  [data-tone="success"] > .qx-alert-icon {
+    color: var(--qx-color-icon-success);
+  }
+  
+  [data-tone="warning"] > .qx-alert-icon {
+    color: var(--qx-color-icon-warning);
+  }
+  
+  [data-tone="danger"] > .qx-alert-icon {
+    color: var(--qx-color-icon-danger);
+  }
+  
+  .qx-alert-body {
+    min-inline-size: 0;
+    flex-direction: column;
+    flex: 1;
+    gap: 2px;
+    padding-inline-end: var(--qx-space-gap-xs);
+    display: flex;
+  }
+  
+  .qx-alert-text {
+    flex-direction: column;
+    gap: 2px;
+    display: flex;
+  }
+  
+  .qx-alert-title {
+    font: var(--qx-typography-label-md);
+    font-weight: var(--qx-typography-title-sm-font-weight);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+  }
+  
+  .qx-alert-description {
+    color: var(--qx-color-text-subtle);
+  }
+  
+  .qx-alert-actions {
+    gap: var(--qx-space-gap-sm);
+    flex-wrap: wrap;
+    margin-block-start: var(--qx-space-gap-sm);
+    display: flex;
+  }
+  
+  .qx-alert-dismiss {
+    flex: none;
+    margin-block: -2px;
+  }
+  
+  .qx-alert[data-variant="banner"] {
+    min-block-size: calc(var(--qx-size-control-sm) +
+      2 *
+      var(--qx-space-inset-sm) +
+      var(--qx-border-width-default));
+    padding: var(--qx-space-inset-sm) var(--qx-space-layout-md);
+    border-inline-start: 0;
+    border-block-end: var(--qx-border-width-default) solid var(--qx-color-border-info);
+    align-items: flex-start;
+  }
+  
+  .qx-alert[data-variant="banner"][data-tone="success"] {
+    border-block-end-color: var(--qx-color-border-success);
+  }
+  
+  .qx-alert[data-variant="banner"][data-tone="warning"] {
+    border-block-end-color: var(--qx-color-border-warning);
+  }
+  
+  .qx-alert[data-variant="banner"][data-tone="danger"] {
+    border-block-end-color: var(--qx-color-border-danger);
+  }
+  
+  .qx-alert[data-variant="banner"] > .qx-alert-icon {
+    margin-block-start: calc((var(--qx-size-control-sm) - var(--qx-size-icon-sm)) / 2);
+  }
+  
+  .qx-alert[data-variant="banner"] .qx-alert-body {
+    align-items: flex-start;
+    gap: var(--qx-space-gap-xs) var(--qx-space-gap-md);
+    flex-flow: wrap;
+    padding-inline-end: 0;
+  }
+  
+  .qx-alert[data-variant="banner"] .qx-alert-text {
+    padding-block: calc((var(--qx-size-control-sm) - 1lh) / 2);
+    flex: 20rem;
+    display: block;
+  }
+  
+  .qx-alert[data-variant="banner"] .qx-alert-title, .qx-alert[data-variant="banner"] .qx-alert-description {
+    display: inline;
+  }
+  
+  .qx-alert[data-variant="banner"] .qx-alert-description {
+    color: var(--qx-color-text-default);
+  }
+  
+  .qx-alert[data-variant="banner"] .qx-alert-actions {
+    margin-block-start: 0;
+  }
+  
+  .qx-alert[data-variant="banner"] .qx-alert-dismiss {
+    margin-block: 0;
+  }
+  
+  @media (width < 840px) {
+    .qx-alert[data-variant="banner"] {
+      padding-inline: var(--qx-space-inset-lg);
+    }
+  }
+  
+  @media (forced-colors: active) {
+    .qx-alert:not([data-variant="banner"]) {
+      border: var(--qx-border-width-default) solid CanvasText;
+      border-inline-start: var(--qx-border-width-accent) solid CanvasText;
+    }
+  
+    .qx-alert[data-variant="banner"] {
+      border-block-end-color: canvastext;
+    }
+  }
+}

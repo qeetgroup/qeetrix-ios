@@ -25,6 +25,34 @@ public struct Generator {
         return data
     }
 
+    public static let tokensDirectory = "Upstream/qeetrix-tokens"
+
+    /// The DTCG build, resolved as its resolver says, checked against the package's pre-resolved
+    /// schemes and against tokens.css.
+    public func tokenModel() throws -> (TokenModel, Stylesheet) {
+        let source = try DTCGSource(resolver: "dtcg/qeetrix.resolver.json") { path in
+            try read("\(Self.tokensDirectory)/\(path)")
+        }
+        var problems: [String] = []
+        for scheme in source.colorSchemes {
+            let name = "\(scheme).tokens.json"
+            let file = try OrderedJSON.parse(try read("\(Self.tokensDirectory)/dtcg/\(name)"), context: name)
+            problems += try source.disagreements(
+                with: file, context: TokenContext(colorScheme: scheme, density: source.densities[0]), name: name)
+        }
+        guard problems.isEmpty else {
+            throw GeneratorError(
+                "The resolver's result and the package's resolved files disagree:\n  " + problems.prefix(20).joined(separator: "\n  "))
+        }
+        let model = try TokenModel(source: source)
+        let stylesheet = try Stylesheet(String(decoding: try read("\(Self.tokensDirectory)/tokens.css"), as: UTF8.self))
+        let disagreements = try stylesheet.disagreements(with: model)
+        guard disagreements.isEmpty else {
+            throw GeneratorError("tokens.css and the DTCG build disagree:\n  " + disagreements.prefix(20).joined(separator: "\n  "))
+        }
+        return (model, stylesheet)
+    }
+
     /// Every generated file, computed in memory from the snapshot. Fails if the snapshot does not
     /// match the lock.
     public func outputs() throws -> [GeneratedFile] {
@@ -32,20 +60,10 @@ public struct Generator {
         let problems = Lock.check(provenance, root: root)
         guard problems.isEmpty else { throw GeneratorError(problems.joined(separator: "\n")) }
 
-        let source = try TokenSource(
-            tokensJSON: try read("Upstream/qeetrix-ui/tokens.json"),
-            tokensCSS: String(decoding: try read("Upstream/qeetrix-ui/tokens.css"), as: UTF8.self),
-            indexCSS: String(decoding: try read("Upstream/qeetrix-ui/index.css"), as: UTF8.self))
-        let adopted = try Self.adoptedComponents(try read(Lock.pinsPath))
-        let available = Set(source.paths.filter { $0.first == "component" && $0.count > 2 }.map { $0[1] })
-        for group in adopted where !available.contains(group) {
-            throw GeneratorError("Upstream/pins.json adopts component tokens \"\(group)\", but tokens.json has no component.\(group).")
-        }
-        let model = try TokenModel(source: source, adoptedComponents: adopted)
-
+        let (model, stylesheet) = try tokenModel()
         let fonts = try provenance.fonts.map { font in
             FontSpec(
-                family: font.family, webFamily: font.webFamily, repository: font.repository, tag: font.tag,
+                family: font.family, webFamily: font.webFamily, package: font.package, source: font.source,
                 resourceName: URL(fileURLWithPath: font.destination).deletingPathExtension().lastPathComponent,
                 info: try FontInspector.inspect(try read(font.destination), context: font.destination))
         }
@@ -53,18 +71,15 @@ public struct Generator {
             manifest: try read("Upstream/qeetrix-icons/icons.json"),
             svgDirectory: root.appendingPathComponent("Upstream/qeetrix-icons/svg"))
 
-        return try TokenEmitter(model: model, provenance: provenance, fonts: fonts).files()
+        return try TokenEmitter(model: model, stylesheet: stylesheet, provenance: provenance, fonts: fonts).files()
             + [
                 try IconEmitter(icons: icons, provenance: provenance).file(),
-                GeneratedFile(path: Self.provenancePath, contents: Self.provenanceJSON(provenance, model: model, fonts: fonts)),
-                GeneratedFile(path: Self.coveragePath, contents: CoverageReport(model: model, provenance: provenance).markdown()),
+                GeneratedFile(path: Self.provenancePath, contents: try Self.provenanceJSON(provenance, model: model, fonts: fonts)),
+                GeneratedFile(
+                    path: Self.coveragePath,
+                    contents: try CoverageReport(model: model, stylesheet: stylesheet, provenance: provenance).markdown()),
+                GeneratedFile(path: TokenValuesReport.path, contents: try TokenValuesReport(model: model, provenance: provenance).json()),
             ]
-    }
-
-    /// The `component.<group>` token groups iOS implements: `qeetrixUI.componentTokens` in pins.json.
-    static func adoptedComponents(_ pins: Data) throws -> Set<String> {
-        let json = try OrderedJSON.parse(pins, context: Lock.pinsPath)
-        return Set((json["qeetrixUI"]?["componentTokens"]?.arrayValue ?? []).compactMap(\.stringValue))
     }
 
     /// Writes the outputs, removing stale files from the owned directories. Returns the changed paths.
@@ -118,33 +133,31 @@ public struct Generator {
     }
 
     /// The provenance record bundled with the library (`Resources/Metadata/token-provenance.json`).
-    static func provenanceJSON(_ provenance: Provenance, model: TokenModel, fonts: [FontSpec]) -> String {
-        OrderedJSON.object([
-            (
-                "$comment",
-                .string("Generated by qeetrix-gen from Upstream/upstream.lock.json — do not edit.")
-            ),
-            (
-                "tokens",
-                .object([
-                    ("package", .string(provenance.qeetrixUIPackage)),
-                    ("version", .string(provenance.qeetrixUIVersion)),
-                    ("gitHead", .string(provenance.qeetrixUIGitHead)),
-                    ("integrity", .string(provenance.qeetrixUIIntegrity)),
-                    ("themes", .array(model.themes.map(OrderedJSON.string))),
-                    ("generatedTokens", .number(String(model.included.count))),
-                    ("excludedTokens", .number(String(model.excluded.count))),
-                ])
-            ),
-            (
-                "icons",
-                .object([
-                    ("package", .string(provenance.iconsPackage)),
-                    ("version", .string(provenance.iconsVersion)),
-                    ("repository", .string(provenance.iconsRepository)),
-                    ("commit", .string(provenance.iconsCommit)),
-                ])
-            ),
+    static func provenanceJSON(_ provenance: Provenance, model: TokenModel, fonts: [FontSpec]) throws -> String {
+        func package(_ name: String) throws -> OrderedJSON {
+            let package = try provenance.package(name)
+            return .object([
+                ("package", .string(package.name)),
+                ("version", .string(package.version)),
+                ("gitHead", .string(package.gitHead)),
+                ("integrity", .string(package.integrity)),
+            ])
+        }
+        var tokens = try package(Provenance.tokensPackage)
+        if case var .object(pairs) = tokens {
+            pairs += [
+                ("colorSchemes", .array(model.source.colorSchemes.map(OrderedJSON.string))),
+                ("densities", .array(model.source.densities.map(OrderedJSON.string))),
+                ("generatedTokens", .number(String(model.included.count))),
+                ("excludedTokens", .number(String(model.excluded.count))),
+            ]
+            tokens = .object(pairs)
+        }
+        return OrderedJSON.object([
+            ("$comment", .string("Generated by qeetrix-gen from Upstream/upstream.lock.json — do not edit.")),
+            ("tokens", tokens),
+            ("icons", try package(Provenance.iconsPackage)),
+            ("components", try package(Provenance.reactPackage)),
             (
                 "fonts",
                 .array(
@@ -154,8 +167,9 @@ public struct Generator {
                             ("webFamily", .string(locked.webFamily)),
                             ("postScriptName", .string(spec.info.postScriptName)),
                             ("version", .string(spec.info.version)),
-                            ("repository", .string(locked.repository)),
-                            ("tag", .string(locked.tag)),
+                            ("package", .string(locked.package)),
+                            ("source", .string(locked.source)),
+                            ("woff2SHA256", .string(locked.woff2SHA256)),
                             ("sha256", .string(locked.ttfSHA256)),
                         ])
                     })

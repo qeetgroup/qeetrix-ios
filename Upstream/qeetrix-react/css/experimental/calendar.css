@@ -1,0 +1,218 @@
+@layer qx.base, qx.components, qx.state;
+@import "../base.css";
+@import "../state.css";
+@import "../button.css";
+
+@layer qx.components {
+  .qx-calendar {
+    gap: var(--qx-space-gap-sm);
+    inline-size: fit-content;
+    color: var(--qx-color-text-default);
+    font: var(--qx-typography-body-md);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    flex-direction: column;
+    display: inline-flex;
+  }
+  
+  .qx-calendar-header {
+    align-items: center;
+    gap: var(--qx-space-gap-xs);
+    display: flex;
+  }
+  
+  .qx-calendar-title {
+    font: var(--qx-typography-label-md);
+    font-weight: var(--qx-typography-title-sm-font-weight);
+    flex: 1;
+    justify-content: center;
+    display: flex;
+  }
+  
+  .qx-calendar-zoom {
+    align-items: center;
+    gap: var(--qx-space-gap-xs);
+    block-size: var(--qx-size-control-sm);
+    padding-block: 0;
+    padding-inline: var(--qx-space-inset-sm);
+    border-radius: var(--qx-radius-control);
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    transition-property: background-color;
+    transition-duration: var(--qx-motion-duration-fast);
+    transition-timing-function: var(--qx-motion-easing-standard);
+    background: none;
+    border: 0;
+    margin: 0;
+    display: inline-flex;
+  }
+  
+  .qx-calendar-zoom:hover:not([aria-disabled]) {
+    background: var(--qx-color-overlay-hover);
+  }
+  
+  .qx-calendar-zoom:focus-visible {
+    outline: var(--qx-focus-ring-width) solid var(--qx-color-border-focus);
+    outline-offset: calc(-1 * var(--qx-focus-ring-width));
+  }
+  
+  .qx-calendar-zoom[aria-disabled] {
+    color: var(--qx-color-text-disabled);
+    cursor: not-allowed;
+  }
+  
+  .qx-calendar-zoom-icon {
+    color: var(--qx-color-icon-subtle);
+    flex: none;
+  }
+  
+  [aria-disabled] > .qx-calendar-zoom-icon {
+    color: var(--qx-color-icon-disabled);
+  }
+  
+  [dir="rtl"] .qx-calendar-step .qx-button-icon {
+    scale: -1 1;
+  }
+  
+  .qx-calendar-grid {
+    border-collapse: collapse;
+    inline-size: 100%;
+  }
+  
+  .qx-calendar-weekday {
+    block-size: var(--qx-size-control-sm);
+    font: var(--qx-typography-label-sm);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    color: var(--qx-color-text-subtle);
+    text-align: center;
+    padding: 0;
+  }
+  
+  .qx-calendar-cell {
+    text-align: center;
+    padding: 1px;
+  }
+  
+  .qx-calendar-cell:empty:before {
+    content: "";
+    block-size: var(--qx-size-control-md);
+    display: block;
+  }
+  
+  .qx-calendar-body {
+    position: relative;
+  }
+  
+  .qx-calendar-grid[data-covered] {
+    visibility: hidden;
+  }
+  
+  .qx-calendar-panel {
+    table-layout: fixed;
+    block-size: 100%;
+    inline-size: 100%;
+    position: absolute;
+    inset: 0;
+  }
+  
+  .qx-calendar-panel .qx-calendar-cell {
+    padding: var(--qx-space-gap-xs);
+  }
+  
+  .qx-calendar-day, .qx-calendar-option {
+    inline-size: 100%;
+    min-inline-size: var(--qx-size-control-md);
+    block-size: var(--qx-size-control-md);
+    border-radius: var(--qx-radius-control);
+    color: var(--qx-color-text-default);
+    font: var(--qx-typography-body-md);
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition-property: background-color, color;
+    transition-duration: var(--qx-motion-duration-fast);
+    transition-timing-function: var(--qx-motion-easing-standard);
+    background: none;
+    border: 0;
+    place-items: center;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    position: relative;
+  }
+  
+  :is(.qx-calendar-day, .qx-calendar-option):hover:not([aria-disabled]) {
+    background: var(--qx-color-overlay-hover);
+  }
+  
+  :is(.qx-calendar-day, .qx-calendar-option):focus-visible {
+    outline: var(--qx-focus-ring-width) solid var(--qx-color-border-focus);
+    outline-offset: calc(-1 * var(--qx-focus-ring-width));
+  }
+  
+  :is(.qx-calendar-day, .qx-calendar-option)[data-today] {
+    box-shadow: inset 0 0 0 var(--qx-border-width-default) var(--qx-color-border-brand);
+  }
+  
+  :is(.qx-calendar-day, .qx-calendar-option)[data-outside]:not([aria-disabled]) {
+    color: var(--qx-color-text-subtle);
+  }
+  
+  :is(.qx-calendar-day, .qx-calendar-option)[aria-disabled] {
+    color: var(--qx-color-text-disabled);
+    cursor: not-allowed;
+  }
+  
+  [aria-selected] > :is(.qx-calendar-day, .qx-calendar-option) {
+    background: var(--qx-color-bg-brand-bold);
+    color: var(--qx-color-text-on-brand);
+    box-shadow: none;
+  }
+  
+  [aria-selected] > :is(.qx-calendar-day, .qx-calendar-option):hover {
+    background: var(--qx-color-bg-brand-bold-hover);
+  }
+  
+  [aria-selected] > :is(.qx-calendar-day, .qx-calendar-option):focus-visible {
+    outline-color: var(--qx-color-border-focus);
+    box-shadow: inset 0 0 0 calc(var(--qx-focus-ring-width) + var(--qx-border-width-default))
+          var(--qx-color-surface-default);
+  }
+  
+  .qx-calendar[data-readonly] .qx-calendar-day {
+    cursor: default;
+  }
+  
+  .qx-calendar[data-readonly] .qx-calendar-day:hover {
+    background: none;
+  }
+  
+  .qx-calendar[data-readonly] [aria-selected]:not([data-range="middle"]) > .qx-calendar-day:hover {
+    background: var(--qx-color-bg-brand-bold);
+  }
+  
+  .qx-calendar[data-disabled] .qx-calendar-weekday {
+    color: var(--qx-color-text-disabled);
+  }
+  
+  .qx-calendar[data-disabled] .qx-calendar-day[data-today] {
+    box-shadow: inset 0 0 0 var(--qx-border-width-default) var(--qx-color-border-disabled);
+  }
+  
+  .qx-calendar[data-disabled] [aria-selected]:not([data-range="middle"]) > .qx-calendar-day {
+    background: var(--qx-color-bg-disabled);
+    color: var(--qx-color-text-disabled);
+  }
+  
+  @media (forced-colors: active) {
+    [aria-selected] > :is(.qx-calendar-day, .qx-calendar-option) {
+      forced-color-adjust: none;
+      color: highlighttext;
+      background: highlight;
+    }
+  
+    :is(.qx-calendar-day, .qx-calendar-option)[data-today]:not(:focus-visible) {
+      outline: var(--qx-border-width-default) solid CanvasText;
+      outline-offset: calc(-1 * var(--qx-border-width-default));
+    }
+  }
+}

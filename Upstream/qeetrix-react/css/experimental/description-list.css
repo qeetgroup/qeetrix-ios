@@ -1,0 +1,93 @@
+@layer qx.base, qx.components, qx.state;
+@import "../base.css";
+@import "../state.css";
+@import "../visually-hidden.css";
+
+@layer qx.components {
+  .qx-description-list {
+    min-inline-size: 0;
+    color: var(--qx-color-text-default);
+    font: var(--qx-typography-body-md);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    margin: 0;
+    display: grid;
+    container-type: inline-size;
+  }
+  
+  .qx-description-term {
+    color: var(--qx-color-text-subtle);
+    font: var(--qx-typography-label-sm);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    margin: 0;
+  }
+  
+  .qx-description-value {
+    align-items: center;
+    gap: var(--qx-space-gap-xs);
+    overflow-wrap: anywhere;
+    flex-wrap: wrap;
+    min-inline-size: 0;
+    margin: 0;
+    display: flex;
+  }
+  
+  .qx-description-empty {
+    color: var(--qx-color-text-subtlest);
+  }
+  
+  .qx-description-note {
+    color: var(--qx-color-text-subtle);
+    font: var(--qx-typography-body-sm);
+    flex-basis: 100%;
+  }
+  
+  .qx-description-action {
+    justify-content: flex-end;
+    margin: 0;
+    display: flex;
+  }
+  
+  .qx-description-list[data-layout="columns"] {
+    grid-template-columns: repeat(auto-fill,
+        minmax(max(8rem,
+            calc((100% - (var(--qx-description-columns) - 1) * var(--qx-space-gap-xl)) /
+              var(--qx-description-columns))),
+          1fr));
+    gap: var(--qx-space-gap-lg) var(--qx-space-gap-xl);
+  }
+  
+  .qx-description-list[data-layout="columns"] > .qx-description-item {
+    align-content: start;
+    gap: var(--qx-space-gap-xs);
+    display: grid;
+  }
+  
+  .qx-description-list[data-layout="rows"] > .qx-description-item {
+    align-items: baseline;
+    column-gap: var(--qx-space-gap-md);
+    row-gap: var(--qx-space-gap-xs);
+    min-block-size: var(--qx-size-row);
+    padding-block: var(--qx-space-gap-sm);
+    grid-template-columns: minmax(8rem, 30%) minmax(0, 1fr);
+    display: grid;
+  }
+  
+  .qx-description-list[data-layout="rows"] > .qx-description-item + .qx-description-item {
+    border-block-start: var(--qx-border-width-default) solid var(--qx-color-border-subtle);
+  }
+  
+  .qx-description-list[data-layout="rows"] > .qx-description-item[data-action] {
+    grid-template-columns: minmax(8rem, 30%) minmax(0, 1fr) auto;
+    align-items: center;
+  }
+  
+  @container (width < 24rem) {
+    .qx-description-list[data-layout="rows"] > .qx-description-item:is(*, [data-action]) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  
+    .qx-description-list[data-layout="rows"] > .qx-description-item:is(*, [data-action]) > .qx-description-action {
+      justify-content: flex-start;
+    }
+  }
+}

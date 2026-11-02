@@ -19,49 +19,53 @@ public enum SBOM {
             return value == "UNLICENSED" ? [["license": ["name": value]]] : [["expression": value]]
         }
 
+        // Everything the library carries comes from a pinned npm package, recorded in the lock with its
+        // registry integrity.
+        func npm(_ package: Provenance.Package, ref: String, type: String, description: String, pin: String) throws -> [String: Any] {
+            var component: [String: Any] = [
+                "bom-ref": ref,
+                "type": type,
+                "name": package.name,
+                "version": package.version,
+                "description": description,
+                "scope": "required",
+                "purl": "pkg:npm/\(package.name.replacingOccurrences(of: "@", with: "%40"))@\(package.version)",
+                "licenses": try licence(pins[pin], pin),
+            ]
+            if let digest = Self.hex(fromIntegrity: package.integrity) {
+                component["hashes"] = [["alg": "SHA-512", "content": digest]]
+            }
+            return component
+        }
+
         var components: [[String: Any]] = []
-        let pinnedFonts = pins["fonts"]?.arrayValue ?? []
+        let faces = pins["fonts"]?["faces"]?.arrayValue ?? []
         for font in lock.fonts {
-            let pin = pinnedFonts.first { $0["family"]?.stringValue == font.family }
+            let package = try lock.package(font.package)
             components.append([
                 "bom-ref": "font-\(font.family)",
                 "type": "file",
                 "name": (font.destination as NSString).lastPathComponent,
-                "version": font.tag,
-                "description": "\(font.webFamily): bundled unmodified in the Qeetrix resource bundle, with its licence.",
+                "version": package.version,
+                "description":
+                    "\(font.webFamily): \(font.source) in \(package.name), bundled unmodified in the Qeetrix resource bundle, with its licence.",
                 "scope": "required",
-                "purl": "pkg:github/\(font.repository)@\(font.tag)",
+                "purl": "pkg:npm/\(package.name.replacingOccurrences(of: "@", with: "%40"))@\(package.version)",
                 "hashes": [["alg": "SHA-256", "content": font.ttfSHA256]],
-                "licenses": try licence(pin, "the \(font.family) font"),
-                "externalReferences": [["type": "vcs", "url": "https://github.com/\(font.repository)"]],
+                "licenses": try licence(faces.first { $0["family"]?.stringValue == font.family }, "the \(font.family) font"),
             ])
         }
-        components.append([
-            "bom-ref": "qeetrix-icons",
-            "type": "data",
-            "name": lock.iconsPackage,
-            "version": lock.iconsVersion,
-            "description":
-                "Icon artwork, converted to Swift path data (Sources/Qeetrix/Icons/Generated); includes Lucide (ISC) and Feather (MIT) drawings. The notice is bundled in Licenses/.",
-            "scope": "required",
-            "purl": "pkg:github/\(lock.iconsRepository)@\(lock.iconsCommit)",
-            "licenses": try licence(pins["qeetrixIcons"], "qeetrixIcons"),
-            "externalReferences": [["type": "vcs", "url": "https://github.com/\(lock.iconsRepository)"]],
-        ])
-        var tokens: [String: Any] = [
-            "bom-ref": "qeetrix-ui",
-            "type": "data",
-            "name": lock.qeetrixUIPackage,
-            "version": lock.qeetrixUIVersion,
-            "description": "Design tokens, generated into Swift (Sources/Qeetrix/Tokens/Generated) from the published package.",
-            "scope": "required",
-            "purl": "pkg:npm/\(lock.qeetrixUIPackage.replacingOccurrences(of: "@", with: "%40"))@\(lock.qeetrixUIVersion)",
-            "licenses": try licence(pins["qeetrixUI"], "qeetrixUI"),
-        ]
-        if let digest = Self.hex(fromIntegrity: lock.qeetrixUIIntegrity) {
-            tokens["hashes"] = [["alg": "SHA-512", "content": digest]]
-        }
-        components.append(tokens)
+        components.append(
+            try npm(
+                lock.package(Provenance.iconsPackage), ref: "qeetrix-icons", type: "data",
+                description:
+                    "Icon artwork, converted to Swift path data (Sources/Qeetrix/Icons/Generated); includes Lucide (ISC) drawings. The notice is bundled in Licenses/.",
+                pin: "icons"))
+        components.append(
+            try npm(
+                lock.package(Provenance.tokensPackage), ref: "qeetrix-tokens", type: "data",
+                description: "Design tokens, generated into Swift (Sources/Qeetrix/Tokens/Generated) from the published package.",
+                pin: "tokens"))
 
         let allowlist = try JSONDecoder().decode(
             DependencyReview.Allowlist.self, from: Data(contentsOf: root.appendingPathComponent(DependencyReview.allowlistPath)))

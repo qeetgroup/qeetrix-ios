@@ -1,24 +1,29 @@
 #if os(iOS)
-    import Qeetrix
     import SwiftUI
     import Testing
+
+    @testable import Qeetrix
 
     @MainActor
     @Suite("Select snapshots")
     struct SelectSnapshotTests {
-        private let countries: [QeetrixOption<String?>] = [QeetrixOption("India", value: "IN"), QeetrixOption("Germany", value: "DE")]
+        static let options = [QeetrixOption("India", value: "IN"), QeetrixOption("Singapore", value: "SG")]
 
-        @Test("Placeholder, selected, error and disabled")
+        @Test("Placeholder, selected, toolbar sizes, error, read-only and disabled")
         func states() {
             assertSpecimen(
-                VStack(spacing: 16) {
+                VStack(alignment: .leading, spacing: 16) {
+                    QeetrixSelect("Country", selection: .constant(""), options: Self.options, placeholder: Text("Choose a country"))
                     QeetrixSelect(
-                        "Country", selection: .constant(nil), options: countries, placeholder: Text("Choose a country"), isRequired: true)
-                    QeetrixSelect("Country", selection: .constant("DE"), options: countries, description: Text("Used for tax."))
+                        "Country", selection: .constant("IN"), options: Self.options, description: Text("Where you're registered."))
+                    HStack(spacing: 8) {
+                        QeetrixSelect("Sort", selection: .constant("IN"), options: Self.options, size: .md)
+                        QeetrixSelect("Sort", selection: .constant("SG"), options: Self.options, size: .sm)
+                    }
                     QeetrixSelect(
-                        "Country", selection: .constant(nil), options: countries, placeholder: Text("Choose a country"),
-                        message: QeetrixFieldMessage(.error, text: "Choose a country."))
-                    QeetrixSelect("Country", selection: .constant("IN"), options: countries).disabled(true)
+                        "Country", selection: .constant(""), options: Self.options, error: "Choose the country you're registered in")
+                    QeetrixSelect("Country", selection: .constant("IN"), options: Self.options, isReadOnly: true)
+                    QeetrixSelect("Country", selection: .constant("IN"), options: Self.options).disabled(true)
                 }
             )
         }

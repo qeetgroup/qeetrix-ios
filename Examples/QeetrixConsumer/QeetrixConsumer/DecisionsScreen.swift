@@ -10,20 +10,18 @@ struct DecisionsScreen: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: QeetrixSpacing.l) {
-                QeetrixButton("Delete document", variant: .destructive) {
+            VStack(alignment: .leading, spacing: QeetrixSpace.gapLg) {
+                QeetrixButton("Delete document", tone: .danger) {
                     alert = QeetrixAlertDialog(
                         "Delete this document?",
                         message: Text("It is removed for everyone."),
                         actions: [QeetrixDialogAction("Delete", role: .destructive) { outcome = "Deleted" }])
                 }
-                QeetrixButton("Rename document", variant: .outline) { isRenaming = true }
-                Text("Outcome: \(outcome)")
-                    .qeetrixTextStyle(.body)
-                    .foregroundStyle(QeetrixColor.textSecondary)
+                QeetrixButton("Rename document", variant: .ghost) { isRenaming = true }
+                QeetrixText("Outcome: \(outcome)", tone: .subtle)
                     .accessibilityIdentifier("outcome")
             }
-            .padding(QeetrixSpacing.l)
+            .padding(QeetrixSpace.insetLg)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .background(QeetrixColor.surfaceCanvas)
@@ -33,7 +31,8 @@ struct DecisionsScreen: View {
             QeetrixSheetContent("Rename document", onClose: { isRenaming = false }) {
                 QeetrixTextField("Name", text: $draft)
             } actions: {
-                QeetrixButton("Save") {
+                QeetrixButton("Cancel", variant: .ghost, size: .lg) { isRenaming = false }
+                QeetrixButton("Save", size: .lg) {
                     outcome = "Renamed to \(draft)"
                     isRenaming = false
                 }

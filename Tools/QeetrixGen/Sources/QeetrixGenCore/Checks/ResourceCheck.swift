@@ -48,14 +48,24 @@ public struct ResourceCheck {
         return problems
     }
 
-    /// The `qeetrix.*` keys the library looks up in its own bundle.
+    /// The `qeetrix.*` keys the library looks up in its own bundle: `Text("qeetrix.…", bundle: .module)`
+    /// and the like, or `String(localized: "qeetrix.…", defaultValue: …, bundle: .module)` and
+    /// `LocalizedStringResource("qeetrix.…", defaultValue: …, bundle: …)`, the forms a string with
+    /// arguments, or one passed on as a resource, takes.
     func keysUsed() throws -> Set<String> {
         var keys: Set<String> = []
-        let regex = try NSRegularExpression(pattern: #""(qeetrix\.[a-z0-9.-]+)",\s*bundle:\s*\.module"#)
+        let patterns = [
+            #""(qeetrix\.[a-z0-9.-]+)",\s*bundle:\s*\.module"#,
+            #"localized:\s*"(qeetrix\.[a-z0-9.-]+)",\s*defaultValue:"#,
+            #"LocalizedStringResource\(\s*"(qeetrix\.[a-z0-9.-]+)",\s*defaultValue:"#,
+        ]
+        let regexes = try patterns.map { try NSRegularExpression(pattern: $0) }
         for file in try swiftFiles(under: "Sources/Qeetrix") {
             let text = try String(contentsOf: file, encoding: .utf8)
-            for match in regex.matches(in: text, range: NSRange(text.startIndex..., in: text)) {
-                keys.insert(String(text[Range(match.range(at: 1), in: text)!]))
+            for regex in regexes {
+                for match in regex.matches(in: text, range: NSRange(text.startIndex..., in: text)) {
+                    keys.insert(String(text[Range(match.range(at: 1), in: text)!]))
+                }
             }
         }
         return keys

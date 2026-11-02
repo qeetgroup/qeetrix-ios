@@ -1,135 +1,169 @@
 import SwiftUI
 
-/// The Qeet action control: a text label with optional icons, in a ``QeetrixButtonVariant`` and
-/// ``QeetrixButtonSize``, with a loading state.
+/// An action, as `@qeetrix/react`'s Button: the label first and, when there is one, a trailing icon in
+/// its own zone behind a short rule (design rules §7).
 ///
 /// ```swift
-/// QeetrixButton("Save changes", isLoading: isSaving) { save() }
-/// QeetrixButton("Delete", leadingIcon: .x, variant: .destructive) { delete() }
+/// QeetrixButton("Create invoice") { create() }
+/// QeetrixButton("Export", icon: .share2, variant: .soft) { export() }
+/// QeetrixButton("Revoke key", tone: .danger, isLoading: isRevoking) { revoke() }
 /// ```
 ///
-/// Use one `default` (primary) button per screen. For a label other than text and icons, give any
-/// `Button` the ``QeetrixButtonStyle``.
+/// A region has at most one `solid` and one `soft` button; everything else is `ghost`. A destructive
+/// confirmation (`tone: .danger`) replaces the primary rather than sitting beside it. Write labels as
+/// verbs. For a label that is not text, give any `Button` the ``QeetrixButtonStyle``.
 ///
-/// While `isLoading` is true the button keeps its label and colours, shows a spinner in the leading
-/// slot — in place of a leading icon, so the width holds — and ignores taps. VoiceOver reads it as
-/// busy ("Loading"), or by `loadingLabel` when one is given; with a loading label the button keeps
-/// the wider of its resting and loading widths.
+/// While `isLoading` is true a spinner takes the icon's place in the zone — a button without an icon
+/// gains the zone — the label and colours stay, taps are ignored, and VoiceOver reads the button as
+/// busy ("Loading"). `isFullWidth` stretches it to its container (forms, compact width), label still
+/// at the start and icon at the end.
 public struct QeetrixButton: View {
     let title: Text
-    let leadingIcon: QeetrixIconName?
-    let trailingIcon: QeetrixIconName?
+    let icon: QeetrixIconName?
     let variant: QeetrixButtonVariant
-    let size: QeetrixButtonSize
+    let tone: QeetrixButtonTone
+    let size: QeetrixControlSize
     let isLoading: Bool
-    let loadingLabel: Text?
+    let isFullWidth: Bool
     let action: @MainActor () -> Void
 
     /// A button with a localised title.
     public init(
         _ titleKey: LocalizedStringKey,
-        leadingIcon: QeetrixIconName? = nil,
-        trailingIcon: QeetrixIconName? = nil,
-        variant: QeetrixButtonVariant = .default,
-        size: QeetrixButtonSize = .default,
+        icon: QeetrixIconName? = nil,
+        variant: QeetrixButtonVariant = .solid,
+        tone: QeetrixButtonTone = .brand,
+        size: QeetrixControlSize = .md,
         isLoading: Bool = false,
-        loadingLabel: LocalizedStringKey? = nil,
+        isFullWidth: Bool = false,
         action: @escaping @MainActor () -> Void
     ) {
         self.init(
-            title: Text(titleKey), leadingIcon: leadingIcon, trailingIcon: trailingIcon, variant: variant, size: size, isLoading: isLoading,
-            loadingLabel: loadingLabel.map { Text($0) }, action: action)
+            title: Text(titleKey), icon: icon, variant: variant, tone: tone, size: size, isLoading: isLoading, isFullWidth: isFullWidth,
+            action: action)
     }
 
     /// A button with a title shown as given, without localisation.
     public init<S: StringProtocol>(
         _ title: S,
-        leadingIcon: QeetrixIconName? = nil,
-        trailingIcon: QeetrixIconName? = nil,
-        variant: QeetrixButtonVariant = .default,
-        size: QeetrixButtonSize = .default,
+        icon: QeetrixIconName? = nil,
+        variant: QeetrixButtonVariant = .solid,
+        tone: QeetrixButtonTone = .brand,
+        size: QeetrixControlSize = .md,
         isLoading: Bool = false,
-        loadingLabel: S? = nil,
+        isFullWidth: Bool = false,
         action: @escaping @MainActor () -> Void
     ) {
         self.init(
-            title: Text(title), leadingIcon: leadingIcon, trailingIcon: trailingIcon, variant: variant, size: size, isLoading: isLoading,
-            loadingLabel: loadingLabel.map { Text($0) }, action: action)
+            title: Text(title), icon: icon, variant: variant, tone: tone, size: size, isLoading: isLoading, isFullWidth: isFullWidth,
+            action: action)
     }
 
     /// A button with a `Text` title.
     public init(
         title: Text,
-        leadingIcon: QeetrixIconName? = nil,
-        trailingIcon: QeetrixIconName? = nil,
-        variant: QeetrixButtonVariant = .default,
-        size: QeetrixButtonSize = .default,
+        icon: QeetrixIconName? = nil,
+        variant: QeetrixButtonVariant = .solid,
+        tone: QeetrixButtonTone = .brand,
+        size: QeetrixControlSize = .md,
         isLoading: Bool = false,
-        loadingLabel: Text? = nil,
+        isFullWidth: Bool = false,
         action: @escaping @MainActor () -> Void
     ) {
         self.title = title
-        self.leadingIcon = leadingIcon
-        self.trailingIcon = trailingIcon
+        self.icon = icon
         self.variant = variant
+        self.tone = tone
         self.size = size
         self.isLoading = isLoading
-        self.loadingLabel = loadingLabel
+        self.isFullWidth = isFullWidth
         self.action = action
     }
 
     public var body: some View {
-        let metrics = QeetrixButtonMetrics(size: size, density: .default)
-        // The spinner takes the leading slot unless a loading label shares the resting content's cell.
-        let spinnerLeads = isLoading && loadingLabel == nil
+        let hasZone = icon != nil || isLoading
         Button {
             if !isLoading { action() }
         } label: {
-            if isLoading, let loadingLabel {
-                ZStack {
-                    resting(metrics).hidden()
-                    HStack(spacing: metrics.gap) {
-                        QeetrixButtonBusyIndicator(size: metrics.iconSize)
-                        loadingLabel
-                    }
-                }
-            } else {
-                resting(metrics)
-            }
+            QeetrixButtonLabel(title: title, icon: icon, size: size, isLoading: isLoading)
         }
-        .buttonStyle(
-            QeetrixButtonStyle(
-                variant, size: size, layout: .text(leadingIcon: leadingIcon != nil || spinnerLeads, trailingIcon: trailingIcon != nil),
-                isLoading: isLoading)
-        )
-        .modifier(QeetrixBusyAccessibility(isLoading: isLoading, loadingLabel: loadingLabel))
+        .buttonStyle(QeetrixButtonStyle(variant, tone: tone, size: size, layout: hasZone ? .textWithZone : .text, isLoading: isLoading))
+        .transformEnvironment(\.qeetrixButtonFillsWidth) { if isFullWidth { $0 = true } }
+        .modifier(QeetrixBusyAccessibility(isLoading: isLoading))
+    }
+}
+
+/// The label, then — with an icon or while loading — the zone: the icon (or spinner) with equal
+/// space either side, behind a 1 pt rule as tall as the icon in the label's colour at 55%. The icon,
+/// its zone and the rule scale together with Dynamic Type; the label wraps rather than truncating at
+/// the accessibility sizes (the web keeps one line).
+struct QeetrixButtonLabel: View {
+    let title: Text
+    let icon: QeetrixIconName?
+    let size: QeetrixControlSize
+    let isLoading: Bool
+    @Environment(\.qeetrixDensity) private var density
+    @Environment(\.qeetrixButtonFillsWidth) private var fillsWidth
+    @ScaledMetric private var iconSide: CGFloat
+
+    /// The rule's opacity: the label colour at 55% (button.css `.qx-button-zone::before`).
+    static let ruleOpacity = 0.55
+
+    init(title: Text, icon: QeetrixIconName?, size: QeetrixControlSize, isLoading: Bool) {
+        self.title = title
+        self.icon = icon
+        self.size = size
+        self.isLoading = isLoading
+        _iconSide = ScaledMetric(wrappedValue: QeetrixButtonStyle.iconSize(for: size).points, relativeTo: .body)
     }
 
-    private func resting(_ metrics: QeetrixButtonMetrics) -> some View {
+    var body: some View {
+        let metrics = QeetrixButtonMetrics(size: size, density: density)
         HStack(spacing: metrics.gap) {
-            if isLoading && loadingLabel == nil {
-                QeetrixButtonBusyIndicator(size: metrics.iconSize)
-            } else if let leadingIcon {
-                QeetrixIcon(leadingIcon, size: metrics.iconSize)
-            }
             title
-            if let trailingIcon {
-                QeetrixIcon(trailingIcon, size: metrics.iconSize)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: fillsWidth ? .infinity : nil, alignment: .leading)
+            if icon != nil || isLoading {
+                zone(metrics)
             }
+        }
+        // The zone fills the label's height; the label itself keeps its own, so a button with an icon
+        // doesn't stretch to share the spare height of a stack it sits in.
+        .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private func zone(_ metrics: QeetrixButtonMetrics) -> some View {
+        let scale = iconSide / metrics.iconSize.points
+        return ZStack {
+            if isLoading {
+                // The spinner is drawn at its token size; it grows with the icon box it stands in for.
+                QeetrixSpinner(size: metrics.spinnerSize, isDecorative: true)
+                    .scaleEffect(scale)
+            } else if let icon {
+                QeetrixIcon(icon, size: metrics.iconSize, shape: .sharp)
+            }
+        }
+        // The spinner keeps the icon's box, so a button with an icon keeps its width.
+        .frame(width: iconSide, height: iconSide)
+        .padding(.horizontal, metrics.zonePadding)
+        .frame(maxHeight: .infinity)
+        .overlay(alignment: .leading) {
+            Rectangle()
+                .frame(width: QeetrixBorderWidth.default, height: metrics.ruleHeight * scale)
+                .opacity(Self.ruleOpacity)
+                .accessibilityHidden(true)
         }
     }
 }
 
-/// What VoiceOver reads for a busy button: the loading label as its name when there is one,
-/// otherwise its name with the value "Loading" — the counterpart of the web's `aria-busy`.
+/// What VoiceOver reads for a busy button: its name with the value "Loading" — the counterpart of the
+/// web's `aria-busy`.
 struct QeetrixBusyAccessibility: ViewModifier {
     let isLoading: Bool
-    let loadingLabel: Text?
 
     func body(content: Content) -> some View {
-        if isLoading, let loadingLabel {
-            content.accessibilityLabel(loadingLabel)
-        } else if isLoading {
+        if isLoading {
             content.accessibilityValue(QeetrixStrings.loading)
         } else {
             content

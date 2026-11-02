@@ -1,6 +1,6 @@
 # 0011 — Component tokens, and web metrics that are not tokens
 
-**Status:** Accepted (Phase 2, 2026-10-18). Refines ADR 0002.
+**Status:** Superseded by ADR 0018 (2026-10-30). Accepted (Phase 2, 2026-10-18). Refined ADR 0002.
 
 ## Context
 

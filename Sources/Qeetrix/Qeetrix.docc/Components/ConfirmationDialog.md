@@ -3,13 +3,13 @@
 ## Overview
 
 A choice among actions about one thing, or a last check before a destructive action: the iOS action
-sheet. The system anchors it to the view it is attached to — on iOS 27 on iPhone as well as on iPad — so
-attach it to the control that opens it.
+sheet. The system anchors it to the view it is attached to — on iOS 27 on iPhone as well as on iPad —
+so attach it to the control that opens it.
 
 ```swift
 @State private var share: QeetrixConfirmationDialog?
 
-QeetrixButton("Share report", variant: .outline) {
+QeetrixButton("Share report", variant: .soft) {
     share = QeetrixConfirmationDialog("Share the Q3 summary", actions: [
         QeetrixDialogAction("Copy link") { copyLink() },
         QeetrixDialogAction("Send by email") { sendEmail() },
@@ -32,8 +32,11 @@ where the system does show one, it is the cancel action.
 
 ### Platform differences
 
-The web has no action sheet; it uses an `AlertDialog` or a `DropdownMenu` for the same jobs. The
-system draws the dialog.
+`@qeetrix/react` has no action sheet; it uses a Dialog or a Menu for the same jobs. The system draws the
+dialog (ADR 0014).
+
+On the web: [Dialog](https://ui.qeet.in/components/dialog/) and [Menu](https://ui.qeet.in/components/menu/)
+on ui.qeet.in.
 
 ## Topics
 

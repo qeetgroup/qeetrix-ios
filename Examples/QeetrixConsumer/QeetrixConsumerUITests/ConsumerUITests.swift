@@ -30,7 +30,7 @@ final class ConsumerUITests: XCTestCase {
                 "\(font) registered from the package's bundle")
         }
         XCTAssertFalse(app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS 'Missing'")).firstMatch.exists)
-        XCTAssertTrue(element("tokens", containing: "2.1.6").exists, "The provenance read from the package's bundle")
+        XCTAssertTrue(element("tokens", containing: "0.0.13").exists, "The @qeetrix/tokens version, read from the package's bundle")
     }
 
     @MainActor
@@ -40,7 +40,7 @@ final class ConsumerUITests: XCTestCase {
         let create = app.buttons["Create account"]
         create.scrollIntoViewIfNeeded(in: app)
         create.tap()
-        XCTAssertTrue(app.staticTexts["There is a problem"].waitForExistence(timeout: 3), "The error summary appears")
+        XCTAssertTrue(app.staticTexts["Fix these to continue"].waitForExistence(timeout: 3), "The error summary appears")
 
         app.swipeDown()
         app.textFields["Full name, Required"].tap()

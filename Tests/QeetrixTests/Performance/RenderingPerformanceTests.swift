@@ -34,10 +34,10 @@ final class RenderingPerformanceTests: XCTestCase {
     func testRenderingFiftyListRows() {
         let rows = VStack(spacing: 0) {
             ForEach(0..<50, id: \.self) { index in
-                QeetrixListItem(
-                    "Document \(index)", description: Text(verbatim: "Asha Rao"), metadata: Text(verbatim: "2 MB"), icon: .fileText
-                ) {
-                    QeetrixBadge("Active", variant: .success)
+                QeetrixListItem("Document \(index)", description: Text(verbatim: "Asha Rao"), metadata: Text(verbatim: "2 MB")) {
+                    QeetrixListItemIcon(.fileText)
+                } trailing: {
+                    QeetrixBadge("Active", tone: .success)
                 }
             }
         }

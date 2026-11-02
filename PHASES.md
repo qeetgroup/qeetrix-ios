@@ -11,7 +11,18 @@ boundaries, not commitments of scope.
 | 4 — Navigation, overlays, feedback | Tabs; navigation and tab bar styling; alert and confirmation dialogs; sheets; popovers; menus; toasts | Done |
 | 5 — Data display, collections, content states | List rows and section headers; description list; accordion; empty, data and skeleton states; chips; timeline; native search integration | Done |
 | 6 — Quality, accessibility and performance hardening | Audit of Phases 1–5: accessibility audit gate, localization and right-to-left, measured performance, security and privacy, source compatibility, maturity matrix and release-readiness gaps | Done |
-| **7 — Production readiness and release** | Consumer integration, distribution, versioning and release policy, licensing and SBOM, release verification and workflow, DocC installation guides, the 0.1.0-rc.1 candidate and its go/no-go | **Current: candidate prepared, not released** |
+| 7 — Production readiness and release | Consumer integration, distribution, versioning and release policy, licensing and SBOM, release verification and workflow, DocC installation guides, the 0.1.0-rc.1 candidate and its go/no-go | **Current: candidate prepared, not released** |
+| 8 — The move to `@qeetrix/react` | Tokens from `@qeetrix/tokens`' DTCG build, fonts and icons from npm; every component re-specified to its `@qeetrix/react` counterpart; ADR 0018, [MIGRATION_QEETRIX_REACT.md](Documentation/MIGRATION_QEETRIX_REACT.md) | Done, except the device pass |
+| **9 — The iOS component tickets** | QTRX-95 to QTRX-155: list rows, states, chips, pickers, the Qeet Auth pieces (OTP code, QR code and scanner, permission primer), haptics and formatting; see the [CHANGELOG](CHANGELOG.md) | **Current** |
+
+## Phase 8 — the move to `@qeetrix/react`
+
+Phases 1 to 7 were built from `@qeetrix/ui` 2.1.6. Phase 8 moves the whole library to
+`@qeetrix/tokens` 0.0.13, `@qeetrix/icons` 2.1.0 and `@qeetrix/react` 0.4.0 (ADR 0018). What each
+component does and does not have yet — `multiple` and groups on the select, vertical tabs, the
+Caps Lock warning, menu shortcuts and submenus, a toast stack, dialog widths, the field's help
+button, the number field's `largeStep` and `format`, Meter, CheckboxGroup, a fieldset error, choice
+tiles — is in the migration file's component table.
 
 ## Phase 7 — what is done and what is not
 
@@ -67,6 +78,10 @@ Still to verify — the release-readiness gaps (`Documentation/Quality/RELEASE_R
 
 ## Phase 5 — what is done and what is not
 
+> Phases 8 and 9 replaced this phase's implementations: the move to `@qeetrix/react` and the iOS
+> component tickets re-specified every component listed here (ADR 0018). What follows is the record
+> of Phase 5 as it was.
+
 Done, and verified on the Mac and the iOS 27.1 iPhone simulator:
 
 - **Components:**
@@ -115,7 +130,7 @@ Deferred, with the reasons in ADR 0014:
 
 - a separate centred `QeetrixDialog` (the sheet is the dialog);
 - `QeetrixSnackbar` (the toast with an action covers it);
-- the inline `QeetrixAlert`;
+- the inline `QeetrixAlert` (built in Phase 9, QTRX-111);
 - a stack of toasts;
 - styling the system menu surface (`component.menu`).
 

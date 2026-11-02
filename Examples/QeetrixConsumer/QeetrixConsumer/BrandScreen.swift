@@ -1,51 +1,53 @@
 import Qeetrix
 import SwiftUI
 
-/// Foundations as an app uses them: semantic colours, the typography roles, icons, spacing, corners and
-/// elevation — every value from Qeetrix, none typed in.
+/// Foundations as an app uses them: semantic colours, the type roles, icons, space, radii and badges —
+/// every value from Qeetrix, none typed in.
 struct BrandScreen: View {
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: QeetrixSpacing.l) {
-                QeetrixCard {
-                    VStack(alignment: .leading, spacing: QeetrixSpacing.s) {
-                        Text("Your account")
-                            .qeetrixTextStyle(.heading)
-                            .foregroundStyle(QeetrixColor.textPrimary)
-                            .accessibilityAddTraits(.isHeader)
-                        HStack(spacing: QeetrixSpacing.xs) {
-                            QeetrixIcon(.lock, size: .sm, variant: .filled)
-                            Text("Two-step verification is on").qeetrixTextStyle(.body)
-                        }
-                        .foregroundStyle(QeetrixColor.textSecondary)
+            VStack(alignment: .leading, spacing: QeetrixSpace.layoutSm) {
+                QeetrixCard(title: Text("Your account"), description: Text("Security")) {
+                    HStack(spacing: QeetrixSpace.gapXs) {
+                        QeetrixIcon(.lock, size: .sm, shape: .sharp, variant: .filled)
+                            .foregroundStyle(QeetrixColor.iconSuccess)
+                        QeetrixText("Two-step verification is on", tone: .subtle)
                     }
                 }
 
-                VStack(alignment: .leading, spacing: QeetrixSpacing.xs) {
+                VStack(alignment: .leading, spacing: QeetrixSpace.gapXs) {
                     ForEach(QeetrixTextRole.allCases, id: \.self) { role in
                         Text(role.rawValue)
                             .qeetrixTextStyle(role)
-                            .foregroundStyle(QeetrixColor.textPrimary)
+                            .foregroundStyle(QeetrixColor.textDefault)
+                            .accessibilityLabel(Self.spokenName(role))
                     }
                 }
 
-                HStack(spacing: QeetrixSpacing.m) {
-                    ForEach([QeetrixIconName.bell, .mail, .settings, .search, .send], id: \.self) { name in
-                        QeetrixIcon(name, label: Text(name.rawValue))
-                            .foregroundStyle(QeetrixColor.actionPrimary)
+                HStack(spacing: QeetrixSpace.gapMd) {
+                    ForEach([QeetrixIconName.bell, .inbox, .settings, .search, .send], id: \.self) { name in
+                        QeetrixIcon(name, shape: .sharp, label: Text(name.rawValue))
+                            .foregroundStyle(QeetrixColor.iconDefault)
                     }
                 }
 
-                HStack(spacing: QeetrixSpacing.s) {
-                    QeetrixBadge("Active", variant: .success)
-                    QeetrixBadge("Draft", variant: .secondary)
-                    QeetrixBadge("Blocked", variant: .destructive)
+                HStack(spacing: QeetrixSpace.gapSm) {
+                    QeetrixBadge("Active", tone: .success)
+                    QeetrixBadge("Draft")
+                    QeetrixBadge("Blocked", tone: .danger)
                 }
             }
-            .padding(QeetrixSpacing.l)
+            .padding(QeetrixSpace.insetLg)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .background(QeetrixColor.surfaceCanvas)
         .navigationTitle("Brand")
+    }
+
+    /// A role's token name read as words, "display.lg" as "display large": VoiceOver would spell out the
+    /// abbreviation.
+    static func spokenName(_ role: QeetrixTextRole) -> String {
+        let sizes = ["lg": "large", "md": "medium", "sm": "small", "caps": "capitals"]
+        return role.rawValue.split(separator: ".").map { sizes[String($0)] ?? String($0) }.joined(separator: " ")
     }
 }

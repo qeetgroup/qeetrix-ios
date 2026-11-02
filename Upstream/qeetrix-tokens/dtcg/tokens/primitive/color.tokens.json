@@ -1,0 +1,580 @@
+{
+  "primitive": {
+    "color": {
+      "$type": "color",
+      "$description": "The primitive palettes — private: not published as CSS variables; semantic tokens reference them. Six ramps, each named once by hue. Every Qeet product uses this one palette.",
+      "graphite": {
+        "0": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [1, 0, 0],
+            "hex": "#ffffff"
+          }
+        },
+        "25": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.985, 0.002, 60],
+            "hex": "#fbfaf9"
+          }
+        },
+        "50": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.974, 0.0025, 60],
+            "hex": "#f8f6f5"
+          }
+        },
+        "100": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.958, 0.003, 60],
+            "hex": "#f3f1ef"
+          }
+        },
+        "150": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.937, 0.003, 60],
+            "hex": "#eceae8"
+          }
+        },
+        "200": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.912, 0.003, 60],
+            "hex": "#e3e1e0"
+          }
+        },
+        "300": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.857, 0.003, 60],
+            "hex": "#d1cfce"
+          }
+        },
+        "400": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.72, 0.003, 60],
+            "hex": "#a6a4a3"
+          }
+        },
+        "450": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.61, 0.003, 60],
+            "hex": "#848381"
+          }
+        },
+        "500": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.56, 0.003, 60],
+            "hex": "#767473"
+          }
+        },
+        "600": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.49, 0.003, 60],
+            "hex": "#62605f"
+          }
+        },
+        "700": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.4, 0.002, 60],
+            "hex": "#484747"
+          }
+        },
+        "750": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.34, 0.0015, 60],
+            "hex": "#383837"
+          }
+        },
+        "800": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.3, 0.0015, 60],
+            "hex": "#2e2e2d"
+          }
+        },
+        "825": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.268, 0.001, 60],
+            "hex": "#262625"
+          }
+        },
+        "875": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.235, 0.001, 60],
+            "hex": "#1e1e1e"
+          }
+        },
+        "900": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.21, 0.001, 60],
+            "hex": "#191818"
+          }
+        },
+        "925": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.185, 0.001, 60],
+            "hex": "#131312"
+          }
+        },
+        "950": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.16, 0.001, 60],
+            "hex": "#0e0d0d"
+          }
+        },
+        "975": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.135, 0.001, 60],
+            "hex": "#080808"
+          }
+        },
+        "1000": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.11, 0, 0],
+            "hex": "#040404"
+          }
+        },
+        "$description": "Graphite — the neutral foundation. Near-neutral by design: a whisper of warmth at the light end (chroma ≤ 0.003) so white surfaces are not clinical, effectively achromatic at the dark end, where warm chroma reads as brown. Dark mode is built from 925 and 950: near-black, not charcoal."
+      },
+      "qeet": {
+        "50": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.976, 0.015, 62],
+            "hex": "#fff5ed"
+          }
+        },
+        "100": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.952, 0.03, 61.16],
+            "hex": "#ffebdb"
+          }
+        },
+        "150": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.93, 0.044, 60.391],
+            "hex": "#ffe2cb"
+          }
+        },
+        "200": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.906, 0.06, 59.551],
+            "hex": "#ffd7b9"
+          }
+        },
+        "300": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.842, 0.103, 57.312],
+            "hex": "#ffba88"
+          }
+        },
+        "400": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.77, 0.156, 54.793],
+            "hex": "#ff9646"
+          }
+        },
+        "500": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.686, 0.1855, 47.163],
+            "hex": "#f26d0e"
+          }
+        },
+        "550": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.635, 0.185, 43.5],
+            "hex": "#e15a04"
+          }
+        },
+        "600": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.585, 0.1835, 40],
+            "hex": "#d04800"
+          }
+        },
+        "650": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.56, 0.175, 39],
+            "hex": "#c5430a"
+          },
+          "$description": "Used by the dark scheme only, for bg.brand.bold-hover (QTRX-187): between 600 and 700, a hover step darker than 600 that keeps 3:1 against every dark surface, overlay included (3.31:1), and white text at 4.5:1 (5.04:1). 700, the light scheme's hover, is 2.93:1 on the dark overlay."
+        },
+        "700": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.53, 0.165, 38],
+            "hex": "#b73d10"
+          }
+        },
+        "800": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.47, 0.145, 36],
+            "hex": "#9b3314"
+          }
+        },
+        "900": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.4, 0.12, 34],
+            "hex": "#7b2815"
+          }
+        },
+        "950": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.3, 0.09, 32],
+            "hex": "#52170d"
+          }
+        },
+        "$description": "Qeet — the one brand palette every Qeet product uses. 500 is #F26D0E exactly, the identity colour. 600 is Qeet Ember, the action orange: the deepest shade that keeps the brand vivid while carrying white text at ≥ 4.5:1. Steps past 500 shift toward red rather than only darkening, so deep oranges stay ember, not brown."
+      },
+      "red": {
+        "50": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.976, 0.011, 17],
+            "hex": "#fff4f4"
+          }
+        },
+        "100": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.952, 0.023, 17.245],
+            "hex": "#fee9e9"
+          }
+        },
+        "200": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.906, 0.048, 17.714],
+            "hex": "#ffd4d4"
+          }
+        },
+        "300": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.842, 0.086, 18.367],
+            "hex": "#feb5b6"
+          }
+        },
+        "400": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.73, 0.165, 20],
+            "hex": "#fe777c"
+          }
+        },
+        "500": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.635, 0.215, 20.48],
+            "hex": "#f13c50"
+          }
+        },
+        "600": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.6, 0.209, 20.837],
+            "hex": "#e23346"
+          }
+        },
+        "700": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.522, 0.189, 21.633],
+            "hex": "#be2334"
+          }
+        },
+        "800": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.448, 0.161, 22.388],
+            "hex": "#9a1b28"
+          }
+        },
+        "900": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.383, 0.129, 23.051],
+            "hex": "#791a20"
+          }
+        },
+        "950": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.29, 0.097, 24],
+            "hex": "#510f11"
+          }
+        },
+        "$description": "Red (hue 17–24): danger and errors. Kept clearly redder than Qeet orange so the two never read as the same signal."
+      },
+      "green": {
+        "50": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.976, 0.017, 156],
+            "hex": "#effbf2"
+          }
+        },
+        "100": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.952, 0.036, 156.21],
+            "hex": "#ddf7e5"
+          }
+        },
+        "200": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.906, 0.068, 156.612],
+            "hex": "#bceece"
+          }
+        },
+        "300": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.842, 0.105, 157.172],
+            "hex": "#8fe0b0"
+          }
+        },
+        "400": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.73, 0.165, 158],
+            "hex": "#1dc67f"
+          }
+        },
+        "500": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.68, 0.15, 158.589],
+            "hex": "#20b375"
+          }
+        },
+        "600": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.6, 0.137, 159.289],
+            "hex": "#029862"
+          }
+        },
+        "700": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.522, 0.118, 159.971],
+            "hex": "#017e51"
+          }
+        },
+        "800": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.448, 0.1, 160.618],
+            "hex": "#016542"
+          }
+        },
+        "900": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.383, 0.085, 161.187],
+            "hex": "#005134"
+          }
+        },
+        "950": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.29, 0.063, 162],
+            "hex": "#013521"
+          }
+        },
+        "$description": "Green (emerald, hue 156–162): success."
+      },
+      "amber": {
+        "50": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.976, 0.017, 92],
+            "hex": "#fbf7eb"
+          }
+        },
+        "100": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.952, 0.037, 91.23],
+            "hex": "#f8efd4"
+          }
+        },
+        "200": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.906, 0.07, 89.755],
+            "hex": "#f2dfab"
+          }
+        },
+        "300": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.842, 0.109, 87.703],
+            "hex": "#e9c775"
+          }
+        },
+        "400": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.79, 0.158, 80],
+            "hex": "#efad1d"
+          }
+        },
+        "500": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.705, 0.144, 83.309],
+            "hex": "#cb9605"
+          }
+        },
+        "600": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.6, 0.124, 79.942],
+            "hex": "#a77601"
+          }
+        },
+        "700": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.522, 0.109, 77.44],
+            "hex": "#8c6000"
+          }
+        },
+        "800": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.448, 0.094, 75.067],
+            "hex": "#734c01"
+          }
+        },
+        "900": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.383, 0.081, 72.983],
+            "hex": "#5d3b01"
+          }
+        },
+        "950": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.29, 0.062, 70],
+            "hex": "#3f2501"
+          }
+        },
+        "$description": "Amber (hue 70–92): warnings. Deliberately yellower than Qeet orange so a warning never reads as a brand accent."
+      },
+      "blue": {
+        "50": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.976, 0.012, 238],
+            "hex": "#f0f9fe"
+          }
+        },
+        "100": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.952, 0.025, 238.49],
+            "hex": "#e1f2fe"
+          }
+        },
+        "200": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.906, 0.051, 239.429],
+            "hex": "#c2e5ff"
+          }
+        },
+        "300": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.842, 0.087, 240.735],
+            "hex": "#97d3ff"
+          }
+        },
+        "400": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.71, 0.162, 245],
+            "hex": "#2fa9ff"
+          }
+        },
+        "500": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.64, 0.16, 244.857],
+            "hex": "#0393e6"
+          }
+        },
+        "600": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.6, 0.153, 245.673],
+            "hex": "#0186d5"
+          }
+        },
+        "700": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.522, 0.138, 247.265],
+            "hex": "#006db4"
+          }
+        },
+        "800": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.448, 0.12, 248.776],
+            "hex": "#065793"
+          }
+        },
+        "900": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.383, 0.096, 250.102],
+            "hex": "#104574"
+          }
+        },
+        "950": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.29, 0.072, 252],
+            "hex": "#0b2c4e"
+          }
+        },
+        "$description": "Blue (hue 238–252): information."
+      }
+    }
+  }
+}

@@ -1,0 +1,51 @@
+@layer qx.base, qx.components, qx.state;
+@import "../base.css";
+@import "../state.css";
+@import "../button.css";
+@import "./calendar.css";
+@import "../input.css";
+@import "../popover.css";
+
+@layer qx.components {
+  .qx-date-picker {
+    padding-inline-end: var(--qx-space-gap-xs);
+  }
+  
+  .qx-popover.qx-date-picker-popup {
+    inline-size: var(--anchor-width);
+    min-inline-size: calc(7 * (var(--qx-size-control-md) + 2px) + 2 * var(--qx-space-inset-md));
+    max-inline-size: var(--available-width);
+    padding: var(--qx-space-inset-md);
+  }
+  
+  .qx-popover.qx-date-picker-popup[data-wide] {
+    inline-size: max-content;
+    min-inline-size: min(var(--anchor-width), var(--available-width));
+  }
+  
+  .qx-popover.qx-date-picker-popup .qx-calendar {
+    inline-size: auto;
+    min-inline-size: calc(7 * (var(--qx-size-control-md) + 2px));
+    flex: auto;
+    display: flex;
+  }
+  
+  .qx-popover.qx-date-picker-popup .qx-calendar-body {
+    contain: inline-size;
+  }
+  
+  .qx-popover.qx-date-picker-popup .qx-calendar-grid {
+    table-layout: fixed;
+  }
+  
+  .qx-date-picker-panel {
+    gap: var(--qx-space-gap-md);
+    display: flex;
+  }
+  
+  @media (width < 600px) {
+    .qx-date-picker-panel {
+      flex-direction: column;
+    }
+  }
+}

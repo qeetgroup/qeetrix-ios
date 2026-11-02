@@ -9,7 +9,8 @@ final class IndexUITests: XCTestCase {
     func testIndexOpensEveryComponentPage() {
         let app = Showcase.launch()
         let pages = [
-            "Button", "Icon button", "Text field", "Switch", "Avatar", "Badge", "Text", "Progress", "Spinner", "Card", "Separator",
+            "Button", "Icon button", "Text field", "Switch", "Fieldset", "Avatar", "Badge", "Text", "Heading", "Progress", "Spinner",
+            "Card", "Separator",
         ]
         for page in pages {
             let link = app.buttons[page]

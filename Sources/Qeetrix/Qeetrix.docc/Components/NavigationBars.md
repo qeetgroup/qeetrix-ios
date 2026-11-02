@@ -32,11 +32,13 @@ TabView(selection: $tab) {
 .qeetrixTabBar()
 ```
 
-- `qeetrixNavigationBar(background:)` puts the brand tint on the bar's buttons and, with `.canvas`, the
-  canvas colour behind the bar at all times. Apply it to each destination, as you do
-  `navigationTitle(_:)`.
-- `qeetrixTabBar()` puts the brand tint on the selected tab.
-- `qeetrixTabItem(_:icon:badge:)` makes a tab from a title, a Qeetrix icon and an optional count.
+- `qeetrixNavigationBar(background:)` puts the brand tint (`color.text.brand`) on the bar's buttons and,
+  with `.canvas`, `color.surface.canvas` behind the bar at all times. Apply it to each destination, as you
+  do `navigationTitle(_:)`.
+- `qeetrixTabBar()` puts Ember (`color.icon.brand`) on the current tab, as the web marks its current
+  navigation item.
+- `qeetrixTabItem(_:icon:badge:)` makes a tab from a title, a Qeetrix icon — round, as the web draws
+  navigation icons (design rules §16) — and an optional count.
 - For toolbar buttons, use a `Label` with `Image(qeetrix:)` as its icon: the bar shows the icon and
   VoiceOver reads the title.
 
@@ -50,6 +52,7 @@ any app. Name every icon-only toolbar button with a `Label`.
 
 ### Platform differences
 
-The web's `NavigationMenu` and `Sidebar` have no iOS counterpart in Qeetrix: a phone uses the
-navigation stack and tab bar, and iPad's sidebar adaptation comes from `TabView`. The bar's title is
-drawn in the system font.
+`@qeetrix/react`'s Sidebar, TopBar and the rest of its console frame have no iOS counterpart: a phone
+uses the navigation stack and tab bar, and iPad's sidebar adaptation comes from `TabView`. The bars are
+the system's, so the web's Ember bar on the current item and its filled current icon don't apply; the
+bar's title is drawn in the system font. For views within a screen, use ``QeetrixTabs``.

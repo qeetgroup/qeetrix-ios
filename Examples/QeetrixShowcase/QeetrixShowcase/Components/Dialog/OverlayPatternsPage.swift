@@ -22,22 +22,22 @@ struct OverlayPatternsPage: View {
             summary: "Menu → confirmation → toast with undo, and sheet → save → toast. Each overlay is one optional value in the page."
         ) {
             DemoSection("Documents") {
-                VStack(spacing: QeetrixSpacing.s) {
+                VStack(spacing: QeetrixSpace.gapSm) {
                     ForEach(documents) { document in
                         row(document)
                     }
                 }
                 // One dialog for the list: on iPad it points at the list rather than the row's button.
                 .qeetrixConfirmationDialog($confirmDelete)
-                QeetrixText("\(documents.count) documents", variant: .muted).accessibilityIdentifier("document-count")
+                QeetrixText("\(documents.count) documents", size: .sm, tone: .subtle).accessibilityIdentifier("document-count")
             }
         }
         .qeetrixSheet(item: $editing) { document in
             QeetrixSheetContent("Rename document") {
                 QeetrixTextField("Title", text: $draft)
             } actions: {
-                QeetrixButton("Cancel", variant: .outline) { editing = nil }
-                QeetrixButton("Save") { rename(document) }
+                QeetrixButton("Cancel", variant: .ghost, size: .lg) { editing = nil }
+                QeetrixButton("Save", size: .lg) { rename(document) }
                     .disabled(draft.isEmpty)
             }
         }
@@ -53,14 +53,14 @@ struct OverlayPatternsPage: View {
                     draft = document.title
                     editing = document
                 }
-                QeetrixMenuItem("Delete", icon: .trash, role: .destructive) {
+                QeetrixMenuItem("Delete", icon: .trash, tone: .danger) {
                     confirmDelete = QeetrixConfirmationDialog(
                         "Delete \(document.title)?",
                         actions: [QeetrixDialogAction("Delete", role: .destructive) { delete(document) }])
                 }
             }
         }
-        .padding(.vertical, QeetrixSpacing.xs)
+        .padding(.vertical, QeetrixSpace.gapXs)
     }
 
     private func delete(_ document: Document) {

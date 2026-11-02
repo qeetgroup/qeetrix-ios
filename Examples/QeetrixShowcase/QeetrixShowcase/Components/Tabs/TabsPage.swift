@@ -4,36 +4,52 @@ import SwiftUI
 struct TabsPage: View {
     private enum Section: String { case overview, activity, archive }
     private enum Report: String, CaseIterable { case summary, revenue, usage, invoices, refunds, taxes, payouts, disputes }
+    private enum Inbox: String { case all, mentions, settings }
 
     @State private var section = Section.overview
     @State private var report = Report.summary
+    @State private var inbox = Inbox.all
     @State private var period = "month"
 
     var body: some View {
         ComponentPage(
             title: "Tabs",
-            summary: "Switches between panels of related content in one place. The page owns the selection; the strip only selects."
+            summary: "The views of one context. A 2 pt line under the list and the 3 pt Ember bar under the selected tab, which slides."
         ) {
-            DemoSection("Contained") {
+            DemoSection("Line, the default") {
                 QeetrixTabs(
                     selection: $section,
                     tabs: [
                         QeetrixTab("Overview", value: .overview),
-                        QeetrixTab("Activity", value: .activity, icon: .bell),
+                        QeetrixTab("Activity", value: .activity),
                         QeetrixTab("Archive", value: .archive, isDisabled: true),
                     ])
-                QeetrixText("Panel: \(section.rawValue)", variant: .muted)
+                QeetrixText("Panel: \(section.rawValue)", size: .sm, tone: .subtle)
                     .accessibilityIdentifier("section-panel")
-                    .padding(.top, QeetrixSpacing.m)
+                    .padding(.top, QeetrixSpace.gapMd)
             }
-            DemoSection("Line, wider than the screen") {
+            DemoSection("Wider than the screen") {
                 QeetrixTabs(
                     selection: $report,
-                    tabs: Report.allCases.map { QeetrixTab($0.rawValue.capitalized, value: $0) },
-                    variant: .line)
-                QeetrixText("Panel: \(report.rawValue)", variant: .muted)
+                    tabs: Report.allCases.map { QeetrixTab($0.rawValue.capitalized, value: $0) })
+                QeetrixText("Panel: \(report.rawValue)", size: .sm, tone: .subtle)
                     .accessibilityIdentifier("report-panel")
-                    .padding(.top, QeetrixSpacing.m)
+                    .padding(.top, QeetrixSpace.gapMd)
+            }
+            DemoSection("Icons and counts") {
+                QeetrixTabs(
+                    selection: $inbox,
+                    tabs: [
+                        QeetrixTab("All", value: .all, icon: .inbox),
+                        QeetrixTab("Mentions", value: .mentions, icon: .bell, badge: 3),
+                        QeetrixTab("Settings", value: .settings, icon: .settings),
+                    ])
+            }
+            DemoSection("Contained, for a few views of one panel") {
+                QeetrixTabs(
+                    selection: $period,
+                    tabs: [QeetrixTab("Week", value: "week"), QeetrixTab("Month", value: "month"), QeetrixTab("Year", value: "year")],
+                    variant: .contained)
             }
             DemoSection("Compact density") {
                 QeetrixTabs(

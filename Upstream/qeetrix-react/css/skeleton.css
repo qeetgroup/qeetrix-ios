@@ -1,0 +1,71 @@
+@layer qx.base, qx.components, qx.state;
+@import "./base.css";
+@import "./state.css";
+
+@layer qx.components {
+  .qx-skeleton {
+    border-radius: var(--qx-radius-sm);
+    background: var(--qx-color-bg-neutral-subtle-pressed);
+    block-size: 1lh;
+    inline-size: 100%;
+    animation-name: qx-skeleton-pulse;
+    animation-duration: calc(4 * var(--qx-motion-duration-slower));
+    animation-timing-function: var(--qx-motion-easing-standard);
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    display: block;
+  }
+  
+  .qx-skeleton[data-variant="block"] {
+    border-radius: var(--qx-radius-surface);
+    block-size: 64px;
+  }
+  
+  .qx-skeleton[data-variant="circle"] {
+    border-radius: var(--qx-radius-full);
+    block-size: 32px;
+    inline-size: 32px;
+  }
+  
+  .qx-skeleton[data-variant="circle"][data-size="sm"] {
+    block-size: 24px;
+    inline-size: 24px;
+  }
+  
+  .qx-skeleton[data-variant="circle"][data-size="lg"] {
+    block-size: 40px;
+    inline-size: 40px;
+  }
+  
+  .qx-skeleton[data-variant="circle"][data-size="xl"] {
+    block-size: 48px;
+    inline-size: 48px;
+  }
+  
+  .qx-skeleton-lines {
+    flex-direction: column;
+    gap: calc(1lh - 1em);
+    padding-block: calc(.5lh - .5em);
+    display: flex;
+  }
+  
+  .qx-skeleton-lines > .qx-skeleton {
+    block-size: 1em;
+  }
+  
+  .qx-skeleton-lines > .qx-skeleton:last-child:not(:first-child) {
+    inline-size: 60%;
+  }
+  
+  @keyframes qx-skeleton-pulse {
+    to {
+      opacity: .45;
+    }
+  }
+  
+  @media (forced-colors: active) {
+    .qx-skeleton {
+      border: var(--qx-border-width-default) solid GrayText;
+    }
+  }
+}

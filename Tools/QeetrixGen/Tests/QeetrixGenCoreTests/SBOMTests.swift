@@ -16,7 +16,7 @@ struct SBOMTests {
     func contents() throws {
         let all = try components(try SBOM.render(root: SnapshotTests.root, version: "0.0.0-test"))
         let required = all.filter { $0["scope"] as? String == "required" }.compactMap { $0["bom-ref"] as? String }
-        #expect(Set(required) == ["font-sans", "font-mono", "qeetrix-icons", "qeetrix-ui"])
+        #expect(Set(required) == ["font-sans", "font-mono", "qeetrix-icons", "qeetrix-tokens"])
         let excluded = all.filter { $0["scope"] as? String == "excluded" }.compactMap { $0["name"] as? String }
         #expect(excluded.contains("swift-snapshot-testing"))
         let fonts = all.filter { ($0["bom-ref"] as? String)?.hasPrefix("font-") == true }

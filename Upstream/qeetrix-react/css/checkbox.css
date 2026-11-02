@@ -1,0 +1,72 @@
+@layer qx.base, qx.components, qx.state;
+@import "./base.css";
+@import "./state.css";
+@import "./field.css";
+
+@layer qx.components {
+  .qx-checkbox {
+    border: var(--qx-border-width-default) solid var(--qx-color-border-strong);
+    border-radius: var(--qx-radius-sm);
+    background: var(--qx-color-bg-input);
+    block-size: 16px;
+    inline-size: 16px;
+    color: var(--qx-color-icon-on-brand);
+    cursor: pointer;
+    transition-property: background-color, border-color;
+    transition-duration: var(--qx-motion-duration-fast);
+    transition-timing-function: var(--qx-motion-easing-standard);
+    flex: none;
+    place-items: center;
+    display: inline-grid;
+  }
+  
+  .qx-checkbox:hover:not([data-disabled], [data-readonly], [data-invalid]) {
+    border-color: var(--qx-color-border-strong-hover);
+  }
+  
+  .qx-checkbox:is([data-checked], [data-indeterminate]) {
+    border-color: var(--qx-color-bg-brand-bold);
+    background: var(--qx-color-bg-brand-bold);
+  }
+  
+  .qx-checkbox:is([data-checked], [data-indeterminate]):hover:not([data-disabled], [data-readonly]) {
+    background: var(--qx-color-bg-brand-bold-hover);
+  }
+  
+  .qx-checkbox:is([data-checked], [data-indeterminate]):hover:not([data-disabled], [data-readonly], [data-invalid]) {
+    border-color: var(--qx-color-bg-brand-bold-hover);
+  }
+  
+  .qx-checkbox[data-invalid] {
+    border-color: var(--qx-color-border-danger);
+  }
+  
+  .qx-checkbox[data-disabled] {
+    border-color: var(--qx-color-border-disabled);
+    background: var(--qx-color-bg-disabled);
+    color: var(--qx-color-icon-disabled);
+    cursor: not-allowed;
+  }
+  
+  .qx-checkbox[data-readonly] {
+    cursor: default;
+  }
+  
+  .qx-checkbox:focus-visible {
+    outline: var(--qx-focus-ring-width) solid var(--qx-color-border-focus);
+    outline-offset: var(--qx-focus-ring-offset);
+  }
+  
+  .qx-checkbox-mark {
+    display: flex;
+  }
+  
+  @media (forced-colors: active) {
+    .qx-checkbox:is([data-checked], [data-indeterminate]):not([data-disabled]) {
+      forced-color-adjust: none;
+      color: highlighttext;
+      background: highlight;
+      border-color: highlight;
+    }
+  }
+}

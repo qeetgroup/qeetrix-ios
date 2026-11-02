@@ -9,20 +9,18 @@ struct LargeListPage: View {
 
     var body: some View {
         List(documents) { document in
-            Button {
+            QeetrixListItem(
+                document.title, description: Text(verbatim: document.owner), metadata: Text(verbatim: document.size),
+                isSelected: selected == document.id
+            ) {
                 selected = document.id
-            } label: {
-                QeetrixListItem(
-                    document.title, description: Text(document.owner), metadata: Text(verbatim: document.size), icon: .fileText,
-                    isSelected: selected == document.id
-                ) {
-                    QeetrixBadge(document.status.rawValue, variant: document.status == .active ? .success : .secondary)
-                }
+            } leading: {
+                QeetrixListItemIcon(.fileText)
+            } trailing: {
+                QeetrixBadge(document.status.rawValue, tone: document.status == .active ? .success : .neutral)
             }
-            .foregroundStyle(QeetrixColor.textPrimary)
-            .qeetrixListRow()
         }
-        .listStyle(.plain)
+        .qeetrixListStyle()
         .accessibilityIdentifier("large-list")
         .navigationTitle("5,000 rows")
         .navigationBarTitleDisplayMode(.inline)

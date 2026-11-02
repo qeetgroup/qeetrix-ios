@@ -1,0 +1,92 @@
+@layer qx.base, qx.components, qx.state;
+@import "./base.css";
+@import "./state.css";
+
+@layer qx.components {
+  .qx-accordion {
+    border-block-end: var(--qx-border-width-default) solid var(--qx-color-border-subtle);
+    flex-direction: column;
+    min-inline-size: 0;
+    display: flex;
+  }
+  
+  .qx-accordion-item {
+    border-block-start: var(--qx-border-width-default) solid var(--qx-color-border-subtle);
+  }
+  
+  .qx-accordion-header {
+    margin: 0;
+  }
+  
+  .qx-accordion-trigger {
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--qx-space-gap-md);
+    inline-size: 100%;
+    min-block-size: var(--qx-size-control-lg);
+    color: var(--qx-color-text-default);
+    font: var(--qx-typography-title-sm);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-heading);
+    text-align: start;
+    cursor: pointer;
+    background: none;
+    border: 0;
+    padding: 0;
+    display: flex;
+  }
+  
+  .qx-accordion-trigger:focus-visible {
+    outline: var(--qx-focus-ring-width) solid var(--qx-color-border-focus);
+    outline-offset: calc(-1 * var(--qx-focus-ring-width));
+  }
+  
+  .qx-accordion-trigger[data-disabled] {
+    color: var(--qx-color-text-disabled);
+    cursor: not-allowed;
+  }
+  
+  .qx-accordion-icon {
+    color: var(--qx-color-icon-subtle);
+    transition-property: rotate;
+    transition-duration: var(--qx-motion-duration-normal);
+    transition-timing-function: var(--qx-motion-easing-standard);
+    flex: none;
+  }
+  
+  [data-panel-open] > .qx-accordion-icon {
+    rotate: 180deg;
+  }
+  
+  [data-disabled] > .qx-accordion-icon {
+    color: var(--qx-color-icon-disabled);
+  }
+  
+  [data-qx-fold] .qx-button-icon {
+    transition-property: rotate;
+    transition-duration: var(--qx-motion-duration-normal);
+    transition-timing-function: var(--qx-motion-easing-standard);
+  }
+  
+  [data-qx-fold][data-panel-open] .qx-button-icon {
+    rotate: 180deg;
+  }
+  
+  .qx-accordion-panel, .qx-collapsible-panel {
+    block-size: var(--accordion-panel-height, var(--collapsible-panel-height));
+    transition-property: block-size;
+    transition-duration: var(--qx-motion-duration-normal);
+    transition-timing-function: var(--qx-motion-easing-standard);
+    overflow: hidden;
+  }
+  
+  :is(.qx-accordion-panel, .qx-collapsible-panel)[data-starting-style], :is(.qx-accordion-panel, .qx-collapsible-panel)[data-ending-style] {
+    block-size: 0;
+  }
+  
+  .qx-accordion-content {
+    color: var(--qx-color-text-default);
+    font: var(--qx-typography-body-md);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    padding-block-end: var(--qx-space-inset-lg);
+  }
+}

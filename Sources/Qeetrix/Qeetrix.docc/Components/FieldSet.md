@@ -1,32 +1,31 @@
-# ``Qeetrix/QeetrixFieldSet``
+# ``Qeetrix/QeetrixFieldset``
 
 ## Overview
 
-Groups related fields or choices under a legend — the web's `FieldSet` with a `FieldLegend` and a
-`FieldGroup`. Use it for a section of a form ("Your details"), or for a set of checkboxes or switches
-that answer one question ("Notifications"). Don't use it for a single field.
+A section of fields under a heading — "Billing address" — as `@qeetrix/react`'s Fieldset.
 
 ```swift
-QeetrixFieldSet("Notifications", description: Text("Choose how we reach you.")) {
-    QeetrixCheckbox("Email", isOn: $email)
-    QeetrixCheckbox("Push", isOn: $push)
+QeetrixFieldset("Billing address", description: Text("Where invoices are sent.")) {
+    QeetrixTextField("Street", text: $street)
+    QeetrixTextField("City", text: $city)
 }
 ```
 
-- The legend is a heading, in the heading face.
-- Fields are spaced by the density's field gap (`qeetrixDensity(_:)`). Checkbox, radio and switch rows
-  sit flush, because each row is already a 44 pt target.
-- A message here is about the group as a whole — "Choose at least one" — and VoiceOver reads it with each
-  checkbox in the group. Fields in the set carry their own messages.
+- The legend in `title.sm`, `color.text.default` (`color.text.disabled` when disabled), and an optional
+  description under it in `body.sm`, `color.text.subtle`.
+- The fields stack the density's form gap (``QeetrixDensity/spaceFormGap``) apart; checkbox, radio and
+  switch rows sit flush.
+- `.disabled(true)` on the fieldset disables every field inside.
+
+A choice question isn't a fieldset: use ``QeetrixRadioGroup``, whose legend looks like every other
+field label.
 
 ### Accessibility
 
-The group is a VoiceOver container named by its legend, and the legend is a heading the rotor can reach.
+VoiceOver reads the legend as a heading and names the group by it.
 
-On the web: [Field on ui.qeet.in](https://ui.qeet.in/docs/components/field).
+### Platform differences
 
-## See Also
+None in the look.
 
-- ``QeetrixField``
-- ``QeetrixCheckbox``
-- <doc:Forms>
+On the web: [Form and Fieldset on ui.qeet.in](https://ui.qeet.in/components/form/).

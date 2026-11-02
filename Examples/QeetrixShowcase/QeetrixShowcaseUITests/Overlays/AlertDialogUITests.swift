@@ -15,7 +15,7 @@ final class AlertDialogUITests: XCTestCase {
         XCTAssertTrue(alert.waitForExistence(timeout: 5))
         XCTAssertTrue(alert.buttons["Cancel"].exists, "Added beside a lone destructive action")
         alert.buttons["Cancel"].tap()
-        XCTAssertFalse(alert.waitForExistence(timeout: 1))
+        XCTAssertTrue(alert.waitForNonExistence(timeout: 3))
         XCTAssertEqual(app.staticTexts["alert-result"].label, "Result: none")
         open.tap()
         XCTAssertTrue(alert.waitForExistence(timeout: 5))
@@ -31,7 +31,7 @@ final class AlertDialogUITests: XCTestCase {
         XCTAssertTrue(alert.waitForExistence(timeout: 5))
         XCTAssertEqual(alert.buttons.count, 1)
         alert.buttons.firstMatch.tap()
-        XCTAssertFalse(alert.waitForExistence(timeout: 1))
+        XCTAssertTrue(alert.waitForNonExistence(timeout: 3))
     }
 
     @MainActor

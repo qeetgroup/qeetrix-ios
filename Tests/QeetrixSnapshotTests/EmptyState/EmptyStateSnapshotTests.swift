@@ -6,39 +6,26 @@
     @MainActor
     @Suite("Empty state snapshots")
     struct EmptyStateSnapshotTests {
-        @Test("First use with an action; no results, small; no permission; error")
-        func variants() {
+        @Test("A page with an icon, actions and a footer; a section; the danger tone")
+        func sizes() {
             assertSpecimen(
-                VStack(spacing: 8) {
+                VStack(spacing: 0) {
                     QeetrixEmptyState(
-                        "No invoices yet", description: Text("Invoices appear here once you bill a customer."), variant: .firstUse,
-                        icon: .fileText
+                        "No accounts yet", description: "Add an account to sign in with this phone.", icon: .userPlus, level: 2
                     ) {
-                        QeetrixButton("Create invoice") {}
+                        QeetrixButton("Add account", icon: .plus) {}
+                        QeetrixButton("Restore from backup", variant: .ghost) {}
+                    } footer: {
+                        Text("Or scan the code on qeet.in")
                     }
-                    QeetrixEmptyState("No results", description: Text("Nothing matches “roadmap”."), variant: .noResults, size: .sm)
+                    QeetrixSeparator()
+                    QeetrixEmptyState("No pending approvals", description: "Sign-in requests appear here.", icon: .inbox, size: .section)
+                    QeetrixSeparator()
                     QeetrixEmptyState(
-                        "You can't see these reports", description: Text("Ask a workspace admin for access."), variant: .noPermission,
-                        size: .sm)
-                    QeetrixEmptyState("Couldn't load reports", variant: .error, size: .sm)
+                        "Couldn't load your accounts", description: "Your accounts are safe. Try again in a moment.", icon: .circleAlert,
+                        size: .section, tone: .danger)
                 }
             )
-        }
-
-        @Test("Data state: the failure branch with a retry")
-        func dataStateFailure() {
-            assertSpecimen(
-                QeetrixDataState(isLoading: false, isEmpty: false, failure: QeetrixDataFailure("Couldn't load members.") {}) {
-                    Text("Content")
-                } empty: {
-                    EmptyView()
-                }
-            )
-        }
-
-        @Test("Data state: the default loading rows")
-        func dataStateLoading() {
-            assertSpecimen(QeetrixDataLoadingRows(rows: 3))
         }
     }
 #endif

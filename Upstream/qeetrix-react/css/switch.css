@@ -1,0 +1,117 @@
+@layer qx.base, qx.components, qx.state;
+@import "./base.css";
+@import "./state.css";
+@import "./field.css";
+
+@layer qx.components {
+  .qx-switch {
+    border: var(--qx-border-width-default) solid var(--qx-color-border-strong);
+    border-radius: var(--qx-radius-sm);
+    background: var(--qx-color-bg-input);
+    cursor: pointer;
+    block-size: 18px;
+    inline-size: 32px;
+    transition-property: background-color, border-color;
+    transition-duration: var(--qx-motion-duration-fast);
+    transition-timing-function: var(--qx-motion-easing-standard);
+    flex: none;
+    display: inline-block;
+    position: relative;
+  }
+  
+  .qx-switch:hover:not([data-disabled], [data-readonly], [data-invalid]) {
+    border-color: var(--qx-color-border-strong-hover);
+  }
+  
+  .qx-switch[data-checked] {
+    border-color: var(--qx-color-bg-brand-bold);
+    background: var(--qx-color-bg-brand-bold);
+  }
+  
+  .qx-switch[data-checked]:hover:not([data-disabled], [data-readonly]) {
+    background: var(--qx-color-bg-brand-bold-hover);
+  }
+  
+  .qx-switch[data-checked]:hover:not([data-disabled], [data-readonly], [data-invalid]) {
+    border-color: var(--qx-color-bg-brand-bold-hover);
+  }
+  
+  .qx-switch[data-invalid] {
+    border-color: var(--qx-color-border-danger);
+  }
+  
+  .qx-switch[data-disabled] {
+    border-color: var(--qx-color-border-disabled);
+    background: var(--qx-color-bg-disabled);
+    cursor: not-allowed;
+  }
+  
+  .qx-switch[data-readonly] {
+    cursor: default;
+  }
+  
+  .qx-switch:focus-visible {
+    outline: var(--qx-focus-ring-width) solid var(--qx-color-border-focus);
+    outline-offset: var(--qx-focus-ring-offset);
+  }
+  
+  .qx-switch-thumb {
+    border-radius: calc(var(--qx-radius-sm) / 2);
+    background: var(--qx-color-icon-subtle);
+    block-size: 12px;
+    inline-size: 12px;
+    transition-property: inset-inline-start, background-color;
+    transition-duration: var(--qx-motion-duration-normal);
+    transition-timing-function: var(--qx-motion-easing-standard);
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 2px;
+    translate: 0 -50%;
+  }
+  
+  .qx-switch-thumb[data-checked] {
+    background: var(--qx-color-icon-on-brand);
+    inset-inline-start: 16px;
+  }
+  
+  .qx-switch-thumb[data-disabled] {
+    background: var(--qx-color-icon-disabled);
+  }
+  
+  .qx-choice-label > .qx-switch {
+    margin-block: 1px;
+  }
+  
+  @media (forced-colors: active) {
+    .qx-switch, .qx-switch-thumb {
+      forced-color-adjust: none;
+    }
+  
+    .qx-switch {
+      background: canvas;
+      border-color: canvastext;
+    }
+  
+    .qx-switch-thumb {
+      background: canvastext;
+    }
+  
+    .qx-switch[data-checked] {
+      background: highlight;
+      border-color: highlight;
+    }
+  
+    .qx-switch-thumb[data-checked] {
+      background: highlighttext;
+    }
+  
+    .qx-switch[data-disabled] {
+      background: canvas;
+      border-color: graytext;
+    }
+  
+    .qx-switch-thumb[data-disabled] {
+      background: graytext;
+    }
+  }
+}

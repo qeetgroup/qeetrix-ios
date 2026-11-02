@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" stroke-miterlimit="4">
-  <rect width="2" height="2" x="11" y="11"/>
-  <rect width="2" height="2" x="18" y="11"/>
-  <rect width="2" height="2" x="4" y="11"/>
+<svg fill="none" stroke="currentColor" stroke-linecap="square" stroke-linejoin="miter" stroke-miterlimit="4" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <rect height="2" width="2" x="11" y="11"/>
+  <rect height="2" width="2" x="18" y="11"/>
+  <rect height="2" width="2" x="4" y="11"/>
 </svg>

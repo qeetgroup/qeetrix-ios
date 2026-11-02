@@ -1,17 +1,20 @@
 # ``Qeetrix``
 
-The Qeet Group design system in native SwiftUI: the same tokens, typeface, themes and icons as the web.
+The Qeet Group design system in native SwiftUI: the same tokens, typeface, icons and components as
+`@qeetrix/react`.
 
 ## Overview
 
-Qeetrix for iOS is generated from the same sources as the web: the published `@qeetrix/ui` token build
-and the `qeetrix-icons` drawings. Colours, type, spacing, elevation, motion and icons therefore match
-Qeetrix on the web, adapted to iOS where the platform needs it: Dynamic Type, Bold Text, Reduce Motion,
-right-to-left layout and 44-point touch targets.
+Qeetrix for iOS is built from the same npm packages as the web: `@qeetrix/tokens` (the DTCG token
+build and the fonts), `@qeetrix/icons` (the drawings) and `@qeetrix/react` (the components, whose CSS
+is each component's reference). Colours, type, spacing, corners, shadows, motion, icons and components
+therefore match Qeetrix on the web — square, ruled surfaces, filled fields with a strong bottom line,
+label-first buttons, Ember only where it means something — and adapt to iOS where the platform needs
+it: Dynamic Type, Bold Text, Reduce Motion, VoiceOver, right-to-left layout, 44-point touch targets,
+and the system's own alerts, sheets, popovers and menus.
 
-It provides the foundations and the first components, built from them. Each component follows its web
-counterpart's variants, sizes and states, and adapts to the platform where iOS needs it; its page says
-where and why.
+Each component follows its `@qeetrix/react` counterpart's names, variants, tones, sizes and states; its
+page links to the web documentation and says where iOS differs, and why.
 
 ```swift
 import Qeetrix
@@ -19,10 +22,11 @@ import SwiftUI
 
 struct Greeting: View {
     var body: some View {
-        Text("Welcome back")
-            .qeetrixTextStyle(.title)
-            .foregroundStyle(QeetrixColor.textPrimary)
-            .padding(QeetrixSpacing.l)
+        VStack(alignment: .leading, spacing: QeetrixSpace.gapXs) {
+            QeetrixHeading("Welcome back", level: 1)
+            QeetrixText("Your invoices are up to date.", tone: .subtle)
+        }
+        .padding(QeetrixSpace.insetLg)
     }
 }
 ```
@@ -43,53 +47,60 @@ struct Greeting: View {
 - <doc:Spacing>
 - <doc:Shapes>
 - <doc:Sizing>
-- <doc:Elevation>
+- <doc:Shadows>
 - <doc:Motion>
+- <doc:Haptics>
 - <doc:Icons>
 - <doc:Accessibility>
+
+### Layout
+
+- ``QeetrixCard``
+- ``QeetrixSeparator``
+
+### Type
+
+- ``QeetrixHeading``
+- ``QeetrixText``
 
 ### Actions
 
 - ``QeetrixButton``
 - ``QeetrixIconButton``
+- ``QeetrixSegmentedControl``
+- <doc:BottomActionBar>
+- ``QeetrixCopyButton``
 
 ### Forms & inputs
 
 - <doc:Forms>
 - ``QeetrixField``
-- ``QeetrixFieldSet``
+- ``QeetrixFieldset``
 - ``QeetrixTextField``
+- ``QeetrixSearchField``
 - ``QeetrixTextarea``
 - ``QeetrixPasswordInput``
 - ``QeetrixOTPInput``
+- ``QeetrixNumberField``
+- ``QeetrixSlider``
+- ``QeetrixSelect``
+- ``QeetrixCombobox``
 - ``QeetrixCheckbox``
 - ``QeetrixRadioGroup``
-- ``QeetrixSelect``
-- ``QeetrixNumberField``
 - ``QeetrixSwitch``
 - ``QeetrixFormActions``
-- ``QeetrixFormErrorSummary``
+- ``QeetrixErrorSummary``
+- ``QeetrixQRScanner``
+- ``QeetrixCopyField``
+- ``QeetrixFileUpload``
 
-### Data display
+### Date & time
 
-- <doc:Collections>
-- <doc:Searching>
-- ``QeetrixListItem``
-- ``QeetrixDescriptionList``
-- ``QeetrixChip``
-- ``QeetrixTimeline``
-- ``QeetrixAvatar``
-- ``QeetrixBadge``
-- ``QeetrixText``
-
-### Feedback
-
-- ``QeetrixToast``
-- ``QeetrixEmptyState``
-- ``QeetrixDataState``
-- ``QeetrixSkeleton``
-- ``QeetrixProgress``
-- ``QeetrixSpinner``
+- ``QeetrixDatePicker``
+- ``QeetrixDateRangePicker``
+- ``QeetrixTimePicker``
+- ``QeetrixCalendar``
+- ``QeetrixRangeCalendar``
 
 ### Overlays
 
@@ -97,19 +108,56 @@ struct Greeting: View {
 - ``QeetrixAlertDialog``
 - ``QeetrixConfirmationDialog``
 - ``QeetrixSheetContent``
+- ``QeetrixFullScreenForm``
 - <doc:Popover>
 - ``QeetrixMenu``
+- ``QeetrixToast``
 
 ### Navigation
 
 - ``QeetrixTabs``
 - <doc:NavigationBars>
-
-### Layout
-
-- ``QeetrixCard``
 - ``QeetrixAccordion``
-- ``QeetrixSeparator``
+- ``QeetrixPageIndicator``
+- <doc:LargeTitle>
+- ``QeetrixSidebar``
+- ``QeetrixNavigationScaffold``
+- ``QeetrixSteps``
+
+### Data display
+
+- <doc:Collections>
+- <doc:Searching>
+- ``QeetrixAvatar``
+- ``QeetrixBadge``
+- ``QeetrixChip``
+- ``QeetrixAvatarGroup``
+- ``QeetrixTimeline``
+- ``QeetrixRelativeTime``
+- ``QeetrixQRCode``
+- ``QeetrixDescriptionList``
+- ``QeetrixListItem``
+- ``QeetrixSectionHeader``
+- ``QeetrixOTPCode``
+- ``QeetrixSwipeAction``
+- <doc:PullToRefresh>
+- ``QeetrixStat``
+
+### Feedback
+
+- ``QeetrixProgress``
+- ``QeetrixSpinner``
+- ``QeetrixAlert``
+- ``QeetrixEmptyState``
+- ``QeetrixDataState``
+- ``QeetrixSkeleton``
+
+### Utilities
+
+- ``QeetrixFormat``
+- ``QeetrixCircularProgress``
+- ``QeetrixPermissionPrimer``
+- ``QeetrixCheckList``
 
 ### Theme
 
@@ -132,18 +180,20 @@ struct Greeting: View {
 - ``QeetrixFontWeight``
 - ``QeetrixFontGeometry``
 
-### Spacing, shape and size
+### Space, shape and size
 
-- ``QeetrixSpacing``
-- ``QeetrixCorner``
-- ``QeetrixStroke``
+- ``QeetrixSpace``
+- ``QeetrixRadius``
+- ``QeetrixBorderWidth``
 - ``QeetrixFocus``
+- ``QeetrixSize``
 - ``QeetrixDensity``
+- ``QeetrixControlSize``
 - ``QeetrixOpacity``
 
-### Elevation
+### Shadows
 
-- ``QeetrixElevation``
+- ``QeetrixShadow``
 - ``QeetrixShadowLayer``
 
 ### Motion
@@ -151,6 +201,11 @@ struct Greeting: View {
 - ``QeetrixMotion``
 - ``QeetrixDuration``
 - ``QeetrixEasing``
+- ``QeetrixSpring``
+
+### Haptics
+
+- ``QeetrixFeedback``
 
 ### Icons
 

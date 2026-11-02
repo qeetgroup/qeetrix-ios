@@ -105,6 +105,22 @@ struct ResourceCheckTests {
         #expect(try ResourceCheck(root: fixture.root).problems().isEmpty)
     }
 
+    @Test("Strings with arguments count as used: String(localized:defaultValue:…) and LocalizedStringResource")
+    func defaultValueForm() throws {
+        let fixture = try Fixture.complete()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        try fixture.write(
+            "Sources/Qeetrix/Chip.swift",
+            "let remove = String(\n    localized: \"qeetrix.chip.remove\", defaultValue: \"Remove \\(label)\", bundle: .module)")
+        try fixture.write(
+            "Sources/Qeetrix/Resources/Localization/en.lproj/Localizable.strings",
+            #""qeetrix.spinner.label" = "Loading"; "qeetrix.chip.remove" = "Remove %@"; "qeetrix.qr-scanner.torch" = "Torch";"#)
+        try fixture.write(
+            "Sources/Qeetrix/Scanner.swift",
+            "let torch = LocalizedStringResource(\n    \"qeetrix.qr-scanner.torch\", defaultValue: \"Torch\", bundle: .atURL(url))")
+        #expect(try ResourceCheck(root: fixture.root).strings().isEmpty)
+    }
+
     @Test("A fresh clone, with no baselines recorded, passes — they are local, never committed")
     func noBaselines() throws {
         let fixture = try Fixture.complete()

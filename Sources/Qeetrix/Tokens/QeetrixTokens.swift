@@ -3,10 +3,10 @@ import Foundation
 import SwiftUI
 
 // The value types Qeetrix tokens are expressed in. The values themselves are generated into
-// Tokens/Generated from the published qeetrix-ui tokens; these types only give them a native shape.
-// Behaviour (resolving a colour, building an Animation, drawing a shadow) lives in Foundations.
+// Tokens/Generated from the published @qeetrix/tokens DTCG build; these types only give them a native
+// shape. Behaviour (resolving a colour, building an Animation, drawing a shadow) lives in Foundations.
 
-/// One layer of an elevation's shadow, as the web's `box-shadow` describes it.
+/// One layer of a shadow (`shadow.*`), as the web's `box-shadow` describes it.
 public struct QeetrixShadowLayer: Hashable, Sendable {
     /// Horizontal offset, in points.
     public let x: CGFloat
@@ -65,7 +65,19 @@ public struct QeetrixEasing: Hashable, Sendable {
     public var isLinear: Bool { x1 == y1 && x2 == y2 }
 }
 
-/// Motion tokens that are not a single duration or easing.
+/// A spring for native motion (`motion.spring.*`): stiffness and damping ratio, with a mass of 1.
+public struct QeetrixSpring: Hashable, Sendable {
+    public let stiffness: Double
+    /// 1 is critically damped (no overshoot); below 1 the motion overshoots slightly.
+    public let dampingRatio: Double
+
+    public init(stiffness: Double, dampingRatio: Double) {
+        self.stiffness = stiffness
+        self.dampingRatio = dampingRatio
+    }
+}
+
+/// Motion values that are not a single duration, easing or spring.
 public enum QeetrixMotion {}
 
 /// A position on a font's `wght` axis (`font.weight.*`).
@@ -81,7 +93,8 @@ public struct QeetrixFontWeight: Hashable, Comparable, Sendable {
     }
 }
 
-/// A position on Qeet Sans's `GEOM` axis (`font.geometry.*`).
+/// A position on Qeet Sans's `GEOM` axis (`font.geometry.*`): the letter style, from the A11y forms
+/// (0) through Base (50) to Geo (100).
 public struct QeetrixFontGeometry: Hashable, Sendable {
     public let value: Double
 
@@ -90,18 +103,26 @@ public struct QeetrixFontGeometry: Hashable, Sendable {
     }
 }
 
-/// A typography role's token values (`typography.<role>.*`).
+/// A typography role's token values (`typography.<role>`), and its letter style.
 public struct QeetrixTextRoleTokens: Hashable, Sendable {
     public let family: QeetrixFontFamily
     /// Font size in points at the default Dynamic Type size.
     public let size: CGFloat
     public let weight: QeetrixFontWeight
-    /// Line height as a multiple of the font size.
+    /// Line height as a multiple of the font size: the role's exact length (on the 4 pt grid) over
+    /// ``size``, so `size * lineHeight` is that length.
     public let lineHeight: Double
-    /// Letter spacing in ems.
+    /// Letter spacing in points at ``size``; it scales with the size. Only `label.caps` is tracked.
     public let letterSpacing: Double
-    /// The letter style, for families with a `GEOM` axis; `nil` otherwise.
+    /// The letter style the role's token names (`font.geometry.*`), for families with a `GEOM` axis;
+    /// `nil` otherwise, as Fira Code has none.
     public let geometry: QeetrixFontGeometry?
+
+    /// The same values at another weight: a role the web sets with a different `font-weight`.
+    func weighted(_ weight: QeetrixFontWeight) -> QeetrixTextRoleTokens {
+        QeetrixTextRoleTokens(
+            family: family, size: size, weight: weight, lineHeight: lineHeight, letterSpacing: letterSpacing, geometry: geometry)
+    }
 }
 
 /// One variation axis of a bundled font.
@@ -134,7 +155,7 @@ public struct QeetrixFontFace: Hashable, Sendable {
     }
 }
 
-/// An icon size (`icon.size.*`), in points.
+/// An icon size (`size.icon.*`), in points.
 public struct QeetrixIconSize: Hashable, Sendable {
     public let points: CGFloat
 

@@ -1,0 +1,130 @@
+{
+  "primitive": {
+    "font": {
+      "family": {
+        "$type": "fontFamily",
+        "$description": "Qeet Sans is Cal Sans v2's variable font: one family for headings and interface text, its letter style set per role through the GEOM axis. Fira Code is the code face; Noto Sans covers the Indic scripts Qeet products serve.",
+        "qeet-sans": {
+          "$value": ["Qeet Sans", "ui-sans-serif", "system-ui", "sans-serif"]
+        },
+        "fira-code": {
+          "$value": ["Fira Code", "ui-monospace", "SFMono-Regular", "SF Mono", "Menlo", "monospace"]
+        },
+        "noto-indic": {
+          "$value": [
+            "Noto Sans",
+            "Noto Sans Devanagari",
+            "Noto Sans Bengali",
+            "Noto Sans Tamil",
+            "Noto Sans Telugu",
+            "Noto Sans Kannada",
+            "Noto Sans Gujarati",
+            "Noto Sans Gurmukhi",
+            "ui-sans-serif",
+            "system-ui",
+            "sans-serif"
+          ]
+        }
+      },
+      "size": {
+        "11": {
+          "$value": {
+            "value": 0.6875,
+            "unit": "rem"
+          }
+        },
+        "12": {
+          "$value": {
+            "value": 0.75,
+            "unit": "rem"
+          }
+        },
+        "14": {
+          "$value": {
+            "value": 0.875,
+            "unit": "rem"
+          }
+        },
+        "16": {
+          "$value": {
+            "value": 1,
+            "unit": "rem"
+          }
+        },
+        "18": {
+          "$value": {
+            "value": 1.125,
+            "unit": "rem"
+          }
+        },
+        "20": {
+          "$value": {
+            "value": 1.25,
+            "unit": "rem"
+          }
+        },
+        "24": {
+          "$value": {
+            "value": 1.5,
+            "unit": "rem"
+          }
+        },
+        "28": {
+          "$value": {
+            "value": 1.75,
+            "unit": "rem"
+          }
+        },
+        "32": {
+          "$value": {
+            "value": 2,
+            "unit": "rem"
+          }
+        },
+        "40": {
+          "$value": {
+            "value": 2.5,
+            "unit": "rem"
+          }
+        },
+        "48": {
+          "$value": {
+            "value": 3,
+            "unit": "rem"
+          }
+        },
+        "56": {
+          "$value": {
+            "value": 3.5,
+            "unit": "rem"
+          }
+        },
+        "$type": "dimension",
+        "$description": "The type scale, in rem. 14px is the interface base, as in Atlassian, Carbon, Fluent and GitHub; 12px is the floor — nothing smaller is legible enough for dense enterprise screens."
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$description": "The three weights the type roles use, from Qeet Sans's variable range.",
+        "regular": {
+          "$value": 400
+        },
+        "medium": {
+          "$value": 500
+        },
+        "semibold": {
+          "$value": 600
+        }
+      },
+      "geometry": {
+        "$type": "number",
+        "$description": "Positions on Qeet Sans's GEOM axis, the letter style: Base (50) and Geo (100) geometric forms.",
+        "base": {
+          "$value": 50
+        },
+        "geo": {
+          "$value": 100
+        }
+      }
+    }
+  }
+}

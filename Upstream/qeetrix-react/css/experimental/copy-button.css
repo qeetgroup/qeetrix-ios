@@ -1,0 +1,16 @@
+@layer qx.base, qx.components, qx.state;
+@import "../base.css";
+@import "../state.css";
+@import "../button.css";
+@import "../tooltip.css";
+@import "../visually-hidden.css";
+
+@layer qx.components {
+  .qx-copy-button[data-variant="ghost"][data-state="copied"] .qx-button-icon {
+    color: var(--qx-color-icon-success);
+  }
+  
+  .qx-copy-button[data-variant="ghost"][data-state="failed"] .qx-button-icon {
+    color: var(--qx-color-icon-danger);
+  }
+}

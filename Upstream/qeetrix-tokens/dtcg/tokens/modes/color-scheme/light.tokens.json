@@ -1,0 +1,890 @@
+{
+  "color": {
+    "$type": "color",
+    "surface": {
+      "$description": "Containers, from the page outward. Elevation pairs: surface.raised with shadow.raised, surface.overlay with shadow.overlay.",
+      "canvas": {
+        "$value": "{primitive.color.graphite.25}"
+      },
+      "default": {
+        "$value": "{primitive.color.graphite.0}"
+      },
+      "raised": {
+        "$value": "{primitive.color.graphite.0}"
+      },
+      "overlay": {
+        "$value": "{primitive.color.graphite.0}"
+      },
+      "sunken": {
+        "$value": "{primitive.color.graphite.100}"
+      },
+      "inverse": {
+        "$value": "{primitive.color.graphite.900}"
+      }
+    },
+    "bg": {
+      "$description": "Fills of controls and status elements, by role and emphasis (subtle, bold) with their interaction states.",
+      "neutral": {
+        "subtle": {
+          "$value": "{primitive.color.graphite.100}"
+        },
+        "subtle-hover": {
+          "$value": "{primitive.color.graphite.150}"
+        },
+        "subtle-pressed": {
+          "$value": "{primitive.color.graphite.200}"
+        },
+        "bold": {
+          "$value": "{primitive.color.graphite.900}"
+        },
+        "bold-hover": {
+          "$value": "{primitive.color.graphite.800}"
+        },
+        "bold-pressed": {
+          "$value": "{primitive.color.graphite.750}"
+        }
+      },
+      "brand": {
+        "subtle": {
+          "$value": "{primitive.color.qeet.100}",
+          "$extensions": {
+            "in.qeet.qeetrix": {
+              "tenantOverridable": true
+            }
+          }
+        },
+        "subtle-hover": {
+          "$value": "{primitive.color.qeet.150}",
+          "$extensions": {
+            "in.qeet.qeetrix": {
+              "tenantOverridable": true
+            }
+          }
+        },
+        "subtle-pressed": {
+          "$value": "{primitive.color.qeet.200}",
+          "$extensions": {
+            "in.qeet.qeetrix": {
+              "tenantOverridable": true
+            }
+          }
+        },
+        "bold": {
+          "$value": "{primitive.color.qeet.600}",
+          "$extensions": {
+            "in.qeet.qeetrix": {
+              "tenantOverridable": true
+            }
+          }
+        },
+        "bold-hover": {
+          "$value": "{primitive.color.qeet.700}",
+          "$extensions": {
+            "in.qeet.qeetrix": {
+              "tenantOverridable": true
+            }
+          }
+        },
+        "bold-pressed": {
+          "$value": "{primitive.color.qeet.800}",
+          "$extensions": {
+            "in.qeet.qeetrix": {
+              "tenantOverridable": true
+            }
+          }
+        }
+      },
+      "danger": {
+        "subtle": {
+          "$value": "{primitive.color.red.100}"
+        },
+        "bold": {
+          "$value": "{primitive.color.red.700}"
+        },
+        "bold-hover": {
+          "$value": "{primitive.color.red.800}"
+        },
+        "bold-pressed": {
+          "$value": "{primitive.color.red.900}"
+        }
+      },
+      "warning": {
+        "subtle": {
+          "$value": "{primitive.color.amber.100}"
+        },
+        "bold": {
+          "$value": "{primitive.color.amber.400}"
+        }
+      },
+      "success": {
+        "subtle": {
+          "$value": "{primitive.color.green.100}"
+        },
+        "bold": {
+          "$value": "{primitive.color.green.700}"
+        }
+      },
+      "info": {
+        "subtle": {
+          "$value": "{primitive.color.blue.100}"
+        },
+        "bold": {
+          "$value": "{primitive.color.blue.700}"
+        }
+      },
+      "selected": {
+        "$value": "{primitive.color.qeet.100}",
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "tenantOverridable": true
+          }
+        }
+      },
+      "selected-hover": {
+        "$value": "{primitive.color.qeet.150}",
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "tenantOverridable": true
+          }
+        }
+      },
+      "input": {
+        "$value": "{primitive.color.graphite.0}"
+      },
+      "disabled": {
+        "$value": "{primitive.color.graphite.100}"
+      }
+    },
+    "text": {
+      "$description": "Text colours. Every text colour meets WCAG AA (4.5:1) on every surface it is designed for.",
+      "default": {
+        "$value": "{primitive.color.graphite.950}"
+      },
+      "subtle": {
+        "$value": "{primitive.color.graphite.700}"
+      },
+      "subtlest": {
+        "$value": "{primitive.color.graphite.600}",
+        "$description": "Placeholders and tertiary text — still AA."
+      },
+      "disabled": {
+        "$value": "{primitive.color.graphite.400}"
+      },
+      "inverse": {
+        "$value": "{primitive.color.graphite.0}"
+      },
+      "brand": {
+        "$value": "{primitive.color.qeet.800}",
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "tenantOverridable": true
+          }
+        }
+      },
+      "link": {
+        "$value": "{primitive.color.qeet.700}",
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "tenantOverridable": true
+          }
+        }
+      },
+      "link-hover": {
+        "$value": "{primitive.color.qeet.800}",
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "tenantOverridable": true
+          }
+        }
+      },
+      "on-brand": {
+        "$value": "{primitive.color.graphite.0}",
+        "$description": "Text on bg.brand.bold.",
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "tenantOverridable": true
+          }
+        }
+      },
+      "on-bold": {
+        "$value": "{primitive.color.graphite.0}",
+        "$description": "Text on the danger, success and info bold fills."
+      },
+      "on-warning": {
+        "$value": "{primitive.color.graphite.950}",
+        "$description": "Text on bg.warning.bold — amber carries dark text."
+      },
+      "danger": {
+        "$value": "{primitive.color.red.700}"
+      },
+      "warning": {
+        "$value": "{primitive.color.amber.800}"
+      },
+      "success": {
+        "$value": "{primitive.color.green.800}"
+      },
+      "info": {
+        "$value": "{primitive.color.blue.800}"
+      }
+    },
+    "icon": {
+      "$description": "Icon colours, separate from text: icons need 3:1 (WCAG 1.4.11), text 4.5:1.",
+      "default": {
+        "$value": "{primitive.color.graphite.700}"
+      },
+      "subtle": {
+        "$value": "{primitive.color.graphite.600}"
+      },
+      "disabled": {
+        "$value": "{primitive.color.graphite.400}"
+      },
+      "inverse": {
+        "$value": "{primitive.color.graphite.0}"
+      },
+      "brand": {
+        "$value": "{primitive.color.qeet.600}",
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "tenantOverridable": true
+          }
+        }
+      },
+      "on-brand": {
+        "$value": "{primitive.color.graphite.0}",
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "tenantOverridable": true
+          }
+        }
+      },
+      "on-bold": {
+        "$value": "{primitive.color.graphite.0}"
+      },
+      "danger": {
+        "$value": "{primitive.color.red.600}"
+      },
+      "warning": {
+        "$value": "{primitive.color.amber.600}"
+      },
+      "success": {
+        "$value": "{primitive.color.green.600}"
+      },
+      "info": {
+        "$value": "{primitive.color.blue.600}"
+      },
+      "highlight": {
+        "$value": "{primitive.color.amber.600}",
+        "$description": "Starred, rated or pinned marks — rating stars."
+      }
+    },
+    "border": {
+      "$description": "Borders and dividers. border.strong is the control boundary and meets 3:1 (WCAG 1.4.11); so do the status borders, on every surface and on their own subtle fill.",
+      "default": {
+        "$value": "{primitive.color.graphite.200}"
+      },
+      "subtle": {
+        "$value": "{primitive.color.graphite.150}"
+      },
+      "strong": {
+        "$value": "{primitive.color.graphite.450}"
+      },
+      "strong-hover": {
+        "$value": "{primitive.color.graphite.600}"
+      },
+      "focus": {
+        "$value": "{primitive.color.qeet.600}",
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "tenantOverridable": true
+          }
+        }
+      },
+      "brand": {
+        "$value": "{primitive.color.qeet.600}",
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "tenantOverridable": true
+          }
+        }
+      },
+      "selected": {
+        "$value": "{primitive.color.qeet.600}",
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "tenantOverridable": true
+          }
+        }
+      },
+      "danger": {
+        "$value": "{primitive.color.red.600}"
+      },
+      "warning": {
+        "$value": "{primitive.color.amber.600}"
+      },
+      "success": {
+        "$value": "{primitive.color.green.600}"
+      },
+      "info": {
+        "$value": "{primitive.color.blue.600}"
+      },
+      "disabled": {
+        "$value": "{primitive.color.graphite.200}"
+      }
+    },
+    "overlay": {
+      "$description": "Translucent layers. hover and pressed are for elements whose fill cannot change, such as images and avatars.",
+      "scrim": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.11, 0, 0],
+          "hex": "#040404",
+          "alpha": 0.4
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "derivation": {
+              "alpha": "{primitive.color.graphite.1000}",
+              "amount": 0.4
+            }
+          }
+        }
+      },
+      "hover": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.11, 0, 0],
+          "hex": "#040404",
+          "alpha": 0.06
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "derivation": {
+              "alpha": "{primitive.color.graphite.1000}",
+              "amount": 0.06
+            }
+          }
+        }
+      },
+      "pressed": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.11, 0, 0],
+          "hex": "#040404",
+          "alpha": 0.12
+        },
+        "$extensions": {
+          "in.qeet.qeetrix": {
+            "derivation": {
+              "alpha": "{primitive.color.graphite.1000}",
+              "amount": 0.12
+            }
+          }
+        }
+      }
+    },
+    "selection": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.686, 0.1855, 47.163],
+        "hex": "#f26d0e",
+        "alpha": 0.2
+      },
+      "$extensions": {
+        "in.qeet.qeetrix": {
+          "derivation": {
+            "alpha": "{primitive.color.qeet.500}",
+            "amount": 0.2
+          },
+          "tenantOverridable": true
+        }
+      },
+      "$description": "The text-selection highlight: the brand colour at 20%."
+    },
+    "dataviz": {
+      "$description": "Chart colours: categorical series, sequential and diverging scales, status marks, and the chart chrome (grid, axis, reference lines).",
+      "categorical": {
+        "1": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.49, 0.17, 258],
+            "hex": "#105bbe"
+          }
+        },
+        "2": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.64, 0.1646, 52],
+            "hex": "#d76900"
+          }
+        },
+        "3": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.59, 0.1, 190],
+            "hex": "#0c908a"
+          }
+        },
+        "4": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.66, 0.14, 298],
+            "hex": "#9d7ddc"
+          }
+        },
+        "5": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.53, 0.18, 358],
+            "hex": "#b72d6b"
+          }
+        },
+        "6": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.5, 0.16, 142],
+            "hex": "#17780f"
+          }
+        },
+        "7": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.65, 0.13, 82],
+            "hex": "#b68611"
+          }
+        },
+        "8": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.42, 0.03, 255],
+            "hex": "#424e5e"
+          }
+        },
+        "$description": "Eight series colours, used strictly in order. Every one meets 3:1 against the surfaces it is drawn on; neighbours sit at least ΔEok 0.15 apart for normal vision and 0.08 under deuteranopia, protanopia and tritanopia, and any two of the first five stay distinguishable. Never tenant-overridable."
+      },
+      "sequential": {
+        "1": {
+          "$value": "{primitive.color.blue.100}"
+        },
+        "2": {
+          "$value": "{primitive.color.blue.200}"
+        },
+        "3": {
+          "$value": "{primitive.color.blue.300}"
+        },
+        "4": {
+          "$value": "{primitive.color.blue.400}"
+        },
+        "5": {
+          "$value": "{primitive.color.blue.600}"
+        },
+        "6": {
+          "$value": "{primitive.color.blue.700}"
+        },
+        "7": {
+          "$value": "{primitive.color.blue.800}"
+        },
+        "$description": "One hue from low to high, for magnitude."
+      },
+      "diverging": {
+        "1": {
+          "$value": "{primitive.color.red.700}"
+        },
+        "2": {
+          "$value": "{primitive.color.red.500}"
+        },
+        "3": {
+          "$value": "{primitive.color.red.300}"
+        },
+        "4": {
+          "$value": "{primitive.color.graphite.200}"
+        },
+        "5": {
+          "$value": "{primitive.color.blue.300}"
+        },
+        "6": {
+          "$value": "{primitive.color.blue.500}"
+        },
+        "7": {
+          "$value": "{primitive.color.blue.700}"
+        },
+        "$description": "Negative to positive around a neutral midpoint."
+      },
+      "positive": {
+        "$value": "{primitive.color.green.600}"
+      },
+      "negative": {
+        "$value": "{primitive.color.red.600}"
+      },
+      "warning": {
+        "$value": "{primitive.color.amber.600}"
+      },
+      "grid": {
+        "$value": "{primitive.color.graphite.200}"
+      },
+      "axis": {
+        "$value": "{primitive.color.graphite.600}"
+      },
+      "reference": {
+        "$value": "{primitive.color.graphite.500}"
+      }
+    },
+    "code": {
+      "$description": "Syntax colours for code blocks, JSON trees and diffs. Each meets 4.5:1 on surface.sunken, surface.default and bg.neutral.subtle (the code block panel).",
+      "keyword": {
+        "$value": "{primitive.color.blue.700}"
+      },
+      "string": {
+        "$value": "{primitive.color.green.800}"
+      },
+      "number": {
+        "$value": "{primitive.color.qeet.700}"
+      },
+      "literal": {
+        "$value": "{primitive.color.red.700}"
+      },
+      "punctuation": {
+        "$value": "{primitive.color.graphite.600}"
+      },
+      "comment": {
+        "$value": "{primitive.color.graphite.600}"
+      }
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "$description": "Elevation shadows, paired with the surfaces they lift.",
+    "raised": {
+      "$value": [
+        {
+          "color": {
+            "colorSpace": "oklch",
+            "components": [0.1543, 0, 0],
+            "hex": "#0c0c0c",
+            "alpha": 0.08
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 1,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 2,
+            "unit": "px"
+          },
+          "spread": {
+            "value": -1,
+            "unit": "px"
+          }
+        },
+        {
+          "color": {
+            "colorSpace": "oklch",
+            "components": [0.1543, 0, 0],
+            "hex": "#0c0c0c",
+            "alpha": 0.04
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 1,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 3,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        {
+          "color": {
+            "colorSpace": "oklch",
+            "components": [0.1543, 0, 0],
+            "hex": "#0c0c0c",
+            "alpha": 0.03
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 0,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 0,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 1,
+            "unit": "px"
+          }
+        }
+      ]
+    },
+    "raised-hover": {
+      "$value": [
+        {
+          "color": {
+            "colorSpace": "oklch",
+            "components": [0.1543, 0, 0],
+            "hex": "#0c0c0c",
+            "alpha": 0.08
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 2,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 4,
+            "unit": "px"
+          },
+          "spread": {
+            "value": -2,
+            "unit": "px"
+          }
+        },
+        {
+          "color": {
+            "colorSpace": "oklch",
+            "components": [0.1543, 0, 0],
+            "hex": "#0c0c0c",
+            "alpha": 0.1
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 8,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 16,
+            "unit": "px"
+          },
+          "spread": {
+            "value": -6,
+            "unit": "px"
+          }
+        },
+        {
+          "color": {
+            "colorSpace": "oklch",
+            "components": [0.1543, 0, 0],
+            "hex": "#0c0c0c",
+            "alpha": 0.03
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 0,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 0,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 1,
+            "unit": "px"
+          }
+        }
+      ]
+    },
+    "overlay": {
+      "$value": [
+        {
+          "color": {
+            "colorSpace": "oklch",
+            "components": [0.1543, 0, 0],
+            "hex": "#0c0c0c",
+            "alpha": 0.08
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 4,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 8,
+            "unit": "px"
+          },
+          "spread": {
+            "value": -4,
+            "unit": "px"
+          }
+        },
+        {
+          "color": {
+            "colorSpace": "oklch",
+            "components": [0.1543, 0, 0],
+            "hex": "#0c0c0c",
+            "alpha": 0.12
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 12,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 24,
+            "unit": "px"
+          },
+          "spread": {
+            "value": -8,
+            "unit": "px"
+          }
+        },
+        {
+          "color": {
+            "colorSpace": "oklch",
+            "components": [0.1543, 0, 0],
+            "hex": "#0c0c0c",
+            "alpha": 0.05
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 0,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 0,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 1,
+            "unit": "px"
+          }
+        }
+      ]
+    },
+    "modal": {
+      "$value": [
+        {
+          "color": {
+            "colorSpace": "oklch",
+            "components": [0.1543, 0, 0],
+            "hex": "#0c0c0c",
+            "alpha": 0.12
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 8,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 16,
+            "unit": "px"
+          },
+          "spread": {
+            "value": -8,
+            "unit": "px"
+          }
+        },
+        {
+          "color": {
+            "colorSpace": "oklch",
+            "components": [0.1543, 0, 0],
+            "hex": "#0c0c0c",
+            "alpha": 0.2
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 24,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 48,
+            "unit": "px"
+          },
+          "spread": {
+            "value": -12,
+            "unit": "px"
+          }
+        },
+        {
+          "color": {
+            "colorSpace": "oklch",
+            "components": [0.1543, 0, 0],
+            "hex": "#0c0c0c",
+            "alpha": 0.05
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 0,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 0,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 1,
+            "unit": "px"
+          }
+        }
+      ]
+    },
+    "inset": {
+      "$value": [
+        {
+          "color": {
+            "colorSpace": "oklch",
+            "components": [0.1543, 0, 0],
+            "hex": "#0c0c0c",
+            "alpha": 0.07
+          },
+          "offsetX": {
+            "value": 0,
+            "unit": "px"
+          },
+          "offsetY": {
+            "value": 1,
+            "unit": "px"
+          },
+          "blur": {
+            "value": 2,
+            "unit": "px"
+          },
+          "spread": {
+            "value": 0,
+            "unit": "px"
+          },
+          "inset": true
+        }
+      ]
+    }
+  }
+}

@@ -24,8 +24,8 @@ final class FormPatternsUITests: XCTestCase {
         let create = app.buttons["Create account"]
         create.scrollIntoView(in: app)
         create.tap()
-        XCTAssertTrue(app.staticTexts["There is a problem"].waitForExistence(timeout: 2))
-        let emailLink = app.buttons["Enter an email address with an @."]
+        XCTAssertTrue(app.staticTexts["Fix these to continue"].waitForExistence(timeout: 2), "The summary says what to do")
+        let emailLink = app.buttons["Enter a work email, like asha@acme.in"]
         XCTAssertTrue(emailLink.exists)
         XCTAssertGreaterThanOrEqual(emailLink.frame.height, 44, "Each error is a full 44 pt row, so neighbouring targets never overlap")
         emailLink.tap()

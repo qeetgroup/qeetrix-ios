@@ -1,0 +1,82 @@
+@layer qx.base, qx.components, qx.state;
+@import "../base.css";
+@import "../state.css";
+@import "../button.css";
+@import "../heading.css";
+@import "../spinner.css";
+
+@layer qx.components {
+  .qx-empty-state {
+    align-items: center;
+    gap: var(--qx-space-gap-sm);
+    max-inline-size: 480px;
+    padding: var(--qx-space-layout-lg) var(--qx-space-inset-lg);
+    color: var(--qx-color-text-default);
+    text-align: center;
+    flex-direction: column;
+    margin-inline: auto;
+    display: flex;
+  }
+  
+  .qx-empty-state[data-size="section"] {
+    padding: var(--qx-space-inset-xl) var(--qx-space-inset-lg);
+  }
+  
+  .qx-empty-state-icon {
+    color: var(--qx-color-icon-subtle);
+    flex: none;
+    margin-block-end: var(--qx-space-gap-xs);
+  }
+  
+  [data-tone="danger"] > .qx-empty-state-icon {
+    color: var(--qx-color-icon-danger);
+  }
+  
+  .qx-empty-state-title {
+    font: var(--qx-typography-title-md);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-heading);
+    margin: 0;
+  }
+  
+  [data-size="section"] > .qx-empty-state-title {
+    font: var(--qx-typography-title-sm);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-heading);
+  }
+  
+  .qx-empty-state-description {
+    font: var(--qx-typography-body-md);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    color: var(--qx-color-text-subtle);
+    margin: 0;
+  }
+  
+  .qx-empty-state-actions {
+    justify-content: center;
+    gap: var(--qx-space-gap-sm);
+    flex-wrap: wrap;
+    margin-block-start: var(--qx-space-gap-sm);
+    display: flex;
+  }
+  
+  .qx-empty-state-footer {
+    font: var(--qx-typography-body-sm);
+    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    color: var(--qx-color-text-subtle);
+  }
+  
+  .qx-data-state[data-state="loading"] {
+    display: grid;
+  }
+  
+  .qx-data-state[data-state="loading"] > * {
+    grid-area: 1 / 1;
+  }
+  
+  .qx-data-state-spinner {
+    place-self: center;
+  }
+  
+  .qx-data-state-reserve {
+    visibility: hidden;
+  }
+}

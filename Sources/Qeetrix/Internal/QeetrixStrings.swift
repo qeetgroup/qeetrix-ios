@@ -1,49 +1,36 @@
 import SwiftUI
 
-/// The package's built-in strings, from `Resources/Localization`.
+/// The package's built-in strings, from `Resources/Localization`: `@qeetrix/react`'s message catalogue
+/// (`src/internal/messages.ts`), plus the few iOS needs that the web gets from the browser.
 enum QeetrixStrings {
-    /// "Loading".
+    /// "Loading" — `spinner.label`.
     static var loading: Text { Text("qeetrix.spinner.label", bundle: .module) }
     /// "Required".
     static var required: Text { Text("qeetrix.field.required", bundle: .module) }
-    /// "(optional)".
-    static var optional: Text { Text("qeetrix.label.optional", bundle: .module) }
+    /// "(optional)" — `field.optional`.
+    static var optional: Text { Text("qeetrix.field.optional", bundle: .module) }
     /// "Error".
     static var error: Text { Text("qeetrix.field.error", bundle: .module) }
-    /// "Warning".
-    static var warning: Text { Text("qeetrix.field.warning", bundle: .module) }
-    /// "Success".
-    static var success: Text { Text("qeetrix.field.success", bundle: .module) }
-    /// "Show password".
-    static var showPassword: Text { Text("qeetrix.password.show", bundle: .module) }
-    /// "Hide password".
-    static var hidePassword: Text { Text("qeetrix.password.hide", bundle: .module) }
+    /// "Show password" — `passwordInput.show`.
+    static var showPassword: Text { Text("qeetrix.password-input.show", bundle: .module) }
+    /// "Password shown" — `passwordInput.shown`, an announcement.
+    static var passwordShownString: String { String(localized: "qeetrix.password-input.shown", bundle: .module) }
+    /// "Password hidden" — `passwordInput.hidden`, an announcement.
+    static var passwordHiddenString: String { String(localized: "qeetrix.password-input.hidden", bundle: .module) }
     /// "One-time code".
-    static var oneTimeCode: Text { Text("qeetrix.otp.label", bundle: .module) }
-    /// "Decrease".
-    static var decrease: Text { Text("qeetrix.number-field.decrease", bundle: .module) }
-    /// "Increase".
-    static var increase: Text { Text("qeetrix.number-field.increase", bundle: .module) }
-    /// "There is a problem".
-    static var errorSummaryTitle: Text { Text("qeetrix.form.error-summary-title", bundle: .module) }
-    /// "There is a problem", for an announcement, which takes a `String`.
-    static var errorSummaryTitleString: String { String(localized: "qeetrix.form.error-summary-title", bundle: .module) }
-    /// "Close".
+    static var oneTimeCode: Text { Text("qeetrix.otp-input.label", bundle: .module) }
+    /// "Decrease" — `numberField.decrement`.
+    static var decrease: Text { Text("qeetrix.number-field.decrement", bundle: .module) }
+    /// "Increase" — `numberField.increment`.
+    static var increase: Text { Text("qeetrix.number-field.increment", bundle: .module) }
+    /// "Fix these to continue" — `errorSummary.title`.
+    static var errorSummaryTitle: Text { Text("qeetrix.error-summary.title", bundle: .module) }
+    /// "Fix these to continue", for an announcement, which takes a `String`.
+    static var errorSummaryTitleString: String { String(localized: "qeetrix.error-summary.title", bundle: .module) }
+    /// "Close" — `overlay.close`.
     static var close: Text { Text("qeetrix.overlay.close", bundle: .module) }
+    /// "Dismiss" — `toast.close`.
+    static var dismiss: Text { Text("qeetrix.toast.close", bundle: .module) }
     /// "Cancel".
     static var cancel: Text { Text("qeetrix.dialog.cancel", bundle: .module) }
-    /// "Remove".
-    static var remove: Text { Text("qeetrix.chip.remove", bundle: .module) }
-    /// "Something went wrong while loading this data.".
-    static var dataStateError: Text { Text("qeetrix.data-state.error", bundle: .module) }
-    /// "Something went wrong while loading this data.", for an announcement.
-    static var dataStateErrorString: String { String(localized: "qeetrix.data-state.error", bundle: .module) }
-    /// "Try again".
-    static var retry: Text { Text("qeetrix.data-state.retry", bundle: .module) }
-    /// "Loading", for an announcement or a label that takes a `String`.
-    static var loadingString: String { String(localized: "qeetrix.spinner.label", bundle: .module) }
-    /// "Expanded".
-    static var expanded: Text { Text("qeetrix.accordion.expanded", bundle: .module) }
-    /// "Collapsed".
-    static var collapsed: Text { Text("qeetrix.accordion.collapsed", bundle: .module) }
 }

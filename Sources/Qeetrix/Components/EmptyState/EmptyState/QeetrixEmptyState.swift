@@ -1,219 +1,314 @@
 import SwiftUI
 
-/// Why there is nothing to show — the web's `EmptyState` variants. The variant sets the icon tile's tone
-/// and default glyph; the words and actions are always yours.
-public enum QeetrixEmptyStateVariant: String, CaseIterable, Sendable {
-    /// A neutral empty collection: "No invoices yet".
-    case `default`
-    /// An invitation to create the first thing. The only variant with the brand tint; pair it with a
-    /// primary ``QeetrixButton``.
-    case firstUse = "first-use"
-    /// The data exists and the search or filter excluded it. Shows search-x; offer a way to clear.
-    case noResults = "no-results"
-    /// The data exists and the person can't see it. Shows lock; say who can grant access.
-    case noPermission = "no-permission"
-    /// Loading failed. The tile alone takes the destructive tint, so the failure reads as recoverable;
-    /// shows triangle-alert.
-    case error
-}
-
-/// How much room an empty state takes — the web's `size`.
+/// How much room a ``QeetrixEmptyState`` takes, as `@qeetrix/react`'s `EmptyStateSize`.
 public enum QeetrixEmptyStateSize: String, CaseIterable, Sendable {
-    /// For a table body, a side panel or a section of a screen.
-    case sm
-    /// The default, for a collection's whole area.
-    case `default`
-    /// For a whole screen.
-    case lg
+    /// A whole screen: the title in `title.md`, 48 pt (`space.layout.lg`) above and below. The default.
+    case page
+    /// Inside a card or a list: the title in `title.sm`, 24 pt (`space.inset.xl`) above and below.
+    case section
+
+    var titleRole: QeetrixTextRole {
+        switch self {
+        case .page: .titleMd
+        case .section: .titleSm
+        }
+    }
+
+    /// empty-state.css: `padding: var(--qx-space-layout-lg) …`, `[data-size="section"]`
+    /// `var(--qx-space-inset-xl) …`.
+    var paddingBlock: CGFloat {
+        switch self {
+        case .page: QeetrixSpace.layoutLg
+        case .section: QeetrixSpace.insetXl
+        }
+    }
+
+    var headingSize: QeetrixHeadingSize {
+        switch self {
+        case .page: .titleMd
+        case .section: .titleSm
+        }
+    }
 }
 
-/// What a surface shows when it has nothing to show: an icon on a tinted tile, a title, a description and
-/// actions — the web's `EmptyState`.
+/// The colour of a ``QeetrixEmptyState``'s icon, as `@qeetrix/react`'s `EmptyStateTone`.
+public enum QeetrixEmptyStateTone: String, CaseIterable, Sendable {
+    /// `color.icon.subtle`: nothing yet, no results. The default.
+    case neutral
+    /// `color.icon.danger`: an error, such as a load that failed.
+    case danger
+
+    var iconColor: QeetrixColor {
+        switch self {
+        case .neutral: .iconSubtle
+        case .danger: .iconDanger
+        }
+    }
+}
+
+/// The message where content would be — nothing yet, no results, or an error — as `@qeetrix/react`'s
+/// EmptyState: an optional sharp 24 pt icon, a title that says what is missing, a line saying why and
+/// what to do, the actions (one primary at most), and under them an optional footer.
 ///
 /// ```swift
-/// QeetrixEmptyState("No invoices yet", description: Text("Invoices appear here once you bill a customer."),
-///                   variant: .firstUse, icon: .fileText) {
-///     QeetrixButton("Create invoice") { create() }
+/// QeetrixEmptyState("No accounts yet", description: "Add an account to sign in with this phone.", icon: .userPlus) {
+///     QeetrixButton("Add account", icon: .plus) { addAccount() }
 /// }
-///
-/// QeetrixEmptyState("No results", description: Text("Nothing matches “\(query)”."), variant: .noResults) {
-///     QeetrixButton("Clear search", variant: .outline) { query = "" }
-/// }
+/// QeetrixEmptyState("No pending approvals", description: "Sign-in requests appear here.", icon: .inbox, size: .section)
 /// ```
 ///
-/// It renders what you give it. Whether a surface is empty because there is no data, because a filter
-/// excluded it, because the person lacks permission or because loading failed is your app's to decide —
-/// and so is what an action does. Never put a raw error, a status code or a stack trace in the
-/// description; say what happened and what the person can do.
-///
-/// For the loading, failure and empty branches of one surface together, see ``QeetrixDataState``.
-///
-/// ## Platform differences
-///
-/// SwiftUI's `ContentUnavailableView` draws the system's large symbol in the system font. The Qeetrix
-/// contract — a 20 pt icon on a tinted tile, a tone per variant, three sizes and Qeet Sans — is drawn by
-/// this view instead, so an empty state looks the same in a list, a card and a full screen.
-public struct QeetrixEmptyState<Actions: View>: View {
-    let title: Text?
+/// It shows what you give it: whether a list is empty because there is nothing yet, because a filter
+/// excludes everything or because a load failed is the app's to decide. Never put a raw error, a status
+/// code or a stack trace in the description. Centred, at most 480 pt wide, its parts 8 pt apart; the
+/// actions wrap onto more rows, centred, and the text wraps at every size. The icon is decorative; with
+/// a `level` the title is a heading — set one when this is the screen's main message. For the loading,
+/// failure and empty states of one screen together, use ``QeetrixDataState``.
+public struct QeetrixEmptyState<Actions: View, Footer: View>: View {
+    let title: Text
     let description: Text?
-    let variant: QeetrixEmptyStateVariant
-    let size: QeetrixEmptyStateSize
     let icon: QeetrixIconName?
-    let actions: Actions
+    let size: QeetrixEmptyStateSize
+    let tone: QeetrixEmptyStateTone
+    let level: Int?
+    let actions: Actions?
+    let footer: Footer?
 
-    /// An empty state with a localised title.
+    /// An empty state with actions and a footer.
     ///
     /// - Parameters:
-    ///   - titleKey: The title, looked up in the main bundle.
-    ///   - description: What happened and what the person can do, under the title.
-    ///   - variant: Why there is nothing to show.
-    ///   - size: How much room it takes.
-    ///   - icon: The tile's glyph. `nil` uses the variant's: search-x, lock or triangle-alert for no
-    ///     results, no permission and an error, none otherwise.
-    ///   - actions: Buttons under the description.
+    ///   - title: What is missing or what went wrong, in a few words: "No accounts yet".
+    ///   - description: One or two sentences: why, and what to do.
+    ///   - icon: A 24 pt icon, drawn sharp.
+    ///   - size: `page` for a whole screen, `section` inside a card or list.
+    ///   - tone: `danger` colours the icon for an error.
+    ///   - level: Makes the title a heading of this level (1–6) for VoiceOver; the look stays `size`'s.
+    ///   - actions: Buttons under the description, in a centred row that wraps: one primary at most.
+    ///   - footer: Under the actions in `body.sm`, `color.text.subtle`: a link to help, or a second way in.
     public init(
-        _ titleKey: LocalizedStringKey, description: Text? = nil, variant: QeetrixEmptyStateVariant = .default,
-        size: QeetrixEmptyStateSize = .default, icon: QeetrixIconName? = nil, @ViewBuilder actions: () -> Actions = { EmptyView() }
+        title: Text, description: Text? = nil, icon: QeetrixIconName? = nil, size: QeetrixEmptyStateSize = .page,
+        tone: QeetrixEmptyStateTone = .neutral, level: Int? = nil, @ViewBuilder actions: () -> Actions,
+        @ViewBuilder footer: () -> Footer
     ) {
-        self.init(title: Text(titleKey), description: description, variant: variant, size: size, icon: icon, actions: actions)
+        self.init(
+            title: title, description: description, icon: icon, size: size, tone: tone, level: level, actions: actions(), footer: footer())
     }
 
-    /// An empty state with a title shown as given, without localisation.
+    /// An empty state with a localised title and description, actions and a footer.
+    public init(
+        _ titleKey: LocalizedStringKey, description: LocalizedStringKey? = nil, icon: QeetrixIconName? = nil,
+        size: QeetrixEmptyStateSize = .page, tone: QeetrixEmptyStateTone = .neutral, level: Int? = nil,
+        @ViewBuilder actions: () -> Actions, @ViewBuilder footer: () -> Footer
+    ) {
+        self.init(
+            title: Text(titleKey), description: description.map { Text($0) }, icon: icon, size: size, tone: tone, level: level,
+            actions: actions(), footer: footer())
+    }
+
+    /// An empty state with a title and description shown as given, actions and a footer.
     public init<S: StringProtocol>(
-        _ title: S, description: Text? = nil, variant: QeetrixEmptyStateVariant = .default,
-        size: QeetrixEmptyStateSize = .default, icon: QeetrixIconName? = nil, @ViewBuilder actions: () -> Actions = { EmptyView() }
+        _ title: S, description: String? = nil, icon: QeetrixIconName? = nil, size: QeetrixEmptyStateSize = .page,
+        tone: QeetrixEmptyStateTone = .neutral, level: Int? = nil, @ViewBuilder actions: () -> Actions,
+        @ViewBuilder footer: () -> Footer
     ) {
-        self.init(title: Text(title), description: description, variant: variant, size: size, icon: icon, actions: actions)
+        self.init(
+            title: Text(title), description: description.map { Text(verbatim: $0) }, icon: icon, size: size, tone: tone, level: level,
+            actions: actions(), footer: footer())
     }
 
-    /// An empty state with a `Text` title, or none.
-    public init(
-        title: Text?, description: Text? = nil, variant: QeetrixEmptyStateVariant = .default,
-        size: QeetrixEmptyStateSize = .default, icon: QeetrixIconName? = nil, @ViewBuilder actions: () -> Actions = { EmptyView() }
+    init(
+        title: Text, description: Text?, icon: QeetrixIconName?, size: QeetrixEmptyStateSize, tone: QeetrixEmptyStateTone,
+        level: Int?, actions: Actions?, footer: Footer?
     ) {
         self.title = title
         self.description = description
-        self.variant = variant
-        self.size = size
         self.icon = icon
-        self.actions = actions()
+        self.size = size
+        self.tone = tone
+        self.level = level.map { min(max($0, 1), 6) }
+        self.actions = actions
+        self.footer = footer
     }
 
     public var body: some View {
-        let metrics = QeetrixEmptyStateMetrics(size: size)
-        VStack(spacing: metrics.gap) {
-            if let glyph = icon ?? QeetrixEmptyStateMetrics.defaultIcon(variant) {
-                QeetrixEmptyStateTile(icon: glyph, variant: variant, metrics: metrics)
-                    .padding(.bottom, metrics.tileMargin)
+        // .qx-empty-state: a centred column, gap-sm apart.
+        VStack(spacing: QeetrixSpace.gapSm) {
+            if let icon {
+                QeetrixIcon(icon, size: .lg, shape: .sharp)
+                    .foregroundStyle(tone.iconColor)
+                    .padding(.bottom, QeetrixSpace.gapXs)  // .qx-empty-state-icon: margin-block-end gap-xs
             }
-            if let title {
-                title
-                    .qeetrixType(metrics.titleType)
-                    .foregroundStyle(QeetrixColor.textPrimary)
-                    .accessibilityAddTraits(.isHeader)
-            }
+            titleText
             if let description {
                 description
-                    .qeetrixType(QeetrixEmptyStateMetrics.descriptionType)
-                    .foregroundStyle(QeetrixColor.textTertiary)  // text-muted-foreground
-                    .frame(maxWidth: QeetrixEmptyStateMetrics.descriptionWidth)  // max-w-sm
+                    .qeetrixTextStyle(.bodyMd)
+                    .foregroundStyle(QeetrixColor.textSubtle)
+                    .modifier(QeetrixEmptyStateLine())
             }
-            if Actions.self != EmptyView.self {
-                QeetrixEmptyStateActions { actions }
-                    .padding(.top, metrics.actionsMargin)
+            if let actions {
+                // .qx-empty-state-actions: centred, wrapping, gap-sm apart, gap-sm under the text.
+                QeetrixFeedbackActionsLayout(spacing: QeetrixSpace.gapSm, alignment: .center) { actions }
+                    .padding(.top, QeetrixSpace.gapSm)
+            }
+            if let footer {
+                // .qx-empty-state-footer: body.sm, color.text.subtle.
+                footer
+                    .qeetrixTypeEnvironment(QeetrixTypeSpec(.bodySm))
+                    .foregroundStyle(QeetrixColor.textSubtle)
+                    .multilineTextAlignment(.center)
             }
         }
-        .multilineTextAlignment(.center)
-        .fixedSize(horizontal: false, vertical: true)
-        .padding(.horizontal, metrics.paddingX)
-        .padding(.vertical, metrics.paddingY)
+        .foregroundStyle(QeetrixColor.textDefault)
+        // padding: <size> var(--qx-space-inset-lg), inside max-inline-size: 480px; margin-inline: auto.
+        .padding(.vertical, size.paddingBlock)
+        .padding(.horizontal, QeetrixSpace.insetLg)
+        .frame(maxWidth: QeetrixEmptyStateMetrics.maximumWidth)
         .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .contain)
     }
-}
 
-/// The 20 pt icon on its tinted tile: graphite for most reasons, the brand for a first use, the
-/// destructive tint for an error. Decorative: the title says it.
-struct QeetrixEmptyStateTile: View {
-    let icon: QeetrixIconName
-    let variant: QeetrixEmptyStateVariant
-    let metrics: QeetrixEmptyStateMetrics
-
-    var body: some View {
-        let shape = RoundedRectangle(cornerRadius: QeetrixCorner.surface)  // rounded-xl
-        let tone = QeetrixEmptyStateMetrics.tone(variant)
-        QeetrixIcon(icon, size: QeetrixIconSize(metrics.iconSize), relativeTo: nil)
-            .foregroundStyle(tone.foreground)
-            .frame(width: metrics.tileSize, height: metrics.tileSize)
-            .background(tone.background, in: shape)
-            .overlay { shape.strokeBorder(QeetrixColor.borderSubtle, lineWidth: QeetrixStroke.hairline) }  // ring-1 ring-inset
-            .accessibilityHidden(true)
-    }
-}
-
-/// The actions, centred and wrapping when they don't fit on one line (`flex flex-wrap justify-center
-/// gap-2`).
-private struct QeetrixEmptyStateActions<Content: View>: View {
-    @ViewBuilder let content: Content
-
-    var body: some View {
-        QeetrixFlowLayout(spacing: QeetrixWebScale.spacing(2), alignment: .center) {
-            content
+    @ViewBuilder private var titleText: some View {
+        if let level {
+            QeetrixHeading(title, level: level, size: size.headingSize, align: .center)
+                .modifier(QeetrixEmptyStateLine())
+        } else {
+            title
+                .qeetrixTextStyle(size.titleRole)
+                .foregroundStyle(QeetrixColor.textDefault)
+                .modifier(QeetrixEmptyStateLine())
         }
     }
 }
 
-struct QeetrixEmptyStateMetrics {
-    let gap: CGFloat
-    let paddingX: CGFloat
-    let paddingY: CGFloat
-    let tileSize: CGFloat
-    let iconSize: CGFloat
-    let tileMargin: CGFloat
-    let actionsMargin: CGFloat
-    let titleType: QeetrixTypeSpec
+extension QeetrixEmptyState where Footer == EmptyView {
+    /// An empty state with actions and no footer.
+    public init(
+        title: Text, description: Text? = nil, icon: QeetrixIconName? = nil, size: QeetrixEmptyStateSize = .page,
+        tone: QeetrixEmptyStateTone = .neutral, level: Int? = nil, @ViewBuilder actions: () -> Actions
+    ) {
+        self.init(
+            title: title, description: description, icon: icon, size: size, tone: tone, level: level, actions: actions(), footer: nil)
+    }
 
-    init(size: QeetrixEmptyStateSize) {
-        switch size {
-        case .sm:
-            // gap-1.5 px-4 py-6; tile mb-0.5 size-9, icon size-4; title text-sm; actions mt-2
-            (gap, paddingX, paddingY) = (QeetrixWebScale.spacing(1.5), QeetrixWebScale.spacing(4), QeetrixWebScale.spacing(6))
-            (tileSize, iconSize, tileMargin) = (QeetrixWebScale.spacing(9), QeetrixWebScale.spacing(4), QeetrixWebScale.spacing(0.5))
-            actionsMargin = QeetrixWebScale.spacing(2) - gap
-            titleType = QeetrixComponentType.heading(QeetrixWebScale.textSM, .semibold, scalesLike: .subheadline)
-        case .default:
-            // gap-2 px-6 py-12; tile mb-1 size-11, icon size-5; title text-base; actions mt-3
-            (gap, paddingX, paddingY) = (QeetrixWebScale.spacing(2), QeetrixWebScale.spacing(6), QeetrixWebScale.spacing(12))
-            (tileSize, iconSize, tileMargin) = (QeetrixWebScale.spacing(11), QeetrixWebScale.spacing(5), QeetrixWebScale.spacing(1))
-            actionsMargin = QeetrixWebScale.spacing(3) - gap
-            titleType = QeetrixComponentType.heading(QeetrixWebScale.textBase, .semibold, scalesLike: .body)
-        case .lg:
-            // gap-2.5 px-6 py-16; tile mb-1.5 size-12, icon size-6; title text-lg; actions mt-3
-            (gap, paddingX, paddingY) = (QeetrixWebScale.spacing(2.5), QeetrixWebScale.spacing(6), QeetrixWebScale.spacing(16))
-            (tileSize, iconSize, tileMargin) = (QeetrixWebScale.spacing(12), QeetrixWebScale.spacing(6), QeetrixWebScale.spacing(1.5))
-            actionsMargin = QeetrixWebScale.spacing(3) - gap
-            titleType = QeetrixComponentType.heading(QeetrixWebScale.textLG, .semibold, scalesLike: .title3)
+    /// An empty state with a localised title and description, and actions.
+    public init(
+        _ titleKey: LocalizedStringKey, description: LocalizedStringKey? = nil, icon: QeetrixIconName? = nil,
+        size: QeetrixEmptyStateSize = .page, tone: QeetrixEmptyStateTone = .neutral, level: Int? = nil,
+        @ViewBuilder actions: () -> Actions
+    ) {
+        self.init(
+            title: Text(titleKey), description: description.map { Text($0) }, icon: icon, size: size, tone: tone, level: level,
+            actions: actions(), footer: nil)
+    }
+
+    /// An empty state with a title and description shown as given, and actions.
+    public init<S: StringProtocol>(
+        _ title: S, description: String? = nil, icon: QeetrixIconName? = nil, size: QeetrixEmptyStateSize = .page,
+        tone: QeetrixEmptyStateTone = .neutral, level: Int? = nil, @ViewBuilder actions: () -> Actions
+    ) {
+        self.init(
+            title: Text(title), description: description.map { Text(verbatim: $0) }, icon: icon, size: size, tone: tone, level: level,
+            actions: actions(), footer: nil)
+    }
+}
+
+extension QeetrixEmptyState where Actions == EmptyView, Footer == EmptyView {
+    /// An empty state with neither actions nor a footer.
+    public init(
+        title: Text, description: Text? = nil, icon: QeetrixIconName? = nil, size: QeetrixEmptyStateSize = .page,
+        tone: QeetrixEmptyStateTone = .neutral, level: Int? = nil
+    ) {
+        self.init(title: title, description: description, icon: icon, size: size, tone: tone, level: level, actions: nil, footer: nil)
+    }
+
+    /// An empty state with a localised title and description, without actions.
+    public init(
+        _ titleKey: LocalizedStringKey, description: LocalizedStringKey? = nil, icon: QeetrixIconName? = nil,
+        size: QeetrixEmptyStateSize = .page, tone: QeetrixEmptyStateTone = .neutral, level: Int? = nil
+    ) {
+        self.init(
+            title: Text(titleKey), description: description.map { Text($0) }, icon: icon, size: size, tone: tone, level: level,
+            actions: nil, footer: nil)
+    }
+
+    /// An empty state with a title and description shown as given, without actions.
+    public init<S: StringProtocol>(
+        _ title: S, description: String? = nil, icon: QeetrixIconName? = nil, size: QeetrixEmptyStateSize = .page,
+        tone: QeetrixEmptyStateTone = .neutral, level: Int? = nil
+    ) {
+        self.init(
+            title: Text(title), description: description.map { Text(verbatim: $0) }, icon: icon, size: size, tone: tone, level: level,
+            actions: nil, footer: nil)
+    }
+}
+
+enum QeetrixEmptyStateMetrics {
+    /// empty-state.css: `.qx-empty-state { max-inline-size: 480px }`.
+    static let maximumWidth: CGFloat = 480
+}
+
+/// A line of the empty state's text: centred, filling its line so that a right-to-left paragraph
+/// centres the same way, and wrapping rather than truncating.
+private struct QeetrixEmptyStateLine: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity)
+    }
+}
+
+/// The actions of an empty state, centred (empty-state.css `.qx-empty-state-actions`), and of an alert,
+/// from the start (alert.css `.qx-alert-actions`): rows `spacing` apart, wrapping when they don't fit.
+/// An action wider than the row — a long label at the largest text sizes — is offered the row's width,
+/// so its label wraps instead of overflowing.
+struct QeetrixFeedbackActionsLayout: Layout {
+    let spacing: CGFloat
+    let alignment: HorizontalAlignment
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let rows = rows(width: proposal.width ?? .infinity, subviews: subviews)
+        let height = rows.map(\.height).reduce(0, +) + spacing * CGFloat(max(0, rows.count - 1))
+        let natural = rows.map(\.width).max() ?? 0
+        return CGSize(width: proposal.width.map { $0.isFinite ? $0 : natural } ?? natural, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        var y = bounds.minY
+        for row in rows(width: bounds.width, subviews: subviews) {
+            var x = alignment == .center ? bounds.midX - row.width / 2 : bounds.minX
+            for (index, size) in zip(row.indices, row.sizes) {
+                subviews[index].place(at: CGPoint(x: x, y: y + (row.height - size.height) / 2), proposal: ProposedViewSize(size))
+                x += size.width + spacing
+            }
+            y += row.height + spacing
         }
     }
 
-    /// `text-sm text-pretty text-muted-foreground`.
-    static let descriptionType = QeetrixComponentType.sans(QeetrixWebScale.textSM, .regular, scalesLike: .subheadline)
-    /// `max-w-sm`.
-    static let descriptionWidth = QeetrixWebScale.containerSM
-
-    static func defaultIcon(_ variant: QeetrixEmptyStateVariant) -> QeetrixIconName? {
-        switch variant {
-        case .default, .firstUse: nil
-        case .noResults: .searchX
-        case .noPermission: .lock
-        case .error: .triangleAlert
-        }
+    struct Row {
+        var indices: [Int] = []
+        var sizes: [CGSize] = []
+        var width: CGFloat = 0
+        var height: CGFloat = 0
     }
 
-    static func tone(_ variant: QeetrixEmptyStateVariant) -> (background: QeetrixColor, foreground: QeetrixColor) {
-        switch variant {
-        case .default, .noResults, .noPermission: (.surfaceSunken, .textTertiary)  // bg-surface-sunken text-muted-foreground
-        case .firstUse: (.surfaceBrandSubtle, .textBrand)  // bg-brand-subtle text-brand
-        case .error: (.feedbackErrorSubtle, .textDanger)  // bg-destructive-subtle text-destructive-text
+    func rows(width: CGFloat, subviews: Subviews) -> [Row] {
+        var rows: [Row] = []
+        var row = Row()
+        for index in subviews.indices {
+            var size = subviews[index].sizeThatFits(.unspecified)
+            if size.width > width {
+                size = subviews[index].sizeThatFits(ProposedViewSize(width: width, height: nil))
+            }
+            if !row.indices.isEmpty, row.width + spacing + size.width > width {
+                rows.append(row)
+                row = Row()
+            }
+            row.width = row.indices.isEmpty ? size.width : row.width + spacing + size.width
+            row.height = max(row.height, size.height)
+            row.indices.append(index)
+            row.sizes.append(size)
         }
+        if !row.indices.isEmpty { rows.append(row) }
+        return rows
     }
 }

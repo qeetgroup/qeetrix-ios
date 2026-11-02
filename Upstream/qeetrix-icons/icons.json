@@ -1,5 +1,79 @@
 [
   {
+    "id": "archive",
+    "name": "archive",
+    "componentName": "ArchiveIcon",
+    "category": "files",
+    "categories": [
+      "files",
+      "mail"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "index",
+      "backup",
+      "box",
+      "storage",
+      "records"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "arrow-down",
+    "name": "arrow-down",
+    "componentName": "ArrowDownIcon",
+    "category": "arrows",
+    "categories": [
+      "arrows"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "backwards",
+      "reverse",
+      "direction",
+      "south"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "arrow-up",
+    "name": "arrow-up",
+    "componentName": "ArrowUpIcon",
+    "category": "arrows",
+    "categories": [
+      "arrows"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "forward",
+      "direction",
+      "north"
+    ],
+    "aliases": []
+  },
+  {
     "id": "bell",
     "name": "bell",
     "componentName": "BellIcon",
@@ -21,6 +95,31 @@
       "alarm",
       "notification",
       "sound",
+      "reminder"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "bell-off",
+    "name": "bell-off",
+    "componentName": "BellOffIcon",
+    "category": "notifications",
+    "categories": [
+      "notifications"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "alarm",
+      "notification",
+      "silent",
       "reminder"
     ],
     "aliases": []
@@ -49,6 +148,66 @@
       "event",
       "birthday",
       "birthdate"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "camera",
+    "name": "camera",
+    "componentName": "CameraIcon",
+    "category": "photography",
+    "categories": [
+      "photography",
+      "devices",
+      "communication"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "photography",
+      "lens",
+      "focus",
+      "capture",
+      "shot",
+      "visual",
+      "image",
+      "device",
+      "equipment",
+      "photo",
+      "webcam",
+      "video"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "camera-off",
+    "name": "camera-off",
+    "componentName": "CameraOffIcon",
+    "category": "photography",
+    "categories": [
+      "photography",
+      "devices",
+      "communication"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "photo",
+      "webcam",
+      "video"
     ],
     "aliases": []
   },
@@ -99,6 +258,123 @@
       "reverse",
       "slow",
       "dropdown"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "chevron-left",
+    "name": "chevron-left",
+    "componentName": "ChevronLeftIcon",
+    "category": "arrows",
+    "categories": [
+      "arrows"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "back",
+      "previous",
+      "less than",
+      "fewer",
+      "menu",
+      "<"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "chevron-right",
+    "name": "chevron-right",
+    "componentName": "ChevronRightIcon",
+    "category": "arrows",
+    "categories": [
+      "arrows",
+      "math",
+      "development"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "forward",
+      "next",
+      "more than",
+      "greater",
+      "menu",
+      "code",
+      "coding",
+      "command line",
+      "terminal",
+      "prompt",
+      "shell",
+      ">"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "chevron-up",
+    "name": "chevron-up",
+    "componentName": "ChevronUpIcon",
+    "category": "arrows",
+    "categories": [
+      "arrows",
+      "math",
+      "gaming"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "caret",
+      "keyboard",
+      "mac",
+      "control",
+      "ctrl",
+      "superscript",
+      "exponential",
+      "power",
+      "ahead",
+      "fast",
+      "^",
+      "dropdown"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "chevrons-up-down",
+    "name": "chevrons-up-down",
+    "componentName": "ChevronsUpDownIcon",
+    "category": "arrows",
+    "categories": [
+      "arrows"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "expand",
+      "unfold",
+      "vertical"
     ],
     "aliases": []
   },
@@ -155,6 +431,82 @@
     ],
     "aliases": [
       "check-circle-2"
+    ]
+  },
+  {
+    "id": "circle-dashed",
+    "name": "circle-dashed",
+    "componentName": "CircleDashedIcon",
+    "category": "development",
+    "categories": [
+      "development",
+      "shapes"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "pending",
+      "dot",
+      "progress",
+      "issue",
+      "draft",
+      "code",
+      "coding",
+      "version control"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "circle-plus",
+    "name": "circle-plus",
+    "componentName": "CirclePlusIcon",
+    "category": "math",
+    "categories": [
+      "math",
+      "development",
+      "cursors",
+      "gaming"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "add",
+      "new",
+      "increase",
+      "increment",
+      "positive",
+      "calculate",
+      "crosshair",
+      "aim",
+      "target",
+      "scope",
+      "sight",
+      "reticule",
+      "maximum",
+      "upgrade",
+      "extra",
+      "operator",
+      "join",
+      "concatenate",
+      "code",
+      "coding",
+      "+"
+    ],
+    "aliases": [
+      "plus-circle"
     ]
   },
   {
@@ -218,6 +570,63 @@
       "alarm"
     ],
     "aliases": []
+  },
+  {
+    "id": "cloud-upload",
+    "name": "cloud-upload",
+    "componentName": "CloudUploadIcon",
+    "category": "arrows",
+    "categories": [
+      "arrows",
+      "files"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "file"
+    ],
+    "aliases": [
+      "upload-cloud"
+    ]
+  },
+  {
+    "id": "contact-round",
+    "name": "contact-round",
+    "componentName": "ContactRoundIcon",
+    "category": "account",
+    "categories": [
+      "account",
+      "connectivity",
+      "communication",
+      "social"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "user",
+      "person",
+      "family",
+      "friend",
+      "acquaintance",
+      "listing",
+      "networking"
+    ],
+    "aliases": [
+      "contact-2"
+    ]
   },
   {
     "id": "copy",
@@ -386,6 +795,128 @@
     "aliases": []
   },
   {
+    "id": "file",
+    "name": "file",
+    "componentName": "FileIcon",
+    "category": "files",
+    "categories": [
+      "files"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "document"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "file-archive",
+    "name": "file-archive",
+    "componentName": "FileArchiveIcon",
+    "category": "files",
+    "categories": [
+      "files"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "zip",
+      "package",
+      "archive"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "file-code",
+    "name": "file-code",
+    "componentName": "FileCodeIcon",
+    "category": "files",
+    "categories": [
+      "files",
+      "development"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "script",
+      "document",
+      "gist",
+      "html",
+      "xml",
+      "property list",
+      "plist"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "file-image",
+    "name": "file-image",
+    "componentName": "FileImageIcon",
+    "category": "files",
+    "categories": [
+      "files"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "image",
+      "graphics",
+      "photo",
+      "picture"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "file-spreadsheet",
+    "name": "file-spreadsheet",
+    "componentName": "FileSpreadsheetIcon",
+    "category": "files",
+    "categories": [
+      "files"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "spreadsheet",
+      "sheet",
+      "table"
+    ],
+    "aliases": []
+  },
+  {
     "id": "file-text",
     "name": "file-text",
     "componentName": "FileTextIcon",
@@ -408,6 +939,63 @@
       "txt",
       "pdf",
       "document"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "flashlight",
+    "name": "flashlight",
+    "componentName": "FlashlightIcon",
+    "category": "photography",
+    "categories": [
+      "photography",
+      "devices"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "torch",
+      "light",
+      "beam",
+      "emergency",
+      "safety",
+      "tool",
+      "bright"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "flashlight-off",
+    "name": "flashlight-off",
+    "componentName": "FlashlightOffIcon",
+    "category": "photography",
+    "categories": [
+      "photography",
+      "devices"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "torch",
+      "light",
+      "beam",
+      "emergency",
+      "safety",
+      "tool",
+      "bright"
     ],
     "aliases": []
   },
@@ -464,6 +1052,57 @@
     ]
   },
   {
+    "id": "image",
+    "name": "image",
+    "componentName": "ImageIcon",
+    "category": "photography",
+    "categories": [
+      "photography",
+      "text",
+      "multimedia",
+      "files"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "picture",
+      "photo"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "image-plus",
+    "name": "image-plus",
+    "componentName": "ImagePlusIcon",
+    "category": "photography",
+    "categories": [
+      "photography",
+      "multimedia",
+      "files"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "add",
+      "create",
+      "picture"
+    ],
+    "aliases": []
+  },
+  {
     "id": "inbox",
     "name": "inbox",
     "componentName": "InboxIcon",
@@ -518,6 +1157,60 @@
       "status",
       "support",
       "tooltip"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "key-round",
+    "name": "key-round",
+    "componentName": "KeyRoundIcon",
+    "category": "security",
+    "categories": [
+      "security",
+      "account"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "password",
+      "login",
+      "authentication",
+      "secure",
+      "unlock"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "keyboard",
+    "name": "keyboard",
+    "componentName": "KeyboardIcon",
+    "category": "text",
+    "categories": [
+      "text",
+      "devices",
+      "development"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "layout",
+      "spell",
+      "settings",
+      "mouse"
     ],
     "aliases": []
   },
@@ -579,14 +1272,14 @@
     "aliases": []
   },
   {
-    "id": "mail",
-    "name": "mail",
-    "componentName": "MailIcon",
-    "category": "text",
+    "id": "map-pin",
+    "name": "map-pin",
+    "componentName": "MapPinIcon",
+    "category": "navigation",
     "categories": [
-      "text",
-      "account",
-      "mail"
+      "navigation",
+      "travel",
+      "account"
     ],
     "variants": [
       "outline",
@@ -598,10 +1291,35 @@
     ],
     "directionality": "preserve",
     "tags": [
-      "email",
-      "message",
-      "letter",
-      "unread"
+      "location",
+      "waypoint",
+      "marker",
+      "drop"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "menu",
+    "name": "menu",
+    "componentName": "MenuIcon",
+    "category": "layout",
+    "categories": [
+      "layout",
+      "account"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "bars",
+      "navigation",
+      "hamburger",
+      "options"
     ],
     "aliases": []
   },
@@ -674,6 +1392,55 @@
     "aliases": []
   },
   {
+    "id": "panel-right",
+    "name": "panel-right",
+    "componentName": "PanelRightIcon",
+    "category": "layout",
+    "categories": [
+      "layout"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "sidebar",
+      "secondary",
+      "drawer"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "paperclip",
+    "name": "paperclip",
+    "componentName": "PaperclipIcon",
+    "category": "text",
+    "categories": [
+      "text",
+      "design",
+      "files",
+      "mail"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "attachment",
+      "file"
+    ],
+    "aliases": []
+  },
+  {
     "id": "pencil",
     "name": "pencil",
     "componentName": "PencilIcon",
@@ -704,6 +1471,32 @@
       "writing",
       "stationery",
       "artist"
+    ],
+    "aliases": []
+  },
+  {
+    "id": "pin",
+    "name": "pin",
+    "componentName": "PinIcon",
+    "category": "navigation",
+    "categories": [
+      "navigation",
+      "account"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "save",
+      "map",
+      "lock",
+      "fix"
     ],
     "aliases": []
   },
@@ -778,6 +1571,39 @@
     "aliases": []
   },
   {
+    "id": "scan-line",
+    "name": "scan-line",
+    "componentName": "ScanLineIcon",
+    "category": "devices",
+    "categories": [
+      "devices",
+      "shopping"
+    ],
+    "variants": [
+      "outline"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "checkout",
+      "till",
+      "cart",
+      "transaction",
+      "purchase",
+      "buy",
+      "product",
+      "packaging",
+      "retail",
+      "consumer",
+      "qr-code",
+      "dashed"
+    ],
+    "aliases": []
+  },
+  {
     "id": "search",
     "name": "search",
     "componentName": "SearchIcon",
@@ -800,42 +1626,6 @@
       "scan",
       "magnifier",
       "magnifying glass",
-      "lens",
-      "locate",
-      "explore",
-      "discover",
-      "enlarge",
-      "zoom"
-    ],
-    "aliases": []
-  },
-  {
-    "id": "search-x",
-    "name": "search-x",
-    "componentName": "SearchXIcon",
-    "category": "text",
-    "categories": [
-      "text",
-      "social"
-    ],
-    "variants": [
-      "outline",
-      "filled"
-    ],
-    "shapes": [
-      "round",
-      "sharp"
-    ],
-    "directionality": "preserve",
-    "tags": [
-      "find",
-      "scan",
-      "magnifier",
-      "magnifying glass",
-      "stop",
-      "clear",
-      "cancel",
-      "abort",
       "lens",
       "locate",
       "explore",
@@ -948,6 +1738,37 @@
     "aliases": []
   },
   {
+    "id": "smartphone",
+    "name": "smartphone",
+    "componentName": "SmartphoneIcon",
+    "category": "connectivity",
+    "categories": [
+      "connectivity",
+      "devices"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "phone",
+      "cellphone",
+      "device",
+      "mobile",
+      "screen",
+      "display",
+      "touchscreen",
+      "portable",
+      "responsive"
+    ],
+    "aliases": []
+  },
+  {
     "id": "trash",
     "name": "trash",
     "componentName": "TrashIcon",
@@ -1016,6 +1837,32 @@
     ]
   },
   {
+    "id": "user-plus",
+    "name": "user-plus",
+    "componentName": "UserPlusIcon",
+    "category": "account",
+    "categories": [
+      "account"
+    ],
+    "variants": [
+      "outline",
+      "filled"
+    ],
+    "shapes": [
+      "round",
+      "sharp"
+    ],
+    "directionality": "preserve",
+    "tags": [
+      "new",
+      "add",
+      "create",
+      "follow",
+      "subscribe"
+    ],
+    "aliases": []
+  },
+  {
     "id": "user-round",
     "name": "user-round",
     "componentName": "UserRoundIcon",
@@ -1042,16 +1889,16 @@
     ]
   },
   {
-    "id": "users",
-    "name": "users",
-    "componentName": "UsersIcon",
-    "category": "account",
+    "id": "wifi-off",
+    "name": "wifi-off",
+    "componentName": "WifiOffIcon",
+    "category": "connectivity",
     "categories": [
-      "account"
+      "connectivity",
+      "devices"
     ],
     "variants": [
-      "outline",
-      "filled"
+      "outline"
     ],
     "shapes": [
       "round",
@@ -1059,8 +1906,7 @@
     ],
     "directionality": "preserve",
     "tags": [
-      "group",
-      "people"
+      "disabled"
     ],
     "aliases": []
   },
