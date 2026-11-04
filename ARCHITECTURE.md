@@ -73,8 +73,8 @@ flowchart TD
   resolves light or dark, `QeetrixTextRole` gets a font that follows Dynamic Type, easings become `Animation`s.
 - **Foundations and components read the SwiftUI environment** (`colorScheme`, `dynamicTypeSize`, `isEnabled`,
   `accessibilityReduceMotion`), never the Theme layer. Only apps use the Theme layer.
-- **Generated code is the typed API's values:** a token added or removed upstream changes the public API, which
-  `Scripts/api-check.sh` catches.
+- **Generated code is the typed API's values:** a token removed or renamed upstream is a source-breaking change,
+  which `Scripts/api-compat.sh` catches on the pull request.
 
 ## 🧩 How a component is built
 

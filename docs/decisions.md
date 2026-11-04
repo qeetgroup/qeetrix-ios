@@ -12,7 +12,7 @@ weighed, are in the git history (`git log -- Documentation/Decisions`).
 | 0005 | **Icons are generated vector paths** | The pinned SVGs become SwiftUI paths at generation time, tinted with the foreground style and mirrored in right to left by meaning. |
 | 0006 | **Theming through the SwiftUI environment** | `.qeetrixThemeMode(_:)` sets light, dark or system; colours resolve from the environment's colour scheme. No global state. |
 | 0007 | **Repository layout** | The library in `Sources/Qeetrix/`, with one folder per `@qeetrix/react` family in `Components/`; tests in `Tests/`, the generator in `Tools/`, pinned inputs in `Upstream/`, the showcase in `Showcase/`, docs in `docs/`. |
-| 0008 | **The public API has a reviewed baseline** | `api/Qeetrix.public-api.txt`, checked on every build; `swift package diagnose-api-breaking-changes` blocks source-breaking changes unless `api/breaking-changes-allowlist.txt` accepts them. |
+| 0008 | **Source compatibility is checked by Swift's own tool** | `swift package diagnose-api-breaking-changes` on every pull request, against the target branch. Only a new major version (a new minor while 0.x) may break source. No committed API baseline. |
 | 0009 | **Visual regression testing** | swift-snapshot-testing, a test-only dependency apps never resolve: every component in light, dark, the largest text size and right to left. |
 | 0010 | **Component API conventions** | `Qeetrix<Component>` with the web's variant, tone and size names; SwiftUI styles where a style protocol exists; the app owns state through bindings. |
 | 0011 | **Component tokens and web metrics** | Component tokens are adopted per group; every other size comes from the family's CSS, restated with the CSS beside it. |

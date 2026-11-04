@@ -30,8 +30,8 @@ flowchart LR
 ```
 
 - **One topic per pull request.** Fill in the template's checklist.
-- **A source-breaking API change** fails CI (`Scripts/api-compat.sh`) unless a decision accepts it in
-  `api/breaking-changes-allowlist.txt`.
+- **A source-breaking API change** fails CI (`Scripts/api-compat.sh`). Make it additive and deprecate the old name,
+  or raise the major version in `VERSION` (the minor while 0.x).
 - **Mirror cross-platform changes** (naming, colour conversion, token scope) in qeetrix-android, or record the
   difference in [docs/llm/boundaries.md](docs/llm/boundaries.md).
 
@@ -41,7 +41,7 @@ flowchart LR
 
 | Command | What it does |
 |:--|:--|
-| `Scripts/check.sh` | Every Mac-host gate: the generator's tests, upstream lock and drift, `swift-format`, compiler warnings, dependencies, resources, the library's tests, the public API |
+| `Scripts/check.sh` | Every Mac-host gate: the generator's tests, upstream lock and drift, `swift-format`, compiler warnings, dependencies, resources, the library's tests |
 | `swift test` | The library's tests on the Mac host |
 | `Scripts/lint.sh` | `swift-format`, strict |
 | `xcodebuild test -scheme Qeetrix -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"` | The library's tests on the iOS Simulator |
@@ -52,7 +52,6 @@ flowchart LR
 |:--|:--|
 | `TEST_RUNNER_SNAPSHOT_TESTING_RECORD=all xcodebuild test -scheme Qeetrix -only-testing:QeetrixSnapshotTests -destination …` | Record the snapshot baselines on a commit you trust. They stay on your machine. |
 | `xcodebuild test -scheme Qeetrix -only-testing:QeetrixSnapshotTests -destination …` | Compare your change with them |
-| `Scripts/api-check.sh [--update]` | Check, or rewrite, `api/Qeetrix.public-api.txt` |
 | `Scripts/api-compat.sh origin/main` | No source-breaking change against `main` |
 | `Scripts/docs.sh` | The DocC documentation, warnings as errors |
 
@@ -98,8 +97,7 @@ flowchart TD
 flowchart LR
     A["Copy a similar component<br/>its family folder"] --> B["Implement it<br/>from the @qeetrix/react CSS"]
     B --> C["Tests, a snapshot test,<br/>a DocC page, a showcase page"]
-    C --> D["Scripts/api-check.sh --update"]
-    D --> E["📬 Pull request"]
+    C --> D["📬 Pull request"]
 ```
 
 A component lives in `Sources/Qeetrix/Components/<Family>/`, named after its `@qeetrix/react` family. Wrap the system

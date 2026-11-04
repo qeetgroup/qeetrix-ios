@@ -23,7 +23,8 @@
 
 - [ ] `Scripts/check.sh` passes
 - [ ] New behaviour has a test that fails without the change
-- [ ] **Public API change:** DocC written, `Scripts/api-check.sh --update` run, and the CHANGELOG updated
+- [ ] **Public API change:** DocC written and the CHANGELOG updated; a source-breaking one raises the major version
+      (the minor while 0.x)
 - [ ] **Visual change:** snapshots compared with baselines recorded before the change
 - [ ] **New component:** its tests, snapshot test, DocC page, showcase page and row in `docs/components.md`
 - [ ] Nothing in `Upstream/` or a `Generated/` folder is edited by hand

@@ -66,7 +66,7 @@ else
 fi
 
 # 2. Host gates: generator, lock and drift, format, warnings, dependencies and pinned actions, resources,
-#    host tests, public API.
+#    host tests.
 gate "Host gates (Scripts/check.sh)" check Scripts/check.sh
 gate "Upstream still matches the lock (networked)" upstream Scripts/sync-upstream.sh --check
 

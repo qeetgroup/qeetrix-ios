@@ -25,7 +25,7 @@ flowchart LR
 | 🌗 **Contrast** | `AccessibilityTests` | Every colour pair a component draws meets WCAG AA, in both schemes |
 | 🔠 **Large text and right to left** | `LargeTextTests`, layout tests | Text wraps rather than being cut at the accessibility sizes; layouts mirror |
 | 📸 **Snapshots** | swift-snapshot-testing, on a maintainer's machine | Every component in light, dark, the largest size and right to left matches its reviewed image |
-| 🔌 **Public API** | `Scripts/api-check.sh`, `Scripts/api-compat.sh` | No public declaration changes by accident; no source-breaking change against the target branch |
+| 🔌 **Public API** | `Scripts/api-compat.sh` | No source-breaking change against the target branch, unless the version allows it |
 | 🧹 **Code** | `Scripts/lint.sh`, `Scripts/warnings.sh` | `swift-format` strict, and no compiler warnings |
 | 📚 **Documentation** | `Scripts/docs.sh` | DocC builds with warnings as errors: every public symbol documented, no broken link |
 | 🔒 **Supply chain** | `Scripts/verify.sh`, `Scripts/dependencies.sh` | Upstream files match their lock; test-only dependencies are reviewed and licensed |
@@ -39,7 +39,8 @@ flowchart LR
 | **Platform** | The deployment target or the Swift version an app needs rises | A minor release before 1.0, a major after |
 
 - **Adding an icon is not breaking:** `QeetrixIconName` is an open set, so apps switch over it with a `default` case.
-- **A deliberate break** is listed in `api/breaking-changes-allowlist.txt` with the decision that accepts it.
+- **A deliberate break** needs a new major version (a new minor while 0.x): raise it in `VERSION`, and list the
+  break in the CHANGELOG.
 
 ## 🚧 Known gaps
 

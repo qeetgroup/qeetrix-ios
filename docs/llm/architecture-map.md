@@ -8,7 +8,6 @@
 | **The package manifest** | `Package.swift` |
 | **The library** | `Sources/Qeetrix/` |
 | **The version to release** | `VERSION` |
-| **Public API baseline** | `api/Qeetrix.public-api.txt` · accepted breaks: `api/breaking-changes-allowlist.txt` |
 | The DocC catalogue | `Sources/Qeetrix/Qeetrix.docc/` |
 | Resources: fonts, licence texts, strings, provenance | `Sources/Qeetrix/Resources/` |
 | Test-only dependencies, pinned | `Package.resolved` · reviewed in `Tools/dependency-allowlist.json` |
@@ -48,7 +47,7 @@
 | Every Mac-host gate | `Scripts/check.sh` |
 | Sync, generate, verify tokens | `Scripts/sync-upstream.sh`, `Scripts/generate.sh`, `Scripts/verify.sh` |
 | Format, warnings, dependencies, resources | `Scripts/lint.sh`, `Scripts/warnings.sh`, `Scripts/dependencies.sh`, `Scripts/resources.sh` |
-| Public API and source compatibility | `Scripts/api-check.sh`, `Scripts/api-compat.sh` |
+| Source compatibility | `Scripts/api-compat.sh` |
 | DocC | `Scripts/docs.sh` |
 | Every release gate, the bill of materials | `Scripts/release-check.sh`, `Scripts/sbom.sh` |
 | A simulator for CI | `Scripts/ci-simulator.sh` |

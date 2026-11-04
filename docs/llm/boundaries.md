@@ -27,8 +27,8 @@ pages and showcase pages, and the release of the `Qeetrix` package by Git tag.
 
 - **Never edit `Upstream/`, a `Generated/` folder, `docs/tokens.md` or `docs/token-values.json` by hand.** Sync and
   generate instead.
-- **The public API changes only on purpose:** document it in DocC, run `Scripts/api-check.sh --update`, and note it in
-  the CHANGELOG. A source-breaking change fails CI unless `api/breaking-changes-allowlist.txt` accepts it.
+- **The public API changes only on purpose:** document it in DocC and note it in the CHANGELOG. A source-breaking
+  change fails CI unless `VERSION` raises the major version (the minor while 0.x).
 - **Swift 6 strict concurrency, no compiler warnings, `swift-format` strict, DocC without warnings.**
 - **No runtime dependency.** A test-only one needs its entry in `Tools/dependency-allowlist.json`.
 - **No required-reason API without a privacy manifest** (checked by `Scripts/release-check.sh`).

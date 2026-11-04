@@ -21,8 +21,7 @@ Xcode 27.1 (Swift 6.4) with an iOS Simulator runtime. Nothing else.
 3  tests in Tests/QeetrixTests/Components/<Family>/, and a snapshot test
 4  a DocC page in Sources/Qeetrix/Qeetrix.docc/Components/, linked from Qeetrix.md
 5  a showcase page, added to Showcase/…/ShowcaseCatalog.swift
-6  Scripts/api-check.sh --update                                                the API baseline
-7  its row in docs/components.md, and an entry in the CHANGELOG
+6  its row in docs/components.md, and an entry in the CHANGELOG
 ```
 
 ## Change a look, a token, a font or an icon
@@ -53,6 +52,5 @@ A bad release: **Actions › Rollback**, then a new patch. Details: [../releases
 |---|---|---|
 | `xcode-select: invalid developer directory` | The runner image no longer carries `XCODE_VERSION` | Pick a version the `xcode-27` image lists, re-verify locally, update the pin |
 | `Scripts/verify.sh` fails | A generated or upstream file was edited by hand | Run `Scripts/generate.sh` |
-| `Scripts/api-check.sh` fails | The public API changed | Run it with `--update` if intended, and note it in the CHANGELOG |
-| The source-compatibility step fails | A source-breaking change | Make it additive, or accept it in `api/breaking-changes-allowlist.txt` with a decision |
+| The source-compatibility step fails | A source-breaking change | Make it additive (deprecate the old API), or raise the major version in `VERSION` (the minor while 0.x) |
 | A simulator test can't start | A stuck simulator | Re-run the failed job |
