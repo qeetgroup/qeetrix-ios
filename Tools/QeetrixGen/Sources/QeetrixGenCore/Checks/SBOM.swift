@@ -102,7 +102,7 @@ public enum SBOM {
                     "version": version,
                     "description": "The Qeetrix design system for SwiftUI (iOS, iPadOS). Distributed as a Swift package, from source.",
                     "purl": "pkg:swift/github.com/qeetgroup/qeetrix-ios@\(version)",
-                    // No licence has been chosen for the package's own code (Documentation/Releases/LICENSE_COMPLIANCE.md).
+                    // No licence has been chosen for the package's own code (docs/third-party.md).
                     "licenses": [["license": ["name": "No licence chosen (Qeet Group)"]]],
                 ]
             ],

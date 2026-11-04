@@ -1,0 +1,7 @@
+# The Swift Package Index (swiftpackageindex.com) builds and hosts the DocC documentation of the Qeetrix module,
+# for iOS. Nothing else uses this file.
+version: 1
+builder:
+  configs:
+    - documentation_targets: [Qeetrix]
+      platform: ios

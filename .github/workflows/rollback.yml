@@ -1,0 +1,84 @@
+name: Rollback
+
+# Withdraws a bad release, so app teams stop adopting it and go back to a good one: the Qeetrix rollback flow, for a
+# Swift package (docs/releases.md).
+#
+# A release is its Git tag, and apps resolve tags, so the bad tag is never moved or deleted: that would break every app
+# whose Package.resolved pins it. Instead this makes the good version GitHub's latest release, and marks
+# the bad one withdrawn, with a note pointing to the good one. The fix is then a new patch release.
+#
+# Run it from Actions › Rollback › Run workflow.
+on:
+  workflow_dispatch:
+    inputs:
+      good:
+        description: "Released version to go back to (e.g. 0.1.0)"
+        required: true
+        type: string
+      bad:
+        description: "Released version to withdraw (e.g. 0.1.1)"
+        required: true
+        type: string
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  rollback:
+    name: Withdraw ${{ inputs.bad }}, back to ${{ inputs.good }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    environment: release
+    permissions:
+      contents: write # edit the GitHub Releases
+    steps:
+      - name: Both versions are released
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GOOD: ${{ inputs.good }}
+          BAD: ${{ inputs.bad }}
+        run: |
+          set -uo pipefail
+          [ "$GOOD" != "$BAD" ] || { echo "::error::The good and bad versions are the same."; exit 1; }
+          for v in "$GOOD" "$BAD"; do
+            gh release view "$v" --repo "$GITHUB_REPOSITORY" > /dev/null || { echo "::error::No GitHub Release $v."; exit 1; }
+          done
+
+      - name: Make the good version latest, and mark the bad one withdrawn
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GOOD: ${{ inputs.good }}
+          BAD: ${{ inputs.bad }}
+        run: |
+          set -euo pipefail
+          gh release edit "$GOOD" --repo "$GITHUB_REPOSITORY" --latest
+          {
+            echo "> [!WARNING]"
+            echo "> **Withdrawn. Do not use this version.** Use \`$GOOD\` (\`.exact(\"$GOOD\")\` in Package.swift) instead, until a fixed"
+            echo "> version is released."
+            echo
+            gh release view "$BAD" --repo "$GITHUB_REPOSITORY" --json body --jq .body
+          } > notes.md
+          gh release edit "$BAD" --repo "$GITHUB_REPOSITORY" --prerelease --latest=false \
+            --title "$BAD (withdrawn: use $GOOD)" --notes-file notes.md
+
+      - name: Summarise
+        env:
+          GOOD: ${{ inputs.good }}
+          BAD: ${{ inputs.bad }}
+        run: |
+          {
+            echo "## Rolled back"
+            echo
+            echo "\`$BAD\` is marked withdrawn and \`$GOOD\` is the latest release."
+            echo
+            echo "1. Tell app teams: pin \`$GOOD\` in Package.swift and resolve again."
+            echo "2. Fix forward: release a new patch from a commit that fixes the defect."
+            echo "3. Record it in the CHANGELOG under that patch."
+            echo
+            echo "The \`$BAD\` tag stays on purpose: moving or deleting it would break apps that pin it."
+          } >> "$GITHUB_STEP_SUMMARY"

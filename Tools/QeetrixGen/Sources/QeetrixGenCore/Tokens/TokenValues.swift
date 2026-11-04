@@ -1,6 +1,6 @@
 import Foundation
 
-/// `Documentation/Foundations/token-values.json`: every generated token, where it came from, its
+/// `docs/token-values.json`: every generated token, where it came from, its
 /// Swift name and its resolved value in every context it varies over — and every token that is not
 /// generated, with the reason. Platform-neutral on purpose, so another platform's build of the same
 /// tokens can be diffed against it token by token.
@@ -11,7 +11,7 @@ struct TokenValuesReport {
     let model: TokenModel
     let provenance: Provenance
 
-    static let path = "Documentation/Foundations/token-values.json"
+    static let path = "docs/token-values.json"
 
     func json() throws -> String {
         let package = try provenance.package(Provenance.tokensPackage)

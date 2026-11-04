@@ -1,26 +1,37 @@
-## What and why
+## 📝 What and why
 
-<!-- What changes, and the reason. Link the issue or the upstream @qeetrix/tokens, @qeetrix/icons or @qeetrix/react release. -->
+<!-- What changes, and why. One topic per pull request. -->
 
-## Checklist
+## 🔗 Related
 
-Each box is a command that exists in this repository; CI runs the same ones.
+- Jira: QTRX-
+- Upstream change, if any: <!-- the @qeetrix/tokens, @qeetrix/react or @qeetrix/icons version or PR -->
 
-- [ ] `Scripts/check.sh`: generator tests, drift, format, warnings, dependencies, resources, host tests
-      and public API (an API change is updated with `Scripts/api-check.sh --update` and noted in
-      `CHANGELOG.md`)
-- [ ] `xcodebuild test -scheme Qeetrix -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"`: unit and snapshot tests pass on iOS
-- [ ] Showcase UI tests pass: `xcodebuild test -project Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase -destination …`
-- [ ] `Scripts/docs.sh`: DocC builds with no warnings
-- [ ] Snapshots compared locally against baselines recorded before the change (they are never committed,
-      ADR 0013); any visual change is described above
-- [ ] No screenshots or other images are added to the repository
-- [ ] A new overlay or navigation component follows ADR 0014: the system presentation, state in a
-      binding the app owns, and a UI test that presents and dismisses it
-- [ ] Documentation matches the change (`CHANGELOG.md`, DocC, `ARCHITECTURE.md` or a decision record)
+## 🧩 Type of change
 
-## Upstream inputs
+- [ ] 🐛 Fix
+- [ ] ✨ New component or feature
+- [ ] 💥 Breaking change to the public API
+- [ ] 🎨 Upstream bump (tokens, components or icons)
+- [ ] 🛠️ Build, CI or docs only
 
-- [ ] This PR does not change `Upstream/`, **or** it bumps `Upstream/pins.json`, was produced by
-      `Scripts/sync-upstream.sh` and `Scripts/generate.sh`, and nothing in `Upstream/` or a
-      `Generated/` folder was edited by hand.
+## 📸 Screenshots
+
+<!-- For a visual change: before and after, in light and dark. Delete this section otherwise. -->
+
+## ✅ Checklist
+
+- [ ] `Scripts/check.sh` passes
+- [ ] New behaviour has a test that fails without the change
+- [ ] **Public API change:** DocC written and the CHANGELOG updated; a source-breaking one raises the major version
+      (the minor while 0.x)
+- [ ] **Visual change:** snapshots compared with baselines recorded before the change
+- [ ] **New component:** its tests, snapshot test, DocC page, showcase page and row in `docs/components.md`
+- [ ] Nothing in `Upstream/` or a `Generated/` folder is edited by hand
+- [ ] Docs match the change (CHANGELOG, DocC, a decision if structural)
+
+## 🚀 Release (pull requests into `main` only)
+
+- [ ] `VERSION` is the version to release. The Version workflow raises the patch when the library changes; raise the
+      minor or major by hand.
+- [ ] The CHANGELOG has an entry for that version, dated

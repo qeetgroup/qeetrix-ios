@@ -8,16 +8,11 @@ let usage = """
       verify        Fail if the snapshot does not match its lock or the generated files are stale.
       sync          Fetch the artifacts pinned in Upstream/pins.json and rewrite the lock.
       sync --check  Fetch the pinned artifacts and compare them with the lock; change nothing.
-      api --symbol-graphs <dir> [--update]
-                    Compare the public API in the symbol graphs with Documentation/API (or rewrite it).
       dependencies --manifest <dump-package.json> [--checkouts <dir>]
                     Check Package.resolved against Tools/dependency-allowlist.json, with licences.
       resources     Check the built-in strings and the snapshot baselines.
       sbom --version <version> [--output <file>]
                     Write the release's CycloneDX bill of materials from the pins, lock and Package.resolved.
-      new-component <Family> <Component> --category <docs category> [--slug <web slug>] [--dry-run]
-                    Scaffold a component from Templates/Component. Never overwrites; --dry-run only
-                    lists the changes.
     """
 
 /// The value after `flag`, if present.
@@ -67,29 +62,6 @@ do {
         print("✓ Snapshot matches its lock and every generated file is current.")
     case "sync":
         try await UpstreamSync(root: root, log: { print($0) }).run(check: arguments.contains("--check"))
-    case "api":
-        guard let index = arguments.firstIndex(of: "--symbol-graphs"), index + 1 < arguments.count else {
-            fail("api needs --symbol-graphs <directory>.")
-        }
-        let snapshot = try APISnapshot.render(
-            symbolGraphs: try APISnapshot.graphs(in: URL(fileURLWithPath: arguments[index + 1])))
-        let url = root.appendingPathComponent(APISnapshot.path)
-        if arguments.contains("--update") {
-            try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
-            try Data(snapshot.utf8).write(to: url)
-            print("✓ wrote \(APISnapshot.path)")
-        } else {
-            let committed = (try? String(contentsOf: url, encoding: .utf8)) ?? ""
-            guard committed == snapshot else {
-                let old = Set(committed.split(separator: "\n")), new = Set(snapshot.split(separator: "\n"))
-                let added = new.subtracting(old).sorted().map { "  + \($0)" }
-                let removed = old.subtracting(new).sorted().map { "  - \($0)" }
-                fail(
-                    "The public API changed:\n" + (removed + added).joined(separator: "\n")
-                        + "\nIf intended, run Scripts/api-check.sh --update and note it in CHANGELOG.md.")
-            }
-            print("✓ Public API matches \(APISnapshot.path).")
-        }
     case "dependencies":
         guard let manifest = option("--manifest", in: arguments) else {
             fail("dependencies needs --manifest <file with swift package dump-package output>.")
@@ -117,24 +89,6 @@ do {
             print("✓ wrote \(output)")
         } else {
             print(sbom, terminator: "")
-        }
-    case "new-component":
-        let positional = Array(arguments.dropFirst().prefix { !$0.hasPrefix("--") })
-        guard positional.count == 2, let category = option("--category", in: arguments) else {
-            fail("new-component needs <Family> <Component> --category <category>.\n\(usage)")
-        }
-        let scaffold = ComponentScaffold(root: root)
-        let changes = try scaffold.plan(
-            ComponentScaffold.Request(
-                family: positional[0], component: positional[1], slug: option("--slug", in: arguments), category: category))
-        if arguments.contains("--dry-run") {
-            print(changes.map { "• would \($0.kind.rawValue) \($0.path)" }.joined(separator: "\n"))
-        } else {
-            try scaffold.apply(changes)
-            print(changes.map { "✓ \($0.kind == .create ? "created" : "updated") \($0.path)" }.joined(separator: "\n"))
-            if changes.contains(where: { $0.path == Lock.pinsPath }) {
-                print("Next: run Scripts/generate.sh for the component's tokens.")
-            }
         }
     default:
         print(usage)

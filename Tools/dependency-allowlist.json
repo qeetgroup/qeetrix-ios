@@ -1,5 +1,5 @@
 {
-  "$comment": "Every package Package.resolved may pin, at the version and licence reviewed. The Qeetrix library has no dependencies: these are test-only (ADR 0009) and never reach an app. Adding or bumping one is a reviewed change: update this file, Documentation/THIRD_PARTY_NOTICES.md and, for a new package, a decision record. Checked by Scripts/dependencies.sh.",
+  "$comment": "Every package Package.resolved may pin, at the version and licence reviewed. The Qeetrix library has no dependencies: these are test-only (ADR 0009) and never reach an app. Adding or bumping one is a reviewed change: update this file, docs/third-party.md and, for a new package, a decision record. Checked by Scripts/dependencies.sh.",
   "packages": [
     {
       "identity": "swift-snapshot-testing",

@@ -55,20 +55,24 @@ struct LargeTextTests {
         }
     }
 
-    @Test("At the accessibility sizes the select's value wraps instead of being cut to one line")
-    func selectWraps() throws {
-        let options: [QeetrixOption<String?>] = [QeetrixOption("India", value: "IN")]
-        func select(_ placeholder: String) -> some View {
-            QeetrixSelect("Country", selection: .constant(nil), options: options, placeholder: Text(verbatim: placeholder))
-                .frame(width: 240)
+    // iOS only: on the Mac host SwiftUI draws a `Menu` as a native pop-up button, which keeps its label to one line
+    // whatever the label asks, so the measurement means nothing there. It runs in CI's iOS tests.
+    #if os(iOS)
+        @Test("At the accessibility sizes the select's value wraps instead of being cut to one line")
+        func selectWraps() throws {
+            let options: [QeetrixOption<String?>] = [QeetrixOption("India", value: "IN")]
+            func select(_ placeholder: String) -> some View {
+                QeetrixSelect("Country", selection: .constant(nil), options: options, placeholder: Text(verbatim: placeholder))
+                    .frame(width: 240)
+            }
+            let short = try rendered(select("Choose"), Self.largest)
+            let long = try rendered(select("Choose a country or a region"), Self.largest)
+            #expect(long.height > short.height, "The long value takes more than one line")
+            #expect(
+                try rendered(select("Choose a country or a region")).height == rendered(select("Choose")).height,
+                "At the default size it stays one line, as the web's line-clamp-1")
         }
-        let short = try rendered(select("Choose"), Self.largest)
-        let long = try rendered(select("Choose a country or a region"), Self.largest)
-        #expect(long.height > short.height, "The long value takes more than one line")
-        #expect(
-            try rendered(select("Choose a country or a region")).height == rendered(select("Choose")).height,
-            "At the default size it stays one line, as the web's line-clamp-1")
-    }
+    #endif
 }
 
 extension QeetrixCheckboxMark: CustomStringConvertible {

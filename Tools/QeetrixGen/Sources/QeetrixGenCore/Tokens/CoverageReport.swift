@@ -1,6 +1,6 @@
 import Foundation
 
-/// `Documentation/Foundations/TOKEN_COVERAGE.md`: which tokens iOS generates and as what, which it
+/// `docs/tokens.md`: which tokens iOS generates and as what, which it
 /// does not and why, which colours needed Display P3, and what tokens.css does not declare.
 /// Generated, so it cannot drift.
 struct CoverageReport {
@@ -20,7 +20,7 @@ struct CoverageReport {
             "Every value is checked against the package's pre-resolved `light.tokens.json` and `dark.tokens.json` and against `tokens.css`.",
             "",
             "\(model.included.count) tokens are generated as Swift; \(model.excluded.count) are not. The rule is in",
-            "[`Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift`](../../Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift);",
+            "[`Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift`](../Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift);",
             "every value is listed in [`token-values.json`](token-values.json).",
             "",
             "## Generated",

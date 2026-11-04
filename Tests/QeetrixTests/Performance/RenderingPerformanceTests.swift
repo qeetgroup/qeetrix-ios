@@ -4,7 +4,7 @@ import XCTest
 @testable import Qeetrix
 
 /// Timings for the work every Qeetrix view repeats. They describe the machine they run on — the Mac host
-/// or the simulator, in a debug build — and are recorded in Documentation/Quality/PERFORMANCE_REPORT.md;
+/// or the simulator, in a debug build — and are recorded in docs/quality.md;
 /// they are not thresholds, so no baseline is set and a slower machine doesn't fail them.
 final class RenderingPerformanceTests: XCTestCase {
     /// What a Qeetrix text costs on each update without the cache: a variable font built and measured.
