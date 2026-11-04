@@ -35,7 +35,7 @@ qeet-context (L0)  →  Qeetrix design system  →  @qeetrix/tokens · @qeetrix/
 
 ## Key numbers
 
-71 components · 109 colour roles · 18 text roles · 68 icons · about 650 library tests · 108 showcase UI tests.
+71 components · 109 colour roles · 18 text roles · 68 icons · about 650 library tests · 110 showcase UI tests.
 
 ## Where to read next
 

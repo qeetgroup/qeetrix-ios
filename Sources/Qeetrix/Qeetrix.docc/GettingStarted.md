@@ -21,24 +21,31 @@ Apply ``QeetrixThemeMode`` with `.qeetrixThemeMode(_:)` near the root of each sc
 `light`, `dark` and `system` — are `@qeetrix/react`'s colour schemes, so a stored preference reads the
 same on both.
 
+Read the stored preference in the scene's root view, not in the `App`: a `WindowGroup`'s content isn't
+rebuilt when the `App`'s own state changes, so a choice made while the app runs wouldn't reach the window.
+
 ```swift
 import Qeetrix
 import SwiftUI
 
 @main
 struct ExampleApp: App {
-    @AppStorage("theme") private var mode: QeetrixThemeMode = .system
-
     init() {
         // Optional: loads the bundled fonts now, so a problem is logged at launch.
         QeetrixFontRegistry.register()
     }
 
     var body: some Scene {
-        WindowGroup {
-            ContentView()
-                .qeetrixThemeMode(mode)
-        }
+        WindowGroup { RootView() }
+    }
+}
+
+struct RootView: View {
+    @AppStorage("theme") private var mode: QeetrixThemeMode = .system
+
+    var body: some View {
+        ContentView()
+            .qeetrixThemeMode(mode)
     }
 }
 ```

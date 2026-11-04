@@ -73,13 +73,18 @@ import SwiftUI
 
 @main
 struct MyApp: App {
-    // Same key and values as the web ThemeProvider's stored preference.
+    var body: some Scene {
+        WindowGroup { RootView() }
+    }
+}
+
+struct RootView: View {
+    // Same key and values as the web ThemeProvider's stored preference. Read in a view, so a change
+    // redraws the window: a WindowGroup's content isn't rebuilt when the App's own state changes.
     @AppStorage("theme") private var mode: QeetrixThemeMode = .system
 
-    var body: some Scene {
-        WindowGroup {
-            ContentView().qeetrixThemeMode(mode)
-        }
+    var body: some View {
+        ContentView().qeetrixThemeMode(mode)
     }
 }
 
