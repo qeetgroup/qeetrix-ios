@@ -16,7 +16,7 @@ let package = Package(
     dependencies: [
         // Test-only: used by QeetrixSnapshotTests and nothing else, so an app that depends on Qeetrix
         // never resolves it (ADR 0009). Exact, so a baseline image never changes under a dependency bump.
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", exact: "1.19.6")
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", exact: "1.19.7")
     ],
     targets: [
         .target(
