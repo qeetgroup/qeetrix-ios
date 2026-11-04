@@ -69,9 +69,9 @@ enum Repository {
         return unit == "rem" ? amount * 16 : amount
     }
 
-    /// `Documentation/Foundations/token-values.json`'s tokens, keyed by path.
+    /// `docs/token-values.json`'s tokens, keyed by path.
     static func tokenValues() throws -> [String: [String: Any]] {
-        let root = try json("Documentation/Foundations/token-values.json") as? [String: Any] ?? [:]
+        let root = try json("docs/token-values.json") as? [String: Any] ?? [:]
         let tokens = root["tokens"] as? [[String: Any]] ?? []
         return Dictionary(uniqueKeysWithValues: tokens.compactMap { token in (token["path"] as? String).map { ($0, token) } })
     }

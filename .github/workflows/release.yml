@@ -1,0 +1,135 @@
+name: Release
+
+# Releases Qeetrix for iOS on merge to main: the Qeetrix release flow, for a Swift package. A Swift package is
+# published by its Git tag (Swift Package Manager resolves the tag straight from this repository), so releasing means
+# tagging a verified commit.
+#
+#   1. Open a pull request into main. version.yml raises the patch in VERSION when the library changes; raise the
+#      minor or major by hand. Date the CHANGELOG entry (## [X.Y.Z] — YYYY-MM-DD): it becomes the release notes.
+#   2. Merge to main. The gate checks the version is new and runs every Mac-host gate (Scripts/check.sh). The iOS
+#      Simulator and showcase tests ran on the pull request, where main's protection requires them.
+#   3. The publish job waits for an approver in the `release` environment. Once approved it tags X.Y.Z (Swift's tag
+#      convention, no v prefix) and opens a
+#      GitHub Release with the bill of materials attached.
+#   4. Bad release? Run rollback.yml. A tag is never moved or deleted: a fix is a new version.
+#
+# Re-running is safe: if the version is already tagged, nothing is released.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  XCODE_VERSION: "27.1"
+
+jobs:
+  gate:
+    name: New version, and every gate passes
+    runs-on: xcode-27
+    timeout-minutes: 60
+    outputs:
+      release: ${{ steps.version.outputs.release }}
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # tags must be visible
+          persist-credentials: false
+      - id: version
+        name: Is there anything to release?
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -uo pipefail
+          version=$(tr -d '[:space:]' < VERSION)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?$ ]]; then
+            echo "::error::VERSION '$version' is not X.Y.Z or X.Y.Z-rc.N."; exit 1
+          fi
+          if git rev-parse -q --verify "refs/tags/$version" >/dev/null; then
+            echo "$version is already released — nothing to do."
+            echo "release=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # GitHub would create a missing environment on the fly, with no approval step: never release through one.
+          reviewers=$(gh api "repos/$GITHUB_REPOSITORY/environments/release" \
+            --jq '[.protection_rules[]? | select(.type == "required_reviewers")] | length' 2>/dev/null || echo 0)
+          if [ "${reviewers:-0}" -lt 1 ]; then
+            echo "::error::Create the release environment with a required reviewer (Settings › Environments) before releasing."
+            exit 1
+          fi
+          if ! grep -q -F "## [$version]" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no entry for $version (## [$version] — YYYY-MM-DD)."; exit 1
+          fi
+          echo "$version is new — releasing."
+          echo "release=true" >> "$GITHUB_OUTPUT"
+
+      - if: steps.version.outputs.release == 'true'
+        name: Select Xcode
+        run: sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
+      - if: steps.version.outputs.release == 'true'
+        name: Every Mac-host gate
+        run: Scripts/check.sh
+      - if: steps.version.outputs.release == 'true'
+        name: Bill of materials
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: Scripts/sbom.sh "$VERSION" "qeetrix-ios-$VERSION.cdx.json"
+      - if: steps.version.outputs.release == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: sbom
+          path: qeetrix-ios-${{ steps.version.outputs.version }}.cdx.json
+          if-no-files-found: error
+
+      - if: steps.version.outputs.release == 'false'
+        name: Report that the version is unchanged
+        run: |
+          {
+            echo "## Nothing to release"
+            echo
+            echo "\`${{ steps.version.outputs.version }}\` is already tagged."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  publish:
+    name: Release ${{ needs.gate.outputs.version }}
+    needs: gate
+    if: needs.gate.outputs.release == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    # Required reviewer: nothing is tagged until an approver approves this job.
+    environment: release
+    permissions:
+      contents: write # push the version tag and create the release
+    env:
+      VERSION: ${{ needs.gate.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: sbom
+      - name: Tag the release and open a GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Tag the commit the gate verified, even if main has moved on since.
+          git tag "$VERSION" "$GITHUB_SHA"
+          git push origin "$VERSION"
+
+          # The release notes are the version's CHANGELOG entry ("## [X.Y.Z] — date").
+          awk -v v="[$VERSION]" '/^## /{on = index($0, v) > 0; next} on' CHANGELOG.md > notes.md
+          flags=(--notes-file notes.md)
+          [[ "$VERSION" == *-rc.* ]] && flags+=(--prerelease)
+          gh release create "$VERSION" --verify-tag --title "$VERSION" "${flags[@]}" "qeetrix-ios-$VERSION.cdx.json"

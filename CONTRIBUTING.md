@@ -1,163 +1,152 @@
-# Contributing
+# 🤝 Contributing
 
-## Prerequisites
+Thanks for helping build Qeetrix for iOS. This page covers setting up, the commands, and the four things you are most
+likely to do: change something, change how something looks, add a component, and release.
 
-- Xcode with a Swift 6 toolchain. Phase 1 was verified with Xcode 27.1 (Swift 6.4); CI pins the same
-  version in `.github/workflows/ci.yml`.
-- An iOS Simulator runtime (`xcodebuild -downloadPlatform iOS`) for the iOS tests and the showcase.
-- Nothing else: no Node, no Ruby, no Python, no third-party Swift packages.
+## 🛠️ Setting up
 
-## Local setup
+- **Xcode 27.1** (Swift 6.4), with an iOS Simulator runtime. CI uses the same Xcode.
+- **No other tools.** The generator is a Swift package in `Tools/QeetrixGen`, and `swift-format` ships with Xcode.
+- **Network**, only for resolving the test-only package and for `Scripts/sync-upstream.sh`.
 
-```sh
-git clone https://github.com/qeetgroup/qeetrix-ios.git
-cd qeetrix-ios
-swift test                                   # library tests on the Mac
-swift test --package-path Tools/QeetrixGen   # generator tests
-Scripts/verify.sh                            # snapshot and generated files are consistent
-```
-
-Open `Package.swift` in Xcode to work on the library, or
-`Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj` to see it in an app.
-
-## Before you push
-
-All of these must pass; CI runs the same:
+Open `Package.swift` in Xcode, or check that everything works from the command line:
 
 ```sh
-Scripts/check.sh              # generator tests, drift, format, warnings, dependencies, resources,
-                              # host tests, public API — stops at the first failure
-sim="platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"
-xcodebuild test -scheme Qeetrix -destination "$sim"     # unit and snapshot tests on iOS
-xcodebuild test -project Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj \
-  -scheme QeetrixShowcase -destination "$sim"           # UI tests and the accessibility audit
-Scripts/docs.sh               # DocC, warnings as errors
-Scripts/api-compat.sh origin/main   # no source-breaking change against main (CI: pull requests)
+Scripts/check.sh
 ```
 
-`Scripts/lint.sh --fix` rewrites formatting; `Scripts/api-check.sh --update` accepts an intended API
-change, which then needs a CHANGELOG entry. A change `api-compat.sh` reports as breaking needs a
-decision record, its lines in `Documentation/API/breaking-changes-allowlist.txt`, and a migration note
-in the CHANGELOG (`Documentation/Quality/API_COMPATIBILITY.md`).
+## 🔁 Making a change
 
-A new issue from `AccessibilityAuditUITests` is fixed, not excluded. An exclusion is for an audit that
-is wrong about the component; it names the issue narrowly and says why
-(`Documentation/Quality/ACCESSIBILITY_REPORT.md`).
-
-## Documentation
-
-- **How to use the API:** the DocC catalogue, `Sources/Qeetrix/Qeetrix.docc`, plus doc comments on every
-  public symbol. Concrete examples in the articles and component pages are compiled and rendered by the
-  `*DocumentationExamplesTests.swift` files in `Tests/QeetrixTests/Integration`; change both together.
-- **How the package is built and why:** `ARCHITECTURE.md` and `Documentation/`.
-
-Each fact lives in one place. Link to it rather than copying it.
-
-## Conventions
-
-- **Formatting.** swift-format with `.swift-format` (4-space indent, 140 columns), strict. Generated
-  files are excluded from lint because `Scripts/verify.sh` holds them to the generator's exact output.
-- **Names.** Public types start `Qeetrix`. A token's Swift name is its upstream path in lowerCamelCase,
-  generated, never chosen by hand. Modifiers start `qeetrix` (`.qeetrixTextStyle(_:)`).
-- **Access control.** Everything is internal unless an app needs it. Storage, per-theme tables, icon
-  drawings and logging stay internal. A public API change shows up in `Scripts/api-check.sh`; note it in
-  `CHANGELOG.md`.
-- **Concurrency.** Swift 6 language mode, strict. No global mutable state. Shared caches are `static
-  let`s of `Sendable` values. Two caches change after launch, and both are bounded: rendered images,
-  main-actor isolated (`QeetrixIconImageCache`, for `Image(qeetrix:)`), and resolved typefaces, behind
-  an `OSAllocatedUnfairLock` (`QeetrixResolvedType`).
-- **Comments.** Say why: the token, the platform rule or the upstream fact behind a decision.
-
-## Tests
-
-[Swift Testing](https://developer.apple.com/documentation/testing). Tests check behaviour against
-something independent of the code under test:
-
-- the upstream snapshot (token parity);
-- the agreed brand values (colour conversion);
-- upstream's WCAG pairs (contrast);
-- rendered pixels (theme overrides, elevation, icons).
-
-A test that only restates a constant is not a test. Test files mirror `Sources`; anything that must use
-only the public API goes in `Tests/QeetrixTests/Integration`, without `@testable`.
-
-- **Snapshots** (`Tests/QeetrixSnapshotTests`, iOS only) compare component specimens with baselines in
-  four configurations (ADR 0009). Baselines live only on your machine — screenshots are never committed
-  (ADR 0013): record them with `TEST_RUNNER_SNAPSHOT_TESTING_RECORD=all` on a commit you trust, run the
-  snapshots on your change, look at every image that differs, and describe visual changes in the pull
-  request.
-- **UI tests** (`Examples/QeetrixShowcase/QeetrixShowcaseUITests`, XCTest) drive the showcase: taps,
-  typing, toggles, touch-target size and what VoiceOver is given.
-
-## Releases
-
-Releases follow `Documentation/Releases/RELEASE_CHECKLIST.md`. `Scripts/release-check.sh <version>` runs
-every gate and keeps the evidence; tagging and publishing are the owner's steps, never automation's.
-A change that affects consumers belongs in the CHANGELOG, and a source-breaking one also in the release
-notes with its migration (`Documentation/Releases/RELEASE_POLICY.md`). Keep `Examples/QeetrixConsumer`
-on the public API only: it is the stand-in for a real app.
-
-## Upstream sync
-
-Tokens, fonts, icons and the component manifest come from three npm packages and are never edited
-here: `@qeetrix/tokens`, `@qeetrix/icons` and `@qeetrix/react` (ADR 0018).
-
-1. Make the change upstream (qeetrix-tokens, qeetrix-icons or qeetrix-react) and publish it.
-2. Update `Upstream/pins.json`: a package version, the icon list, or the `@qeetrix/react` families
-   whose CSS is kept as the components' reference.
-3. Run `Scripts/sync-upstream.sh`. It fetches each tarball from npm, checks it against the
-   registry's integrity hash, checks each TTF against the sha256 and size in the tokens package's
-   `fonts/native.json` (and that file's WOFF2 hash), fails if a pinned icon name has become an alias,
-   copies, and rewrites `upstream.lock.json`.
-4. Run `Scripts/generate.sh`, then read the diff of `Documentation/Foundations/TOKEN_COVERAGE.md`,
-   `Documentation/Foundations/token-values.json` and the generated Swift. Compare `token-values.json`
-   with the Android library's.
-5. Run every check above. If public names changed, `Scripts/api-check.sh --update` and note the change
-   in `CHANGELOG.md`.
-
-Generation fails, by design, when upstream adds something iOS has no decision for:
-
-- a consumable token group with no rule in
-  [`Scope.swift`](Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift);
-- a new resolver modifier or context (colour scheme, density);
-- a pre-resolved file or `tokens.css` that disagrees with the generator's resolution of the DTCG
-  sources;
-- CSS syntax the evaluator does not know;
-- a typography role on a font that is not bundled;
-- SVG features outside the supported subset.
-
-Make the decision in the generator, not by editing generated files.
-
-## Recording a decision
-
-A choice that shapes the package for the long term gets a numbered record in
-[`Documentation/Decisions/`](Documentation/Decisions/README.md): a new dependency, a new target, a
-change to how tokens, fonts or icons arrive, or a testing approach.
-
-## Adding a component
-
-Start with the scaffold, then follow
-[`Documentation/Standards/COMPONENT_CONTRACT.md`](Documentation/Standards/COMPONENT_CONTRACT.md):
-
-```sh
-Scripts/new-component.sh Checkbox Checkbox --category "Forms & inputs" --dry-run   # see what it will do
-Scripts/new-component.sh Checkbox Checkbox --category "Forms & inputs"
+```mermaid
+flowchart LR
+    A["🌿 Branch"] --> B["✍️ Change<br/>with a test"]
+    B --> C["Scripts/check.sh"]
+    C -- "draws differently?" --> D["📸 Compare the snapshots<br/>with local baselines"]
+    C --> E["📬 Pull request<br/>with the template"]
+    D --> E
+    E --> F["🤖 CI passes"]
+    F --> G["👀 Review"]
+    G --> H["✅ Merge"]
 ```
 
-In short:
+- **One topic per pull request.** Fill in the template's checklist.
+- **A source-breaking API change** fails CI (`Scripts/api-compat.sh`) unless a decision accepts it in
+  `api/breaking-changes-allowlist.txt`.
+- **Mirror cross-platform changes** (naming, colour conversion, token scope) in qeetrix-android, or record the
+  difference in [docs/llm/boundaries.md](docs/llm/boundaries.md).
 
-- **Location.** `Sources/Qeetrix/Components/<Family>/<Component>/`, where `<Family>` is the
-  `@qeetrix/react` family in UpperCamelCase, from its `dist/manifest.json` (`Button`, `TextField`,
-  `NumberField`, …). The ui.qeet.in categories, such as Actions or Forms & inputs, are for
-  documentation and the showcase, not folders.
-- **Look.** Variant, tone and size names are `@qeetrix/react`'s. Metrics, states, motion, focus and
-  colours follow the family's CSS (kept in `Upstream/qeetrix-react/css/`, listed in `pins.json`) and
-  the design rules; restate each value beside the CSS rule it comes from.
-- **Tokens.** Semantic tokens, by their generated names. `@qeetrix/tokens`' `component.*` groups are
-  not generated; a component that needs one gets a rule in `Scope.swift` first. Never add iOS-only
-  design values.
-- **Accessibility.** Hit areas of at least 44 pt (`qeetrixHitArea()`), Dynamic Type up to the
-  accessibility sizes, VoiceOver labels and traits, Reduce Motion, and right-to-left layout. Test
-  each.
-- **The rest of the file set.** Behaviour tests, visual regression tests (ADR 0009), a DocC page and a
-  showcase page.
+## ⌨️ Commands
+
+**Every day**
+
+| Command | What it does |
+|:--|:--|
+| `Scripts/check.sh` | Every Mac-host gate: the generator's tests, upstream lock and drift, `swift-format`, compiler warnings, dependencies, resources, the library's tests, the public API |
+| `swift test` | The library's tests on the Mac host |
+| `Scripts/lint.sh` | `swift-format`, strict |
+| `xcodebuild test -scheme Qeetrix -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"` | The library's tests on the iOS Simulator |
+
+**Snapshots, API and docs**
+
+| Command | What it does |
+|:--|:--|
+| `TEST_RUNNER_SNAPSHOT_TESTING_RECORD=all xcodebuild test -scheme Qeetrix -only-testing:QeetrixSnapshotTests -destination …` | Record the snapshot baselines on a commit you trust. They stay on your machine. |
+| `xcodebuild test -scheme Qeetrix -only-testing:QeetrixSnapshotTests -destination …` | Compare your change with them |
+| `Scripts/api-check.sh [--update]` | Check, or rewrite, `api/Qeetrix.public-api.txt` |
+| `Scripts/api-compat.sh origin/main` | No source-breaking change against `main` |
+| `Scripts/docs.sh` | The DocC documentation, warnings as errors |
+
+**The showcase and releases**
+
+| Command | What it does |
+|:--|:--|
+| `xcodebuild test -project Showcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase -destination …` | The UI tests and Apple's accessibility audit over every showcase page (about an hour) |
+| `Scripts/release-check.sh <version> [--allow-dirty]` | Every release gate, with evidence in `.build/release-evidence` |
+| `Scripts/sbom.sh <version> [file]` | The release's CycloneDX bill of materials |
+
+**Upstream**
+
+| Command | What it does |
+|:--|:--|
+| `Scripts/sync-upstream.sh [--check]` | Fetch and verify the pinned npm packages (network) |
+| `Scripts/generate.sh` | Regenerate everything made from `Upstream/` |
+| `Scripts/verify.sh` | Only the lock and drift check |
+
+## 🎨 Changing how something looks
+
+A colour, size, font, icon or component look is never changed here. It changes on the web first, then reaches iOS
+through a pin bump:
+
+```mermaid
+flowchart TD
+    A["1️⃣ Change it upstream<br/>qeetrix-tokens · qeetrix-icons · qeetrix-react"] --> B["2️⃣ Publish to npm"]
+    B --> C["3️⃣ Bump the pin in Upstream/pins.json<br/>and tell the qeetrix-android maintainers"]
+    C --> D["4️⃣ Scripts/sync-upstream.sh<br/>then Scripts/generate.sh"]
+    D --> E{"Does it build?"}
+    E -- "no: a token was added, removed or renamed" --> F["Update the public type on purpose<br/>and note it in CHANGELOG.md"]
+    E -- "yes" --> G["5️⃣ Review the diff"]
+    F --> G
+    G --> H["CSS changed? Update that component's<br/>values, DocC page and snapshots"]
+```
+
+**Never edit `Upstream/`, a `Generated/` folder, `docs/tokens.md` or `docs/token-values.json` by hand.**
+`Scripts/verify.sh` fails if you do.
+
+## 🧩 Adding a component
+
+```mermaid
+flowchart LR
+    A["Copy a similar component<br/>its family folder"] --> B["Implement it<br/>from the @qeetrix/react CSS"]
+    B --> C["Tests, a snapshot test,<br/>a DocC page, a showcase page"]
+    C --> D["Scripts/api-check.sh --update"]
+    D --> E["📬 Pull request"]
+```
+
+A component lives in `Sources/Qeetrix/Components/<Family>/`, named after its `@qeetrix/react` family. Wrap the system
+control or presentation rather than imitating it, keep state in a binding the app owns, give it a 44 pt touch target
+and full VoiceOver support, and add its row to [docs/components.md](docs/components.md).
+
+## 🚀 Releasing
+
+Like every Qeetrix package, **merging to `main` releases the version in `VERSION`**. A Swift package is published by its
+Git tag, so releasing means tagging a verified commit:
+
+```mermaid
+flowchart LR
+    A["📬 Pull request<br/>develop → main"] --> B["version.yml<br/>raises the patch"]
+    B --> C["✅ Merge"]
+    C --> D["release.yml<br/>every gate"]
+    D --> E{"👤 Approve"}
+    E --> F["🏷️ Tag X.Y.Z<br/>and GitHub Release"]
+```
+
+- **The version is in the pull request's diff.** `version.yml` raises the patch when the library changes; raise the
+  minor or major by hand. Docs, tests and CI changes need no new version.
+- **The CHANGELOG entry** (`## [X.Y.Z] — YYYY-MM-DD`) becomes the GitHub Release's notes.
+- **A bad release** is marked withdrawn with **Actions › Rollback**, and the fix is a new version.
+
+Details: [docs/releases.md](docs/releases.md).
+
+## ✍️ Code
+
+- **Swift 6, strict concurrency,** and **no compiler warnings** (`Scripts/warnings.sh`).
+- **`swift-format`**, strict (`Scripts/lint.sh`).
+- **Every public declaration documented** in DocC, which CI builds with warnings as errors.
+- **No literal colours, durations or fonts.** Use the tokens. A size the tokens don't name comes from the component's
+  CSS, with the CSS beside it.
+- **No new runtime dependency.** A test-only one needs its entry in `Tools/dependency-allowlist.json`.
+
+## 🧪 Tests
+
+- **New behaviour comes with a test that would fail without it.** Check values against an independent source, never a
+  constant against itself.
+- **Swift Testing** for the library (`Tests/QeetrixTests`), on the Mac host and the iOS Simulator.
+- **Snapshots stay on your machine.** They aren't committed and CI doesn't compare them. If your change alters how a
+  component draws, compare with baselines recorded before it, and describe the change in the pull request.
+- **UI tests** in the showcase drive presentation, focus and VoiceOver, and run Apple's accessibility audit.
+
+## ♿ Accessibility
+
+Every change keeps VoiceOver labels and order, 44 pt touch targets, contrast in both schemes, Dynamic Type to the
+largest size, right to left and Reduce Motion. The tests and the accessibility audit check most of these
+automatically; VoiceOver use by a person still needs a device ([docs/quality.md](docs/quality.md)).

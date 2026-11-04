@@ -1,14 +1,14 @@
 import Foundation
 
 /// The library's public API as a sorted list of `<kind> <qualified name>` lines, read from the symbol
-/// graphs `swift package dump-symbol-graph` writes. Committed as `Documentation/API/Qeetrix.public-api.txt`;
+/// graphs `swift package dump-symbol-graph` writes. Committed as `api/Qeetrix.public-api.txt`;
 /// a difference means the public API changed, which should be a decision, not a side effect.
 ///
 /// Names carry argument labels (`QeetrixMotion.animation(_:_:reduceMotion:)`) but not types, so the
 /// snapshot stays stable across compiler versions while still catching added, removed or renamed API.
 /// Members a type only inherits from a protocol's default implementation are left out.
 public enum APISnapshot {
-    public static let path = "Documentation/API/Qeetrix.public-api.txt"
+    public static let path = "api/Qeetrix.public-api.txt"
 
     public static func render(symbolGraphs: [Data]) throws -> String {
         var lines: Set<String> = []

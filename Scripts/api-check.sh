@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compare the Qeetrix module's public API with Documentation/API/Qeetrix.public-api.txt.
+# Compare the Qeetrix module's public API with api/Qeetrix.public-api.txt.
 #
 #   Scripts/api-check.sh            fail if the public API changed
 #   Scripts/api-check.sh --update   accept the current API (then note the change in CHANGELOG.md)

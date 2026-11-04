@@ -9,15 +9,12 @@ let usage = """
       sync          Fetch the artifacts pinned in Upstream/pins.json and rewrite the lock.
       sync --check  Fetch the pinned artifacts and compare them with the lock; change nothing.
       api --symbol-graphs <dir> [--update]
-                    Compare the public API in the symbol graphs with Documentation/API (or rewrite it).
+                    Compare the public API in the symbol graphs with api/ (or rewrite it).
       dependencies --manifest <dump-package.json> [--checkouts <dir>]
                     Check Package.resolved against Tools/dependency-allowlist.json, with licences.
       resources     Check the built-in strings and the snapshot baselines.
       sbom --version <version> [--output <file>]
                     Write the release's CycloneDX bill of materials from the pins, lock and Package.resolved.
-      new-component <Family> <Component> --category <docs category> [--slug <web slug>] [--dry-run]
-                    Scaffold a component from Templates/Component. Never overwrites; --dry-run only
-                    lists the changes.
     """
 
 /// The value after `flag`, if present.
@@ -117,24 +114,6 @@ do {
             print("✓ wrote \(output)")
         } else {
             print(sbom, terminator: "")
-        }
-    case "new-component":
-        let positional = Array(arguments.dropFirst().prefix { !$0.hasPrefix("--") })
-        guard positional.count == 2, let category = option("--category", in: arguments) else {
-            fail("new-component needs <Family> <Component> --category <category>.\n\(usage)")
-        }
-        let scaffold = ComponentScaffold(root: root)
-        let changes = try scaffold.plan(
-            ComponentScaffold.Request(
-                family: positional[0], component: positional[1], slug: option("--slug", in: arguments), category: category))
-        if arguments.contains("--dry-run") {
-            print(changes.map { "• would \($0.kind.rawValue) \($0.path)" }.joined(separator: "\n"))
-        } else {
-            try scaffold.apply(changes)
-            print(changes.map { "✓ \($0.kind == .create ? "created" : "updated") \($0.path)" }.joined(separator: "\n"))
-            if changes.contains(where: { $0.path == Lock.pinsPath }) {
-                print("Next: run Scripts/generate.sh for the component's tokens.")
-            }
         }
     default:
         print(usage)

@@ -7,7 +7,7 @@
 set -eu
 root=$(cd "$(dirname "$0")/.." && pwd)
 cd "$root"
-files=$(find Package.swift Sources Tests Tools/QeetrixGen/Package.swift Tools/QeetrixGen/Sources Tools/QeetrixGen/Tests Examples \
+files=$(find Package.swift Sources Tests Tools/QeetrixGen/Package.swift Tools/QeetrixGen/Sources Tools/QeetrixGen/Tests Showcase \
     -name '*.swift' -not -path '*/Generated/*' -not -path '*/.build/*' | sort)
 if [ "${1:-}" = "--fix" ]; then
     # shellcheck disable=SC2086

@@ -1,0 +1,24 @@
+# Monthly, grouped pull requests for new versions of the package's dependencies and of the GitHub Actions the
+# workflows use. Security fixes don't wait for this schedule: Dependabot security updates open them as soon as a
+# vulnerability is published. Each update is a reviewed pull request that CI must pass; a new dependency also needs its
+# entry in Tools/dependency-allowlist.json (Scripts/dependencies.sh checks it).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    target-branch: develop
+    groups:
+      actions:
+        patterns: ["*"]
+
+  - package-ecosystem: swift
+    directory: /
+    schedule:
+      interval: monthly
+    target-branch: develop
+    open-pull-requests-limit: 5
+    groups:
+      swift-packages:
+        patterns: ["*"]

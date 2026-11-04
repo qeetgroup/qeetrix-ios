@@ -139,7 +139,7 @@ struct QeetrixResolvedType: Sendable {
 
     /// The resolved type for these values, built once and then reused. Every text in the library resolves
     /// its style on each update, and building a variable font and measuring it costs about 0.1 ms — five
-    /// milliseconds for a screen of list rows (Documentation/Quality/PERFORMANCE_REPORT.md). The cache is
+    /// milliseconds for a screen of list rows (docs/quality.md). The cache is
     /// bounded: roles, Dynamic Type sizes and Bold Text give a few hundred entries in practice, and
     /// reaching the capacity empties it.
     static func resolved(tokens: QeetrixTextRoleTokens, size: CGFloat?, legibilityWeight: LegibilityWeight?) -> QeetrixResolvedType {

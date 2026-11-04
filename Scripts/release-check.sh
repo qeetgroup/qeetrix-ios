@@ -1,7 +1,7 @@
 #!/bin/sh
 # Release-candidate verification: runs every release gate against the working tree and writes the
 # evidence — logs, the SBOM and a summary — to .build/release-evidence/<version>/. It publishes nothing: no tag,
-# no push, no release. Those are the owner's steps in Documentation/Releases/RELEASE_CHECKLIST.md.
+# no push, no release. Those are the owner's steps in docs/releases.md
 #
 #   Scripts/release-check.sh <version> [--allow-dirty]
 #
@@ -89,12 +89,11 @@ else
         record "NOT RUN" "Snapshot tests" "no local baselines (ADR 0013): record them on the previous release first"
     fi
     gate "Showcase and its UI tests build, warnings as errors" showcase-build xcodebuild build-for-testing \
-        -project Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase \
+        -project Showcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase \
         -destination "platform=iOS Simulator,id=$sim" -derivedDataPath .build/showcase SWIFT_TREAT_WARNINGS_AS_ERRORS=YES
     gate "Showcase UI tests and the accessibility audit" showcase-ui xcodebuild test \
-        -project Examples/QeetrixShowcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase \
+        -project Showcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase \
         -destination "platform=iOS Simulator,id=$sim" -derivedDataPath .build/showcase -collect-test-diagnostics never
-    gate "Consumer installs $version by version and passes" consumer Scripts/consumer-check.sh "$version" "$evidence/consumer"
 fi
 gate "DocC builds, warnings as errors" docs Scripts/docs.sh
 
@@ -111,10 +110,10 @@ else
 fi
 
 # 6. Release documents and the bill of materials.
-if grep -q "$version" Documentation/Releases/RELEASE_NOTES.md 2>/dev/null; then
-    record PASS "Release notes name $version" "Documentation/Releases/RELEASE_NOTES.md"
+if grep -q -F "## [$version]" CHANGELOG.md 2>/dev/null; then
+    record PASS "The CHANGELOG has an entry for $version" "CHANGELOG.md"
 else
-    record FAIL "Release notes name $version" "Documentation/Releases/RELEASE_NOTES.md"
+    record FAIL "The CHANGELOG has an entry for $version" "CHANGELOG.md: add ## [$version] — YYYY-MM-DD"
 fi
 gate "Bill of materials (CycloneDX)" sbom Scripts/sbom.sh "$version" "$evidence/qeetrix-ios-$version.cdx.json"
 

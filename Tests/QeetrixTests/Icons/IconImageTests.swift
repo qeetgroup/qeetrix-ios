@@ -62,7 +62,7 @@ struct IconNameContractTests {
         let names = QeetrixIconName.allCases.map(\.rawValue)
         #expect(names == names.sorted())
         #expect(Set(names).count == names.count)
-        #expect(names.count == 37)
+        #expect(names.count == 68)  // the icons pinned in Upstream/pins.json
     }
 
     @Test("A switch with a default case — how apps match icons — keeps compiling as the catalogue grows")

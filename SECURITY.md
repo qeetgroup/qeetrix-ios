@@ -1,34 +1,61 @@
-# Security
+# 🔒 Security
 
-## Scope
+Qeetrix for iOS is a UI package. It draws what the app gives it, and nothing more.
 
-Qeetrix for iOS is a UI library. It makes no network requests, stores no credentials and reads no user
-data. The security-relevant parts are:
+| | |
+|:--|:--|
+| 🌐 **Network** | None. It makes no requests and loads no remote images. |
+| 🔑 **Permissions** | None of its own. The QR scanner uses the camera only through the app's own permission and `Info.plist` entry. |
+| 💾 **Data** | Nothing stored, logged or sent. What a person types stays in the binding the app owns. |
+| 🛡️ **Privacy manifest** | Not needed: the package uses none of Apple's required-reason APIs, which the release gates check |
+| 📦 **Ships with** | No runtime dependencies. Two font files, licence texts, built-in strings and a token provenance record, loaded from the package bundle. |
 
-- **Supply chain.** The upstream artifacts it is built from (tokens, fonts, icon drawings, the
-  component manifest) come from three npm packages — `@qeetrix/tokens`, `@qeetrix/icons`,
-  `@qeetrix/react` — pinned in `Upstream/pins.json` and locked by sha256 in
-  `Upstream/upstream.lock.json`. Each tarball is checked against the npm registry's integrity hash at
-  sync time, and each font against the sha256 the tokens package publishes for it. `Scripts/verify.sh` (run
-  in CI) fails if any locked file changes, and `Scripts/sync-upstream.sh --check` re-fetches the pinned
-  artifacts and compares them.
-- **Bundled resources.** Two font files and a provenance record, loaded only from the package bundle.
-- **Dependencies.** None at run time.
+## 🛡️ Supply chain
 
-## Supported versions
+Everything the package is built from is pinned, checked and locked:
 
-The package has no released versions yet. Only `main` is supported.
+```mermaid
+flowchart LR
+    N["📦 npm packages<br/>@qeetrix/tokens · react · icons"] -->|"integrity hash checked"| S["Scripts/sync-upstream.sh"]
+    S --> L[("Upstream/upstream.lock.json<br/>sha256 of every file")]
+    L --> C{"Scripts/verify.sh<br/>on every pull request"}
+    C -->|"a locked file changed"| F["❌ Build fails"]
+    W["🗓️ Weekly CI job"] -->|"re-fetches and compares"| L
+```
 
-## Reporting a vulnerability
+- **Upstream packages** are pinned by version in `Upstream/pins.json`. Each bundled font must also match the checksum
+  `@qeetrix/tokens` publishes for it.
+- **Test-only dependencies** (swift-snapshot-testing and what it brings) are pinned in `Package.resolved`, reviewed
+  in `Tools/dependency-allowlist.json` and checked by `Scripts/dependencies.sh`. Apps never resolve them.
+- **GitHub Actions** are pinned to full commit SHAs, with the narrowest permissions per job.
 
-This repository is private. Report a vulnerability **privately to a repository administrator**. Do not
-describe it in an issue or a pull request.
+## 🔐 Sensitive input and content
 
-Include:
+- **Passwords and one-time codes.** `QeetrixPasswordInput` is a `SecureField`; neither it nor `QeetrixOTPInput` puts the
+  text in any label or accessibility value. AutoFill works through the content types they set.
+- **Toasts, alerts and dialogs** are shown on screen and read aloud. Never put a password, code or other secret in
+  them. A confirmation dialog records a choice and authorises nothing: the code that acts must check permission.
 
-- what you found and its impact;
-- how to reproduce it;
-- the commit you tested.
+## 🚢 Releases
 
-A dedicated security contact for this repository has not been designated yet. Until one is, reports
-go to the administrators directly.
+- **A release is a Git tag** on a commit that passed every gate, created by `release.yml` only after an approver
+  approves it. Tags are never moved or deleted.
+- **Each release carries a CycloneDX bill of materials** built from the pins, the lock and `Package.resolved`.
+
+## 📅 Supported versions
+
+| Version | Security fixes |
+|:--|:--|
+| `main` | ✅ Yes |
+| Released versions | None released yet. Once they are, fixes go into a patch of the latest minor version ([docs/releases.md](docs/releases.md)). |
+
+## 🚨 Reporting a vulnerability
+
+**Don't report a vulnerability in an issue or a pull request:** anyone can read those.
+
+1. Open the repository's **Security** tab and choose **Report a vulnerability**. Only the maintainers see the report.
+2. Say what you found and its impact.
+3. Explain how to reproduce it.
+4. Name the version or commit you tested.
+
+The maintainers reply in the private advisory, and publish it with the fix.

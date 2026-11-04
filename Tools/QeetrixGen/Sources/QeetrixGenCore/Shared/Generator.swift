@@ -11,7 +11,7 @@ public struct Generator {
         "Sources/Qeetrix/Icons/Generated",
         "Sources/Qeetrix/Resources/Metadata",
     ]
-    public static let coveragePath = "Documentation/Foundations/TOKEN_COVERAGE.md"
+    public static let coveragePath = "docs/tokens.md"
     public static let provenancePath = "Sources/Qeetrix/Resources/Metadata/token-provenance.json"
 
     public init(root: URL) {
