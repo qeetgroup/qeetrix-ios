@@ -89,7 +89,7 @@ is not a supported product platform.
 
 ## 📝 0.1.0
 
-The first version, not tagged yet. Its known gaps are in [quality.md](quality.md#-known-gaps).
+The first version, released on 4 November 2026 as the tag `0.1.0`. Its known gaps are in [quality.md](quality.md#-known-gaps).
 
 | Candidate | Built | Result |
 |:--|:--|:--|

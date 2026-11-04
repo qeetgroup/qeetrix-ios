@@ -49,7 +49,7 @@ flowchart LR
 | Version | State |
 |:--|:--|
 | `0.1.0-rc.1` | A release candidate, before the `@qeetrix/react` migration. Not released. |
-| `0.1.0` | ⏳ Next: the first tagged version |
+| `0.1.0` | ✅ Released on 4 November 2026 ([release](https://github.com/qeetgroup/qeetrix-ios/releases/tag/0.1.0)) |
 
 ## 🚀 Getting started
 

@@ -8,7 +8,7 @@ Ticket numbers are QTRX issues.
 
 Nothing yet.
 
-## [0.1.0] — Unreleased
+## [0.1.0] — 2026-11-04
 
 The first version. Built from `@qeetrix/react` 0.4.0, `@qeetrix/tokens` 0.0.13 and `@qeetrix/icons` 2.1.0.
 

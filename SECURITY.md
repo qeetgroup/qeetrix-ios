@@ -47,7 +47,7 @@ flowchart LR
 | Version | Security fixes |
 |:--|:--|
 | `main` | ✅ Yes |
-| Released versions | None released yet. Once they are, fixes go into a patch of the latest minor version ([docs/releases.md](docs/releases.md)). |
+| `0.1.x` | ✅ Yes, as a patch of the latest minor version ([docs/releases.md](docs/releases.md)) |
 
 ## 🚨 Reporting a vulnerability
 
