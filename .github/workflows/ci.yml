@@ -31,21 +31,26 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # the source-compatibility check below builds the target branch from this history
       - name: Select Xcode
         run: |
           sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
           xcodebuild -version
       # The generator, the upstream lock and drift, swift-format, compiler warnings, dependencies and licences,
-      # resources, the library's tests on the Mac host, and the public API (Scripts/check.sh).
+      # resources, and the library's tests on the Mac host (Scripts/check.sh).
       - name: Lint and tests
         run: Scripts/check.sh
-      # A pull request may not break source compatibility with its target branch, except for breaks a decision
-      # accepted (api/breaking-changes-allowlist.txt).
+      # A pull request may not break source compatibility with its target branch, unless VERSION raises the
+      # major version (the minor while 0.x). SwiftPM checks the baseline out of a copy of the repository that
+      # carries only local branches, so the target branch is fetched into one.
       - name: Source compatibility with the target branch
         if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
         run: |
-          git fetch --depth=1 origin "${{ github.base_ref }}"
-          Scripts/api-compat.sh "origin/${{ github.base_ref }}"
+          git fetch origin "$BASE_REF:pull-base-ref"
+          Scripts/api-compat.sh pull-base-ref
 
   ios:
     name: iOS tests

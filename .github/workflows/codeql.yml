@@ -43,6 +43,11 @@ jobs:
       - if: matrix.build-mode == 'manual'
         name: Select Xcode
         run: sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
+      # CodeQL's Swift build tracer starts Intel (x86_64) helpers, which Apple silicon runs only through Rosetta.
+      # The xcode-27 image doesn't include it; where it is installed already, this does nothing.
+      - if: matrix.build-mode == 'manual'
+        name: Install Rosetta for the CodeQL tracer
+        run: sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license
       - uses: github/codeql-action/init@1fc58d04a4d4374f921bdac573c3811c240f9c26 # v4.39.2
         with:
           languages: ${{ matrix.language }}
