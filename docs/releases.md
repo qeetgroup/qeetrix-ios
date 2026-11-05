@@ -37,8 +37,7 @@ flowchart LR
    (`## [X.Y.Z] — YYYY-MM-DD`): it becomes the release notes. A docs, tests or CI change needs no new version.
 2. **Merge.** `release.yml` checks the version isn't tagged yet, that the `release` environment has a required
    reviewer, and that the CHANGELOG has the entry, then runs every Mac-host gate (`Scripts/check.sh`) and builds the
-   bill of materials. The iOS Simulator tests, the showcase's UI tests and the accessibility audit ran on the pull
-   request.
+   bill of materials. The iOS Simulator tests ran on the pull request.
 3. **Approve.** The publish job waits: **Actions › Release › Review deployments › Approve**.
 4. **Tag and release.** It tags the verified commit `X.Y.Z` and opens a GitHub Release with the CHANGELOG entry and the
    CycloneDX bill of materials. A `-rc.N` version is marked as a pre-release.

@@ -7,7 +7,7 @@ name: Release
 #   1. Open a pull request into main. version.yml raises the patch in VERSION when the library changes; raise the
 #      minor or major by hand. Date the CHANGELOG entry (## [X.Y.Z] — YYYY-MM-DD): it becomes the release notes.
 #   2. Merge to main. The gate checks the version is new and runs every Mac-host gate (Scripts/check.sh). The iOS
-#      Simulator and showcase tests ran on the pull request, where main's protection requires them.
+#      Simulator tests ran on the pull request, where main's protection requires them.
 #   3. The publish job waits for an approver in the `release` environment. Once approved it tags X.Y.Z (Swift's tag
 #      convention, no v prefix) and opens a
 #      GitHub Release with the bill of materials attached.

@@ -9,10 +9,8 @@ How Qeetrix for iOS is checked, what it promises about its API, and what is stil
 flowchart LR
     P["📬 Pull request"] --> C["Build and test<br/>Mac host"]
     P -->|"into main"| D["iOS tests<br/>Simulator and DocC"]
-    P -->|"into main"| U["Showcase UI tests<br/>and the accessibility audit"]
     C --> G{"All pass?"}
     D --> G
-    U --> G
     G -->|"yes"| OK["✅ Can merge"]
     G -->|"no"| NO["❌ Blocked"]
 ```
@@ -20,8 +18,8 @@ flowchart LR
 | Check | Where | What it proves |
 |:--|:--|:--|
 | 🧪 **Behaviour and semantics** | Swift Testing, on the Mac host and the iOS Simulator | Each component's states, its VoiceOver labels, values and traits, and its layout at every Dynamic Type size |
-| ♿ **Apple's accessibility audit** | `AccessibilityAuditUITests` in the showcase | Every showcase page in light, dark and the largest text size, failing on any issue it doesn't exclude with a reason |
-| 🧭 **Interaction** | 110 showcase UI tests | Taps, typing, focus, presentation and dismissal, as a person would use them |
+| ♿ **Apple's accessibility audit** | `AccessibilityAuditUITests` in the showcase, run in Xcode | Every showcase page in light, dark and the largest text size, failing on any issue it doesn't exclude with a reason |
+| 🧭 **Interaction** | 110 showcase UI tests, run in Xcode | Taps, typing, focus, presentation and dismissal, as a person would use them |
 | 🌗 **Contrast** | `AccessibilityTests` | Every colour pair a component draws meets WCAG AA, in both schemes |
 | 🔠 **Large text and right to left** | `LargeTextTests`, layout tests | Text wraps rather than being cut at the accessibility sizes; layouts mirror |
 | 📸 **Snapshots** | swift-snapshot-testing, on a maintainer's machine | Every component in light, dark, the largest size and right to left matches its reviewed image |
