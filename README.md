@@ -49,7 +49,7 @@ flowchart LR
 | Version | State |
 |:--|:--|
 | `0.1.0-rc.1` | A release candidate, before the `@qeetrix/react` migration. Not released. |
-| `0.1.0` | ⏳ Next: the first tagged version |
+| `0.1.0` | ✅ Released on 4 November 2026 ([release](https://github.com/qeetgroup/qeetrix-ios/releases/tag/0.1.0)) |
 
 ## 🚀 Getting started
 
@@ -73,13 +73,18 @@ import SwiftUI
 
 @main
 struct MyApp: App {
-    // Same key and values as the web ThemeProvider's stored preference.
+    var body: some Scene {
+        WindowGroup { RootView() }
+    }
+}
+
+struct RootView: View {
+    // Same key and values as the web ThemeProvider's stored preference. Read in a view, so a change
+    // redraws the window: a WindowGroup's content isn't rebuilt when the App's own state changes.
     @AppStorage("theme") private var mode: QeetrixThemeMode = .system
 
-    var body: some Scene {
-        WindowGroup {
-            ContentView().qeetrixThemeMode(mode)
-        }
+    var body: some View {
+        ContentView().qeetrixThemeMode(mode)
     }
 }
 

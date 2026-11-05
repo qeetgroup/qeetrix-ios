@@ -21,6 +21,10 @@ category `fonts`. Text falls back to the system font, never to nothing.
 Apply `.qeetrixThemeMode(_:)` at the root of each scene, not deeper, and pass it the stored value. It sets
 the window's preferred colour scheme, so sheets, alerts and menus follow it; another scene needs its own.
 
+If the theme is right at launch but doesn't change when the person picks another, the value is read in the
+`App` and passed into `WindowGroup { … }`. That content isn't rebuilt when the `App`'s state changes: read
+the stored value with `@AppStorage` in the scene's root view instead (<doc:GettingStarted>).
+
 ### A switch over icon names stops compiling after an update
 
 Add a `default` case. Icon names are an open set; see <doc:Migrating>.

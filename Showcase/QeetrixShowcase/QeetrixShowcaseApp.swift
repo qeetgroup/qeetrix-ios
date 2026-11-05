@@ -3,7 +3,8 @@ import SwiftUI
 
 @main
 struct QeetrixShowcaseApp: App {
-    /// Stored under the same key and values as the web ThemeProvider's preference.
+    /// Stored under the same key and values as the web ThemeProvider's preference. Applied in
+    /// `ShowcaseRoot`, not here: a WindowGroup's content isn't rebuilt when the App's state changes.
     @AppStorage("theme") private var mode: QeetrixThemeMode = .system
 
     init() {
@@ -14,7 +15,6 @@ struct QeetrixShowcaseApp: App {
     var body: some Scene {
         WindowGroup {
             ShowcaseRoot(mode: $mode)
-                .qeetrixThemeMode(mode)
         }
     }
 }

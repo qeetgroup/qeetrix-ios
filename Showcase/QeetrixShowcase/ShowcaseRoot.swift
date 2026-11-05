@@ -38,6 +38,7 @@ struct ShowcaseRoot: View {
             }
         }
         .tint(QeetrixColor.textBrand)
+        .qeetrixThemeMode(mode)
         .onAppear {
             // `-page <id>` opens one page directly.
             if path.isEmpty, let id = UserDefaults.standard.string(forKey: "page") {

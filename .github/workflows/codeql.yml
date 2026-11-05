@@ -1,7 +1,10 @@
 name: CodeQL
 
-# GitHub's code scanning: finds security problems in the Swift code and in these workflows. Results appear in the
-# repository's Security tab. Runs on every pull request, on main after each merge, and weekly for new queries.
+# GitHub's code scanning of these workflows: finds security problems such as untrusted input in a run step. Results
+# appear in the repository's Security tab. Runs on every pull request, on main after each merge, and weekly for new
+# queries. The Swift code isn't scanned: CodeQL's Swift build tracer can't start a package build on the xcode-27
+# runner image ("Bad CPU type in executable", with or without Rosetta), and the library has no network, storage or
+# credential code for the Swift queries to look at.
 on:
   push:
     branches: [main]
@@ -17,45 +20,21 @@ concurrency:
   group: codeql-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  XCODE_VERSION: "27.1"
-
 jobs:
   analyze:
-    name: Analyze ${{ matrix.language }}
-    runs-on: ${{ matrix.runner }}
-    timeout-minutes: 45
+    name: Analyze actions
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     permissions:
       contents: read
       security-events: write
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - language: swift
-            build-mode: manual
-            runner: xcode-27
-          - language: actions
-            build-mode: none
-            runner: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - if: matrix.build-mode == 'manual'
-        name: Select Xcode
-        run: sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
-      # CodeQL's Swift build tracer starts Intel (x86_64) helpers, which Apple silicon runs only through Rosetta.
-      # The xcode-27 image doesn't include it; where it is installed already, this does nothing.
-      - if: matrix.build-mode == 'manual'
-        name: Install Rosetta for the CodeQL tracer
-        run: sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license
       - uses: github/codeql-action/init@1fc58d04a4d4374f921bdac573c3811c240f9c26 # v4.39.2
         with:
-          languages: ${{ matrix.language }}
-          build-mode: ${{ matrix.build-mode }}
+          languages: actions
+          build-mode: none
           queries: security-extended
-      - if: matrix.build-mode == 'manual'
-        name: Build the library for CodeQL to observe
-        run: swift build
       - uses: github/codeql-action/analyze@1fc58d04a4d4374f921bdac573c3811c240f9c26 # v4.39.2
         with:
-          category: /language:${{ matrix.language }}
+          category: /language:actions

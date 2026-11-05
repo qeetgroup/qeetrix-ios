@@ -59,7 +59,7 @@ flowchart LR
 
 | Command | What it does |
 |:--|:--|
-| `xcodebuild test -project Showcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase -destination …` | The UI tests and Apple's accessibility audit over every showcase page (about an hour) |
+| `xcodebuild test -project Showcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase -destination …` | The UI tests and Apple's accessibility audit over every showcase page (about an hour). Not run in CI: run them before a change to a component's interaction. |
 | `Scripts/release-check.sh <version> [--allow-dirty]` | Every release gate, with evidence in `.build/release-evidence` |
 | `Scripts/sbom.sh <version> [file]` | The release's CycloneDX bill of materials |
 

@@ -1,8 +1,8 @@
 name: CI
 
 # Pull requests are checked once, and main again after each merge; a push to develop is covered by its pull request.
-# The iOS Simulator tests and the showcase's UI tests (the slow part) run on pull requests into main, on main and on
-# request; everyday pull requests into develop run Build and test.
+# The iOS Simulator tests (the slow part) run on pull requests into main, on main and on request; everyday pull
+# requests into develop run Build and test. The showcase's UI tests run in Xcode, not here (CONTRIBUTING.md).
 on:
   push:
     branches: [main]
@@ -75,32 +75,6 @@ jobs:
             -derivedDataPath .build/xcode
       - name: DocC documentation (warnings are errors)
         run: Scripts/docs.sh
-
-  showcase:
-    name: Showcase UI tests
-    if: >-
-      github.event_name == 'push' || github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'pull_request' && github.base_ref == 'main')
-    runs-on: xcode-27
-    # The UI tests include the accessibility audit, about an hour.
-    timeout-minutes: 100
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Select Xcode
-        run: sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
-      - name: Pick a simulator
-        id: simulator
-        run: echo "id=$(Scripts/ci-simulator.sh)" >> "$GITHUB_OUTPUT"
-      - name: Build the showcase and its UI tests, warnings as errors
-        run: |
-          xcodebuild build-for-testing -project Showcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase \
-            -destination "platform=iOS Simulator,id=${{ steps.simulator.outputs.id }}" \
-            -derivedDataPath .build/showcase SWIFT_TREAT_WARNINGS_AS_ERRORS=YES
-      - name: UI tests and the accessibility audit
-        run: |
-          xcodebuild test -project Showcase/QeetrixShowcase.xcodeproj -scheme QeetrixShowcase \
-            -destination "platform=iOS Simulator,id=${{ steps.simulator.outputs.id }}" \
-            -derivedDataPath .build/showcase
 
   upstream:
     name: Pinned upstream still matches the lock
