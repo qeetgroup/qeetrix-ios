@@ -1,0 +1,5 @@
+<svg fill="none" stroke="currentColor" stroke-linecap="square" stroke-linejoin="miter" stroke-miterlimit="4" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="6" cy="12" r="4"/>
+  <circle cx="18" cy="12" r="4"/>
+  <line x1="7" x2="17" y1="16" y2="16"/>
+</svg>

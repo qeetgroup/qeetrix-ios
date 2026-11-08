@@ -10,7 +10,7 @@
 [![SwiftPM](https://img.shields.io/badge/SwiftPM-compatible-F05138)](#-getting-started)
 [![@qeetrix/react](https://img.shields.io/badge/%40qeetrix%2Freact-0.5.1-D04800)](Upstream/pins.json)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![Status](https://img.shields.io/badge/status-pre--release-F59E0B)](#-status)
+[![Release](https://img.shields.io/github/v/release/qeetgroup/qeetrix-ios?label=release&color=2EA043)](https://github.com/qeetgroup/qeetrix-ios/releases/latest)
 
 [📖 Design system](https://ui.qeet.in) · [🧩 Components](docs/components.md) · [🏗️ Architecture](ARCHITECTURE.md) · [📝 Changelog](CHANGELOG.md)
 
@@ -22,7 +22,7 @@
 |:--|:--|
 | 🧩 **71 components** | Buttons, forms, sheets, menus, navigation and lists, plus native-only ones such as the OTP code, QR scanner, swipe actions and pull to refresh |
 | 🎨 **Foundations** | 109 colour roles in light and dark, 18 text roles with Dynamic Type, spacing, radii, shadows, motion and three densities |
-| ✨ **88 icons** | From `@qeetrix/icons`, sharp and round, outline and filled, mirrored in right to left by meaning |
+| ✨ **1,863 icons** | Every `@qeetrix/icons` icon, sharp and round, outline and filled, mirrored in right to left by meaning: the 100 the components use in `Qeetrix`, the rest in the optional `QeetrixIconsExtended` ([icons](docs/icons.md)) |
 | 🔤 **Fonts** | Qeet Sans and Fira Code, the same files the web uses, registered from the package |
 | ♿ **Accessibility** | VoiceOver labels, 44 pt touch targets, checked contrast, Dynamic Type to the largest size, Reduce Motion |
 | 📚 **Documentation** | A DocC catalogue: **Product › Build Documentation** in Xcode, or `Scripts/docs.sh` |
@@ -50,6 +50,7 @@ flowchart LR
 |:--|:--|
 | `0.1.0-rc.1` | A release candidate, before the `@qeetrix/react` migration. Not released. |
 | `0.1.0` | ✅ Released on 4 November 2026 ([release](https://github.com/qeetgroup/qeetrix-ios/releases/tag/0.1.0)) |
+| `0.2.0` | ✅ Released on 8 November 2026 ([release](https://github.com/qeetgroup/qeetrix-ios/releases/tag/0.2.0)) |
 
 ## 🚀 Getting started
 
@@ -63,7 +64,9 @@ URL, or add it to `Package.swift`:
 .package(url: "https://github.com/qeetgroup/qeetrix-ios.git", .upToNextMinor(from: "0.1.0"))
 ```
 
-Then add the `Qeetrix` product to your target. Nothing else is needed: no account, token, Node.js or generator.
+Then add the `Qeetrix` product to your target. Nothing else is needed: no account, token, Node.js or generator. For
+every other `@qeetrix/icons` icon (`.alarmClock`), add the `QeetrixIconsExtended` product too, from 0.3.0; an app links
+only the icons it names.
 
 **Use.** Set the theme once at the root, then build screens from the components:
 

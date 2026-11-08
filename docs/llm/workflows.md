@@ -7,7 +7,7 @@
 
 ```bash
 Scripts/check.sh                       # every Mac-host gate
-xcodebuild test -scheme Qeetrix \
+xcodebuild test -scheme Qeetrix-Package \
   -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"   # the library on iOS
 ```
 

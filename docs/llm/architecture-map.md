@@ -19,7 +19,7 @@
 | `Tokens/` | Token values; the generated part in `Tokens/Generated/` |
 | `Foundations/` | Accessibility, colours, haptics, motion, shadows, sizing, typography |
 | `Theme/` | `QeetrixThemeMode`, `QeetrixTheme` and their modifiers |
-| `Icons/` | `QeetrixIcon`, `QeetrixIconName`; the drawings in `Icons/Generated/` |
+| `Icons/` | `QeetrixIcon`, `QeetrixIconName`; the core icons in `Icons/Generated/`. Every other icon: `Sources/QeetrixIconsExtended/Generated/` (the optional product) |
 | `Components/<Family>/` | One folder per `@qeetrix/react` family, its components' files directly inside |
 | `Internal/` | Shared helpers |
 

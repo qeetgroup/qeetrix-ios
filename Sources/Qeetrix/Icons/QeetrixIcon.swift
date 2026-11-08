@@ -137,6 +137,6 @@ extension QeetrixIconName {
     /// Whether `@qeetrix/icons` draws this icon in a shape and variant. Without that drawing,
     /// `QeetrixIcon` shows the outline instead.
     public func hasDrawing(_ shape: QeetrixIconShape, _ variant: QeetrixIconVariant) -> Bool {
-        drawing(shape, variant) != nil
+        encodedDrawing(shape, variant) != nil
     }
 }

@@ -1,0 +1,7 @@
+<svg fill="none" stroke="currentColor" stroke-linecap="square" stroke-linejoin="miter" stroke-miterlimit="4" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <path d="M12 15v-3"/>
+  <path d="M12 2v2"/>
+  <path d="M16.5 12V8H19.5V4H4.5V8H7.5V12"/>
+  <path d="M19.855 18.049C20.62 16.255 21.015 13.932 21.008 12.992L21 12H3L2.984 12.984C2.958 14.623 3.731 17.738 5.185 19.929"/>
+  <path d="M2.398 20.321C2.894 20.694 3.483 21 4.5 21C7 21 7 19 9.5 19C10.8 19 11.4 19.5 12 20C12.6 20.5 13.2 21 14.5 21C17 21 17 19 19.5 19C20.517 19 21.106 19.306 21.602 19.679"/>
+</svg>

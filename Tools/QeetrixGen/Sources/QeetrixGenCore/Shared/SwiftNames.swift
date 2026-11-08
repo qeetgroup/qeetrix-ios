@@ -34,6 +34,7 @@ public enum SwiftNames {
         "private", "protocol", "public", "static", "struct", "subscript", "typealias", "var", "break", "continue",
         "do", "else", "fallthrough", "for", "if", "in", "return", "switch", "where", "while", "as", "is", "nil",
         "self", "Self", "super", "throw", "throws", "true", "false", "try", "repeat", "defer", "guard", "inout",
+        "package",
     ]
 
     /// The identifier as it must be written in a declaration.

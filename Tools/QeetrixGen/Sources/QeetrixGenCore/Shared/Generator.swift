@@ -9,6 +9,7 @@ public struct Generator {
     public static let ownedDirectories = [
         TokenEmitter.directory,
         "Sources/Qeetrix/Icons/Generated",
+        IconEmitter.extendedDirectory,
         "Sources/Qeetrix/Resources/Metadata",
     ]
     public static let coveragePath = "docs/tokens.md"
@@ -70,10 +71,23 @@ public struct Generator {
         let icons = try IconCatalog.load(
             manifest: try read("Upstream/qeetrix-icons/icons.json"),
             svgDirectory: root.appendingPathComponent("Upstream/qeetrix-icons/svg"))
+        // The core icons are the pins; with `extended`, the snapshot holds every icon and the rest go to
+        // QeetrixIconsExtended.
+        let pins = try OrderedJSON.parse(try read(Lock.pinsPath), context: Lock.pinsPath)
+        guard let pinned = pins["icons"]?["icons"]?.arrayValue?.compactMap(\.stringValue) else {
+            throw GeneratorError("\(Lock.pinsPath): icons needs an icons list.")
+        }
+        let extendedCatalogue = pins["icons"]?["extended"] == .bool(true)
+        let core = icons.filter { pinned.contains($0.name) }.sorted { $0.name < $1.name }
+        let missing = Set(pinned).subtracting(core.map(\.name))
+        guard missing.isEmpty else {
+            throw GeneratorError("Upstream/qeetrix-icons/icons.json has no \(missing.sorted()) — run Scripts/sync-upstream.sh.")
+        }
+        let extended = extendedCatalogue ? icons.filter { !pinned.contains($0.name) }.sorted { $0.name < $1.name } : []
 
         return try TokenEmitter(model: model, stylesheet: stylesheet, provenance: provenance, fonts: fonts).files()
+            + IconEmitter(core: core, extended: extended, provenance: provenance).files()
             + [
-                try IconEmitter(icons: icons, provenance: provenance).file(),
                 GeneratedFile(path: Self.provenancePath, contents: try Self.provenanceJSON(provenance, model: model, fonts: fonts)),
                 GeneratedFile(
                     path: Self.coveragePath,

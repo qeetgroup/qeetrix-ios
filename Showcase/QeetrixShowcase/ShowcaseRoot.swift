@@ -11,11 +11,17 @@ struct ShowcaseRoot: View {
         ShowcaseEntry("foundations", "Foundations", nil) { [$mode] in FoundationsPage(mode: $mode) }
     }
 
+    /// Every `@qeetrix/icons` icon, the core set and `QeetrixIconsExtended`, searchable by name.
+    private var icons: ShowcaseEntry {
+        ShowcaseEntry("icons", "Icons", nil) { IconCataloguePage() }
+    }
+
     var body: some View {
         NavigationStack(path: $path) {
             List {
                 Section {
                     NavigationLink(foundations.title, value: foundations)
+                    NavigationLink(icons.title, value: icons)
                 }
                 ForEach(ShowcaseCategory.allCases.filter { !$0.entries.isEmpty }) { category in
                     Section(category.rawValue) {
@@ -43,7 +49,7 @@ struct ShowcaseRoot: View {
         .onAppear {
             // `-page <id>` opens one page directly.
             if path.isEmpty, let id = UserDefaults.standard.string(forKey: "page"),
-                let entry = ([foundations] + ShowcaseCatalog.components).first(where: { $0.id == id })
+                let entry = ([foundations, icons] + ShowcaseCatalog.components).first(where: { $0.id == id })
             {
                 path.append(entry)
             }
