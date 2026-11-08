@@ -74,8 +74,10 @@ jobs:
           # Only a change to what apps get needs a new version: the library's sources and resources, its package
           # manifest, or the upstream tokens, fonts and icons. Docs, tests, CI and the showcase don't ship, so merging
           # them releases nothing.
-          if ! gh api "repos/$repo/pulls/$PR/files" --paginate --jq '.[].filename' \
-            | grep -q -E '^(Sources/|Package\.swift$|Upstream/)'; then
+          # Listed first, then searched: piped straight into grep -q, gh dies of SIGPIPE when grep stops at the
+          # first match, and pipefail would turn that match into a miss on a long list.
+          files=$(gh api "repos/$repo/pulls/$PR/files" --paginate --jq '.[].filename')
+          if ! grep -q -E '^(Sources/|Package\.swift$|Upstream/)' <<< "$files"; then
             echo "This pull request changes nothing that ships in the library: no new version, and nothing to publish."; exit 0
           fi
 
@@ -105,4 +107,5 @@ jobs:
         if: steps.bump.outputs.bumped == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run ci.yml --ref "${{ github.head_ref }}" --repo "${{ github.repository }}"
+          HEAD_REF: ${{ github.head_ref }}
+        run: gh workflow run ci.yml --ref "$HEAD_REF" --repo "$GITHUB_REPOSITORY"
