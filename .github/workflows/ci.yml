@@ -1,11 +1,10 @@
 name: CI
 
-# Pull requests are checked once, and main again after each merge; a push to develop is covered by its pull request.
-# The iOS Simulator tests (the slow part) run on pull requests into main, on main and on request; everyday pull
+# Pull requests are checked once; a push to develop is covered by its pull request. A merge into main isn't checked
+# again: main requires these checks and an up-to-date branch, so a merge lands exactly what its pull request tested.
+# The iOS Simulator tests (the slow part) run on pull requests into main and on request; everyday pull
 # requests into develop run Build and test. The showcase's UI tests run in Xcode, not here (CONTRIBUTING.md).
 on:
-  push:
-    branches: [main]
   pull_request:
   schedule:
     # Weekly: confirm the pinned upstream artifacts still match the lock.
@@ -55,7 +54,7 @@ jobs:
   ios:
     name: iOS tests
     if: >-
-      github.event_name == 'push' || github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'pull_request' && github.base_ref == 'main')
     runs-on: xcode-27
     timeout-minutes: 60
