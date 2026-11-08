@@ -9,7 +9,7 @@
     inline-size: fit-content;
     color: var(--qx-color-text-default);
     font: var(--qx-typography-body-md);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-md-font-geometry);
     flex-direction: column;
     display: inline-flex;
   }
@@ -82,7 +82,7 @@
   .qx-calendar-weekday {
     block-size: var(--qx-size-control-sm);
     font: var(--qx-typography-label-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-label-sm-font-geometry);
     color: var(--qx-color-text-subtle);
     text-align: center;
     padding: 0;

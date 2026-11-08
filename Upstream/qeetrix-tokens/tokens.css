@@ -95,6 +95,7 @@
   --qx-color-bg-danger-bold-hover: oklch(0.448 0.161 22.388);
   --qx-color-bg-danger-bold-pressed: oklch(0.383 0.129 23.051);
   --qx-color-bg-danger-subtle: oklch(0.952 0.023 17.245);
+  --qx-color-bg-danger-subtle-pressed: oklch(0.9183 0.0221 17.245);
   --qx-color-bg-disabled: oklch(0.958 0.003 60);
   --qx-color-bg-info-bold: oklch(0.522 0.138 247.265);
   --qx-color-bg-info-subtle: oklch(0.952 0.025 238.49);
@@ -204,10 +205,12 @@
   --qx-component-tour-spotlight-padding: 6px;
   --qx-focus-ring-offset: 2px;
   --qx-focus-ring-width: 2px;
+  --qx-font-family-cjk: "Noto Sans JP", "Noto Sans SC", "Hiragino Sans", "PingFang SC", "Yu Gothic UI", "Microsoft YaHei UI", ui-sans-serif, system-ui, sans-serif;
   --qx-font-family-heading: "Qeet Sans", ui-sans-serif, system-ui, sans-serif;
-  --qx-font-family-indic: "Noto Sans", "Noto Sans Devanagari", "Noto Sans Bengali", "Noto Sans Tamil", "Noto Sans Telugu", "Noto Sans Kannada", "Noto Sans Gujarati", "Noto Sans Gurmukhi", ui-sans-serif, system-ui, sans-serif;
+  --qx-font-family-indic: "Noto Sans", "Noto Sans Devanagari", "Noto Sans Bengali", "Noto Sans Tamil", "Noto Sans Telugu", "Noto Sans Kannada", "Noto Sans Gujarati", "Noto Sans Gurmukhi", "Noto Sans Malayalam", "Noto Sans Oriya", ui-sans-serif, system-ui, sans-serif;
   --qx-font-family-mono: "Fira Code", ui-monospace, "SFMono-Regular", "SF Mono", "Menlo", monospace;
   --qx-font-family-sans: "Qeet Sans", ui-sans-serif, system-ui, sans-serif;
+  --qx-font-family-text: "Qeet Sans", "Noto Sans", "Noto Sans Devanagari", "Noto Sans Bengali", "Noto Sans Tamil", "Noto Sans Telugu", "Noto Sans Kannada", "Noto Sans Gujarati", "Noto Sans Gurmukhi", "Noto Sans Malayalam", "Noto Sans Oriya", "Noto Sans JP", "Noto Sans SC", "Hiragino Sans", "PingFang SC", "Yu Gothic UI", "Microsoft YaHei UI", ui-sans-serif, system-ui, sans-serif;
   --qx-font-geometry-body: 0;
   --qx-font-geometry-display: 100;
   --qx-font-geometry-heading: 50;
@@ -412,6 +415,7 @@
   --qx-color-bg-brand-subtle-hover: oklch(0.93 0.044 60.391);
   --qx-color-bg-brand-subtle-pressed: oklch(0.906 0.06 59.551);
   --qx-color-bg-danger-subtle: oklch(0.952 0.023 17.245);
+  --qx-color-bg-danger-subtle-pressed: oklch(0.9183 0.0221 17.245);
   --qx-color-bg-disabled: oklch(0.958 0.003 60);
   --qx-color-bg-info-subtle: oklch(0.952 0.025 238.49);
   --qx-color-bg-input: oklch(1 0 0);
@@ -512,6 +516,7 @@
   --qx-color-bg-brand-subtle-hover: oklch(0.2551 0.0268 47.571);
   --qx-color-bg-brand-subtle-pressed: oklch(0.2752 0.0342 47.468);
   --qx-color-bg-danger-subtle: oklch(0.2525 0.0329 21.422);
+  --qx-color-bg-danger-subtle-pressed: oklch(0.2885 0.05 21.041);
   --qx-color-bg-disabled: oklch(0.268 0.001 60);
   --qx-color-bg-info-subtle: oklch(0.2532 0.0232 245.035);
   --qx-color-bg-input: oklch(0.21 0.001 60);

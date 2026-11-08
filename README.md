@@ -8,7 +8,7 @@
 [![Swift](https://img.shields.io/badge/Swift-6.4-F05138?logo=swift&logoColor=white)](#-getting-started)
 [![Xcode](https://img.shields.io/badge/Xcode-27.1-147EFB?logo=xcode&logoColor=white)](#-getting-started)
 [![SwiftPM](https://img.shields.io/badge/SwiftPM-compatible-F05138)](#-getting-started)
-[![@qeetrix/react](https://img.shields.io/badge/%40qeetrix%2Freact-0.4.0-D04800)](Upstream/pins.json)
+[![@qeetrix/react](https://img.shields.io/badge/%40qeetrix%2Freact-0.5.1-D04800)](Upstream/pins.json)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Status](https://img.shields.io/badge/status-pre--release-F59E0B)](#-status)
 

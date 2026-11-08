@@ -42,7 +42,7 @@
     box-shadow: var(--qx-shadow-modal);
     color: var(--qx-color-text-default);
     font: var(--qx-typography-body-md);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-md-font-geometry);
     transform: translateX(var(--drawer-swipe-movement-x, 0px));
     transition-property: transform;
     transition-duration: var(--qx-motion-duration-slow);
@@ -93,7 +93,7 @@
   
   .qx-drawer-title {
     font: var(--qx-typography-title-md);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-heading);
+    font-variation-settings: "GEOM" var(--qx-typography-title-md-font-geometry);
     margin: 0;
   }
   

@@ -5,12 +5,16 @@
 @layer qx.components {
   :root, [data-qx-color-scheme="light"] {
     --qx-progress-track: var(--qx-color-border-default);
+    --qx-progress-edge: var(--qx-color-border-default);
     --qx-progress-warning: var(--qx-color-border-warning);
+    --qx-progress-danger: var(--qx-color-bg-danger-bold);
   }
   
   [data-qx-color-scheme="dark"] {
     --qx-progress-track: var(--qx-color-surface-sunken);
+    --qx-progress-edge: var(--qx-color-border-default);
     --qx-progress-warning: var(--qx-color-bg-warning-bold);
+    --qx-progress-danger: var(--qx-color-border-danger);
   }
   
   .qx-progress {
@@ -29,13 +33,13 @@
   
   .qx-progress-label {
     font: var(--qx-typography-label-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-label-sm-font-geometry);
     color: var(--qx-color-text-subtle);
   }
   
   .qx-progress-value {
     font: var(--qx-typography-label-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-label-sm-font-geometry);
     font-variant-numeric: tabular-nums;
     color: var(--qx-color-text-default);
   }
@@ -43,6 +47,7 @@
   .qx-progress-track {
     background: var(--qx-progress-track);
     block-size: 4px;
+    box-shadow: inset 0 0 0 var(--qx-border-width-default) var(--qx-progress-edge);
     position: relative;
     overflow: hidden;
   }
@@ -84,7 +89,7 @@
   }
   
   [data-tone="danger"] .qx-progress-indicator {
-    background: var(--qx-color-bg-danger-bold);
+    background: var(--qx-progress-danger);
   }
   
   .qx-progress-indicator[data-indeterminate] {

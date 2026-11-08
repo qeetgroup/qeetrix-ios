@@ -18,7 +18,7 @@ Everything the package is built from is pinned, checked and locked:
 flowchart LR
     N["📦 npm packages<br/>@qeetrix/tokens · react · icons"] -->|"integrity hash checked"| S["Scripts/sync-upstream.sh"]
     S --> L[("Upstream/upstream.lock.json<br/>sha256 of every file")]
-    L --> C{"Scripts/verify.sh<br/>on every pull request"}
+    L --> C{"Scripts/verify.sh<br/>in every CI run"}
     C -->|"a locked file changed"| F["❌ Build fails"]
     W["🗓️ Weekly CI job"] -->|"re-fetches and compares"| L
 ```

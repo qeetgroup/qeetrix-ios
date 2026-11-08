@@ -202,6 +202,29 @@
               }
             }
           }
+        },
+        "subtle-pressed": {
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.2885,
+              0.05,
+              21.041
+            ],
+            "hex": "#412020",
+            "alpha": 1
+          },
+          "$extensions": {
+            "in.qeet.qeetrix": {
+              "derivation": {
+                "mix": "{primitive.color.red.500}",
+                "amount": 0.23,
+                "over": "{primitive.color.graphite.925}",
+                "space": "oklab"
+              }
+            }
+          }
         }
       },
       "disabled": {
@@ -1012,6 +1035,10 @@
   },
   "font": {
     "family": {
+      "cjk": {
+        "$type": "fontFamily",
+        "$value": "{primitive.font.family.noto-cjk}"
+      },
       "heading": {
         "$type": "fontFamily",
         "$value": "{primitive.font.family.qeet-sans}"
@@ -1027,6 +1054,10 @@
       "sans": {
         "$type": "fontFamily",
         "$value": "{primitive.font.family.qeet-sans}"
+      },
+      "text": {
+        "$type": "fontFamily",
+        "$value": "{primitive.font.family.multilingual}"
       }
     },
     "geometry": {
@@ -1983,7 +2014,7 @@
             "hex": "#c5430a",
             "alpha": 1
           },
-          "$description": "Used by the dark scheme only, for bg.brand.bold-hover (QTRX-187): between 600 and 700, a hover step darker than 600 that keeps 3:1 against every dark surface, overlay included (3.31:1), and white text at 4.5:1 (5.04:1). 700, the light scheme's hover, is 2.93:1 on the dark overlay."
+          "$description": "Used by the dark scheme only, for bg.brand.bold-hover: between 600 and 700, a hover step darker than 600 that keeps 3:1 against every dark surface, overlay included (3.31:1), and white text at 4.5:1 (5.04:1). 700, the light scheme's hover, is 2.93:1 on the dark overlay."
         },
         "700": {
           "$type": "color",
@@ -2281,6 +2312,45 @@
             "monospace"
           ]
         },
+        "multilingual": {
+          "$type": "fontFamily",
+          "$value": [
+            "Qeet Sans",
+            "Noto Sans",
+            "Noto Sans Devanagari",
+            "Noto Sans Bengali",
+            "Noto Sans Tamil",
+            "Noto Sans Telugu",
+            "Noto Sans Kannada",
+            "Noto Sans Gujarati",
+            "Noto Sans Gurmukhi",
+            "Noto Sans Malayalam",
+            "Noto Sans Oriya",
+            "Noto Sans JP",
+            "Noto Sans SC",
+            "Hiragino Sans",
+            "PingFang SC",
+            "Yu Gothic UI",
+            "Microsoft YaHei UI",
+            "ui-sans-serif",
+            "system-ui",
+            "sans-serif"
+          ]
+        },
+        "noto-cjk": {
+          "$type": "fontFamily",
+          "$value": [
+            "Noto Sans JP",
+            "Noto Sans SC",
+            "Hiragino Sans",
+            "PingFang SC",
+            "Yu Gothic UI",
+            "Microsoft YaHei UI",
+            "ui-sans-serif",
+            "system-ui",
+            "sans-serif"
+          ]
+        },
         "noto-indic": {
           "$type": "fontFamily",
           "$value": [
@@ -2292,6 +2362,8 @@
             "Noto Sans Kannada",
             "Noto Sans Gujarati",
             "Noto Sans Gurmukhi",
+            "Noto Sans Malayalam",
+            "Noto Sans Oriya",
             "ui-sans-serif",
             "system-ui",
             "sans-serif"

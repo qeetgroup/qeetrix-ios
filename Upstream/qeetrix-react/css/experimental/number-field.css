@@ -14,7 +14,7 @@
     box-shadow: inset 0 calc(-1 * var(--qx-border-width-default)) 0 var(--qx-color-border-strong);
     color: var(--qx-color-text-default);
     font: var(--qx-typography-body-md);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-md-font-geometry);
     cursor: text;
     transition-property: background-color;
     transition-duration: var(--qx-motion-duration-fast);

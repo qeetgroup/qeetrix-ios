@@ -9,7 +9,7 @@
     block-size: var(--qx-size-control-md);
     border-radius: var(--qx-radius-control);
     font: var(--qx-typography-label-md);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-label-md-font-geometry);
     white-space: nowrap;
     cursor: pointer;
     -webkit-user-select: none;
@@ -55,6 +55,26 @@
   
   .qx-button[data-full-width] {
     inline-size: 100%;
+  }
+  
+  .qx-button[data-full-width] .qx-button-label {
+    text-align: center;
+    flex: auto;
+  }
+  
+  .qx-button[data-full-width]:is([data-icon], [data-loading]) {
+    grid-template-columns: minmax(2px, 1fr) minmax(0, max-content) minmax(max-content, 1fr);
+    padding-inline-start: 0;
+    display: grid;
+  }
+  
+  .qx-button[data-full-width]:is([data-icon], [data-loading]) .qx-button-label {
+    grid-column: 2;
+  }
+  
+  .qx-button[data-full-width]:is([data-icon], [data-loading]) .qx-button-zone {
+    grid-column: 3;
+    justify-self: end;
   }
   
   .qx-button[data-variant="solid"] {
@@ -110,11 +130,16 @@
   }
   
   .qx-button[data-tone="danger"][data-variant="ghost"] {
+    --qx-button-danger-pressed: var(--qx-color-bg-danger-subtle-pressed, var(--qx-color-bg-danger-subtle));
     color: var(--qx-color-text-danger);
   }
   
-  .qx-button[data-tone="danger"][data-variant="ghost"]:is(:hover, :active):not([data-disabled]) {
+  .qx-button[data-tone="danger"][data-variant="ghost"]:hover:not([data-disabled]) {
     background: var(--qx-color-bg-danger-subtle);
+  }
+  
+  .qx-button[data-tone="danger"][data-variant="ghost"]:active:not([data-disabled]) {
+    background: var(--qx-button-danger-pressed);
   }
   
   .qx-button[data-tone="neutral"][data-variant="ghost"] {

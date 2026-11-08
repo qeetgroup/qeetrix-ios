@@ -1,14 +1,17 @@
 name: CI
 
-# Pull requests are checked once, and main again after each merge; a push to develop is covered by its pull request.
-# The iOS Simulator tests (the slow part) run on pull requests into main, on main and on request; everyday pull
-# requests into develop run Build and test. The showcase's UI tests run in Xcode, not here (CONTRIBUTING.md).
+# On develop only: every push to it and every pull request into it. A develop → main pull request is checked by
+# develop's run on the same commit, and main isn't checked again after the merge: main requires these checks on an
+# up-to-date branch, so what's merged is exactly what passed here. The iOS Simulator tests (the slow part) run on
+# every push to develop and on request; pull requests into develop run Build and test. The showcase's UI tests run
+# in Xcode, not here (CONTRIBUTING.md).
 on:
   push:
-    branches: [main]
+    branches: [develop]
   pull_request:
+    branches: [develop]
   schedule:
-    # Weekly: confirm the pinned upstream artifacts still match the lock.
+    # Weekly, on develop: confirm the pinned upstream artifacts still match the lock.
     - cron: "0 6 * * 1"
   workflow_dispatch:
 
@@ -32,6 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ github.event_name == 'schedule' && 'develop' || '' }} # the scheduled run checks develop too
           fetch-depth: 0 # the source-compatibility check below builds the target branch from this history
       - name: Select Xcode
         run: |
@@ -41,22 +45,24 @@ jobs:
       # resources, and the library's tests on the Mac host (Scripts/check.sh).
       - name: Lint and tests
         run: Scripts/check.sh
-      # A pull request may not break source compatibility with its target branch, unless VERSION raises the
-      # major version (the minor while 0.x). SwiftPM checks the baseline out of a copy of the repository that
-      # carries only local branches, so the target branch is fetched into one.
-      - name: Source compatibility with the target branch
-        if: github.event_name == 'pull_request'
-        env:
-          BASE_REF: ${{ github.base_ref }}
+      # A change may not break source compatibility with the last release, what apps have, unless VERSION raises the
+      # major version over it (the minor while 0.x): a break waits for a version that may carry it. The release's tag
+      # is the baseline (fetch-depth 0 brings the tags; SwiftPM's copy of the repository keeps them).
+      - name: Source compatibility with the last release
+        if: github.event_name != 'schedule'
         run: |
-          git fetch origin "$BASE_REF:pull-base-ref"
-          Scripts/api-compat.sh pull-base-ref
+          baseline=$(git tag --list --sort=-version:refname '[0-9]*.[0-9]*.[0-9]*' | head -1)
+          if [ -z "$baseline" ]; then
+            echo "No release yet: nothing to stay compatible with."
+            exit 0
+          fi
+          echo "The last release: $baseline"
+          Scripts/api-compat.sh "$baseline"
 
   ios:
     name: iOS tests
     if: >-
-      github.event_name == 'push' || github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'pull_request' && github.base_ref == 'main')
+      github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: xcode-27
     timeout-minutes: 60
     steps:
@@ -78,18 +84,21 @@ jobs:
 
   upstream:
     name: Pinned upstream still matches the lock
-    # Networked: weekly, on request, and on a pull request that changes Upstream/.
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
+    # Networked: weekly, on request, and on a push or pull request that changes Upstream/ (develop against main).
     runs-on: xcode-27
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Skip unless Upstream/ changed (pull requests)
-        if: github.event_name == 'pull_request'
+        with:
+          ref: ${{ github.event_name == 'schedule' && 'develop' || '' }} # the scheduled run checks develop too
+      - name: Skip unless Upstream/ changed (pushes and pull requests)
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
         id: changed
+        env:
+          BASE: ${{ github.base_ref || 'main' }}
         run: |
-          git fetch --depth=1 origin "${{ github.base_ref }}"
-          if git diff --quiet "origin/${{ github.base_ref }}" -- Upstream; then
+          git fetch --depth=1 origin "$BASE"
+          if git diff --quiet "origin/$BASE" -- Upstream; then
             echo "run=false" >> "$GITHUB_OUTPUT"
           else
             echo "run=true" >> "$GITHUB_OUTPUT"

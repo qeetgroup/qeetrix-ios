@@ -12,7 +12,7 @@
     border-radius: var(--qx-radius-control);
     color: var(--qx-color-text-subtle);
     font: var(--qx-typography-label-md);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-label-md-font-geometry);
     white-space: nowrap;
     cursor: pointer;
     -webkit-user-select: none;
@@ -39,6 +39,11 @@
   .qx-toggle[data-disabled] {
     color: var(--qx-color-text-disabled);
     cursor: not-allowed;
+  }
+  
+  .qx-toggle[data-pressed][data-disabled] {
+    background: var(--qx-color-bg-disabled);
+    box-shadow: inset 0 0 0 var(--qx-border-width-default) var(--qx-color-border-disabled);
   }
   
   .qx-toggle:focus-visible {
@@ -111,6 +116,26 @@
   
   .qx-toggle-group[data-variant="segmented"][data-size="lg"] > .qx-toggle {
     block-size: calc(var(--qx-size-control-lg) - 2 * var(--qx-border-width-default));
+  }
+  
+  .qx-toggle-group[data-full-width]:not([data-orientation="vertical"]) {
+    inline-size: 100%;
+    display: flex;
+  }
+  
+  .qx-toggle-group[data-full-width]:not([data-orientation="vertical"]) > .qx-toggle {
+    flex: 1 1 0;
+    min-inline-size: 0;
+  }
+  
+  .qx-toggle-group[data-full-width]:not([data-orientation="vertical"]) .qx-toggle-label {
+    text-overflow: ellipsis;
+    min-inline-size: 0;
+    overflow: hidden;
+  }
+  
+  .qx-toggle-group[data-full-width]:not([data-orientation="vertical"])[data-variant="segmented"] > .qx-toggle:first-child {
+    border-inline-start: var(--qx-border-width-default) solid transparent;
   }
   
   @media (forced-colors: active) {

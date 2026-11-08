@@ -87,6 +87,6 @@ Every value is generated from pinned npm releases, never typed in by hand.
 
 ```swift
 let provenance = try QeetrixProvenance.bundled()
-print(provenance.tokens.version)      // for example "0.0.13"
+print(provenance.tokens.version)      // for example "0.0.15"
 print(provenance.components.version)  // the @qeetrix/react release the components follow
 ```

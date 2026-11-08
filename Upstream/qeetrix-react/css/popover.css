@@ -19,7 +19,7 @@
     box-shadow: var(--qx-shadow-overlay);
     color: var(--qx-color-text-default);
     font: var(--qx-typography-body-md);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-md-font-geometry);
     transform-origin: var(--transform-origin);
     transition-property: opacity, translate;
     transition-duration: var(--qx-motion-duration-normal);
@@ -63,7 +63,7 @@
   
   .qx-popover-title {
     font: var(--qx-typography-title-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-heading);
+    font-variation-settings: "GEOM" var(--qx-typography-title-sm-font-geometry);
     margin: 0;
   }
   

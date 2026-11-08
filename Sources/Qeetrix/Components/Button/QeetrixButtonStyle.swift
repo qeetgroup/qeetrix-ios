@@ -163,9 +163,11 @@ struct QeetrixButtonColors: Equatable {
             return QeetrixButtonColors(
                 background: state == .pressed ? .bgBrandSubtlePressed : state == .hovered ? .bgBrandSubtle : nil, foreground: .textBrand)
         case (.ghost, .danger):
-            // `.qx-button[data-tone="danger"][data-variant="ghost"]:is(:hover, :active)`: the danger
-            // tint, never the brand's; the tokens have no `bg.danger.subtle-pressed`.
-            return QeetrixButtonColors(background: state == .resting ? nil : .bgDangerSubtle, foreground: .textDanger)
+            // `.qx-button[data-tone="danger"][data-variant="ghost"]`: the danger's tints, never the brand's,
+            // `bg.danger.subtle` on hover and `bg.danger.subtle-pressed` on a press (as the web's 0.5.1).
+            return QeetrixButtonColors(
+                background: state == .pressed ? .bgDangerSubtlePressed : state == .hovered ? .bgDangerSubtle : nil,
+                foreground: .textDanger)
         case (.ghost, .neutral):
             switch state {
             case .pressed: return QeetrixButtonColors(background: .bgNeutralSubtlePressed, foreground: .textDefault)

@@ -10,7 +10,7 @@
     inline-size: 32px;
     color: var(--qx-color-text-default);
     font: var(--qx-typography-label-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-label-sm-font-geometry);
     vertical-align: middle;
     -webkit-user-select: none;
     user-select: none;
@@ -30,14 +30,14 @@
     block-size: 40px;
     inline-size: 40px;
     font: var(--qx-typography-label-md);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-label-md-font-geometry);
   }
   
   .qx-avatar[data-size="xl"] {
     block-size: 48px;
     inline-size: 48px;
     font: var(--qx-typography-label-md);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-label-md-font-geometry);
   }
   
   .qx-avatar[data-shape="square"] {

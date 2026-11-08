@@ -48,10 +48,9 @@ struct ButtonTests {
 
     typealias Expected = (background: QeetrixColor?, foreground: QeetrixColor)
 
-    /// button.css, state by state. Two cells deliberately differ from the CSS, as QeetrixButtonStyle.swift
-    /// records: a solid neutral button stays the soft look when hovered and pressed (the CSS lets the
-    /// solid variant's Ember hover win), and a ghost danger button keeps the danger tint when pressed (the
-    /// CSS shows the ghost's Ember press tint).
+    /// button.css, state by state. A solid neutral button stays the soft look when hovered and pressed, as
+    /// QeetrixButtonStyle.swift records, and a ghost danger button hovers in the danger tint and presses in
+    /// its pressed tint, never the brand's.
     static let table: [(QeetrixButtonVariant, QeetrixButtonTone, [QeetrixButtonState: Expected])] = [
         (
             .solid, .brand,
@@ -101,7 +100,7 @@ struct ButtonTests {
         ),
         (
             .ghost, .danger,
-            [.resting: (nil, .textDanger), .hovered: (.bgDangerSubtle, .textDanger), .pressed: (.bgDangerSubtle, .textDanger)]
+            [.resting: (nil, .textDanger), .hovered: (.bgDangerSubtle, .textDanger), .pressed: (.bgDangerSubtlePressed, .textDanger)]
         ),
         (
             .ghost, .neutral,
@@ -131,9 +130,11 @@ struct ButtonTests {
         let neutral = #".qx-button[data-tone="neutral"]:not([data-variant="ghost"])"#
         #expect(rule(neutral + ":hover:not([data-disabled])")?.contains("--qx-color-bg-neutral-bold-hover") == true)
         #expect(rule(neutral + ":active:not([data-disabled])")?.contains("--qx-color-bg-neutral-bold-pressed") == true)
-        // A pressed ghost danger button keeps the danger tint.
-        let danger = #".qx-button[data-tone="danger"][data-variant="ghost"]:is(:hover, :active):not([data-disabled])"#
-        #expect(rule(danger)?.contains("--qx-color-bg-danger-subtle") == true)
+        // A ghost danger button hovers in the danger tint and presses in the danger's pressed tint.
+        let danger = #".qx-button[data-tone="danger"][data-variant="ghost"]"#
+        #expect(rule(danger + ":hover:not([data-disabled])")?.contains("--qx-color-bg-danger-subtle)") == true)
+        #expect(rule(danger + ":active:not([data-disabled])")?.contains("--qx-button-danger-pressed") == true)
+        #expect(rule(danger)?.contains("--qx-color-bg-danger-subtle-pressed") == true)
     }
 
     @Test("Full width: the label is centred on the whole button, with or without an icon, at every size and right to left")

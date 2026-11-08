@@ -13,7 +13,7 @@
   .qx-copy-field-label {
     color: var(--qx-color-text-subtle);
     font: var(--qx-typography-label-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-label-sm-font-geometry);
   }
   
   .qx-copy-field-box {

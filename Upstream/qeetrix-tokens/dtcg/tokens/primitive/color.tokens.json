@@ -223,7 +223,7 @@
             "components": [0.56, 0.175, 39],
             "hex": "#c5430a"
           },
-          "$description": "Used by the dark scheme only, for bg.brand.bold-hover (QTRX-187): between 600 and 700, a hover step darker than 600 that keeps 3:1 against every dark surface, overlay included (3.31:1), and white text at 4.5:1 (5.04:1). 700, the light scheme's hover, is 2.93:1 on the dark overlay."
+          "$description": "Used by the dark scheme only, for bg.brand.bold-hover: between 600 and 700, a hover step darker than 600 that keeps 3:1 against every dark surface, overlay included (3.31:1), and white text at 4.5:1 (5.04:1). 700, the light scheme's hover, is 2.93:1 on the dark overlay."
         },
         "700": {
           "$value": {

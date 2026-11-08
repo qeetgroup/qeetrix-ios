@@ -27,7 +27,7 @@ QeetrixNavigationScaffold("Qeet Auth", selection: $destination, items: [
 - **Items.** ``QeetrixNavigationItem`` is a destination: your value, a title, a Qeetrix icon — drawn
   round, as the web draws navigation (design rules §16) — an optional count and `isDisabled` for one
   shown but not available, such as one outside the plan.
-- **The current item** is marked as `@qeetrix/react` 0.4.0's sidebar marks it (design rules §11):
+- **The current item** is marked as `@qeetrix/react` 0.5.1's sidebar marks it (design rules §11):
   `color.bg.neutral.subtle-hover` behind `color.text.default` at weight 600, the 3-point Ember bar
   (`border.width.accent`, `color.border.brand`) on its leading edge, and its icon in
   `color.icon.brand`, filled where the icon has a filled drawing (`filledWhenCurrent`, on by default).
