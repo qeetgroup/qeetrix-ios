@@ -37,7 +37,9 @@ struct PermissionPrimerPage: View {
         .qeetrixSheet(isPresented: $showsSheet) {
             QeetrixPermissionPrimer(
                 .location, title: "Find branches near you", message: "Qeet People uses your location only while you look for a branch.",
-                onContinue: { showsSheet = false }, onNotNow: { showsSheet = false })
+                onContinue: { showsSheet = false }, onNotNow: { showsSheet = false }
+            )
+            .footnote(Text("Only while this screen is open. Never in the background."))
         }
     }
 

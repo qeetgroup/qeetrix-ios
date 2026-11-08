@@ -28,7 +28,7 @@ struct ProgressTests {
         }
     }
 
-    @Test("Every tone's indicator keeps 3:1 against the track in both schemes (QTRX-176)")
+    @Test("Every tone's indicator keeps 3:1 against the track in both schemes")
     func indicatorContrast() {
         for theme in [QeetrixTheme.light, .dark] {
             let track = theme.resolve(QeetrixProgressTrack.track(theme.colorScheme))

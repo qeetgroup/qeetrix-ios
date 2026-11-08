@@ -86,6 +86,13 @@ private struct PermissionPrimerExamples: View {
                 title: "Know when a payment arrives",
                 message: "Qeet Pay sends a notification when a customer pays an invoice. Nothing else.",
                 onContinue: requestAuthorization, onNotNow: dismiss)
+            // PermissionPrimer.md: a footnote under the actions.
+            QeetrixPermissionPrimer(
+                .notifications, title: "Approve sign-ins from this phone",
+                message: "Qeet ID notifies you when you sign in somewhere new.",
+                onContinue: requestAuthorization, onNotNow: dismiss
+            )
+            .footnote(Text("Only sign-in requests. Nothing else, no marketing."))
             Text("Branches")
                 .qeetrixSheet(isPresented: $asksForLocation) {
                     QeetrixPermissionPrimer(

@@ -72,6 +72,36 @@ struct AccordionTests {
         #expect(try height(true) == 46 + 50 + 16)
     }
 
+    @Test("A summary under the title, 4 pt inside the trigger above and below; the chevron on the title's first line")
+    func summary() throws {
+        func render(_ description: Text?, title: String = "Advanced") throws -> Rendered {
+            let view = QeetrixAccordionItem(title: Text(title), description: description, isExpanded: .constant(false)) { EmptyView() }
+                .frame(width: 320)
+                .environment(\.colorScheme, .light)
+            return try #require(Rendered(view))
+        }
+        /// The chevron's rows: drawn pixels in its 16 pt column at the trailing edge, between the rules.
+        func chevronCentre(_ image: Rendered) -> Double? {
+            let rows = (2..<(image.height - 2)).filter { y in (304..<320).contains { image.pixel($0, y).a > 0 } }
+            guard let first = rows.first, let last = rows.last else { return nil }
+            return Double(first + last) / 2
+        }
+        let plain = try render(nil)
+        #expect(plain.height == 46, "Unchanged without one")
+        let summarised = try render(Text("6 digits · every 30 seconds · SHA-1"))
+        // The rule, 4 pt, title.sm's 24 pt line, body.sm's 16 pt line, 4 pt, the rule.
+        #expect(abs(summarised.height - (1 + 4 + 24 + 16 + 4 + 1)) <= 1, "\(summarised.height)")
+        // Centred on the title's first line (1 + 4 + 12), not on the trigger.
+        let centre = try #require(chevronCentre(summarised))
+        #expect(abs(centre - 17) <= 1.5, "\(centre)")
+        let wrapped = try render(
+            Text("Lock after the app has been in the background for this long"),
+            title: "When the app locks itself after you leave it for a while")
+        let wrappedCentre = try #require(chevronCentre(wrapped))
+        #expect(abs(wrappedCentre - 17) <= 1.5, "Still the first line when the title wraps: \(wrappedCentre)")
+        #expect(wrapped.height > summarised.height + 20)
+    }
+
     @Test("The rules: border.subtle above each section and below the last")
     func rules() throws {
         let view = QeetrixAccordion(expanded: .constant(Set<Section>())) {
@@ -100,6 +130,13 @@ struct AccordionTests {
                 }
                 QeetrixAccordion {
                     QeetrixAccordionItem("Advanced", isExpanded: .constant(true), headingLevel: 2) { QeetrixText("Retries") }
+                }
+                QeetrixAccordionItem("Advanced", description: Text("6 digits · every 30 seconds · SHA-1"), isExpanded: .constant(true)) {
+                    QeetrixAccordionItem("Nested", isExpanded: .constant(false)) { QeetrixText("No summary of its own") }
+                }
+                QeetrixAccordion(expanded: .constant(Section?.none)) {
+                    QeetrixAccordionItem("Tax settings", description: Text("18% GST"), value: Section.tax) { QeetrixText("GST") }
+                    QeetrixAccordionItem(title: Text("Reminders"), description: nil, value: Section.reminders) { QeetrixText("Off") }
                 }
                 DisclosureGroup("Retry policy", isExpanded: .constant(false)) { QeetrixText("Three attempts.") }
                     .disclosureGroupStyle(.qeetrixAccordion())

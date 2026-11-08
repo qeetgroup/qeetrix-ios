@@ -8,6 +8,7 @@ struct AccordionPage: View {
     @State private var several: Set<Section> = [.tax, .numbering]
     @State private var showsAdvanced = false
     @State private var retries = true
+    @State private var showsCodeSettings = false
 
     var body: some View {
         ComponentPage(
@@ -38,6 +39,13 @@ struct AccordionPage: View {
                     QeetrixAccordionItem("What happens to unpaid invoices at the end of the financial year?", value: Section.export) {
                         QeetrixText("They carry over to the next year, with their original dates.")
                     }
+                }
+            }
+            DemoSection("A summary under the title") {
+                QeetrixAccordionItem(
+                    "Code settings", description: Text("6 digits · every 30 seconds · SHA-1"), isExpanded: $showsCodeSettings
+                ) {
+                    QeetrixText("Change these only if the service's setup page asks you to.")
                 }
             }
             DemoSection("A single section") {

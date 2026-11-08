@@ -35,7 +35,7 @@ struct RadioGroupTests {
         #expect(close(QeetrixTheme.light.resolve(.bgInput).bytes, image.pixel(8, 8)))
     }
 
-    @Test("With an error the chosen radio's ring is the danger colour (QTRX-161)")
+    @Test("With an error the chosen radio's ring is the danger colour")
     func invalidRing() throws {
         let image = try #require(
             Rendered(QeetrixRadioDisc(isSelected: true).environment(\.qeetrixGroupIsInvalid, true).environment(\.colorScheme, .light)))

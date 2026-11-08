@@ -28,7 +28,7 @@ struct CheckboxTests {
         #expect(box(.unchecked, invalid: true).border == .borderDanger)
         #expect(box(.unchecked, hovered: true, invalid: true).border == .borderDanger)
         for mark in [QeetrixCheckboxMark.checked, .mixed] {
-            // Invalid keeps the danger edge checked and hovered, on the Ember fill (QTRX-161).
+            // Invalid keeps the danger edge checked and hovered, on the Ember fill.
             #expect((box(mark, invalid: true).fill, box(mark, invalid: true).border) == (.bgBrandBold, .borderDanger))
             #expect(box(mark, hovered: true, invalid: true).border == .borderDanger)
             #expect(box(mark, enabled: false, invalid: true).border == .borderDisabled)

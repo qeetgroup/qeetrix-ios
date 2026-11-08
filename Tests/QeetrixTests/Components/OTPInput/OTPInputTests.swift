@@ -59,6 +59,44 @@ struct OTPInputTests {
         #expect(mdImage.width == 390, "It spans its container")
     }
 
+    @Test("Square slots: a 2-digit number match keeps two 40 pt slots, 8 pt apart, at the leading edge")
+    @MainActor
+    func squareSlots() throws {
+        func image(_ direction: LayoutDirection, _ width: QeetrixOTPSlotWidth) throws -> Rendered {
+            try #require(
+                Rendered(
+                    QeetrixOTPInput(code: .constant(""), length: 2)
+                        .qeetrixOTPSlotWidth(width)
+                        .frame(width: 300)
+                        .background(Color.white)
+                        .environment(\.layoutDirection, direction)
+                        .qeetrixTheme(.light)))
+        }
+        // Read 5 pt above the slots' bottom line: the native text field over the slots, which the Mac renderer
+        // draws as a placeholder, covers their middle rows.
+        func filled(_ image: Rendered, _ x: Int) -> Bool { image.pixel(x, 35).r < 250 }
+        let ltr = try image(.leftToRight, .square)
+        #expect(ltr.width == 300, "The input still spans its container")
+        for x in [2, 38, 50, 86] { #expect(filled(ltr, x), "slot at \(x)") }
+        for x in [44, 92, 200, 297] { #expect(!filled(ltr, x), "no slot at \(x)") }
+        // In right to left the slots sit at the leading edge, the right, still reading left to right.
+        let rtl = try image(.rightToLeft, .square)
+        for x in [298, 262, 250, 214] { #expect(filled(rtl, x), "rtl slot at \(x)") }
+        for x in [256, 208, 3] { #expect(!filled(rtl, x), "rtl: no slot at \(x)") }
+        // The default still shares the width.
+        #expect(filled(try image(.leftToRight, .fill), 297))
+        #expect(QeetrixOTPSlotWidth.allCases.map(\.rawValue) == ["fill", "square"])
+    }
+
+    @Test("An unlabelled code can take the name VoiceOver reads, the label hidden")
+    @MainActor
+    func accessibilityLabel() {
+        let named = QeetrixOTPInput(code: .constant(""), accessibilityLabel: Text("Number on your other device"), length: 2)
+        #expect(named.context != nil)
+        #expect(named.isLabelHidden)
+        #expect(QeetrixOTPInput(code: .constant("")).context == nil, "Without one it stays One-time code")
+    }
+
     @Test("Renders empty, part-filled, grouped, invalid and disabled")
     func renders() {
         #expect(ImageRenderer(content: QeetrixOTPInput("Code", code: .constant("")).frame(width: 390)).cgImage != nil)

@@ -7,7 +7,7 @@ What Qeetrix for iOS bundles, and under which licence. The licence texts ship in
 |:--|:--|:--|
 | Qeet Sans font (the file is Cal Sans 2.011) | `@qeetrix/tokens` 0.0.13, unmodified | SIL Open Font License 1.1 |
 | Fira Code font | `@qeetrix/tokens` 0.0.13, unmodified | SIL Open Font License 1.1 |
-| 68 icons, as path data | `@qeetrix/icons` 2.1.0, based on [Lucide](https://lucide.dev) | MIT, with Lucide's and Feather's notices |
+| 88 icons, as path data | `@qeetrix/icons` 2.1.0, based on [Lucide](https://lucide.dev) | MIT, with Lucide's and Feather's notices |
 | The package's own code | This repository | [MIT](../LICENSE) (© 2026 Qeet Group) |
 
 The package has no runtime dependencies. Its test-only dependencies (swift-snapshot-testing and what it brings, MIT and

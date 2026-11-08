@@ -160,7 +160,7 @@ struct QeetrixCheckboxBox: View {
     var border: QeetrixColor {
         if !isEnabled { return .borderDisabled }
         // `.qx-checkbox[data-invalid]` follows the checked and hover rules: an invalid box keeps the
-        // danger edge checked and hovered, on its Ember fill (QTRX-161).
+        // danger edge checked and hovered, on its Ember fill.
         if isInvalid { return .borderDanger }
         if mark != .unchecked { return isHovered ? .bgBrandBoldHover : .bgBrandBold }
         return isHovered ? .borderStrongHover : .borderStrong

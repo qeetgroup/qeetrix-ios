@@ -27,8 +27,17 @@ public struct QeetrixIconName: RawRepresentable, Hashable, CaseIterable, Sendabl
     /// `archive` — `ArchiveIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
     public static let archive = QeetrixIconName("archive")
 
+    /// `arrow-big-up` — `ArrowBigUpIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
+    public static let arrowBigUp = QeetrixIconName("arrow-big-up")
+
     /// `arrow-down` — `ArrowDownIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
     public static let arrowDown = QeetrixIconName("arrow-down")
+
+    /// `arrow-left` — `ArrowLeftIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
+    public static let arrowLeft = QeetrixIconName("arrow-left")
+
+    /// `arrow-right` — `ArrowRightIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
+    public static let arrowRight = QeetrixIconName("arrow-right")
 
     /// `arrow-up` — `ArrowUpIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
     public static let arrowUp = QeetrixIconName("arrow-up")
@@ -78,6 +87,9 @@ public struct QeetrixIconName: RawRepresentable, Hashable, CaseIterable, Sendabl
     /// `circle-plus` — `CirclePlusIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
     public static let circlePlus = QeetrixIconName("circle-plus")
 
+    /// `circle-question-mark` — `CircleQuestionMarkIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
+    public static let circleQuestionMark = QeetrixIconName("circle-question-mark")
+
     /// `circle-x` — `CircleXIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
     public static let circleX = QeetrixIconName("circle-x")
 
@@ -98,6 +110,12 @@ public struct QeetrixIconName: RawRepresentable, Hashable, CaseIterable, Sendabl
 
     /// `ellipsis` — `EllipsisIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
     public static let ellipsis = QeetrixIconName("ellipsis")
+
+    /// `ellipsis-vertical` — `EllipsisVerticalIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
+    public static let ellipsisVertical = QeetrixIconName("ellipsis-vertical")
+
+    /// `external-link` — `ExternalLinkIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
+    public static let externalLink = QeetrixIconName("external-link")
 
     /// `eye` — `EyeIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
     public static let eye = QeetrixIconName("eye")
@@ -123,6 +141,9 @@ public struct QeetrixIconName: RawRepresentable, Hashable, CaseIterable, Sendabl
     /// `file-text` — `FileTextIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
     public static let fileText = QeetrixIconName("file-text")
 
+    /// `fingerprint-pattern` — `FingerprintPatternIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
+    public static let fingerprintPattern = QeetrixIconName("fingerprint-pattern")
+
     /// `flashlight` — `FlashlightIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
     public static let flashlight = QeetrixIconName("flashlight")
 
@@ -131,6 +152,9 @@ public struct QeetrixIconName: RawRepresentable, Hashable, CaseIterable, Sendabl
 
     /// `folder` — `FolderIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
     public static let folder = QeetrixIconName("folder")
+
+    /// `hourglass` — `HourglassIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
+    public static let hourglass = QeetrixIconName("hourglass")
 
     /// `house` — `HouseIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
     public static let house = QeetrixIconName("house")
@@ -147,17 +171,29 @@ public struct QeetrixIconName: RawRepresentable, Hashable, CaseIterable, Sendabl
     /// `info` — `InfoIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
     public static let info = QeetrixIconName("info")
 
+    /// `key` — `KeyIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
+    public static let key = QeetrixIconName("key")
+
     /// `key-round` — `KeyRoundIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
     public static let keyRound = QeetrixIconName("key-round")
 
     /// `keyboard` — `KeyboardIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
     public static let keyboard = QeetrixIconName("keyboard")
 
+    /// `link` — `LinkIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
+    public static let link = QeetrixIconName("link")
+
     /// `loader-circle` — `LoaderCircleIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
     public static let loaderCircle = QeetrixIconName("loader-circle")
 
     /// `lock` — `LockIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
     public static let lock = QeetrixIconName("lock")
+
+    /// `lock-open` — `LockOpenIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
+    public static let lockOpen = QeetrixIconName("lock-open")
+
+    /// `mail` — `MailIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
+    public static let mail = QeetrixIconName("mail")
 
     /// `map-pin` — `MapPinIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
     public static let mapPin = QeetrixIconName("map-pin")
@@ -186,14 +222,26 @@ public struct QeetrixIconName: RawRepresentable, Hashable, CaseIterable, Sendabl
     /// `plus` — `PlusIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
     public static let plus = QeetrixIconName("plus")
 
+    /// `rectangle-ellipsis` — `RectangleEllipsisIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
+    public static let rectangleEllipsis = QeetrixIconName("rectangle-ellipsis")
+
     /// `refresh-cw` — `RefreshCwIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
     public static let refreshCw = QeetrixIconName("refresh-cw")
+
+    /// `scan-face` — `ScanFaceIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
+    public static let scanFace = QeetrixIconName("scan-face")
 
     /// `scan-line` — `ScanLineIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
     public static let scanLine = QeetrixIconName("scan-line")
 
+    /// `scan-qr-code` — `ScanQrCodeIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
+    public static let scanQrCode = QeetrixIconName("scan-qr-code")
+
     /// `search` — `SearchIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
     public static let search = QeetrixIconName("search")
+
+    /// `search-x` — `SearchXIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
+    public static let searchX = QeetrixIconName("search-x")
 
     /// `send` — `SendIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled. Mirrors in right-to-left layouts.
     public static let send = QeetrixIconName("send")
@@ -207,8 +255,17 @@ public struct QeetrixIconName: RawRepresentable, Hashable, CaseIterable, Sendabl
     /// `share-2` — `Share2Icon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
     public static let share2 = QeetrixIconName("share-2")
 
+    /// `shield-check` — `ShieldCheckIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
+    public static let shieldCheck = QeetrixIconName("shield-check")
+
+    /// `shield-x` — `ShieldXIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
+    public static let shieldX = QeetrixIconName("shield-x")
+
     /// `smartphone` — `SmartphoneIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
     public static let smartphone = QeetrixIconName("smartphone")
+
+    /// `timer` — `TimerIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
+    public static let timer = QeetrixIconName("timer")
 
     /// `trash` — `TrashIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
     public static let trash = QeetrixIconName("trash")
@@ -222,6 +279,9 @@ public struct QeetrixIconName: RawRepresentable, Hashable, CaseIterable, Sendabl
     /// `user-round` — `UserRoundIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
     public static let userRound = QeetrixIconName("user-round")
 
+    /// `users` — `UsersIcon` in @qeetrix/icons. Drawings: round-outline, round-filled, sharp-outline, sharp-filled.
+    public static let users = QeetrixIconName("users")
+
     /// `wifi-off` — `WifiOffIcon` in @qeetrix/icons. Drawings: round-outline, sharp-outline.
     public static let wifiOff = QeetrixIconName("wifi-off")
 
@@ -231,7 +291,10 @@ public struct QeetrixIconName: RawRepresentable, Hashable, CaseIterable, Sendabl
     /// Every icon in the catalogue, in name order.
     public static let allCases: [QeetrixIconName] = [
         .archive,
+        .arrowBigUp,
         .arrowDown,
+        .arrowLeft,
+        .arrowRight,
         .arrowUp,
         .bell,
         .bellOff,
@@ -248,6 +311,7 @@ public struct QeetrixIconName: RawRepresentable, Hashable, CaseIterable, Sendabl
         .circleCheck,
         .circleDashed,
         .circlePlus,
+        .circleQuestionMark,
         .circleX,
         .clock,
         .cloudUpload,
@@ -255,6 +319,8 @@ public struct QeetrixIconName: RawRepresentable, Hashable, CaseIterable, Sendabl
         .copy,
         .database,
         .ellipsis,
+        .ellipsisVertical,
+        .externalLink,
         .eye,
         .eyeOff,
         .file,
@@ -263,18 +329,24 @@ public struct QeetrixIconName: RawRepresentable, Hashable, CaseIterable, Sendabl
         .fileImage,
         .fileSpreadsheet,
         .fileText,
+        .fingerprintPattern,
         .flashlight,
         .flashlightOff,
         .folder,
+        .hourglass,
         .house,
         .image,
         .imagePlus,
         .inbox,
         .info,
+        .key,
         .keyRound,
         .keyboard,
+        .link,
         .loaderCircle,
         .lock,
+        .lockOpen,
+        .mail,
         .mapPin,
         .menu,
         .minus,
@@ -284,18 +356,26 @@ public struct QeetrixIconName: RawRepresentable, Hashable, CaseIterable, Sendabl
         .pencil,
         .pin,
         .plus,
+        .rectangleEllipsis,
         .refreshCw,
+        .scanFace,
         .scanLine,
+        .scanQrCode,
         .search,
+        .searchX,
         .send,
         .server,
         .settings,
         .share2,
+        .shieldCheck,
+        .shieldX,
         .smartphone,
+        .timer,
         .trash,
         .triangleAlert,
         .userPlus,
         .userRound,
+        .users,
         .wifiOff,
         .x,
     ]
@@ -331,8 +411,16 @@ enum QeetrixIconDrawings {
         QeetrixIconDrawingKey(name: .archive, shape: .round, variant: .filled): QeetrixIconDrawings.archiveRoundFilled,
         QeetrixIconDrawingKey(name: .archive, shape: .sharp, variant: .outline): QeetrixIconDrawings.archiveSharpOutline,
         QeetrixIconDrawingKey(name: .archive, shape: .sharp, variant: .filled): QeetrixIconDrawings.archiveSharpFilled,
+        QeetrixIconDrawingKey(name: .arrowBigUp, shape: .round, variant: .outline): QeetrixIconDrawings.arrowBigUpRoundOutline,
+        QeetrixIconDrawingKey(name: .arrowBigUp, shape: .round, variant: .filled): QeetrixIconDrawings.arrowBigUpRoundFilled,
+        QeetrixIconDrawingKey(name: .arrowBigUp, shape: .sharp, variant: .outline): QeetrixIconDrawings.arrowBigUpSharpOutline,
+        QeetrixIconDrawingKey(name: .arrowBigUp, shape: .sharp, variant: .filled): QeetrixIconDrawings.arrowBigUpSharpFilled,
         QeetrixIconDrawingKey(name: .arrowDown, shape: .round, variant: .outline): QeetrixIconDrawings.arrowDownRoundOutline,
         QeetrixIconDrawingKey(name: .arrowDown, shape: .sharp, variant: .outline): QeetrixIconDrawings.arrowDownSharpOutline,
+        QeetrixIconDrawingKey(name: .arrowLeft, shape: .round, variant: .outline): QeetrixIconDrawings.arrowLeftRoundOutline,
+        QeetrixIconDrawingKey(name: .arrowLeft, shape: .sharp, variant: .outline): QeetrixIconDrawings.arrowLeftSharpOutline,
+        QeetrixIconDrawingKey(name: .arrowRight, shape: .round, variant: .outline): QeetrixIconDrawings.arrowRightRoundOutline,
+        QeetrixIconDrawingKey(name: .arrowRight, shape: .sharp, variant: .outline): QeetrixIconDrawings.arrowRightSharpOutline,
         QeetrixIconDrawingKey(name: .arrowUp, shape: .round, variant: .outline): QeetrixIconDrawings.arrowUpRoundOutline,
         QeetrixIconDrawingKey(name: .arrowUp, shape: .sharp, variant: .outline): QeetrixIconDrawings.arrowUpSharpOutline,
         QeetrixIconDrawingKey(name: .bell, shape: .round, variant: .outline): QeetrixIconDrawings.bellRoundOutline,
@@ -379,6 +467,10 @@ enum QeetrixIconDrawings {
         QeetrixIconDrawingKey(name: .circlePlus, shape: .round, variant: .filled): QeetrixIconDrawings.circlePlusRoundFilled,
         QeetrixIconDrawingKey(name: .circlePlus, shape: .sharp, variant: .outline): QeetrixIconDrawings.circlePlusSharpOutline,
         QeetrixIconDrawingKey(name: .circlePlus, shape: .sharp, variant: .filled): QeetrixIconDrawings.circlePlusSharpFilled,
+        QeetrixIconDrawingKey(name: .circleQuestionMark, shape: .round, variant: .outline): QeetrixIconDrawings.circleQuestionMarkRoundOutline,
+        QeetrixIconDrawingKey(name: .circleQuestionMark, shape: .round, variant: .filled): QeetrixIconDrawings.circleQuestionMarkRoundFilled,
+        QeetrixIconDrawingKey(name: .circleQuestionMark, shape: .sharp, variant: .outline): QeetrixIconDrawings.circleQuestionMarkSharpOutline,
+        QeetrixIconDrawingKey(name: .circleQuestionMark, shape: .sharp, variant: .filled): QeetrixIconDrawings.circleQuestionMarkSharpFilled,
         QeetrixIconDrawingKey(name: .circleX, shape: .round, variant: .outline): QeetrixIconDrawings.circleXRoundOutline,
         QeetrixIconDrawingKey(name: .circleX, shape: .round, variant: .filled): QeetrixIconDrawings.circleXRoundFilled,
         QeetrixIconDrawingKey(name: .circleX, shape: .sharp, variant: .outline): QeetrixIconDrawings.circleXSharpOutline,
@@ -403,6 +495,10 @@ enum QeetrixIconDrawings {
         QeetrixIconDrawingKey(name: .database, shape: .sharp, variant: .filled): QeetrixIconDrawings.databaseSharpFilled,
         QeetrixIconDrawingKey(name: .ellipsis, shape: .round, variant: .outline): QeetrixIconDrawings.ellipsisRoundOutline,
         QeetrixIconDrawingKey(name: .ellipsis, shape: .sharp, variant: .outline): QeetrixIconDrawings.ellipsisSharpOutline,
+        QeetrixIconDrawingKey(name: .ellipsisVertical, shape: .round, variant: .outline): QeetrixIconDrawings.ellipsisVerticalRoundOutline,
+        QeetrixIconDrawingKey(name: .ellipsisVertical, shape: .sharp, variant: .outline): QeetrixIconDrawings.ellipsisVerticalSharpOutline,
+        QeetrixIconDrawingKey(name: .externalLink, shape: .round, variant: .outline): QeetrixIconDrawings.externalLinkRoundOutline,
+        QeetrixIconDrawingKey(name: .externalLink, shape: .sharp, variant: .outline): QeetrixIconDrawings.externalLinkSharpOutline,
         QeetrixIconDrawingKey(name: .eye, shape: .round, variant: .outline): QeetrixIconDrawings.eyeRoundOutline,
         QeetrixIconDrawingKey(name: .eye, shape: .round, variant: .filled): QeetrixIconDrawings.eyeRoundFilled,
         QeetrixIconDrawingKey(name: .eye, shape: .sharp, variant: .outline): QeetrixIconDrawings.eyeSharpOutline,
@@ -431,6 +527,8 @@ enum QeetrixIconDrawings {
         QeetrixIconDrawingKey(name: .fileText, shape: .round, variant: .filled): QeetrixIconDrawings.fileTextRoundFilled,
         QeetrixIconDrawingKey(name: .fileText, shape: .sharp, variant: .outline): QeetrixIconDrawings.fileTextSharpOutline,
         QeetrixIconDrawingKey(name: .fileText, shape: .sharp, variant: .filled): QeetrixIconDrawings.fileTextSharpFilled,
+        QeetrixIconDrawingKey(name: .fingerprintPattern, shape: .round, variant: .outline): QeetrixIconDrawings.fingerprintPatternRoundOutline,
+        QeetrixIconDrawingKey(name: .fingerprintPattern, shape: .sharp, variant: .outline): QeetrixIconDrawings.fingerprintPatternSharpOutline,
         QeetrixIconDrawingKey(name: .flashlight, shape: .round, variant: .outline): QeetrixIconDrawings.flashlightRoundOutline,
         QeetrixIconDrawingKey(name: .flashlight, shape: .round, variant: .filled): QeetrixIconDrawings.flashlightRoundFilled,
         QeetrixIconDrawingKey(name: .flashlight, shape: .sharp, variant: .outline): QeetrixIconDrawings.flashlightSharpOutline,
@@ -441,6 +539,10 @@ enum QeetrixIconDrawings {
         QeetrixIconDrawingKey(name: .folder, shape: .round, variant: .filled): QeetrixIconDrawings.folderRoundFilled,
         QeetrixIconDrawingKey(name: .folder, shape: .sharp, variant: .outline): QeetrixIconDrawings.folderSharpOutline,
         QeetrixIconDrawingKey(name: .folder, shape: .sharp, variant: .filled): QeetrixIconDrawings.folderSharpFilled,
+        QeetrixIconDrawingKey(name: .hourglass, shape: .round, variant: .outline): QeetrixIconDrawings.hourglassRoundOutline,
+        QeetrixIconDrawingKey(name: .hourglass, shape: .round, variant: .filled): QeetrixIconDrawings.hourglassRoundFilled,
+        QeetrixIconDrawingKey(name: .hourglass, shape: .sharp, variant: .outline): QeetrixIconDrawings.hourglassSharpOutline,
+        QeetrixIconDrawingKey(name: .hourglass, shape: .sharp, variant: .filled): QeetrixIconDrawings.hourglassSharpFilled,
         QeetrixIconDrawingKey(name: .house, shape: .round, variant: .outline): QeetrixIconDrawings.houseRoundOutline,
         QeetrixIconDrawingKey(name: .house, shape: .round, variant: .filled): QeetrixIconDrawings.houseRoundFilled,
         QeetrixIconDrawingKey(name: .house, shape: .sharp, variant: .outline): QeetrixIconDrawings.houseSharpOutline,
@@ -459,6 +561,8 @@ enum QeetrixIconDrawings {
         QeetrixIconDrawingKey(name: .info, shape: .round, variant: .filled): QeetrixIconDrawings.infoRoundFilled,
         QeetrixIconDrawingKey(name: .info, shape: .sharp, variant: .outline): QeetrixIconDrawings.infoSharpOutline,
         QeetrixIconDrawingKey(name: .info, shape: .sharp, variant: .filled): QeetrixIconDrawings.infoSharpFilled,
+        QeetrixIconDrawingKey(name: .key, shape: .round, variant: .outline): QeetrixIconDrawings.keyRoundOutline,
+        QeetrixIconDrawingKey(name: .key, shape: .sharp, variant: .outline): QeetrixIconDrawings.keySharpOutline,
         QeetrixIconDrawingKey(name: .keyRound, shape: .round, variant: .outline): QeetrixIconDrawings.keyRoundRoundOutline,
         QeetrixIconDrawingKey(name: .keyRound, shape: .round, variant: .filled): QeetrixIconDrawings.keyRoundRoundFilled,
         QeetrixIconDrawingKey(name: .keyRound, shape: .sharp, variant: .outline): QeetrixIconDrawings.keyRoundSharpOutline,
@@ -467,12 +571,22 @@ enum QeetrixIconDrawings {
         QeetrixIconDrawingKey(name: .keyboard, shape: .round, variant: .filled): QeetrixIconDrawings.keyboardRoundFilled,
         QeetrixIconDrawingKey(name: .keyboard, shape: .sharp, variant: .outline): QeetrixIconDrawings.keyboardSharpOutline,
         QeetrixIconDrawingKey(name: .keyboard, shape: .sharp, variant: .filled): QeetrixIconDrawings.keyboardSharpFilled,
+        QeetrixIconDrawingKey(name: .link, shape: .round, variant: .outline): QeetrixIconDrawings.linkRoundOutline,
+        QeetrixIconDrawingKey(name: .link, shape: .sharp, variant: .outline): QeetrixIconDrawings.linkSharpOutline,
         QeetrixIconDrawingKey(name: .loaderCircle, shape: .round, variant: .outline): QeetrixIconDrawings.loaderCircleRoundOutline,
         QeetrixIconDrawingKey(name: .loaderCircle, shape: .sharp, variant: .outline): QeetrixIconDrawings.loaderCircleSharpOutline,
         QeetrixIconDrawingKey(name: .lock, shape: .round, variant: .outline): QeetrixIconDrawings.lockRoundOutline,
         QeetrixIconDrawingKey(name: .lock, shape: .round, variant: .filled): QeetrixIconDrawings.lockRoundFilled,
         QeetrixIconDrawingKey(name: .lock, shape: .sharp, variant: .outline): QeetrixIconDrawings.lockSharpOutline,
         QeetrixIconDrawingKey(name: .lock, shape: .sharp, variant: .filled): QeetrixIconDrawings.lockSharpFilled,
+        QeetrixIconDrawingKey(name: .lockOpen, shape: .round, variant: .outline): QeetrixIconDrawings.lockOpenRoundOutline,
+        QeetrixIconDrawingKey(name: .lockOpen, shape: .round, variant: .filled): QeetrixIconDrawings.lockOpenRoundFilled,
+        QeetrixIconDrawingKey(name: .lockOpen, shape: .sharp, variant: .outline): QeetrixIconDrawings.lockOpenSharpOutline,
+        QeetrixIconDrawingKey(name: .lockOpen, shape: .sharp, variant: .filled): QeetrixIconDrawings.lockOpenSharpFilled,
+        QeetrixIconDrawingKey(name: .mail, shape: .round, variant: .outline): QeetrixIconDrawings.mailRoundOutline,
+        QeetrixIconDrawingKey(name: .mail, shape: .round, variant: .filled): QeetrixIconDrawings.mailRoundFilled,
+        QeetrixIconDrawingKey(name: .mail, shape: .sharp, variant: .outline): QeetrixIconDrawings.mailSharpOutline,
+        QeetrixIconDrawingKey(name: .mail, shape: .sharp, variant: .filled): QeetrixIconDrawings.mailSharpFilled,
         QeetrixIconDrawingKey(name: .mapPin, shape: .round, variant: .outline): QeetrixIconDrawings.mapPinRoundOutline,
         QeetrixIconDrawingKey(name: .mapPin, shape: .round, variant: .filled): QeetrixIconDrawings.mapPinRoundFilled,
         QeetrixIconDrawingKey(name: .mapPin, shape: .sharp, variant: .outline): QeetrixIconDrawings.mapPinSharpOutline,
@@ -501,14 +615,26 @@ enum QeetrixIconDrawings {
         QeetrixIconDrawingKey(name: .pin, shape: .sharp, variant: .filled): QeetrixIconDrawings.pinSharpFilled,
         QeetrixIconDrawingKey(name: .plus, shape: .round, variant: .outline): QeetrixIconDrawings.plusRoundOutline,
         QeetrixIconDrawingKey(name: .plus, shape: .sharp, variant: .outline): QeetrixIconDrawings.plusSharpOutline,
+        QeetrixIconDrawingKey(name: .rectangleEllipsis, shape: .round, variant: .outline): QeetrixIconDrawings.rectangleEllipsisRoundOutline,
+        QeetrixIconDrawingKey(name: .rectangleEllipsis, shape: .round, variant: .filled): QeetrixIconDrawings.rectangleEllipsisRoundFilled,
+        QeetrixIconDrawingKey(name: .rectangleEllipsis, shape: .sharp, variant: .outline): QeetrixIconDrawings.rectangleEllipsisSharpOutline,
+        QeetrixIconDrawingKey(name: .rectangleEllipsis, shape: .sharp, variant: .filled): QeetrixIconDrawings.rectangleEllipsisSharpFilled,
         QeetrixIconDrawingKey(name: .refreshCw, shape: .round, variant: .outline): QeetrixIconDrawings.refreshCwRoundOutline,
         QeetrixIconDrawingKey(name: .refreshCw, shape: .sharp, variant: .outline): QeetrixIconDrawings.refreshCwSharpOutline,
+        QeetrixIconDrawingKey(name: .scanFace, shape: .round, variant: .outline): QeetrixIconDrawings.scanFaceRoundOutline,
+        QeetrixIconDrawingKey(name: .scanFace, shape: .sharp, variant: .outline): QeetrixIconDrawings.scanFaceSharpOutline,
         QeetrixIconDrawingKey(name: .scanLine, shape: .round, variant: .outline): QeetrixIconDrawings.scanLineRoundOutline,
         QeetrixIconDrawingKey(name: .scanLine, shape: .sharp, variant: .outline): QeetrixIconDrawings.scanLineSharpOutline,
+        QeetrixIconDrawingKey(name: .scanQrCode, shape: .round, variant: .outline): QeetrixIconDrawings.scanQrCodeRoundOutline,
+        QeetrixIconDrawingKey(name: .scanQrCode, shape: .sharp, variant: .outline): QeetrixIconDrawings.scanQrCodeSharpOutline,
         QeetrixIconDrawingKey(name: .search, shape: .round, variant: .outline): QeetrixIconDrawings.searchRoundOutline,
         QeetrixIconDrawingKey(name: .search, shape: .round, variant: .filled): QeetrixIconDrawings.searchRoundFilled,
         QeetrixIconDrawingKey(name: .search, shape: .sharp, variant: .outline): QeetrixIconDrawings.searchSharpOutline,
         QeetrixIconDrawingKey(name: .search, shape: .sharp, variant: .filled): QeetrixIconDrawings.searchSharpFilled,
+        QeetrixIconDrawingKey(name: .searchX, shape: .round, variant: .outline): QeetrixIconDrawings.searchXRoundOutline,
+        QeetrixIconDrawingKey(name: .searchX, shape: .round, variant: .filled): QeetrixIconDrawings.searchXRoundFilled,
+        QeetrixIconDrawingKey(name: .searchX, shape: .sharp, variant: .outline): QeetrixIconDrawings.searchXSharpOutline,
+        QeetrixIconDrawingKey(name: .searchX, shape: .sharp, variant: .filled): QeetrixIconDrawings.searchXSharpFilled,
         QeetrixIconDrawingKey(name: .send, shape: .round, variant: .outline): QeetrixIconDrawings.sendRoundOutline,
         QeetrixIconDrawingKey(name: .send, shape: .round, variant: .filled): QeetrixIconDrawings.sendRoundFilled,
         QeetrixIconDrawingKey(name: .send, shape: .sharp, variant: .outline): QeetrixIconDrawings.sendSharpOutline,
@@ -525,10 +651,22 @@ enum QeetrixIconDrawings {
         QeetrixIconDrawingKey(name: .share2, shape: .round, variant: .filled): QeetrixIconDrawings.share2RoundFilled,
         QeetrixIconDrawingKey(name: .share2, shape: .sharp, variant: .outline): QeetrixIconDrawings.share2SharpOutline,
         QeetrixIconDrawingKey(name: .share2, shape: .sharp, variant: .filled): QeetrixIconDrawings.share2SharpFilled,
+        QeetrixIconDrawingKey(name: .shieldCheck, shape: .round, variant: .outline): QeetrixIconDrawings.shieldCheckRoundOutline,
+        QeetrixIconDrawingKey(name: .shieldCheck, shape: .round, variant: .filled): QeetrixIconDrawings.shieldCheckRoundFilled,
+        QeetrixIconDrawingKey(name: .shieldCheck, shape: .sharp, variant: .outline): QeetrixIconDrawings.shieldCheckSharpOutline,
+        QeetrixIconDrawingKey(name: .shieldCheck, shape: .sharp, variant: .filled): QeetrixIconDrawings.shieldCheckSharpFilled,
+        QeetrixIconDrawingKey(name: .shieldX, shape: .round, variant: .outline): QeetrixIconDrawings.shieldXRoundOutline,
+        QeetrixIconDrawingKey(name: .shieldX, shape: .round, variant: .filled): QeetrixIconDrawings.shieldXRoundFilled,
+        QeetrixIconDrawingKey(name: .shieldX, shape: .sharp, variant: .outline): QeetrixIconDrawings.shieldXSharpOutline,
+        QeetrixIconDrawingKey(name: .shieldX, shape: .sharp, variant: .filled): QeetrixIconDrawings.shieldXSharpFilled,
         QeetrixIconDrawingKey(name: .smartphone, shape: .round, variant: .outline): QeetrixIconDrawings.smartphoneRoundOutline,
         QeetrixIconDrawingKey(name: .smartphone, shape: .round, variant: .filled): QeetrixIconDrawings.smartphoneRoundFilled,
         QeetrixIconDrawingKey(name: .smartphone, shape: .sharp, variant: .outline): QeetrixIconDrawings.smartphoneSharpOutline,
         QeetrixIconDrawingKey(name: .smartphone, shape: .sharp, variant: .filled): QeetrixIconDrawings.smartphoneSharpFilled,
+        QeetrixIconDrawingKey(name: .timer, shape: .round, variant: .outline): QeetrixIconDrawings.timerRoundOutline,
+        QeetrixIconDrawingKey(name: .timer, shape: .round, variant: .filled): QeetrixIconDrawings.timerRoundFilled,
+        QeetrixIconDrawingKey(name: .timer, shape: .sharp, variant: .outline): QeetrixIconDrawings.timerSharpOutline,
+        QeetrixIconDrawingKey(name: .timer, shape: .sharp, variant: .filled): QeetrixIconDrawings.timerSharpFilled,
         QeetrixIconDrawingKey(name: .trash, shape: .round, variant: .outline): QeetrixIconDrawings.trashRoundOutline,
         QeetrixIconDrawingKey(name: .trash, shape: .round, variant: .filled): QeetrixIconDrawings.trashRoundFilled,
         QeetrixIconDrawingKey(name: .trash, shape: .sharp, variant: .outline): QeetrixIconDrawings.trashSharpOutline,
@@ -545,6 +683,10 @@ enum QeetrixIconDrawings {
         QeetrixIconDrawingKey(name: .userRound, shape: .round, variant: .filled): QeetrixIconDrawings.userRoundRoundFilled,
         QeetrixIconDrawingKey(name: .userRound, shape: .sharp, variant: .outline): QeetrixIconDrawings.userRoundSharpOutline,
         QeetrixIconDrawingKey(name: .userRound, shape: .sharp, variant: .filled): QeetrixIconDrawings.userRoundSharpFilled,
+        QeetrixIconDrawingKey(name: .users, shape: .round, variant: .outline): QeetrixIconDrawings.usersRoundOutline,
+        QeetrixIconDrawingKey(name: .users, shape: .round, variant: .filled): QeetrixIconDrawings.usersRoundFilled,
+        QeetrixIconDrawingKey(name: .users, shape: .sharp, variant: .outline): QeetrixIconDrawings.usersSharpOutline,
+        QeetrixIconDrawingKey(name: .users, shape: .sharp, variant: .filled): QeetrixIconDrawings.usersSharpFilled,
         QeetrixIconDrawingKey(name: .wifiOff, shape: .round, variant: .outline): QeetrixIconDrawings.wifiOffRoundOutline,
         QeetrixIconDrawingKey(name: .wifiOff, shape: .sharp, variant: .outline): QeetrixIconDrawings.wifiOffSharpOutline,
         QeetrixIconDrawingKey(name: .x, shape: .round, variant: .outline): QeetrixIconDrawings.xRoundOutline,
@@ -685,6 +827,109 @@ enum QeetrixIconDrawings {
                 ]),
         ])
 
+    /// `svg/round-outline/arrow-big-up.svg`
+    static let arrowBigUpRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(9, 19),
+                    .cubic(9, 19.552285, 9.447715, 20, 10, 20),
+                    .line(14, 20),
+                    .cubic(14.552285, 20, 15, 19.552285, 15, 19),
+                    .line(15, 13),
+                    .cubic(15, 12.447715, 15.447715, 12, 16, 12),
+                    .line(19.293, 12),
+                    .cubic(19.579002, 12.000061, 19.836869, 11.827805, 19.946325, 11.563578),
+                    .cubic(20.055782, 11.29935, 19.995264, 10.995203, 19.793, 10.793),
+                    .line(12.707, 3.707),
+                    .cubic(12.3165, 3.316618, 11.6835, 3.316618, 11.293, 3.707),
+                    .line(4.207, 10.793),
+                    .cubic(4.004736, 10.995203, 3.944218, 11.29935, 4.053675, 11.563578),
+                    .cubic(4.163131, 11.827805, 4.420998, 12.000061, 4.707, 12),
+                    .line(8, 12),
+                    .cubic(8.552285, 12, 9, 12.447715, 9, 13),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/round-filled/arrow-big-up.svg`
+    static let arrowBigUpRoundFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(8, 19),
+                    .line(8, 13),
+                    .line(4.707, 13),
+                    .quad(4.189, 13, 3.759, 12.712),
+                    .quad(3.328, 12.425, 3.13, 11.946),
+                    .quad(2.932, 11.468, 3.033, 10.96),
+                    .quad(3.134, 10.452, 3.5, 10.086),
+                    .line(10.586, 3),
+                    .quad(10.856, 2.73, 11.206, 2.579),
+                    .quad(11.586, 2.414, 12, 2.414),
+                    .quad(12.414, 2.414, 12.794, 2.579),
+                    .quad(13.144, 2.73, 13.414, 3),
+                    .line(20.5, 10.086),
+                    .quad(20.866, 10.452, 20.967, 10.96),
+                    .quad(21.068, 11.468, 20.87, 11.946),
+                    .quad(20.672, 12.425, 20.241, 12.712),
+                    .quad(19.811, 13, 19.293, 13),
+                    .line(16, 13),
+                    .line(16, 19),
+                    .quad(16, 19.381, 15.86, 19.736),
+                    .quad(15.707, 20.121, 15.414, 20.414),
+                    .quad(15.121, 20.707, 14.736, 20.86),
+                    .quad(14.381, 21, 14, 21),
+                    .line(10, 21),
+                    .quad(9.619, 21, 9.264, 20.86),
+                    .quad(8.879, 20.707, 8.586, 20.414),
+                    .quad(8.293, 20.121, 8.14, 19.736),
+                    .quad(8, 19.381, 8, 19),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/sharp-outline/arrow-big-up.svg`
+    static let arrowBigUpSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(15, 20),
+                    .line(15, 12),
+                    .line(20.64, 12),
+                    .line(12, 3),
+                    .line(3.36, 12),
+                    .line(9, 12),
+                    .line(9, 20),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/sharp-filled/arrow-big-up.svg`
+    static let arrowBigUpSharpFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(8, 21),
+                    .line(8, 13),
+                    .line(1.014, 13),
+                    .line(12, 1.556),
+                    .line(22.986, 13),
+                    .line(16, 13),
+                    .line(16, 21),
+                    .line(8, 21),
+                    .close,
+                ]),
+        ])
+
     /// `svg/round-outline/arrow-down.svg`
     static let arrowDownRoundOutline = QeetrixIconDrawing(
         miterLimit: 4,
@@ -720,6 +965,82 @@ enum QeetrixIconDrawings {
                     .move(19, 12),
                     .line(12, 19),
                     .line(5, 12),
+                ]),
+        ])
+
+    /// `svg/round-outline/arrow-left.svg`
+    static let arrowLeftRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(12, 19),
+                    .line(5, 12),
+                    .line(12, 5),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(19, 12),
+                    .line(5, 12),
+                ]),
+        ])
+
+    /// `svg/sharp-outline/arrow-left.svg`
+    static let arrowLeftSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(12, 19),
+                    .line(5, 12),
+                    .line(12, 5),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(19, 12),
+                    .line(6, 12),
+                ]),
+        ])
+
+    /// `svg/round-outline/arrow-right.svg`
+    static let arrowRightRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(5, 12),
+                    .line(19, 12),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(12, 5),
+                    .line(19, 12),
+                    .line(12, 19),
+                ]),
+        ])
+
+    /// `svg/sharp-outline/arrow-right.svg`
+    static let arrowRightSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(5, 12),
+                    .line(18, 12),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(12, 5),
+                    .line(19, 12),
+                    .line(12, 19),
                 ]),
         ])
 
@@ -2176,6 +2497,187 @@ enum QeetrixIconDrawings {
                 ]),
         ])
 
+    /// `svg/round-outline/circle-question-mark.svg`
+    static let circleQuestionMarkRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .ellipse(2, 2, 20, 20),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(9.09, 9),
+                    .cubic(9.575437, 7.620044, 10.985384, 6.791406, 12.427176, 7.038712),
+                    .cubic(13.868969, 7.286018, 14.922179, 8.537153, 14.92, 10),
+                    .cubic(14.92, 12, 11.92, 13, 11.92, 13),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(12, 17),
+                    .line(12.01, 17),
+                ]),
+        ])
+
+    /// `svg/round-filled/circle-question-mark.svg`
+    static let circleQuestionMarkRoundFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(1, 12),
+                    .quad(1, 9.902, 1.772, 7.951),
+                    .quad(2.611, 5.833, 4.222, 4.222),
+                    .quad(5.833, 2.611, 7.951, 1.772),
+                    .quad(9.902, 1, 12, 1),
+                    .quad(14.098, 1, 16.049, 1.772),
+                    .quad(18.167, 2.611, 19.778, 4.222),
+                    .quad(21.389, 5.833, 22.228, 7.951),
+                    .quad(23, 9.902, 23, 12),
+                    .quad(23, 14.098, 22.228, 16.049),
+                    .quad(21.389, 18.167, 19.778, 19.778),
+                    .quad(18.167, 21.389, 16.049, 22.228),
+                    .quad(14.098, 23, 12, 23),
+                    .quad(9.902, 23, 7.951, 22.228),
+                    .quad(5.833, 21.389, 4.222, 19.778),
+                    .quad(2.611, 18.167, 1.772, 16.049),
+                    .quad(1, 14.098, 1, 12),
+                    .close,
+                    .move(8.147, 8.668),
+                    .quad(8.374, 8.021, 8.804, 7.487),
+                    .quad(9.263, 6.918, 9.893, 6.547),
+                    .quad(10.524, 6.176, 11.245, 6.053),
+                    .quad(11.921, 5.937, 12.596, 6.053),
+                    .quad(13.272, 6.169, 13.87, 6.503),
+                    .quad(14.509, 6.86, 14.98, 7.42),
+                    .quad(15.451, 7.979, 15.694, 8.669),
+                    .quad(15.921, 9.316, 15.92, 10.001),
+                    .quad(15.92, 11.021, 15.251, 11.913),
+                    .quad(14.773, 12.55, 13.975, 13.082),
+                    .quad(13.435, 13.442, 12.795, 13.726),
+                    .quad(12.47, 13.871, 12.236, 13.949),
+                    .cubic(11.712, 14.123, 11.146, 13.84, 10.971, 13.316),
+                    .cubic(10.797, 12.792, 11.08, 12.226, 11.604, 12.051),
+                    .quad(11.745, 12.004, 11.983, 11.899),
+                    .quad(12.467, 11.683, 12.865, 11.418),
+                    .quad(13.92, 10.715, 13.92, 9.999),
+                    .quad(13.921, 9.656, 13.807, 9.332),
+                    .quad(13.686, 8.987, 13.45, 8.708),
+                    .quad(13.215, 8.428, 12.895, 8.249),
+                    .quad(12.596, 8.082, 12.258, 8.024),
+                    .quad(11.92, 7.966, 11.582, 8.024),
+                    .quad(11.222, 8.086, 10.907, 8.271),
+                    .quad(10.591, 8.457, 10.362, 8.741),
+                    .quad(10.147, 9.008, 10.033, 9.332),
+                    .cubic(9.85, 9.853, 9.279, 10.127, 8.758, 9.943),
+                    .cubic(8.508, 9.855, 8.303, 9.672, 8.188, 9.432),
+                    .cubic(8.074, 9.193, 8.059, 8.918, 8.147, 8.668),
+                    .close,
+                    .move(12, 16),
+                    .line(12.01, 16),
+                    .cubic(12.562, 16, 13.01, 16.448, 13.01, 17),
+                    .cubic(13.01, 17.552, 12.562, 18, 12.01, 18),
+                    .line(12, 18),
+                    .cubic(11.448, 18, 11, 17.552, 11, 17),
+                    .cubic(11, 16.448, 11.448, 16, 12, 16),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/sharp-outline/circle-question-mark.svg`
+    static let circleQuestionMarkSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .ellipse(2, 2, 20, 20),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(9.09, 9),
+                    .cubic(9.575437, 7.620044, 10.985384, 6.791406, 12.427176, 7.038712),
+                    .cubic(13.868969, 7.286018, 14.922179, 8.537153, 14.92, 10),
+                    .cubic(14.92, 12, 11.92, 13, 11.92, 13),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(12, 17),
+                    .line(12.01, 17),
+                ]),
+        ])
+
+    /// `svg/sharp-filled/circle-question-mark.svg`
+    static let circleQuestionMarkSharpFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(1, 12),
+                    .quad(1, 9.902, 1.772, 7.951),
+                    .quad(2.611, 5.833, 4.222, 4.222),
+                    .quad(5.833, 2.611, 7.951, 1.772),
+                    .quad(9.902, 1, 12, 1),
+                    .quad(14.098, 1, 16.049, 1.772),
+                    .quad(18.167, 2.611, 19.778, 4.222),
+                    .quad(21.389, 5.833, 22.228, 7.951),
+                    .quad(23, 9.902, 23, 12),
+                    .quad(23, 14.098, 22.228, 16.049),
+                    .quad(21.389, 18.167, 19.778, 19.778),
+                    .quad(18.167, 21.389, 16.049, 22.228),
+                    .quad(14.098, 23, 12, 23),
+                    .quad(9.902, 23, 7.951, 22.228),
+                    .quad(5.833, 21.389, 4.222, 19.778),
+                    .quad(2.611, 18.167, 1.772, 16.049),
+                    .quad(1, 14.098, 1, 12),
+                    .close,
+                    .move(8.147, 8.668),
+                    .quad(8.374, 8.021, 8.804, 7.487),
+                    .quad(9.263, 6.918, 9.893, 6.547),
+                    .quad(10.524, 6.176, 11.245, 6.053),
+                    .quad(11.921, 5.937, 12.596, 6.053),
+                    .quad(13.272, 6.169, 13.87, 6.503),
+                    .quad(14.509, 6.86, 14.98, 7.42),
+                    .quad(15.451, 7.979, 15.694, 8.669),
+                    .quad(15.921, 9.316, 15.92, 10.001),
+                    .quad(15.92, 11.021, 15.251, 11.913),
+                    .quad(14.773, 12.55, 13.975, 13.082),
+                    .quad(13.435, 13.442, 12.795, 13.726),
+                    .quad(12.47, 13.871, 12.236, 13.949),
+                    .line(11.288, 14.265),
+                    .line(10.655, 12.368),
+                    .line(11.604, 12.051),
+                    .quad(11.745, 12.004, 11.983, 11.899),
+                    .quad(12.467, 11.683, 12.865, 11.418),
+                    .quad(13.92, 10.715, 13.92, 9.999),
+                    .quad(13.921, 9.656, 13.807, 9.332),
+                    .quad(13.686, 8.987, 13.45, 8.708),
+                    .quad(13.215, 8.428, 12.895, 8.249),
+                    .quad(12.596, 8.082, 12.258, 8.024),
+                    .quad(11.92, 7.966, 11.582, 8.024),
+                    .quad(11.222, 8.086, 10.907, 8.271),
+                    .quad(10.591, 8.457, 10.362, 8.741),
+                    .quad(10.147, 9.008, 10.033, 9.332),
+                    .line(9.701, 10.275),
+                    .line(7.815, 9.611),
+                    .line(8.147, 8.668),
+                    .close,
+                    .move(11, 16),
+                    .line(13.01, 16),
+                    .line(13.01, 18),
+                    .line(11, 18),
+                    .line(11, 16),
+                    .close,
+                ]),
+        ])
+
     /// `svg/round-outline/circle-x.svg`
     static let circleXRoundOutline = QeetrixIconDrawing(
         miterLimit: 4,
@@ -3037,6 +3539,107 @@ enum QeetrixIconDrawings {
                 fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
                 commands: [
                     .roundedRect(4, 11, 2, 2, 0, 0),
+                ]),
+        ])
+
+    /// `svg/round-outline/ellipsis-vertical.svg`
+    static let ellipsisVerticalRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .ellipse(11, 11, 2, 2),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .ellipse(11, 4, 2, 2),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .ellipse(11, 18, 2, 2),
+                ]),
+        ])
+
+    /// `svg/sharp-outline/ellipsis-vertical.svg`
+    static let ellipsisVerticalSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .roundedRect(11, 11, 2, 2, 0, 0),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .roundedRect(11, 4, 2, 2, 0, 0),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .roundedRect(11, 18, 2, 2, 0, 0),
+                ]),
+        ])
+
+    /// `svg/round-outline/external-link.svg`
+    static let externalLinkRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(15, 3),
+                    .line(21, 3),
+                    .line(21, 9),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(10, 14),
+                    .line(21, 3),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(18, 13),
+                    .line(18, 19),
+                    .cubic(18, 20.104569, 17.104569, 21, 16, 21),
+                    .line(5, 21),
+                    .cubic(3.895431, 21, 3, 20.104569, 3, 19),
+                    .line(3, 8),
+                    .cubic(3, 6.895431, 3.895431, 6, 5, 6),
+                    .line(11, 6),
+                ]),
+        ])
+
+    /// `svg/sharp-outline/external-link.svg`
+    static let externalLinkSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(15, 3),
+                    .line(21, 3),
+                    .line(21, 9),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(10, 14),
+                    .line(20.293, 3.707),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(18, 13),
+                    .line(18, 21),
+                    .line(3, 21),
+                    .line(3, 6),
+                    .line(11, 6),
                 ]),
         ])
 
@@ -4377,6 +4980,136 @@ enum QeetrixIconDrawings {
                 ]),
         ])
 
+    /// `svg/round-outline/fingerprint-pattern.svg`
+    static let fingerprintPatternRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(12, 10),
+                    .cubic(10.895431, 10, 10, 10.895431, 10, 12),
+                    .cubic(10, 13.02, 9.9, 14.51, 9.74, 16),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(14, 13.12),
+                    .cubic(14, 15.5, 14, 19.5, 13, 22),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(17.29, 21.02),
+                    .cubic(17.41, 20.42, 17.72, 18.72, 17.79, 18),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(2, 12),
+                    .cubic(2, 7.695696, 4.754301, 3.874307, 8.837722, 2.513167),
+                    .cubic(12.921144, 1.152027, 17.417418, 2.556557, 20, 6),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(2, 16),
+                    .line(2.01, 16),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(21.8, 16),
+                    .cubic(22, 14, 21.931, 10.646, 21.8, 10),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(5, 19.5),
+                    .cubic(5.5, 18, 6, 15, 6, 12),
+                    .cubic(5.99899, 11.318867, 6.113966, 10.642535, 6.34, 10),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(8.65, 22),
+                    .cubic(8.86, 21.34, 9.1, 20.68, 9.22, 20),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(9, 6.8),
+                    .cubic(10.857002, 5.727859, 13.145009, 5.728225, 15.001667, 6.800961),
+                    .cubic(16.858325, 7.873697, 18.001375, 9.855719, 18, 12),
+                    .line(18, 14),
+                ]),
+        ])
+
+    /// `svg/sharp-outline/fingerprint-pattern.svg`
+    static let fingerprintPatternSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(12, 10),
+                    .cubic(10.895431, 10, 10, 10.895431, 10, 12),
+                    .cubic(10, 13.02, 9.9, 14.51, 9.74, 16),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(14, 13.12),
+                    .cubic(14, 15.413, 14, 19.21, 13.106, 21.72),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(17.29, 21.02),
+                    .cubic(17.41, 20.42, 17.72, 18.72, 17.79, 18),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(2, 12),
+                    .cubic(2, 7.695696, 4.754301, 3.874307, 8.837722, 2.513167),
+                    .cubic(12.921144, 1.152027, 17.417418, 2.556557, 20, 6),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(2, 16),
+                    .line(2.01, 16),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(21.8, 16),
+                    .cubic(22, 14, 21.931, 10.646, 21.8, 10),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(5, 19.5),
+                    .cubic(5.5, 18, 6, 15, 6, 12),
+                    .cubic(5.99899, 11.318867, 6.113966, 10.642535, 6.34, 10),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(8.734, 21.739),
+                    .cubic(8.921, 21.166, 9.116, 20.59, 9.22, 20),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(9, 6.8),
+                    .cubic(10.857002, 5.727859, 13.145009, 5.728225, 15.001667, 6.800961),
+                    .cubic(16.858325, 7.873697, 18.001375, 9.855719, 18, 12),
+                    .line(18, 14),
+                ]),
+        ])
+
     /// `svg/round-outline/flashlight.svg`
     static let flashlightRoundOutline = QeetrixIconDrawing(
         miterLimit: 4,
@@ -4727,6 +5460,162 @@ enum QeetrixIconDrawings {
                     .line(9.524, 2),
                     .line(11.549, 5),
                     .line(23, 5),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/round-outline/hourglass.svg`
+    static let hourglassRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(5, 22),
+                    .line(19, 22),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(5, 2),
+                    .line(19, 2),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(17, 22),
+                    .line(17, 17.828),
+                    .cubic(16.999887, 17.29761, 16.789099, 16.788985, 16.414, 16.414),
+                    .line(12, 12),
+                    .line(7.586, 16.414),
+                    .cubic(7.210901, 16.788985, 7.000113, 17.29761, 7, 17.828),
+                    .line(7, 22),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(7, 2),
+                    .line(7, 6.172),
+                    .cubic(7.000113, 6.70239, 7.210901, 7.211015, 7.586, 7.586),
+                    .line(12, 12),
+                    .line(16.414, 7.586),
+                    .cubic(16.789099, 7.211015, 16.999887, 6.70239, 17, 6.172),
+                    .line(17, 2),
+                ]),
+        ])
+
+    /// `svg/round-filled/hourglass.svg`
+    static let hourglassRoundFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(19, 1),
+                    .line(5, 1),
+                    .cubic(4.448, 1, 4, 1.448, 4, 2),
+                    .cubic(4, 2.552, 4.448, 3, 5, 3),
+                    .line(19, 3),
+                    .cubic(19.552, 3, 20, 2.552, 20, 2),
+                    .cubic(20, 1.448, 19.552, 1, 19, 1),
+                    .close,
+                    .move(6, 4),
+                    .line(6, 6.172),
+                    .quad(6, 6.769, 6.229, 7.32),
+                    .quad(6.457, 7.871, 6.879, 8.293),
+                    .line(10.586, 12),
+                    .line(6.879, 15.707),
+                    .quad(6.457, 16.129, 6.229, 16.68),
+                    .quad(6, 17.231, 6, 17.828),
+                    .line(6, 20),
+                    .line(18, 20),
+                    .line(18, 17.828),
+                    .quad(18, 17.231, 17.771, 16.68),
+                    .quad(17.543, 16.129, 17.121, 15.707),
+                    .line(13.414, 12),
+                    .line(17.121, 8.293),
+                    .quad(17.543, 7.871, 17.771, 7.32),
+                    .quad(18, 6.769, 18, 6.172),
+                    .line(18, 4),
+                    .line(6, 4),
+                    .close,
+                    .move(5, 21),
+                    .line(19, 21),
+                    .cubic(19.552, 21, 20, 21.448, 20, 22),
+                    .cubic(20, 22.552, 19.552, 23, 19, 23),
+                    .line(5, 23),
+                    .cubic(4.448, 23, 4, 22.552, 4, 22),
+                    .cubic(4, 21.448, 4.448, 21, 5, 21),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/sharp-outline/hourglass.svg`
+    static let hourglassSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(5, 22),
+                    .line(19, 22),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(5, 2),
+                    .line(19, 2),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(17, 22),
+                    .line(17, 17),
+                    .line(12, 12),
+                    .line(7, 17),
+                    .line(7, 22),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(7, 2),
+                    .line(7, 7),
+                    .line(12, 12),
+                    .line(17, 7),
+                    .line(17, 2),
+                ]),
+        ])
+
+    /// `svg/sharp-filled/hourglass.svg`
+    static let hourglassSharpFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(20, 1),
+                    .line(4, 1),
+                    .line(4, 3),
+                    .line(20, 3),
+                    .line(20, 1),
+                    .close,
+                    .move(6, 4),
+                    .line(6, 7.414),
+                    .line(10.586, 12),
+                    .line(6, 16.586),
+                    .line(6, 20),
+                    .line(18, 20),
+                    .line(18, 16.586),
+                    .line(13.414, 12),
+                    .line(18, 7.414),
+                    .line(18, 4),
+                    .line(6, 4),
+                    .close,
+                    .move(4, 21),
+                    .line(20, 21),
+                    .line(20, 23),
+                    .line(4, 23),
+                    .line(4, 21),
                     .close,
                 ]),
         ])
@@ -5398,6 +6287,58 @@ enum QeetrixIconDrawings {
                 ]),
         ])
 
+    /// `svg/round-outline/key.svg`
+    static let keyRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(2, 21),
+                    .line(11.6, 11.4),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(7.5, 15.5),
+                    .line(9.8, 17.8),
+                    .cubic(10.181143, 18.188844, 10.181143, 18.811156, 9.8, 19.2),
+                    .line(7.7, 21.3),
+                    .cubic(7.311156, 21.681143, 6.688844, 21.681143, 6.3, 21.3),
+                    .line(4, 19),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .ellipse(10, 2, 11, 11),
+                ]),
+        ])
+
+    /// `svg/sharp-outline/key.svg`
+    static let keySharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(2.419, 20.581),
+                    .line(11.181, 11.819),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(7.5, 15.5),
+                    .line(10.5, 18.5),
+                    .line(7, 21.65),
+                    .line(4.749, 19.662),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .ellipse(10, 2, 11, 11),
+                ]),
+        ])
+
     /// `svg/round-outline/key-round.svg`
     static let keyRoundRoundOutline = QeetrixIconDrawing(
         miterLimit: 4,
@@ -5832,6 +6773,62 @@ enum QeetrixIconDrawings {
                 ]),
         ])
 
+    /// `svg/round-outline/link.svg`
+    static let linkRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(10, 13),
+                    .cubic(10.868955, 14.161693, 12.199627, 14.8887, 13.64665, 14.992333),
+                    .cubic(15.093672, 15.095966, 16.514366, 14.566006, 17.54, 13.54),
+                    .line(20.54, 10.54),
+                    .cubic(22.434861, 8.578106, 22.407762, 5.459576, 20.479093, 3.530907),
+                    .cubic(18.550424, 1.602238, 15.431894, 1.575139, 13.47, 3.47),
+                    .line(11.75, 5.18),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(14, 11),
+                    .cubic(13.131045, 9.838307, 11.800373, 9.1113, 10.35335, 9.007667),
+                    .cubic(8.906328, 8.904034, 7.485634, 9.433994, 6.46, 10.46),
+                    .line(3.46, 13.46),
+                    .cubic(1.565139, 15.421894, 1.592238, 18.540424, 3.520907, 20.469093),
+                    .cubic(5.449576, 22.397762, 8.568106, 22.424861, 10.53, 20.53),
+                    .line(12.24, 18.82),
+                ]),
+        ])
+
+    /// `svg/sharp-outline/link.svg`
+    static let linkSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(10, 13),
+                    .cubic(10.868955, 14.161693, 12.199627, 14.8887, 13.64665, 14.992333),
+                    .cubic(15.093672, 15.095966, 16.514366, 14.566006, 17.54, 13.54),
+                    .line(20.54, 10.54),
+                    .cubic(22.434861, 8.578106, 22.407762, 5.459576, 20.479093, 3.530907),
+                    .cubic(18.550424, 1.602238, 15.431894, 1.575139, 13.47, 3.47),
+                    .line(11.75, 5.18),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(14, 11),
+                    .cubic(13.131045, 9.838307, 11.800373, 9.1113, 10.35335, 9.007667),
+                    .cubic(8.906328, 8.904034, 7.485634, 9.433994, 6.46, 10.46),
+                    .line(3.46, 13.46),
+                    .cubic(1.565139, 15.421894, 1.592238, 18.540424, 3.520907, 20.469093),
+                    .cubic(5.449576, 22.397762, 8.568106, 22.424861, 10.53, 20.53),
+                    .line(12.24, 18.82),
+                ]),
+        ])
+
     /// `svg/round-outline/loader-circle.svg`
     static let loaderCircleRoundOutline = QeetrixIconDrawing(
         miterLimit: 4,
@@ -5994,6 +6991,256 @@ enum QeetrixIconDrawings {
                     .quad(17.121, 3.636, 17.579, 4.791),
                     .quad(18, 5.856, 18, 7),
                     .line(18, 10),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/round-outline/lock-open.svg`
+    static let lockOpenRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .roundedRect(3, 11, 18, 11, 2, 2),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(7, 11),
+                    .line(7, 7),
+                    .cubic(6.997418, 4.431234, 8.941742, 2.278447, 11.497504, 2.020289),
+                    .cubic(14.053266, 1.762131, 16.388828, 3.482607, 16.9, 6),
+                ]),
+        ])
+
+    /// `svg/round-filled/lock-open.svg`
+    static let lockOpenRoundFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(8, 10),
+                    .line(19, 10),
+                    .quad(19.572, 10, 20.104, 10.211),
+                    .quad(20.682, 10.439, 21.121, 10.879),
+                    .quad(21.561, 11.318, 21.789, 11.896),
+                    .quad(22, 12.428, 22, 13),
+                    .line(22, 20),
+                    .quad(22, 20.572, 21.789, 21.104),
+                    .quad(21.561, 21.682, 21.121, 22.121),
+                    .quad(20.682, 22.561, 20.104, 22.789),
+                    .quad(19.572, 23, 19, 23),
+                    .line(5, 23),
+                    .quad(4.428, 23, 3.896, 22.789),
+                    .quad(3.318, 22.561, 2.879, 22.121),
+                    .quad(2.439, 21.682, 2.211, 21.104),
+                    .quad(2, 20.572, 2, 20),
+                    .line(2, 13),
+                    .quad(2, 12.428, 2.211, 11.896),
+                    .quad(2.439, 11.318, 2.879, 10.879),
+                    .quad(3.318, 10.439, 3.896, 10.211),
+                    .quad(4.428, 10, 5, 10),
+                    .line(6, 10),
+                    .line(6, 7),
+                    .quad(5.999, 5.925, 6.372, 4.916),
+                    .quad(6.772, 3.831, 7.547, 2.973),
+                    .quad(8.322, 2.116, 9.36, 1.607),
+                    .quad(10.326, 1.133, 11.397, 1.025),
+                    .quad(12.468, 0.917, 13.509, 1.188),
+                    .quad(14.628, 1.479, 15.559, 2.164),
+                    .quad(16.489, 2.85, 17.099, 3.832),
+                    .quad(17.666, 4.746, 17.88, 5.801),
+                    .cubic(17.933, 6.061, 17.88, 6.331, 17.734, 6.552),
+                    .cubic(17.587, 6.773, 17.359, 6.927, 17.099, 6.98),
+                    .cubic(16.558, 7.09, 16.03, 6.74, 15.92, 6.199),
+                    .quad(15.777, 5.496, 15.399, 4.886),
+                    .quad(14.993, 4.232, 14.372, 3.774),
+                    .quad(13.752, 3.317, 13.006, 3.124),
+                    .quad(12.312, 2.943, 11.598, 3.015),
+                    .quad(10.884, 3.087, 10.24, 3.403),
+                    .quad(9.548, 3.742, 9.031, 4.314),
+                    .quad(8.515, 4.886, 8.248, 5.609),
+                    .quad(7.999, 6.282, 8, 7),
+                    .line(8, 10),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/sharp-outline/lock-open.svg`
+    static let lockOpenSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .roundedRect(3, 11, 18, 11, 0, 0),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(7, 11),
+                    .line(7, 7),
+                    .cubic(6.997418, 4.431234, 8.941742, 2.278447, 11.497504, 2.020289),
+                    .cubic(14.053266, 1.762131, 16.388828, 3.482607, 16.9, 6),
+                ]),
+        ])
+
+    /// `svg/sharp-filled/lock-open.svg`
+    static let lockOpenSharpFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(8, 10),
+                    .line(22, 10),
+                    .line(22, 23),
+                    .line(2, 23),
+                    .line(2, 10),
+                    .line(6, 10),
+                    .line(6, 7),
+                    .quad(5.999, 5.925, 6.372, 4.916),
+                    .quad(6.772, 3.831, 7.547, 2.973),
+                    .quad(8.322, 2.116, 9.36, 1.607),
+                    .quad(10.326, 1.133, 11.397, 1.025),
+                    .quad(12.468, 0.917, 13.509, 1.188),
+                    .quad(14.628, 1.479, 15.559, 2.164),
+                    .quad(16.489, 2.85, 17.099, 3.832),
+                    .quad(17.666, 4.746, 17.88, 5.801),
+                    .line(18.079, 6.781),
+                    .line(16.119, 7.179),
+                    .line(15.92, 6.199),
+                    .quad(15.777, 5.496, 15.399, 4.886),
+                    .quad(14.993, 4.232, 14.372, 3.774),
+                    .quad(13.752, 3.317, 13.006, 3.124),
+                    .quad(12.312, 2.943, 11.598, 3.015),
+                    .quad(10.884, 3.087, 10.24, 3.403),
+                    .quad(9.548, 3.742, 9.031, 4.314),
+                    .quad(8.515, 4.886, 8.248, 5.609),
+                    .quad(7.999, 6.282, 8, 7),
+                    .line(8, 10),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/round-outline/mail.svg`
+    static let mailRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(22, 7),
+                    .line(13.009, 12.727),
+                    .cubic(12.387915, 13.08774, 11.621085, 13.08774, 11, 12.727),
+                    .line(2, 7),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .roundedRect(2, 4, 20, 16, 2, 2),
+                ]),
+        ])
+
+    /// `svg/round-filled/mail.svg`
+    static let mailRoundFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(20, 3),
+                    .line(4, 3),
+                    .quad(3.428, 3, 2.896, 3.211),
+                    .quad(2.318, 3.439, 1.879, 3.879),
+                    .quad(1.439, 4.318, 1.211, 4.896),
+                    .quad(1.143, 5.066, 1.097, 5.24),
+                    .line(2.537, 6.156),
+                    .line(11.517, 11.871),
+                    .quad(11.744, 11.998, 12.005, 11.998),
+                    .quad(12.265, 11.998, 12.492, 11.871),
+                    .line(21.463, 6.157),
+                    .line(22.902, 5.24),
+                    .quad(22.857, 5.066, 22.789, 4.896),
+                    .quad(22.561, 4.318, 22.121, 3.879),
+                    .quad(21.682, 3.439, 21.104, 3.211),
+                    .quad(20.572, 3, 20, 3),
+                    .close,
+                    .move(23, 7.549),
+                    .line(13.546, 13.57),
+                    .cubic(13.535, 13.578, 13.523, 13.585, 13.511, 13.592),
+                    .quad(12.813, 13.998, 12.005, 13.998),
+                    .quad(11.196, 13.998, 10.498, 13.592),
+                    .cubic(10.486, 13.585, 10.475, 13.578, 10.463, 13.571),
+                    .line(1.463, 7.844),
+                    .line(1, 7.549),
+                    .line(1, 18),
+                    .quad(1, 18.572, 1.211, 19.104),
+                    .quad(1.439, 19.682, 1.879, 20.121),
+                    .quad(2.318, 20.561, 2.896, 20.789),
+                    .quad(3.428, 21, 4, 21),
+                    .line(20, 21),
+                    .quad(20.572, 21, 21.104, 20.789),
+                    .quad(21.682, 20.561, 22.121, 20.121),
+                    .quad(22.561, 19.682, 22.789, 19.104),
+                    .quad(23, 18.572, 23, 18),
+                    .line(23, 7.549),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/sharp-outline/mail.svg`
+    static let mailSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(21.157, 7.537),
+                    .line(12.005, 13.367),
+                    .line(2.844, 7.537),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .roundedRect(2, 4, 20, 16, 0, 0),
+                ]),
+        ])
+
+    /// `svg/sharp-filled/mail.svg`
+    static let mailSharpFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(1, 3),
+                    .line(23, 3),
+                    .line(23, 5.177),
+                    .line(21.463, 6.156),
+                    .line(21.463, 6.157),
+                    .line(20.62, 6.694),
+                    .line(12.005, 12.182),
+                    .line(3.381, 6.693),
+                    .line(2.537, 6.156),
+                    .line(2.537, 6.157),
+                    .line(2.537, 6.156),
+                    .line(1, 5.178),
+                    .line(1, 3),
+                    .close,
+                    .move(1, 7.549),
+                    .line(1, 21),
+                    .line(23, 21),
+                    .line(23, 7.549),
+                    .line(22.538, 7.843),
+                    .line(22.537, 7.843),
+                    .line(21.694, 8.38),
+                    .line(12.005, 14.552),
+                    .line(2.307, 8.381),
+                    .line(1.463, 7.844),
+                    .line(1, 7.549),
                     .close,
                 ]),
         ])
@@ -6788,6 +8035,154 @@ enum QeetrixIconDrawings {
                 ]),
         ])
 
+    /// `svg/round-outline/rectangle-ellipsis.svg`
+    static let rectangleEllipsisRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .roundedRect(2, 6, 20, 12, 2, 2),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(12, 12),
+                    .line(12.01, 12),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(17, 12),
+                    .line(17.01, 12),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(7, 12),
+                    .line(7.01, 12),
+                ]),
+        ])
+
+    /// `svg/round-filled/rectangle-ellipsis.svg`
+    static let rectangleEllipsisRoundFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(20, 5),
+                    .line(4, 5),
+                    .quad(3.428, 5, 2.896, 5.211),
+                    .quad(2.318, 5.439, 1.879, 5.879),
+                    .quad(1.439, 6.318, 1.211, 6.896),
+                    .quad(1, 7.428, 1, 8),
+                    .line(1, 16),
+                    .quad(1, 16.572, 1.211, 17.104),
+                    .quad(1.439, 17.682, 1.879, 18.121),
+                    .quad(2.318, 18.561, 2.896, 18.789),
+                    .quad(3.428, 19, 4, 19),
+                    .line(20, 19),
+                    .quad(20.572, 19, 21.104, 18.789),
+                    .quad(21.682, 18.561, 22.121, 18.121),
+                    .quad(22.561, 17.682, 22.789, 17.104),
+                    .quad(23, 16.572, 23, 16),
+                    .line(23, 8),
+                    .quad(23, 7.428, 22.789, 6.896),
+                    .quad(22.561, 6.318, 22.121, 5.879),
+                    .quad(21.682, 5.439, 21.104, 5.211),
+                    .quad(20.572, 5, 20, 5),
+                    .close,
+                    .move(7, 11),
+                    .line(7.01, 11),
+                    .cubic(7.562, 11, 8.01, 11.448, 8.01, 12),
+                    .cubic(8.01, 12.552, 7.562, 13, 7.01, 13),
+                    .line(7, 13),
+                    .cubic(6.448, 13, 6, 12.552, 6, 12),
+                    .cubic(6, 11.448, 6.448, 11, 7, 11),
+                    .close,
+                    .move(12, 11),
+                    .line(12.01, 11),
+                    .cubic(12.562, 11, 13.01, 11.448, 13.01, 12),
+                    .cubic(13.01, 12.552, 12.562, 13, 12.01, 13),
+                    .line(12, 13),
+                    .cubic(11.448, 13, 11, 12.552, 11, 12),
+                    .cubic(11, 11.448, 11.448, 11, 12, 11),
+                    .close,
+                    .move(17.01, 11),
+                    .line(17, 11),
+                    .cubic(16.448, 11, 16, 11.448, 16, 12),
+                    .cubic(16, 12.552, 16.448, 13, 17, 13),
+                    .line(17.01, 13),
+                    .cubic(17.562, 13, 18.01, 12.552, 18.01, 12),
+                    .cubic(18.01, 11.448, 17.562, 11, 17.01, 11),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/sharp-outline/rectangle-ellipsis.svg`
+    static let rectangleEllipsisSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .roundedRect(2, 6, 20, 12, 0, 0),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(12, 12),
+                    .line(12.01, 12),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(17, 12),
+                    .line(17.01, 12),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(7, 12),
+                    .line(7.01, 12),
+                ]),
+        ])
+
+    /// `svg/sharp-filled/rectangle-ellipsis.svg`
+    static let rectangleEllipsisSharpFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(1, 5),
+                    .line(23, 5),
+                    .line(23, 19),
+                    .line(1, 19),
+                    .line(1, 5),
+                    .close,
+                    .move(6, 11),
+                    .line(8.01, 11),
+                    .line(8.01, 13),
+                    .line(6, 13),
+                    .line(6, 11),
+                    .close,
+                    .move(11, 11),
+                    .line(13.01, 11),
+                    .line(13.01, 13),
+                    .line(11, 13),
+                    .line(11, 11),
+                    .close,
+                    .move(18.01, 11),
+                    .line(16, 11),
+                    .line(16, 13),
+                    .line(18.01, 13),
+                    .line(18.01, 11),
+                    .close,
+                ]),
+        ])
+
     /// `svg/round-outline/refresh-cw.svg`
     static let refreshCwRoundOutline = QeetrixIconDrawing(
         miterLimit: 4,
@@ -6857,6 +8252,116 @@ enum QeetrixIconDrawings {
                     .move(8, 16),
                     .line(3, 16),
                     .line(3, 21),
+                ]),
+        ])
+
+    /// `svg/round-outline/scan-face.svg`
+    static let scanFaceRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(3, 7),
+                    .line(3, 5),
+                    .cubic(3, 3.895431, 3.895431, 3, 5, 3),
+                    .line(7, 3),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(17, 3),
+                    .line(19, 3),
+                    .cubic(20.104569, 3, 21, 3.895431, 21, 5),
+                    .line(21, 7),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(21, 17),
+                    .line(21, 19),
+                    .cubic(21, 20.104569, 20.104569, 21, 19, 21),
+                    .line(17, 21),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(7, 21),
+                    .line(5, 21),
+                    .cubic(3.895431, 21, 3, 20.104569, 3, 19),
+                    .line(3, 17),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(8, 14),
+                    .cubic(8, 14, 9.5, 16, 12, 16),
+                    .cubic(14.5, 16, 16, 14, 16, 14),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(9, 9),
+                    .line(9.01, 9),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(15, 9),
+                    .line(15.01, 9),
+                ]),
+        ])
+
+    /// `svg/sharp-outline/scan-face.svg`
+    static let scanFaceSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(3, 7),
+                    .line(3, 3),
+                    .line(7, 3),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(17, 3),
+                    .line(21, 3),
+                    .line(21, 7),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(21, 17),
+                    .line(21, 21),
+                    .line(17, 21),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(7, 21),
+                    .line(3, 21),
+                    .line(3, 17),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(8, 14),
+                    .cubic(8, 14, 9.5, 16, 12, 16),
+                    .cubic(14.5, 16, 16, 14, 16, 14),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(9, 9),
+                    .line(9.01, 9),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(15, 9),
+                    .line(15.01, 9),
                 ]),
         ])
 
@@ -6941,6 +8446,127 @@ enum QeetrixIconDrawings {
                 commands: [
                     .move(7, 12),
                     .line(17, 12),
+                ]),
+        ])
+
+    /// `svg/round-outline/scan-qr-code.svg`
+    static let scanQrCodeRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(17, 12),
+                    .line(17, 16),
+                    .cubic(17, 16.552285, 16.552285, 17, 16, 17),
+                    .line(12, 17),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(17, 3),
+                    .line(19, 3),
+                    .cubic(20.104569, 3, 21, 3.895431, 21, 5),
+                    .line(21, 7),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(17, 8),
+                    .line(17, 7),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(21, 17),
+                    .line(21, 19),
+                    .cubic(21, 20.104569, 20.104569, 21, 19, 21),
+                    .line(17, 21),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(3, 7),
+                    .line(3, 5),
+                    .cubic(3, 3.895431, 3.895431, 3, 5, 3),
+                    .line(7, 3),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(7, 17),
+                    .line(7.01, 17),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(7, 21),
+                    .line(5, 21),
+                    .cubic(3.895431, 21, 3, 20.104569, 3, 19),
+                    .line(3, 17),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .roundedRect(7, 7, 5, 5, 1, 1),
+                ]),
+        ])
+
+    /// `svg/sharp-outline/scan-qr-code.svg`
+    static let scanQrCodeSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(17, 12),
+                    .line(17, 17),
+                    .line(12, 17),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(17, 3),
+                    .line(21, 3),
+                    .line(21, 7),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(17, 8),
+                    .line(17, 7),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(21, 17),
+                    .line(21, 21),
+                    .line(17, 21),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(3, 7),
+                    .line(3, 3),
+                    .line(7, 3),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(7, 17),
+                    .line(7.01, 17),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(7, 21),
+                    .line(3, 21),
+                    .line(3, 17),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .roundedRect(7, 7, 5, 5, 0, 0),
                 ]),
         ])
 
@@ -7037,6 +8663,159 @@ enum QeetrixIconDrawings {
                     .quad(9.283, 2, 7.687, 2.632),
                     .quad(5.954, 3.318, 4.636, 4.636),
                     .quad(3.318, 5.954, 2.632, 7.687),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/round-outline/search-x.svg`
+    static let searchXRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(13.5, 8.5),
+                    .line(8.5, 13.5),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(8.5, 8.5),
+                    .line(13.5, 13.5),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .ellipse(3, 3, 16, 16),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(21, 21),
+                    .line(16.7, 16.7),
+                ]),
+        ])
+
+    /// `svg/round-filled/search-x.svg`
+    static let searchXRoundFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(2.632, 7.687),
+                    .quad(2, 9.283, 2, 11),
+                    .quad(2, 12.717, 2.632, 14.313),
+                    .quad(3.318, 16.046, 4.636, 17.364),
+                    .quad(5.954, 18.682, 7.687, 19.368),
+                    .quad(9.283, 20, 11, 20),
+                    .quad(12.717, 20, 14.313, 19.368),
+                    .quad(15.576, 18.868, 16.618, 18.033),
+                    .line(20.293, 21.707),
+                    .cubic(20.683, 22.098, 21.317, 22.098, 21.707, 21.707),
+                    .cubic(22.098, 21.317, 22.098, 20.683, 21.707, 20.293),
+                    .line(18.033, 16.618),
+                    .quad(18.868, 15.576, 19.368, 14.313),
+                    .quad(20, 12.717, 20, 11),
+                    .quad(20, 9.283, 19.368, 7.687),
+                    .quad(18.682, 5.954, 17.364, 4.636),
+                    .quad(16.046, 3.318, 14.313, 2.632),
+                    .quad(12.717, 2, 11, 2),
+                    .quad(9.283, 2, 7.687, 2.632),
+                    .quad(5.954, 3.318, 4.636, 4.636),
+                    .quad(3.318, 5.954, 2.632, 7.687),
+                    .close,
+                    .move(11, 12.414),
+                    .line(9.207, 14.207),
+                    .cubic(8.817, 14.598, 8.183, 14.598, 7.793, 14.207),
+                    .cubic(7.402, 13.817, 7.402, 13.183, 7.793, 12.793),
+                    .line(9.586, 11),
+                    .line(7.793, 9.207),
+                    .cubic(7.402, 8.817, 7.402, 8.183, 7.793, 7.793),
+                    .cubic(8.183, 7.402, 8.817, 7.402, 9.207, 7.793),
+                    .line(11, 9.586),
+                    .line(12.793, 7.793),
+                    .cubic(13.183, 7.402, 13.817, 7.402, 14.207, 7.793),
+                    .cubic(14.598, 8.183, 14.598, 8.817, 14.207, 9.207),
+                    .line(12.414, 11),
+                    .line(14.207, 12.793),
+                    .cubic(14.598, 13.183, 14.598, 13.817, 14.207, 14.207),
+                    .cubic(13.817, 14.598, 13.183, 14.598, 12.793, 14.207),
+                    .line(11, 12.414),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/sharp-outline/search-x.svg`
+    static let searchXSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(13.5, 8.5),
+                    .line(8.5, 13.5),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(8.5, 8.5),
+                    .line(13.5, 13.5),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .ellipse(3, 3, 16, 16),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(21, 21),
+                    .line(16.7, 16.7),
+                ]),
+        ])
+
+    /// `svg/sharp-filled/search-x.svg`
+    static let searchXSharpFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(2.632, 7.687),
+                    .quad(2, 9.283, 2, 11),
+                    .quad(2, 12.717, 2.632, 14.313),
+                    .quad(3.318, 16.046, 4.636, 17.364),
+                    .quad(5.954, 18.682, 7.687, 19.368),
+                    .quad(9.283, 20, 11, 20),
+                    .quad(12.717, 20, 14.313, 19.368),
+                    .quad(15.576, 18.868, 16.618, 18.033),
+                    .line(21, 22.414),
+                    .line(22.414, 21),
+                    .line(18.033, 16.618),
+                    .quad(18.868, 15.576, 19.368, 14.313),
+                    .quad(20, 12.717, 20, 11),
+                    .quad(20, 9.283, 19.368, 7.687),
+                    .quad(18.682, 5.954, 17.364, 4.636),
+                    .quad(16.046, 3.318, 14.313, 2.632),
+                    .quad(12.717, 2, 11, 2),
+                    .quad(9.283, 2, 7.687, 2.632),
+                    .quad(5.954, 3.318, 4.636, 4.636),
+                    .quad(3.318, 5.954, 2.632, 7.687),
+                    .close,
+                    .move(11, 12.414),
+                    .line(8.5, 14.914),
+                    .line(7.086, 13.5),
+                    .line(9.586, 11),
+                    .line(7.086, 8.5),
+                    .line(8.5, 7.086),
+                    .line(11, 9.586),
+                    .line(13.5, 7.086),
+                    .line(14.914, 8.5),
+                    .line(12.414, 11),
+                    .line(14.914, 13.5),
+                    .line(13.5, 14.914),
+                    .line(11, 12.414),
                     .close,
                 ]),
         ])
@@ -7831,6 +9610,323 @@ enum QeetrixIconDrawings {
                 ]),
         ])
 
+    /// `svg/round-outline/shield-check.svg`
+    static let shieldCheckRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(20, 13),
+                    .cubic(20, 18, 16.5, 20.5, 12.34, 21.95),
+                    .cubic(12.122162, 22.023817, 11.885537, 22.020286, 11.67, 21.94),
+                    .cubic(7.5, 20.5, 4, 18, 4, 13),
+                    .line(4, 6),
+                    .cubic(4, 5.447715, 4.447715, 5, 5, 5),
+                    .cubic(7, 5, 9.5, 3.8, 11.24, 2.28),
+                    .cubic(11.677674, 1.906067, 12.322326, 1.906067, 12.76, 2.28),
+                    .cubic(14.51, 3.81, 17, 5, 19, 5),
+                    .cubic(19.552285, 5, 20, 5.447715, 20, 6),
+                    .close,
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(9, 12),
+                    .line(11, 14),
+                    .line(15, 10),
+                ]),
+        ])
+
+    /// `svg/round-filled/shield-check.svg`
+    static let shieldCheckRoundFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(18.446, 19.504),
+                    .quad(21, 16.884, 21, 13),
+                    .line(21, 6),
+                    .quad(21, 5.619, 20.86, 5.264),
+                    .quad(20.707, 4.879, 20.414, 4.586),
+                    .quad(20.121, 4.293, 19.736, 4.14),
+                    .quad(19.381, 4, 19, 4),
+                    .quad(17.755, 4, 16.195, 3.301),
+                    .quad(14.662, 2.614, 13.41, 1.52),
+                    .quad(13.125, 1.276, 12.774, 1.142),
+                    .quad(12.4, 1, 12, 1),
+                    .quad(11.6, 1, 11.226, 1.142),
+                    .quad(10.875, 1.276, 10.582, 1.527),
+                    .quad(9.343, 2.609, 7.808, 3.298),
+                    .quad(6.242, 4, 5, 4),
+                    .quad(4.619, 4, 4.264, 4.14),
+                    .quad(3.879, 4.293, 3.586, 4.586),
+                    .quad(3.293, 4.879, 3.14, 5.264),
+                    .quad(3, 5.619, 3, 6),
+                    .line(3, 13),
+                    .quad(3, 16.886, 5.556, 19.504),
+                    .quad(7.59, 21.587, 11.334, 22.882),
+                    .quad(11.994, 23.123, 12.669, 22.894),
+                    .quad(16.414, 21.589, 18.446, 19.504),
+                    .close,
+                    .move(11, 12.586),
+                    .line(9.707, 11.293),
+                    .cubic(9.317, 10.902, 8.683, 10.902, 8.293, 11.293),
+                    .cubic(7.902, 11.683, 7.902, 12.317, 8.293, 12.707),
+                    .line(10.293, 14.707),
+                    .cubic(10.683, 15.098, 11.317, 15.098, 11.707, 14.707),
+                    .line(15.707, 10.707),
+                    .cubic(16.098, 10.317, 16.098, 9.683, 15.707, 9.293),
+                    .cubic(15.317, 8.902, 14.683, 8.902, 14.293, 9.293),
+                    .line(11, 12.586),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/sharp-outline/shield-check.svg`
+    static let shieldCheckSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(4, 13),
+                    .line(4, 5),
+                    .line(5, 5),
+                    .cubic(7, 5, 9.5, 3.8, 11.24, 2.28),
+                    .line(11.665, 1.917),
+                    .line(12.335, 1.917),
+                    .line(12.76, 2.28),
+                    .cubic(14.51, 3.81, 17, 5, 19, 5),
+                    .line(20, 5),
+                    .line(20, 13),
+                    .cubic(20, 18, 16.5, 20.5, 12.34, 21.95),
+                    .line(12.136, 22.019),
+                    .line(11.872, 22.015),
+                    .line(11.67, 21.94),
+                    .cubic(7.5, 20.5, 4, 18, 4, 13),
+                    .close,
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(9, 12),
+                    .line(11, 14),
+                    .line(15, 10),
+                ]),
+        ])
+
+    /// `svg/sharp-filled/shield-check.svg`
+    static let shieldCheckSharpFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(3, 13),
+                    .line(3, 4),
+                    .line(5, 4),
+                    .quad(6.242, 4, 7.808, 3.298),
+                    .quad(9.343, 2.609, 10.582, 1.527),
+                    .line(11.199, 1),
+                    .line(12.801, 1),
+                    .line(13.409, 1.52),
+                    .quad(14.662, 2.614, 16.195, 3.301),
+                    .quad(17.755, 4, 19, 4),
+                    .line(21, 4),
+                    .line(21, 13),
+                    .quad(21, 16.884, 18.446, 19.504),
+                    .quad(16.414, 21.589, 12.669, 22.894),
+                    .line(12.357, 23),
+                    .line(12.16, 23),
+                    .quad(12.015, 23.011, 11.87, 23),
+                    .line(11.652, 23),
+                    .line(11.333, 22.881),
+                    .quad(7.59, 21.587, 5.556, 19.504),
+                    .quad(3, 16.886, 3, 13),
+                    .close,
+                    .move(9, 10.586),
+                    .line(11, 12.586),
+                    .line(15, 8.586),
+                    .line(16.414, 10),
+                    .line(11, 15.414),
+                    .line(7.586, 12),
+                    .line(9, 10.586),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/round-outline/shield-x.svg`
+    static let shieldXRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(20, 13),
+                    .cubic(20, 18, 16.5, 20.5, 12.34, 21.95),
+                    .cubic(12.122162, 22.023817, 11.885537, 22.020286, 11.67, 21.94),
+                    .cubic(7.5, 20.5, 4, 18, 4, 13),
+                    .line(4, 6),
+                    .cubic(4, 5.447715, 4.447715, 5, 5, 5),
+                    .cubic(7, 5, 9.5, 3.8, 11.24, 2.28),
+                    .cubic(11.677674, 1.906067, 12.322326, 1.906067, 12.76, 2.28),
+                    .cubic(14.51, 3.81, 17, 5, 19, 5),
+                    .cubic(19.552285, 5, 20, 5.447715, 20, 6),
+                    .close,
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(14.5, 9.5),
+                    .line(9.5, 14.5),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(9.5, 9.5),
+                    .line(14.5, 14.5),
+                ]),
+        ])
+
+    /// `svg/round-filled/shield-x.svg`
+    static let shieldXRoundFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(21, 13),
+                    .quad(21, 16.884, 18.446, 19.504),
+                    .quad(16.414, 21.589, 12.669, 22.894),
+                    .quad(11.994, 23.123, 11.334, 22.882),
+                    .quad(7.59, 21.587, 5.556, 19.504),
+                    .quad(3, 16.886, 3, 13),
+                    .line(3, 6),
+                    .quad(3, 5.619, 3.14, 5.264),
+                    .quad(3.293, 4.879, 3.586, 4.586),
+                    .quad(3.879, 4.293, 4.264, 4.14),
+                    .quad(4.619, 4, 5, 4),
+                    .quad(6.242, 4, 7.808, 3.298),
+                    .quad(9.343, 2.609, 10.582, 1.527),
+                    .quad(10.875, 1.276, 11.226, 1.142),
+                    .quad(11.6, 1, 12, 1),
+                    .quad(12.4, 1, 12.774, 1.142),
+                    .quad(13.125, 1.276, 13.41, 1.52),
+                    .quad(14.662, 2.614, 16.195, 3.301),
+                    .quad(17.755, 4, 19, 4),
+                    .quad(19.381, 4, 19.736, 4.14),
+                    .quad(20.121, 4.293, 20.414, 4.586),
+                    .quad(20.707, 4.879, 20.86, 5.264),
+                    .quad(21, 5.619, 21, 6),
+                    .line(21, 13),
+                    .close,
+                    .move(12, 13.414),
+                    .line(10.207, 15.207),
+                    .cubic(9.817, 15.598, 9.183, 15.598, 8.793, 15.207),
+                    .cubic(8.402, 14.817, 8.402, 14.183, 8.793, 13.793),
+                    .line(10.586, 12),
+                    .line(8.793, 10.207),
+                    .cubic(8.402, 9.817, 8.402, 9.183, 8.793, 8.793),
+                    .cubic(9.183, 8.402, 9.817, 8.402, 10.207, 8.793),
+                    .line(12, 10.586),
+                    .line(13.793, 8.793),
+                    .cubic(14.183, 8.402, 14.817, 8.402, 15.207, 8.793),
+                    .cubic(15.598, 9.183, 15.598, 9.817, 15.207, 10.207),
+                    .line(13.414, 12),
+                    .line(15.207, 13.793),
+                    .cubic(15.598, 14.183, 15.598, 14.817, 15.207, 15.207),
+                    .cubic(14.817, 15.598, 14.183, 15.598, 13.793, 15.207),
+                    .line(12, 13.414),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/sharp-outline/shield-x.svg`
+    static let shieldXSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(4, 13),
+                    .line(4, 5),
+                    .line(5, 5),
+                    .cubic(7, 5, 9.5, 3.8, 11.24, 2.28),
+                    .line(11.665, 1.917),
+                    .line(12.335, 1.917),
+                    .line(12.76, 2.28),
+                    .cubic(14.51, 3.81, 17, 5, 19, 5),
+                    .line(20, 5),
+                    .line(20, 13),
+                    .cubic(20, 18, 16.5, 20.5, 12.34, 21.95),
+                    .line(12.136, 22.019),
+                    .line(11.872, 22.015),
+                    .line(11.67, 21.94),
+                    .cubic(7.5, 20.5, 4, 18, 4, 13),
+                    .close,
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(14.5, 9.5),
+                    .line(9.5, 14.5),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(9.5, 9.5),
+                    .line(14.5, 14.5),
+                ]),
+        ])
+
+    /// `svg/sharp-filled/shield-x.svg`
+    static let shieldXSharpFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(3, 4),
+                    .line(3, 13),
+                    .quad(3, 16.886, 5.556, 19.504),
+                    .quad(7.59, 21.587, 11.333, 22.881),
+                    .line(11.652, 23),
+                    .line(11.87, 23),
+                    .quad(12.015, 23.011, 12.16, 23),
+                    .line(12.357, 23),
+                    .line(12.669, 22.894),
+                    .quad(16.414, 21.589, 18.446, 19.504),
+                    .quad(21, 16.884, 21, 13),
+                    .line(21, 4),
+                    .line(19, 4),
+                    .quad(17.755, 4, 16.195, 3.301),
+                    .quad(14.662, 2.614, 13.409, 1.52),
+                    .line(12.801, 1),
+                    .line(11.199, 1),
+                    .line(10.582, 1.527),
+                    .quad(9.343, 2.609, 7.808, 3.298),
+                    .quad(6.242, 4, 5, 4),
+                    .line(3, 4),
+                    .close,
+                    .move(9.5, 15.914),
+                    .line(12, 13.414),
+                    .line(14.5, 15.914),
+                    .line(15.914, 14.5),
+                    .line(13.414, 12),
+                    .line(15.914, 9.5),
+                    .line(14.5, 8.086),
+                    .line(12, 10.586),
+                    .line(9.5, 8.086),
+                    .line(8.086, 9.5),
+                    .line(10.586, 12),
+                    .line(8.086, 14.5),
+                    .line(9.5, 15.914),
+                    .close,
+                ]),
+        ])
+
     /// `svg/round-outline/smartphone.svg`
     static let smartphoneRoundOutline = QeetrixIconDrawing(
         miterLimit: 4,
@@ -7923,6 +10019,136 @@ enum QeetrixIconDrawings {
                     .line(13.01, 19),
                     .line(11, 19),
                     .line(11, 17),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/round-outline/timer.svg`
+    static let timerRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(10, 2),
+                    .line(14, 2),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(12, 14),
+                    .line(15, 11),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .ellipse(4, 6, 16, 16),
+                ]),
+        ])
+
+    /// `svg/round-filled/timer.svg`
+    static let timerRoundFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(10, 1),
+                    .line(14, 1),
+                    .cubic(14.552, 1, 15, 1.448, 15, 2),
+                    .cubic(15, 2.552, 14.552, 3, 14, 3),
+                    .line(10, 3),
+                    .cubic(9.448, 3, 9, 2.552, 9, 2),
+                    .cubic(9, 1.448, 9.448, 1, 10, 1),
+                    .close,
+                    .move(3, 14),
+                    .quad(3, 12.283, 3.632, 10.687),
+                    .quad(4.318, 8.954, 5.636, 7.636),
+                    .quad(6.954, 6.318, 8.687, 5.632),
+                    .quad(10.283, 5, 12, 5),
+                    .quad(13.717, 5, 15.313, 5.632),
+                    .quad(17.046, 6.318, 18.364, 7.636),
+                    .quad(19.682, 8.954, 20.368, 10.687),
+                    .quad(21, 12.283, 21, 14),
+                    .quad(21, 15.717, 20.368, 17.313),
+                    .quad(19.682, 19.046, 18.364, 20.364),
+                    .quad(17.046, 21.682, 15.313, 22.368),
+                    .quad(13.717, 23, 12, 23),
+                    .quad(10.283, 23, 8.687, 22.368),
+                    .quad(6.954, 21.682, 5.636, 20.364),
+                    .quad(4.318, 19.046, 3.632, 17.313),
+                    .quad(3, 15.717, 3, 14),
+                    .close,
+                    .move(14.293, 10.293),
+                    .line(11.293, 13.293),
+                    .cubic(10.902, 13.683, 10.902, 14.317, 11.293, 14.707),
+                    .cubic(11.683, 15.098, 12.317, 15.098, 12.707, 14.707),
+                    .line(15.707, 11.707),
+                    .cubic(16.098, 11.317, 16.098, 10.683, 15.707, 10.293),
+                    .cubic(15.317, 9.902, 14.683, 9.902, 14.293, 10.293),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/sharp-outline/timer.svg`
+    static let timerSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(10, 2),
+                    .line(14, 2),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(12, 14),
+                    .line(15, 11),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .ellipse(4, 6, 16, 16),
+                ]),
+        ])
+
+    /// `svg/sharp-filled/timer.svg`
+    static let timerSharpFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(9, 1),
+                    .line(15, 1),
+                    .line(15, 3),
+                    .line(9, 3),
+                    .line(9, 1),
+                    .close,
+                    .move(3, 14),
+                    .quad(3, 12.283, 3.632, 10.687),
+                    .quad(4.318, 8.954, 5.636, 7.636),
+                    .quad(6.954, 6.318, 8.687, 5.632),
+                    .quad(10.283, 5, 12, 5),
+                    .quad(13.717, 5, 15.313, 5.632),
+                    .quad(17.046, 6.318, 18.364, 7.636),
+                    .quad(19.682, 8.954, 20.368, 10.687),
+                    .quad(21, 12.283, 21, 14),
+                    .quad(21, 15.717, 20.368, 17.313),
+                    .quad(19.682, 19.046, 18.364, 20.364),
+                    .quad(17.046, 21.682, 15.313, 22.368),
+                    .quad(13.717, 23, 12, 23),
+                    .quad(10.283, 23, 8.687, 22.368),
+                    .quad(6.954, 21.682, 5.636, 20.364),
+                    .quad(4.318, 19.046, 3.632, 17.313),
+                    .quad(3, 15.717, 3, 14),
+                    .close,
+                    .move(15, 9.586),
+                    .line(10.586, 14),
+                    .line(12, 15.414),
+                    .line(16.414, 11),
+                    .line(15, 9.586),
                     .close,
                 ]),
         ])
@@ -8540,6 +10766,242 @@ enum QeetrixIconDrawings {
                     .quad(10.856, 2, 9.791, 2.421),
                     .quad(8.636, 2.879, 7.757, 3.757),
                     .quad(6.879, 4.636, 6.421, 5.791),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/round-outline/users.svg`
+    static let usersRoundOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(16, 21),
+                    .line(16, 19),
+                    .cubic(16, 16.790861, 14.209139, 15, 12, 15),
+                    .line(6, 15),
+                    .cubic(3.790861, 15, 2, 16.790861, 2, 19),
+                    .line(2, 21),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(16, 3.128),
+                    .cubic(17.764211, 3.585365, 18.996199, 5.177468, 18.996199, 7),
+                    .cubic(18.996199, 8.822532, 17.764211, 10.414635, 16, 10.872),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .move(22, 21),
+                    .line(22, 19),
+                    .cubic(21.99864, 17.177118, 20.764999, 15.58572, 19, 15.13),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .round, join: .round),
+                commands: [
+                    .ellipse(5, 3, 8, 8),
+                ]),
+        ])
+
+    /// `svg/round-filled/users.svg`
+    static let usersRoundFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(4, 7),
+                    .quad(4, 6.046, 4.351, 5.16),
+                    .quad(4.732, 4.197, 5.464, 3.464),
+                    .quad(6.197, 2.732, 7.16, 2.351),
+                    .quad(8.046, 2, 9, 2),
+                    .quad(9.954, 2, 10.84, 2.351),
+                    .quad(11.803, 2.732, 12.536, 3.464),
+                    .quad(13.268, 4.197, 13.649, 5.16),
+                    .quad(14, 6.046, 14, 7),
+                    .quad(14, 7.954, 13.649, 8.84),
+                    .quad(13.268, 9.803, 12.536, 10.536),
+                    .quad(11.803, 11.268, 10.84, 11.649),
+                    .quad(9.954, 12, 9, 12),
+                    .quad(8.046, 12, 7.16, 11.649),
+                    .quad(6.197, 11.268, 5.464, 10.536),
+                    .quad(4.732, 9.803, 4.351, 8.84),
+                    .quad(4, 7.954, 4, 7),
+                    .close,
+                    .move(16.251, 2.16),
+                    .quad(17.032, 2.363, 17.71, 2.801),
+                    .quad(18.428, 3.264, 18.951, 3.94),
+                    .quad(19.473, 4.616, 19.742, 5.427),
+                    .quad(19.996, 6.193, 19.996, 7),
+                    .quad(19.996, 7.807, 19.742, 8.573),
+                    .quad(19.473, 9.384, 18.951, 10.06),
+                    .quad(18.428, 10.736, 17.71, 11.199),
+                    .quad(17.032, 11.637, 16.251, 11.84),
+                    .cubic(15.716, 11.979, 15.171, 11.658, 15.032, 11.123),
+                    .cubic(14.893, 10.588, 15.214, 10.043, 15.749, 9.904),
+                    .quad(16.218, 9.782, 16.625, 9.52),
+                    .quad(17.055, 9.241, 17.369, 8.836),
+                    .quad(17.683, 8.431, 17.844, 7.944),
+                    .quad(17.996, 7.484, 17.996, 7),
+                    .quad(17.996, 6.516, 17.844, 6.056),
+                    .quad(17.683, 5.569, 17.369, 5.164),
+                    .quad(17.055, 4.759, 16.625, 4.48),
+                    .quad(16.218, 4.218, 15.749, 4.096),
+                    .cubic(15.492, 4.029, 15.273, 3.864, 15.138, 3.635),
+                    .cubic(15.004, 3.406, 14.965, 3.134, 15.032, 2.877),
+                    .cubic(15.171, 2.342, 15.716, 2.021, 16.251, 2.16),
+                    .close,
+                    .move(16, 22),
+                    .cubic(16.552, 22, 17, 21.552, 17, 21),
+                    .line(17, 19),
+                    .quad(17, 18.046, 16.649, 17.16),
+                    .quad(16.268, 16.197, 15.536, 15.464),
+                    .quad(14.803, 14.732, 13.84, 14.351),
+                    .quad(12.954, 14, 12, 14),
+                    .line(6, 14),
+                    .quad(5.046, 14, 4.16, 14.351),
+                    .quad(3.197, 14.732, 2.464, 15.464),
+                    .quad(1.732, 16.197, 1.351, 17.16),
+                    .quad(1, 18.046, 1, 19),
+                    .line(1, 21),
+                    .cubic(1, 21.552, 1.448, 22, 2, 22),
+                    .line(16, 22),
+                    .close,
+                    .move(21, 19),
+                    .line(21, 21),
+                    .cubic(21, 21.552, 21.448, 22, 22, 22),
+                    .cubic(22.552, 22, 23, 21.552, 23, 21),
+                    .line(23, 19),
+                    .quad(22.999, 18.192, 22.745, 17.426),
+                    .quad(22.475, 16.615, 21.952, 15.94),
+                    .quad(21.428, 15.264, 20.71, 14.801),
+                    .quad(20.032, 14.364, 19.25, 14.162),
+                    .cubic(18.715, 14.024, 18.17, 14.345, 18.032, 14.88),
+                    .cubic(17.965, 15.137, 18.004, 15.409, 18.139, 15.638),
+                    .cubic(18.273, 15.866, 18.493, 16.032, 18.75, 16.098),
+                    .quad(19.219, 16.219, 19.626, 16.482),
+                    .quad(20.057, 16.76, 20.371, 17.165),
+                    .quad(20.685, 17.57, 20.847, 18.057),
+                    .quad(21, 18.516, 21, 19),
+                    .close,
+                ]),
+        ])
+
+    /// `svg/sharp-outline/users.svg`
+    static let usersSharpOutline = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(16, 21),
+                    .line(16, 19),
+                    .cubic(16, 16.790861, 14.209139, 15, 12, 15),
+                    .line(6, 15),
+                    .cubic(3.790861, 15, 2, 16.790861, 2, 19),
+                    .line(2, 21),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(16, 3.128),
+                    .cubic(17.764211, 3.585365, 18.996199, 5.177468, 18.996199, 7),
+                    .cubic(18.996199, 8.822532, 17.764211, 10.414635, 16, 10.872),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .move(22, 21),
+                    .line(22, 19),
+                    .cubic(21.99864, 17.177118, 20.764999, 15.58572, 19, 15.13),
+                ]),
+            QeetrixIconElement(
+                fill: nil, stroke: QeetrixIconStrokeStyle(cap: .square, join: .miter),
+                commands: [
+                    .ellipse(5, 3, 8, 8),
+                ]),
+        ])
+
+    /// `svg/sharp-filled/users.svg`
+    static let usersSharpFilled = QeetrixIconDrawing(
+        miterLimit: 4,
+        elements: [
+            QeetrixIconElement(
+                fill: .evenOdd, stroke: nil,
+                commands: [
+                    .move(16.251, 2.16),
+                    .quad(17.032, 2.363, 17.71, 2.801),
+                    .quad(18.428, 3.264, 18.951, 3.94),
+                    .quad(19.473, 4.616, 19.742, 5.427),
+                    .quad(19.996, 6.193, 19.996, 7),
+                    .quad(19.996, 7.807, 19.742, 8.573),
+                    .quad(19.473, 9.384, 18.951, 10.06),
+                    .quad(18.428, 10.736, 17.71, 11.199),
+                    .quad(17.032, 11.637, 16.251, 11.84),
+                    .line(15.283, 12.091),
+                    .line(14.781, 10.155),
+                    .line(15.749, 9.904),
+                    .quad(16.218, 9.782, 16.625, 9.52),
+                    .quad(17.055, 9.241, 17.369, 8.836),
+                    .quad(17.683, 8.431, 17.844, 7.944),
+                    .quad(17.996, 7.484, 17.996, 7),
+                    .quad(17.996, 6.516, 17.844, 6.056),
+                    .quad(17.683, 5.569, 17.369, 5.164),
+                    .quad(17.055, 4.759, 16.625, 4.48),
+                    .quad(16.218, 4.218, 15.749, 4.096),
+                    .line(14.781, 3.845),
+                    .line(15.283, 1.909),
+                    .line(16.251, 2.16),
+                    .close,
+                    .move(4, 7),
+                    .quad(4, 6.046, 4.351, 5.16),
+                    .quad(4.732, 4.197, 5.464, 3.464),
+                    .quad(6.197, 2.732, 7.16, 2.351),
+                    .quad(8.046, 2, 9, 2),
+                    .quad(9.954, 2, 10.84, 2.351),
+                    .quad(11.803, 2.732, 12.536, 3.464),
+                    .quad(13.268, 4.197, 13.649, 5.16),
+                    .quad(14, 6.046, 14, 7),
+                    .quad(14, 7.954, 13.649, 8.84),
+                    .quad(13.268, 9.803, 12.536, 10.536),
+                    .quad(11.803, 11.268, 10.84, 11.649),
+                    .quad(9.954, 12, 9, 12),
+                    .quad(8.046, 12, 7.16, 11.649),
+                    .quad(6.197, 11.268, 5.464, 10.536),
+                    .quad(4.732, 9.803, 4.351, 8.84),
+                    .quad(4, 7.954, 4, 7),
+                    .close,
+                    .move(21, 19),
+                    .line(21, 22),
+                    .line(23, 22),
+                    .line(23, 19),
+                    .quad(22.999, 18.192, 22.745, 17.426),
+                    .quad(22.475, 16.615, 21.952, 15.94),
+                    .quad(21.428, 15.264, 20.71, 14.801),
+                    .quad(20.032, 14.364, 19.25, 14.162),
+                    .line(18.282, 13.912),
+                    .line(17.782, 15.848),
+                    .line(18.75, 16.098),
+                    .quad(19.219, 16.219, 19.626, 16.482),
+                    .quad(20.057, 16.76, 20.371, 17.165),
+                    .quad(20.685, 17.57, 20.847, 18.057),
+                    .quad(21, 18.516, 21, 19),
+                    .close,
+                    .move(1, 19),
+                    .line(1, 22),
+                    .line(17, 22),
+                    .line(17, 19),
+                    .quad(17, 18.046, 16.649, 17.16),
+                    .quad(16.268, 16.197, 15.536, 15.464),
+                    .quad(14.803, 14.732, 13.84, 14.351),
+                    .quad(12.954, 14, 12, 14),
+                    .line(6, 14),
+                    .quad(5.046, 14, 4.16, 14.351),
+                    .quad(3.197, 14.732, 2.464, 15.464),
+                    .quad(1.732, 16.197, 1.351, 17.16),
+                    .quad(1, 18.046, 1, 19),
                     .close,
                 ]),
         ])

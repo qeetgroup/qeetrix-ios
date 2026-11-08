@@ -123,6 +123,8 @@ struct QeetrixPasswordField: View {
                 .focused($isFocused)
                 .privacySensitive()
                 .qeetrixFieldControlAccessibility()
+                // The field's own 44 pt shape, so VoiceOver's frame for it is the field, not its line of text.
+                .qeetrixHitArea()
             toggle
         }
         .qeetrixTypeEnvironment(QeetrixInputMetrics.textType)

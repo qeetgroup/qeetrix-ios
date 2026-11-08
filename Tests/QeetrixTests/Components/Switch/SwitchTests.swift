@@ -26,7 +26,7 @@ struct SwitchTests {
         #expect(track(on: false, invalid: true).edge == .borderDanger)
         #expect((track(on: true).track, track(on: true).edge, track(on: true).thumbColor) == (.bgBrandBold, .bgBrandBold, .iconOnBrand))
         #expect(track(on: true, hovered: true).track == .bgBrandBoldHover)
-        // An invalid switch keeps the danger edge on and hovered, round the Ember track (QTRX-161).
+        // An invalid switch keeps the danger edge on and hovered, round the Ember track.
         for (on, hovered) in [(false, true), (true, false), (true, true)] {
             #expect(track(on: on, hovered: hovered, invalid: true).edge == .borderDanger, "on \(on), hovered \(hovered)")
         }
@@ -46,7 +46,7 @@ struct SwitchTests {
         #expect(try thumbColumn(on: true) == 17)
     }
 
-    @Test("The on thumb is white in both schemes, as the checkbox's tick (QTRX-162)")
+    @Test("The on thumb is white in both schemes, as the checkbox's tick")
     func thumbIsWhite() {
         for theme in [QeetrixTheme.light, .dark] {
             let thumb = theme.resolve(track(on: true).thumbColor)

@@ -20,7 +20,7 @@ struct SidebarTests {
         #expect(items.map(\.id) == [.accounts, .devices, .audit, .settings])
         #expect(items[1].badge == 2 && items[0].badge == nil)
         #expect(items[2].isDisabled && !items[0].isDisabled)
-        #expect(items[0].filledWhenCurrent && !items[3].filledWhenCurrent, "Filled when current by default (QTRX-168)")
+        #expect(items[0].filledWhenCurrent && !items[3].filledWhenCurrent, "Filled when current by default")
     }
 
     @Test("The current item's icon is filled where it has a filled drawing and the item asks for it")

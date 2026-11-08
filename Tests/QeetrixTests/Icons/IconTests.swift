@@ -11,7 +11,7 @@ struct IconTests {
         let pins = try Repository.json("Upstream/pins.json") as? [String: Any]
         let pinned = (pins?["icons"] as? [String: Any])?["icons"] as? [String] ?? []
         #expect(QeetrixIconName.allCases.map(\.rawValue).sorted() == pinned.sorted())
-        #expect(QeetrixIconName.allCases.count == 68)
+        #expect(QeetrixIconName.allCases.count == 88)
         #expect(QeetrixIconName(rawValue: "chevron-right") == .chevronRight)
         #expect(QeetrixIconName(rawValue: "file-spreadsheet") == .fileSpreadsheet)
     }
@@ -32,6 +32,29 @@ struct IconTests {
             }
             #expect(name.mirrorsInRightToLeft == (entry["directionality"] as? String == "mirror"))
         }
+    }
+
+    @Test("The native Qeet ID apps' icons are there, sharp, as on Android")
+    func authenticator() throws {
+        let names = [
+            "arrow-right", "shield-check", "shield-x", "hourglass", "timer", "link", "external-link", "scan-face",
+            "scan-qr-code", "rectangle-ellipsis", "key", "scan-line", "lock-open", "bell-off", "wifi-off",
+            "fingerprint-pattern",
+        ]
+        for raw in names {
+            let name = try #require(QeetrixIconName(rawValue: raw), "\(raw) is not in the catalogue")
+            #expect(name.drawing(.sharp, .outline) != nil, "\(raw) has no sharp outline")
+        }
+    }
+
+    @Test("A physical arrow mirrors only when its use says so; a directional icon always does")
+    @MainActor
+    func mirroringByUse() {
+        #expect(QeetrixIcon(.arrowRight).mirrors == false)
+        #expect(QeetrixIcon(.arrowRight, mirrorsInRightToLeft: true).mirrors == true)
+        #expect(QeetrixIcon(.externalLink, mirrorsInRightToLeft: true).mirrors == true)
+        #expect(QeetrixIcon(.send).mirrors == true)
+        #expect(QeetrixIcon(.send, mirrorsInRightToLeft: false).mirrors == false)
     }
 
     @Test("Paths keep the 24-unit geometry of the drawing")
@@ -104,6 +127,25 @@ struct IconTests {
         let rtl = try inkColumns(.rightToLeft)
         #expect(ltr != rtl)
         #expect(ltr == Array(rtl.reversed()))
+    }
+
+    @Test("A \"next\" arrow flips in right to left when its use says so, and only then")
+    @MainActor
+    func arrowMirroredByUse() throws {
+        func inkColumns(_ direction: LayoutDirection, mirrors: Bool?) throws -> [Int] {
+            let icon =
+                mirrors.map { QeetrixIcon(.arrowRight, size: .lg, relativeTo: nil, mirrorsInRightToLeft: $0) }
+                ?? QeetrixIcon(.arrowRight, size: .lg, relativeTo: nil)
+            let view =
+                icon
+                .foregroundStyle(Color.black).background(Color.white)
+                .environment(\.layoutDirection, direction)
+            let image = try #require(Rendered(view))
+            return (0..<image.width).map { x in (0..<image.height).filter { image.pixel(x, $0).r < 128 }.count }
+        }
+        let ltr = try inkColumns(.leftToRight, mirrors: nil)
+        #expect(try inkColumns(.rightToLeft, mirrors: nil) == ltr)
+        #expect(try inkColumns(.rightToLeft, mirrors: true) == Array(ltr.reversed()))
     }
 
     /// Phase 7: the icon artwork's notice travels in the library's bundle, as the fonts' licences do, so an

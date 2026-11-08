@@ -15,8 +15,9 @@ import SwiftUI
 ///
 /// While `isLoading` is true a spinner takes the icon's place in the zone — a button without an icon
 /// gains the zone — the label and colours stay, taps are ignored, and VoiceOver reads the button as
-/// busy ("Loading"). `isFullWidth` stretches it to its container (forms, compact width), label still
-/// at the start and icon at the end.
+/// busy ("Loading"). `isFullWidth` stretches it to its container (forms, compact width) and centres
+/// the label on the whole button; an icon keeps its zone at the end, and the leading side keeps as much
+/// room as the zone takes, so the label is centred with or without one.
 public struct QeetrixButton: View {
     let title: Text
     let icon: QeetrixIconName?
@@ -104,6 +105,7 @@ struct QeetrixButtonLabel: View {
     let isLoading: Bool
     @Environment(\.qeetrixDensity) private var density
     @Environment(\.qeetrixButtonFillsWidth) private var fillsWidth
+    @Environment(\.qeetrixButtonIconMirrors) private var iconMirrors
     @ScaledMetric private var iconSide: CGFloat
 
     /// The rule's opacity: the label colour at 55% (button.css `.qx-button-zone::before`).
@@ -119,13 +121,30 @@ struct QeetrixButtonLabel: View {
 
     var body: some View {
         let metrics = QeetrixButtonMetrics(size: size, density: density)
-        HStack(spacing: metrics.gap) {
-            title
-                .multilineTextAlignment(.leading)
-                .fixedSize(horizontal: false, vertical: true)
-                .frame(maxWidth: fillsWidth ? .infinity : nil, alignment: .leading)
-            if icon != nil || isLoading {
-                zone(metrics)
+        let hasZone = icon != nil || isLoading
+        Group {
+            if fillsWidth {
+                // Full width: the label is centred on the whole button. The zone's span (the gap, its
+                // padding on both sides and the icon) beyond the button's own leading padding is what
+                // the label's room is off-centre by (button.css `[data-full-width]`).
+                let span = metrics.gap + iconSide + 2 * metrics.zonePadding
+                QeetrixCentredLabelLayout(gap: metrics.gap, shift: hasZone ? (span - metrics.padding) / 2 : 0) {
+                    title
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                    if hasZone {
+                        zone(metrics)
+                    }
+                }
+            } else {
+                HStack(spacing: metrics.gap) {
+                    title
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                    if hasZone {
+                        zone(metrics)
+                    }
+                }
             }
         }
         // The zone fills the label's height; the label itself keeps its own, so a button with an icon
@@ -141,7 +160,8 @@ struct QeetrixButtonLabel: View {
                 QeetrixSpinner(size: metrics.spinnerSize, isDecorative: true)
                     .scaleEffect(scale)
             } else if let icon {
-                QeetrixIcon(icon, size: metrics.iconSize, shape: .sharp)
+                QeetrixIcon(
+                    icon, size: metrics.iconSize, shape: .sharp, mirrorsInRightToLeft: iconMirrors ?? icon.mirrorsInRightToLeft)
             }
         }
         // The spinner keeps the icon's box, so a button with an icon keeps its width.
@@ -154,6 +174,47 @@ struct QeetrixButtonLabel: View {
                 .opacity(Self.ruleOpacity)
                 .accessibilityHidden(true)
         }
+    }
+}
+
+/// A full-width button's label and zone: the zone at the trailing end, and the label centred on the
+/// whole button — `shift` towards the trailing end of the room the zone leaves — as far as that room
+/// allows. Where it's tight the leading side gives way first. The ideal width is the label's, the gap
+/// and the zone's, as a plain button's, so a full-width button never needs more room. SwiftUI mirrors
+/// it right to left.
+struct QeetrixCentredLabelLayout: Layout {
+    let gap: CGFloat
+    let shift: CGFloat
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let parts = measure(width: proposal.width, subviews: subviews)
+        let ideal = parts.label.width + parts.trailing
+        let width = proposal.width.flatMap { $0.isFinite ? $0 : nil } ?? ideal
+        return CGSize(width: width, height: max(parts.label.height, parts.zone.height))
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let parts = measure(width: bounds.width, subviews: subviews)
+        let room = max(0, bounds.width - parts.trailing)
+        let label = CGSize(width: min(parts.label.width, room), height: parts.label.height)
+        let free = room - label.width
+        let x = min(max(free / 2 + shift, 0), free)
+        subviews.first?.place(
+            at: CGPoint(x: bounds.minX + x, y: bounds.midY), anchor: .leading, proposal: ProposedViewSize(label))
+        if subviews.count > 1 {
+            subviews[1].place(
+                at: CGPoint(x: bounds.maxX, y: bounds.midY), anchor: .trailing,
+                proposal: ProposedViewSize(width: parts.zone.width, height: bounds.height))
+        }
+    }
+
+    /// The label in the room the zone leaves, the zone at its own size, and what the zone and gap take.
+    private func measure(width: CGFloat?, subviews: Subviews) -> (label: CGSize, zone: CGSize, trailing: CGFloat) {
+        let zone = subviews.count > 1 ? subviews[1].sizeThatFits(.unspecified) : .zero
+        let trailing = subviews.count > 1 ? zone.width + gap : 0
+        let room = width.flatMap { $0.isFinite ? max(0, $0 - trailing) : nil }
+        let label = subviews.first?.sizeThatFits(ProposedViewSize(width: room, height: nil)) ?? .zero
+        return (label, zone, trailing)
     }
 }
 

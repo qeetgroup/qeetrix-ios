@@ -38,7 +38,7 @@ struct TextFieldTests {
         #expect(state(invalid: true).bottomLine == nil)
     }
 
-    @Test("Read-only: no fill and the editable line, border.strong (QTRX-175); disabled: the disabled fill, line and text")
+    @Test("Read-only: no fill and the editable line, border.strong; disabled: the disabled fill, line and text")
     func readOnlyAndDisabled() {
         #expect(state(readOnly: true).background == nil)
         #expect(state(readOnly: true).bottomLine == .borderStrong)

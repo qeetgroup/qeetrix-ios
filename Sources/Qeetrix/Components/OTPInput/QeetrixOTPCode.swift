@@ -28,6 +28,10 @@ public enum QeetrixOTPCodeSize: String, CaseIterable, Sendable {
 /// - **VoiceOver** reads one button: the `label` ("Acme, priya@acme.in"), the digits one by one, then
 ///   the time left — "Acme, priya@acme.in, 4 8 2 9 1 3, 12 seconds left" — with "Copies the code" (or
 ///   "Shows the code") as its hint.
+/// - **The app's action instead of the copy**: give `action` and its `actionHint` and a tap runs it with the
+///   code — no clipboard, toast or haptic — where a tap means something else: an AutoFill credential
+///   provider fills the code it was asked for. The code looks the same, a hidden one still shows on the
+///   first tap, and VoiceOver's hint is the app's.
 ///
 /// **Qeetrix doesn't compute TOTP.** The app generates the code (RFC 6238) and passes it with its period
 /// window, and gives the next code when the window ends: Qeetrix only shows it. The code is marked
@@ -41,12 +45,14 @@ public struct QeetrixOTPCode: View {
     let isHidden: Bool
     let toast: Binding<QeetrixToast?>?
     let onCopied: (@MainActor (String) -> Void)?
+    /// The app's action, which replaces the copy; `nil` copies.
+    let action: QeetrixOTPCodeAction?
     /// A fixed clock, for tests and snapshots: the countdown stops there.
     let now: Date?
 
     init(
         code: String, validity: ClosedRange<Date>, label: Text?, size: QeetrixOTPCodeSize, isHidden: Bool, toast: Binding<QeetrixToast?>?,
-        onCopied: (@MainActor (String) -> Void)?, now: Date? = nil
+        onCopied: (@MainActor (String) -> Void)?, action: QeetrixOTPCodeAction? = nil, now: Date? = nil
     ) {
         self.code = code
         self.validity = validity
@@ -55,6 +61,7 @@ public struct QeetrixOTPCode: View {
         self.isHidden = isHidden
         self.toast = toast
         self.onCopied = onCopied
+        self.action = action
         self.now = now
     }
 
@@ -97,24 +104,89 @@ public struct QeetrixOTPCode: View {
             isHidden: isHidden, toast: toast, onCopied: onCopied)
     }
 
+    /// A code that runs the app's `action` on a tap instead of copying it — no clipboard, toast or haptic:
+    /// an AutoFill credential provider fills the code it was asked for. It looks the same as a
+    /// code that copies, and a hidden one still shows on the first tap.
+    ///
+    /// ```swift
+    /// QeetrixOTPCode(account.code, validity: account.window, label: Text(account.name), size: .md,
+    ///                actionHint: Text("Fills the code")) { code in fill(code) }
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - code: The code, usually six or eight digits.
+    ///   - validity: When the code is valid: from the start of its time step to the end.
+    ///   - label: Whose code it is, read by VoiceOver before the digits.
+    ///   - size: `lg` on its own screen, `md` in a list.
+    ///   - isHidden: Shows dots until a first tap shows the code; the next tap runs the action.
+    ///   - actionHint: What a tap does, as VoiceOver's hint once the code shows: "Fills the code".
+    ///   - action: Runs with the code on a tap.
+    public init(
+        _ code: String,
+        validity: ClosedRange<Date>,
+        label: Text? = nil,
+        size: QeetrixOTPCodeSize = .lg,
+        isHidden: Bool = false,
+        actionHint: Text,
+        action: @escaping @MainActor (String) -> Void
+    ) {
+        self.init(
+            code: code, validity: validity, label: label, size: size, isHidden: isHidden, toast: nil, onCopied: nil,
+            action: QeetrixOTPCodeAction(hint: actionHint, run: action))
+    }
+
+    /// A code whose time step starts at `periodStart` and lasts `period`, that runs the app's `action` on a
+    /// tap instead of copying it.
+    public init(
+        _ code: String,
+        periodStart: Date,
+        period: Duration = .seconds(30),
+        label: Text? = nil,
+        size: QeetrixOTPCodeSize = .lg,
+        isHidden: Bool = false,
+        actionHint: Text,
+        action: @escaping @MainActor (String) -> Void
+    ) {
+        self.init(
+            code, validity: QeetrixOTPCodeTiming.validity(from: periodStart, period: period), label: label, size: size, isHidden: isHidden,
+            actionHint: actionHint, action: action)
+    }
+
     public var body: some View {
-        QeetrixCopyControl(
-            value: { code }, isSensitive: true, resetAfter: QeetrixCopy.resetAfter, toast: toast, onCopied: onCopied
-        ) { _, copy in
-            QeetrixOTPCodeBody(code: code, validity: validity, label: label, size: size, isHidden: isHidden, now: now, copy: copy)
+        if let action {
+            QeetrixOTPCodeBody(
+                code: code, validity: validity, label: label, size: size, isHidden: isHidden, actionHint: action.hint, now: now
+            ) { action.run(code) }
+        } else {
+            QeetrixCopyControl(
+                value: { code }, isSensitive: true, resetAfter: QeetrixCopy.resetAfter, toast: toast, onCopied: onCopied
+            ) { _, copy in
+                QeetrixOTPCodeBody(
+                    code: code, validity: validity, label: label, size: size, isHidden: isHidden, actionHint: nil, now: now, perform: copy)
+            }
         }
     }
 }
 
-/// The code as a button, redrawn each second of its window.
+/// What a tap on a shown code does in place of the copy, and how VoiceOver says it.
+struct QeetrixOTPCodeAction {
+    let hint: Text
+    let run: @MainActor (String) -> Void
+}
+
+/// The code as a button, redrawn each second of its window: the same look whether a tap copies or runs
+/// the app's action.
 struct QeetrixOTPCodeBody: View {
     let code: String
     let validity: ClosedRange<Date>
     let label: Text?
     let size: QeetrixOTPCodeSize
     let isHidden: Bool
+    /// The app's hint for its action; `nil` for the copy's.
+    let actionHint: Text?
     let now: Date?
-    let copy: @MainActor () -> Void
+    /// The copy, or the app's action.
+    let perform: @MainActor () -> Void
     @State private var isRevealed = false
     @Environment(\.locale) private var locale
 
@@ -123,7 +195,7 @@ struct QeetrixOTPCodeBody: View {
             let secondsLeft = QeetrixOTPCodeTiming.secondsLeft(at: date, in: validity)
             let isShown = !isHidden || isRevealed
             Button {
-                if isShown { copy() } else { isRevealed = true }
+                if isShown { perform() } else { isRevealed = true }
             } label: {
                 QeetrixOTPCodeContent(
                     code: code, isShown: isShown, size: size, secondsLeft: secondsLeft,
@@ -132,7 +204,7 @@ struct QeetrixOTPCodeBody: View {
             .buttonStyle(QeetrixOTPCodeButtonStyle())
             .accessibilityLabel(QeetrixOTPCodeSpeech.label(label, code: code, isShown: isShown))
             .accessibilityValue(Text(verbatim: QeetrixOTPCodeSpeech.timeLeft(secondsLeft, locale: locale)))
-            .accessibilityHint(isShown ? QeetrixOTPCodeSpeech.copyHint : QeetrixOTPCodeSpeech.revealHint)
+            .accessibilityHint(QeetrixOTPCodeSpeech.hint(isShown: isShown, actionHint: actionHint))
             .accessibilityAddTraits(.updatesFrequently)
         }
         .privacySensitive()
@@ -381,6 +453,13 @@ enum QeetrixOTPCodeSpeech {
     static func timeLeft(_ seconds: Int, locale: Locale) -> String {
         let duration = QeetrixFormat.duration(.seconds(seconds), style: .long, locale: locale)
         return String(localized: "qeetrix.otp-code.time-left", defaultValue: "\(duration) left", bundle: .module)
+    }
+
+    /// The button's hint: "Shows the code" while hidden; then the app's hint for its action, else "Copies
+    /// the code".
+    static func hint(isShown: Bool, actionHint: Text?) -> Text {
+        guard isShown else { return revealHint }
+        return actionHint ?? copyHint
     }
 
     /// "Code hidden".

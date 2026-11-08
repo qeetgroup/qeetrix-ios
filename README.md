@@ -22,7 +22,7 @@
 |:--|:--|
 | 🧩 **71 components** | Buttons, forms, sheets, menus, navigation and lists, plus native-only ones such as the OTP code, QR scanner, swipe actions and pull to refresh |
 | 🎨 **Foundations** | 109 colour roles in light and dark, 18 text roles with Dynamic Type, spacing, radii, shadows, motion and three densities |
-| ✨ **68 icons** | From `@qeetrix/icons`, sharp and round, outline and filled, mirrored in right to left by meaning |
+| ✨ **88 icons** | From `@qeetrix/icons`, sharp and round, outline and filled, mirrored in right to left by meaning |
 | 🔤 **Fonts** | Qeet Sans and Fira Code, the same files the web uses, registered from the package |
 | ♿ **Accessibility** | VoiceOver labels, 44 pt touch targets, checked contrast, Dynamic Type to the largest size, Reduce Motion |
 | 📚 **Documentation** | A DocC catalogue: **Product › Build Documentation** in Xcode, or `Scripts/docs.sh` |

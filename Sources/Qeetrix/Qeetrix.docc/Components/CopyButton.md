@@ -48,6 +48,22 @@ QeetrixCopyButton(label: Text("Copy API key"), isSensitive: true, toast: $toast)
 
 The text is never logged or announced. Never put the value itself in a toast.
 
+### From a menu or another trigger
+
+A context menu's "Copy code", a swipe action or a keyboard shortcut copies with
+``QeetrixCopy/copy(_:isSensitive:toast:locale:)``: the same clipboard entry — for a secret, local only and
+removed after 60 seconds — the same haptic, and the same "Copied" toast, or announcement without one.
+
+```swift
+AccountRow(account)
+    .contextMenu {
+        Button("Copy code") { QeetrixCopy.copy(account.code, isSensitive: true, toast: $toast) }
+    }
+```
+
+Pass the screen's `locale` (from `@Environment(\.locale)`) where it isn't the device's: it words the
+toast's "1 minute".
+
 ### Accessibility
 
 - An icon-only button is named by `label` — what it copies, "Copy user ID" — or "Copy". A titled one is
@@ -72,3 +88,9 @@ The text is never logged or announced. Never put the value itself in a toast.
   pointer tooltip (`help`), shown on iPad with a pointer.
 
 On the web: [Copy button on ui.qeet.in](https://ui.qeet.in/components/copy-button/).
+
+## Topics
+
+### From any trigger
+
+- ``QeetrixCopy``

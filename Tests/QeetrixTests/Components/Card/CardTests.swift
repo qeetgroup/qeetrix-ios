@@ -50,7 +50,38 @@ struct CardTests {
         #expect(titled.height - untitled.height > 16 + 16 + 1, "Padding both sides, the title and the rule")
     }
 
-    @Test("A header-only card ends at its header: no body and no rule under it (QTRX-174)")
+    @Test("Flush rows: no padding or gap, rows at the card's edges, border.subtle between them only")
+    func flushRows() throws {
+        let raised = QeetrixTheme.light.resolve(.surfaceRaised).bytes
+        let subtle = QeetrixTheme.light.resolve(.borderSubtle).bytes
+        let rows = QeetrixCard {
+            Color.clear.frame(height: 40)
+            Color.clear.frame(height: 40)
+            Color.clear.frame(height: 40)
+        }
+        .flushRows()
+        let image = try #require(Rendered(rows.frame(width: 200).environment(\.colorScheme, .light)))
+        #expect(image.height == 40 * 3 + 2, "Three rows and two rules: no padding, no gap")
+        #expect(close(subtle, image.pixel(100, 40)) && close(subtle, image.pixel(100, 81)), "A rule between rows")
+        #expect(close(subtle, image.pixel(2, 40)) && close(subtle, image.pixel(197, 40)), "Edge to edge")
+        #expect(
+            close(raised, image.pixel(100, 2)) && close(raised, image.pixel(100, image.height - 3)),
+            "None above the first or below the last")
+        #expect(close(raised, image.pixel(100, 20)), "Each row on the card's surface")
+
+        // A row's own fill reaches the card's edge.
+        let filled = try #require(Rendered(QeetrixCard { Color.red.frame(height: 40) }.flushRows().frame(width: 200)))
+        #expect(filled.pixel(2, 20).r > 200 && filled.pixel(2, 20).g < 60)
+        // With a header, its rule stays and the rows start under it; the default body is unchanged.
+        let titled = try #require(
+            Rendered(QeetrixCard(title: Text("Settings")) { Color.clear.frame(height: 40) }.flushRows().frame(width: 200)))
+        #expect(abs(titled.height - (16 + 24 + 16 + 1 + 40)) <= 1)
+        let padded = try #require(Rendered(QeetrixCard { Color.red.frame(height: 40) }.frame(width: 200)))
+        #expect(padded.height == 16 + 40 + 16)
+        #expect(!QeetrixCard { Color.clear }.isFlushRows && QeetrixCard { Color.clear }.flushRows().isFlushRows)
+    }
+
+    @Test("A header-only card ends at its header: no body and no rule under it")
     func headerOnly() throws {
         let headerOnly = try #require(Rendered(QeetrixCard(title: Text("Plan")) {}.frame(width: 200)))
         // The header's padding and the title's 24 pt line, inside the 1 pt card edge: no 32 pt body, no rule.

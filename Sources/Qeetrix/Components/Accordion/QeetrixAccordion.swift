@@ -79,6 +79,8 @@ public struct QeetrixAccordion<Content: View>: View {
 /// title and the chevron, and the section can't be toggled.
 public struct QeetrixAccordionItem<Content: View>: View {
     let title: Text
+    /// A short summary under the title, in the trigger.
+    let description: Text?
     let expansion: Expansion
     let headingLevel: Int
     let content: Content
@@ -125,8 +127,71 @@ public struct QeetrixAccordionItem<Content: View>: View {
         self.init(title: title, expansion: .value(AnyHashable(value)), headingLevel: headingLevel, content: content)
     }
 
-    private init(title: Text, expansion: Expansion, headingLevel: Int, content: () -> Content) {
+    /// A section with its own `isExpanded` binding, a localised title and a summary under it — today's
+    /// choice while closed: "6 digits · every 30 seconds · SHA-1".
+    public init(
+        _ titleKey: LocalizedStringKey, description: Text?, isExpanded: Binding<Bool>, headingLevel: Int = 3,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.init(
+            title: Text(titleKey), description: description, expansion: .binding(isExpanded), headingLevel: headingLevel, content: content)
+    }
+
+    /// A section with its own `isExpanded` binding, a title shown as given and a summary under it.
+    public init<S: StringProtocol>(
+        _ title: S, description: Text?, isExpanded: Binding<Bool>, headingLevel: Int = 3, @ViewBuilder content: () -> Content
+    ) {
+        self.init(
+            title: Text(title), description: description, expansion: .binding(isExpanded), headingLevel: headingLevel, content: content)
+    }
+
+    /// A section with its own `isExpanded` binding, a `Text` title and a summary under it.
+    ///
+    /// - Parameters:
+    ///   - title: The section's title, in the trigger.
+    ///   - description: A short summary under the title, in `body.sm`, `color.text.subtle`: read after the
+    ///     title, before "Expanded" or "Collapsed". `nil` for none.
+    ///   - isExpanded: Whether the section is open; the trigger toggles it.
+    ///   - headingLevel: The trigger's heading level for VoiceOver, 3 by default.
+    ///   - content: What the section shows when open.
+    public init(
+        title: Text, description: Text?, isExpanded: Binding<Bool>, headingLevel: Int = 3, @ViewBuilder content: () -> Content
+    ) {
+        self.init(title: title, description: description, expansion: .binding(isExpanded), headingLevel: headingLevel, content: content)
+    }
+
+    /// A section of a ``QeetrixAccordion`` that owns which are open, with a localised title and a summary
+    /// under it.
+    public init<Value: Hashable>(
+        _ titleKey: LocalizedStringKey, description: Text?, value: Value, headingLevel: Int = 3, @ViewBuilder content: () -> Content
+    ) {
+        self.init(
+            title: Text(titleKey), description: description, expansion: .value(AnyHashable(value)), headingLevel: headingLevel,
+            content: content)
+    }
+
+    /// A section of a ``QeetrixAccordion`` that owns which are open, with a title shown as given and a
+    /// summary under it.
+    public init<S: StringProtocol, Value: Hashable>(
+        _ title: S, description: Text?, value: Value, headingLevel: Int = 3, @ViewBuilder content: () -> Content
+    ) {
+        self.init(
+            title: Text(title), description: description, expansion: .value(AnyHashable(value)), headingLevel: headingLevel,
+            content: content)
+    }
+
+    /// A section of a ``QeetrixAccordion`` that owns which are open, with a `Text` title and a summary under
+    /// it.
+    public init<Value: Hashable>(
+        title: Text, description: Text?, value: Value, headingLevel: Int = 3, @ViewBuilder content: () -> Content
+    ) {
+        self.init(
+            title: title, description: description, expansion: .value(AnyHashable(value)), headingLevel: headingLevel, content: content)
+    }
+
+    private init(title: Text, description: Text? = nil, expansion: Expansion, headingLevel: Int, content: () -> Content) {
         self.title = title
+        self.description = description
         self.expansion = expansion
         self.headingLevel = headingLevel
         self.content = content()
@@ -134,11 +199,13 @@ public struct QeetrixAccordionItem<Content: View>: View {
 
     public var body: some View {
         DisclosureGroup(isExpanded: isExpanded) {
-            content
+            // The summary is this trigger's only: a section nested in the content has its own.
+            content.environment(\.qeetrixAccordionDescription, nil)
         } label: {
             title
         }
         .disclosureGroupStyle(QeetrixAccordionDisclosureGroupStyle(headingLevel: headingLevel))
+        .environment(\.qeetrixAccordionDescription, description)
     }
 
     private var isExpanded: Binding<Bool> {
@@ -239,20 +306,37 @@ private struct QeetrixAccordionTrigger<Label: View>: View {
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.isFocused) private var isFocused
     @Environment(\.qeetrixDensity) private var density
+    @Environment(\.qeetrixAccordionDescription) private var description
+    /// The title's first line, `title.sm`'s line height as Dynamic Type scales it.
+    @ScaledMetric(relativeTo: QeetrixTextRole.titleSm.textStyle) private var firstLine = QeetrixAccordionMetrics.titleLineHeight
+    /// The 16 pt chevron, as QeetrixIcon scales it.
+    @ScaledMetric(relativeTo: .body) private var chevronSide = QeetrixIconSize.sm.points
 
     var body: some View {
-        HStack(spacing: QeetrixSpace.gapMd) {
-            label
-                .qeetrixType(QeetrixAccordionMetrics.titleType)
-                .multilineTextAlignment(.leading)
-                .fixedSize(horizontal: false, vertical: true)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .foregroundStyle(isEnabled ? QeetrixColor.textDefault : QeetrixColor.textDisabled)
-            QeetrixIcon(.chevronDown, size: .sm, shape: .sharp)
-                // `[data-disabled] > .qx-accordion-icon`: `icon.disabled` with the text (QTRX-167).
-                .foregroundStyle(QeetrixAccordionMetrics.chevronColor(isEnabled: isEnabled))
-                // `[data-panel-open] > .qx-accordion-icon { rotate: 180deg }`.
-                .rotationEffect(.degrees(isExpanded ? 180 : 0))
+        Group {
+            if let description {
+                // As on Android: the chevron on the title's first line, however many lines the
+                // title and the summary take; the summary under the title, clear of the chevron.
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack(alignment: .top, spacing: QeetrixSpace.gapMd) {
+                        title
+                        chevron.frame(height: max(firstLine, chevronSide))
+                    }
+                    description
+                        .qeetrixTextStyle(.bodySm)
+                        .foregroundStyle(isEnabled ? QeetrixColor.textSubtle : QeetrixColor.textDisabled)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.trailing, chevronSide + QeetrixSpace.gapMd)
+                }
+                .padding(.vertical, QeetrixSpace.gapXs)
+            } else {
+                HStack(spacing: QeetrixSpace.gapMd) {
+                    title
+                    chevron
+                }
+            }
         }
         .qeetrixControlBlockSize(QeetrixAccordionMetrics.triggerHeight(density), type: QeetrixAccordionMetrics.titleType)
         .contentShape(Rectangle())
@@ -263,11 +347,33 @@ private struct QeetrixAccordionTrigger<Label: View>: View {
             }
         }
     }
+
+    private var title: some View {
+        label
+            .qeetrixType(QeetrixAccordionMetrics.titleType)
+            .multilineTextAlignment(.leading)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .foregroundStyle(isEnabled ? QeetrixColor.textDefault : QeetrixColor.textDisabled)
+    }
+
+    private var chevron: some View {
+        QeetrixIcon(.chevronDown, size: .sm, shape: .sharp)
+            // `[data-disabled] > .qx-accordion-icon`: `icon.disabled` with the text.
+            .foregroundStyle(QeetrixAccordionMetrics.chevronColor(isEnabled: isEnabled))
+            // `[data-panel-open] > .qx-accordion-icon { rotate: 180deg }`.
+            .rotationEffect(.degrees(isExpanded ? 180 : 0))
+    }
 }
 
 enum QeetrixAccordionMetrics {
     /// `title.sm`, in the heading letter style its token names.
     static let titleType = QeetrixComponentType.role(.titleSm)
+
+    /// `title.sm`'s line: 24 pt at the default text size.
+    static var titleLineHeight: CGFloat {
+        titleType.tokens.size * CGFloat(titleType.tokens.lineHeight)
+    }
 
     /// `min-block-size: size.control.lg`, and at least the 44 pt touch target.
     static func triggerHeight(_ density: QeetrixDensity) -> CGFloat {
@@ -316,7 +422,17 @@ private struct QeetrixAccordionContextKey: EnvironmentKey {
     static let defaultValue: QeetrixAccordionContext? = nil
 }
 
+private struct QeetrixAccordionDescriptionKey: EnvironmentKey {
+    static let defaultValue: Text? = nil
+}
+
 extension EnvironmentValues {
+    /// The summary under the trigger's title, from ``QeetrixAccordionItem``'s `description`.
+    var qeetrixAccordionDescription: Text? {
+        get { self[QeetrixAccordionDescriptionKey.self] }
+        set { self[QeetrixAccordionDescriptionKey.self] = newValue }
+    }
+
     /// The accordion the view sits in, if any.
     var qeetrixAccordion: QeetrixAccordionContext? {
         get { self[QeetrixAccordionContextKey.self] }

@@ -11,6 +11,13 @@ private struct Account: Identifiable {
     let id: String
 }
 
+/// A stand-in for the app's icon.
+private struct AppIconImage: View {
+    var body: some View {
+        RoundedRectangle(cornerRadius: 14).fill(.orange).frame(width: 64, height: 64)
+    }
+}
+
 private struct AccountList: View {
     let accounts: [Account]
 
@@ -74,6 +81,12 @@ private struct EmptyStateExamples: View {
                 QeetrixButton("Add account", icon: .plus) { addAccount() }
             }
             QeetrixEmptyState("No pending approvals", description: "Sign-in requests appear here.", icon: .inbox, size: .section)
+            // Outcome and lock screens.
+            QeetrixEmptyState(title: Text("Qeet ID is locked"), description: Text("Unlock to see your codes."), image: AppIconImage()) {
+                QeetrixButton("Unlock", icon: .lockOpen) { unlock() }
+            }
+            .centredInHeight()
+            QeetrixEmptyState("Sign-in approved", description: "You're signed in on your Mac.", icon: .circleCheck, tone: .success)
             QeetrixDataState(isLoading: model.isLoading, error: model.error, isEmpty: model.accounts.isEmpty, onRetry: model.reload) {
                 AccountList(accounts: model.accounts)
             } emptyState: {
@@ -95,6 +108,7 @@ private struct EmptyStateExamples: View {
     }
 
     func addAccount() {}
+    func unlock() {}
     func reload() {}
 }
 

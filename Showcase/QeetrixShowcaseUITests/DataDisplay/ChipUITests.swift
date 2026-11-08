@@ -5,16 +5,17 @@ final class ChipUITests: XCTestCase {
         continueAfterFailure = false
     }
 
+    /// A selectable chip draws as a button but reads as the system toggle it stands for.
     @MainActor
-    func testAToggleChipReportsItsState() {
+    func testASelectableChipIsASwitch() {
         let app = Showcase.launch("chip")
-        let unread = app.buttons["Unread"]
+        let unread = app.switches["Unread"]
         XCTAssertTrue(unread.waitForExistence(timeout: 5))
-        XCTAssertFalse(unread.isSelected)
+        XCTAssertEqual(unread.value as? String, "0")
         unread.tap()
-        XCTAssertTrue(unread.isSelected)
-        XCTAssertEqual(app.staticTexts["chip-unread"].label, "Unread: on")
-        XCTAssertFalse(app.buttons["Shared"].isEnabled)
+        XCTAssertEqual(unread.value as? String, "1")
+        XCTAssertEqual(app.staticTexts["chip-state"].label, "Unread on, mentions on")
+        XCTAssertFalse(app.switches["Archived"].isEnabled)
     }
 
     @MainActor
@@ -25,24 +26,25 @@ final class ChipUITests: XCTestCase {
         open.tap()
         XCTAssertTrue(open.isSelected)
         XCTAssertFalse(app.buttons["All"].isSelected)
-        XCTAssertEqual(app.staticTexts["chip-status"].label, "Status: Open")
-        let engineering = app.buttons["Engineering"]
-        engineering.scrollIntoView(in: app)
-        engineering.tap()
-        XCTAssertEqual(app.staticTexts["chip-labels"].label, "Labels: Design, Engineering")
-        app.buttons["Design"].tap()
-        XCTAssertEqual(app.staticTexts["chip-labels"].label, "Labels: Engineering")
-        XCTAssertFalse(app.buttons["Legal"].isEnabled, "A disabled option can't be chosen")
+        XCTAssertEqual(app.staticTexts["chip-status"].label, "Status: open")
+        XCTAssertFalse(app.buttons["Closed"].isEnabled, "A disabled option can't be chosen")
+        let design = app.switches["Design"].firstMatch
+        design.scrollIntoView(in: app)
+        XCTAssertEqual(design.value as? String, "0")
+        design.tap()
+        XCTAssertEqual(design.value as? String, "1")
+        XCTAssertEqual(app.switches["Engineering"].firstMatch.value as? String, "1", "Several can be on")
     }
 
     @MainActor
     func testARemovableChipNamesWhatItRemoves() {
         let app = Showcase.launch("chip")
-        let remove = app.buttons.matching(NSPredicate(format: "label == 'Remove' AND value == 'Research'")).firstMatch
+        let remove = app.buttons["Remove Team: Finance"]
         remove.scrollIntoView(in: app)
         XCTAssertTrue(remove.exists)
         remove.tap()
-        XCTAssertEqual(app.staticTexts["chip-tags"].label, "Tags: 2")
-        XCTAssertFalse(remove.exists)
+        XCTAssertTrue(remove.waitForNonExistence(timeout: 2))
+        XCTAssertTrue(app.buttons["Remove Status: Active"].exists, "Only that chip is removed")
+        XCTAssertFalse(app.buttons["Remove Region: South"].isEnabled)
     }
 }

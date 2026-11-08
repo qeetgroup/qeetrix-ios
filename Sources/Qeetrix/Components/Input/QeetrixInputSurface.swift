@@ -18,7 +18,7 @@ struct QeetrixInputState: Hashable {
 
     /// The 1 pt bottom line, which the focus or invalid frame replaces. Read-only keeps the editable
     /// line, `border.strong`, so it holds 3:1; the missing fill is what tells it apart
-    /// (`.qx-input:has(> .qx-input-control[readonly])`, QTRX-175).
+    /// (`.qx-input:has(> .qx-input-control[readonly])`).
     var bottomLine: QeetrixColor? {
         if !isEnabled { return .borderDisabled }
         if isReadOnly { return .borderStrong }

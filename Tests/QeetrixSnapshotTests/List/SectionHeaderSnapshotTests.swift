@@ -24,5 +24,22 @@
                 }
             )
         }
+
+        @Test("An authenticator's account rows: a monogram tile and the code under the account")
+        func accountRows() {
+            let start = Date(timeIntervalSince1970: 1_800_000_000)
+            assertSpecimen(
+                VStack(spacing: 0) {
+                    QeetrixListItem("GitHub", description: Text(verbatim: "priya")) { QeetrixListItemIcon(monogram: "G") }
+                        .qeetrixListItemContent {
+                            QeetrixOTPCode(
+                                code: "482105", validity: start...start.addingTimeInterval(30), label: Text(verbatim: "GitHub"),
+                                size: .md, isHidden: false, toast: nil, onCopied: nil, now: start.addingTimeInterval(12))
+                        }
+                    QeetrixSeparator()
+                    QeetrixListItem("Verify your email", description: Text("Step 2 of 3")) { QeetrixListItemIcon(monogram: "2") }
+                }
+            )
+        }
     }
 #endif

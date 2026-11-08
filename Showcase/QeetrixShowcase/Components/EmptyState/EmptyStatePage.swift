@@ -3,6 +3,7 @@ import SwiftUI
 
 struct EmptyStatePage: View {
     @State private var added = 0
+    @State private var unlocks = 0
 
     var body: some View {
         ComponentPage(
@@ -26,6 +27,24 @@ struct EmptyStatePage: View {
                         size: .section)
                 }
             }
+            DemoSection("Outcomes: success and warning") {
+                QeetrixEmptyState(
+                    "Sign-in approved", description: "You're signed in on your Mac.", icon: .circleCheck, size: .section, tone: .success)
+                QeetrixEmptyState(
+                    "Approve on your other phone", description: "This request was sent to Priya's Pixel.", icon: .triangleAlert,
+                    size: .section, tone: .warning)
+            }
+            DemoSection("A lock screen: an image in place of the icon") {
+                QeetrixEmptyState(
+                    title: Text("Qeet ID is locked"), description: Text("Unlock to see your codes."), image: ShowcaseAppIcon(), level: 2
+                ) {
+                    QeetrixButton("Unlock", icon: .lockOpen) { unlocks += 1 }
+                }
+                .centredInHeight()
+                .frame(height: 360)
+                QeetrixText("The image is decorative: VoiceOver skips it. On its own, the same tile is read:", size: .sm, tone: .subtle)
+                ShowcaseAppIcon().accessibilityIdentifier("app-icon-alone")
+            }
             DemoSection("Danger: offline") {
                 QeetrixEmptyState(
                     "You're offline", description: "Connect to the internet to see your accounts.", icon: .wifiOff, size: .section,
@@ -35,6 +54,19 @@ struct EmptyStatePage: View {
                 }
             }
         }
+    }
+}
+
+/// A stand-in for the app's icon, read by VoiceOver as one image when it stands alone.
+private struct ShowcaseAppIcon: View {
+    var body: some View {
+        RoundedRectangle(cornerRadius: 14)
+            .fill(QeetrixColor.bgBrandBold)
+            .frame(width: 64, height: 64)
+            .overlay { QeetrixIcon(.key, size: .lg, shape: .sharp).foregroundStyle(QeetrixColor.textOnBrand) }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(verbatim: "Qeet ID app icon"))
+            .accessibilityAddTraits(.isImage)
     }
 }
 

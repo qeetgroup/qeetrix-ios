@@ -31,7 +31,9 @@ VStack(alignment: .leading) {
   `color.text.disabled` (a ghost button keeps no fill). Loading puts a spinner in the zone — a button
   without an icon gains the zone — keeps the label and colours, and ignores taps. Keyboard focus is the
   2-point Ember frame inside the edge, with a 1-point `color.surface.default` gap.
-- `isFullWidth` stretches it to its container, label still at the start and icon at the end.
+- `isFullWidth` stretches it to its container and centres the label on the whole button; an icon
+  keeps its zone at the end. Where the label is too long to centre, the leading side gives way
+  first, so a full-width button never needs more room than a plain one.
 
 Write labels as verbs ("Create invoice"), and don't disable without saying why nearby.
 

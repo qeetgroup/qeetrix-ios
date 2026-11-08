@@ -27,5 +27,27 @@
                 }
             )
         }
+
+        @Test("A summary under the title, closed and open, and with a long title and summary")
+        func summaries() {
+            assertSpecimen(
+                VStack(alignment: .leading, spacing: 24) {
+                    QeetrixAccordionItem("Advanced", description: Text("6 digits · every 30 seconds · SHA-1"), isExpanded: .constant(false))
+                    {
+                        QeetrixText("Change these only if the service's setup page asks you to.")
+                    }
+                    QeetrixAccordion(expanded: .constant(Optional(1))) {
+                        QeetrixAccordionItem("Advanced", description: Text("6 digits · every 30 seconds · SHA-1"), value: 1) {
+                            QeetrixText("Change these only if the service's setup page asks you to.")
+                        }
+                        QeetrixAccordionItem(
+                            "When the app locks itself after you leave it", description: Text("After 1 minute in the background"), value: 2
+                        ) {
+                            QeetrixText("Immediately, after 1 minute, or after 5 minutes.")
+                        }
+                    }
+                }
+            )
+        }
     }
 #endif

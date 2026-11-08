@@ -6,42 +6,57 @@ final class AccordionUITests: XCTestCase {
     }
 
     @MainActor
-    func testHeadersExpandAndReportTheirState() {
-        let app = Showcase.launch("accordion")
-        let billing = app.buttons["Billing, Invoices and payment method"]
-        XCTAssertTrue(billing.waitForExistence(timeout: 5))
-        XCTAssertEqual(billing.value as? String, "Collapsed")
-        billing.tap()
-        XCTAssertEqual(billing.value as? String, "Expanded")
-        XCTAssertTrue(app.staticTexts["Invoices are sent on the first of each month."].waitForExistence(timeout: 2))
-        app.buttons["Members"].tap()
-        XCTAssertEqual(billing.value as? String, "Expanded", "Several can be open at once")
-        billing.tap()
-        XCTAssertFalse(app.staticTexts["Invoices are sent on the first of each month."].waitForExistence(timeout: 2))
-    }
-
-    @MainActor
     func testOneAtATimeIsTheAppsBinding() {
         let app = Showcase.launch("accordion")
-        let plan = app.buttons["Plan"]
-        let people = app.buttons["People"]
-        people.scrollIntoView(in: app)
-        XCTAssertEqual(plan.value as? String, "Expanded")
-        people.tap()
-        XCTAssertEqual(people.value as? String, "Expanded")
-        XCTAssertEqual(plan.value as? String, "Collapsed")
-        XCTAssertEqual(app.staticTexts["accordion-open"].label, "Open: people")
+        let tax = app.buttons["Tax settings"].firstMatch
+        let numbering = app.buttons["Invoice numbering"].firstMatch
+        XCTAssertTrue(tax.waitForExistence(timeout: 5))
+        XCTAssertEqual(tax.value as? String, "Expanded")
+        XCTAssertEqual(numbering.value as? String, "Collapsed")
+        numbering.tap()
+        XCTAssertEqual(numbering.value as? String, "Expanded")
+        XCTAssertEqual(tax.value as? String, "Collapsed", "Opening one closes the other")
+        XCTAssertEqual(app.staticTexts["accordion-open"].label, "Open: numbering")
+        XCTAssertFalse(app.buttons["Payment reminders"].isEnabled)
+    }
+
+    /// The trigger reads its title, then the summary, then its state.
+    @MainActor
+    func testASummaryIsReadAfterTheTitleBeforeTheState() {
+        let app = Showcase.launch("accordion")
+        let settings = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Code settings")).firstMatch
+        settings.scrollIntoView(in: app)
+        XCTAssertEqual(settings.label, "Code settings, 6 digits · every 30 seconds · SHA-1")
+        XCTAssertEqual(settings.value as? String, "Collapsed")
+        settings.tap()
+        XCTAssertEqual(settings.value as? String, "Expanded")
+        XCTAssertTrue(app.staticTexts["Change these only if the service's setup page asks you to."].waitForExistence(timeout: 2))
     }
 
     @MainActor
-    func testANestedDisclosureOpensInside() {
+    func testSeveralCanBeOpenAtOnce() {
         let app = Showcase.launch("accordion")
-        let security = app.buttons["Security"]
-        security.scrollIntoView(in: app)
-        security.tap()
-        let advanced = app.buttons["Advanced"]
-        XCTAssertTrue(advanced.waitForExistence(timeout: 2))
+        let unpaid = app.buttons["What happens to unpaid invoices at the end of the financial year?"]
+        XCTAssertTrue(unpaid.waitForExistence(timeout: 5))
+        unpaid.scrollIntoView(in: app)
+        XCTAssertEqual(unpaid.value as? String, "Collapsed")
+        unpaid.tap()
+        XCTAssertEqual(unpaid.value as? String, "Expanded")
+        let answer = app.staticTexts["They carry over to the next year, with their original dates."]
+        XCTAssertTrue(answer.waitForExistence(timeout: 2))
+        let otherTax = app.buttons.matching(identifier: "Tax settings").element(boundBy: 1)
+        XCTAssertEqual(otherTax.value as? String, "Expanded", "The others stay open")
+        unpaid.tap()
+        XCTAssertFalse(answer.waitForExistence(timeout: 2))
+    }
+
+    @MainActor
+    func testASingleSectionOpensItsContent() {
+        let app = Showcase.launch("accordion")
+        let advanced = app.buttons["Advanced options"]
+        XCTAssertTrue(advanced.waitForExistence(timeout: 5))
+        advanced.scrollIntoView(in: app)
         advanced.tap()
-        XCTAssertTrue(app.staticTexts["Session length and sign-in rules."].waitForExistence(timeout: 2))
+        XCTAssertTrue(app.switches["Retry failed webhooks"].waitForExistence(timeout: 2))
     }
 }

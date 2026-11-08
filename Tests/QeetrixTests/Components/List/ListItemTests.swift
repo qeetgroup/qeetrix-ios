@@ -68,6 +68,32 @@ struct ListItemTests {
             abs(try height(QeetrixListItem("Storage", description: Text("Used this month"))) - 44) <= 2, "A point per text block on iOS")
     }
 
+    @Test("A monogram tile: the icon tile's 32 pt with one or two characters, longer text cut")
+    @MainActor
+    func monogram() throws {
+        #expect(QeetrixListItemIcon(monogram: "Google").monogram == "Go")
+        #expect(QeetrixListItemIcon(monogram: "7").monogram == "7")
+        #expect(QeetrixListItemIcon(.key).monogram == nil)
+        let tile = try #require(Rendered(QeetrixListItemIcon(monogram: "G").qeetrixTheme(.light)))
+        let icon = try #require(Rendered(QeetrixListItemIcon(.key).qeetrixTheme(.light)))
+        #expect(tile.width == icon.width && tile.height == icon.height)
+        #expect(tile.width == 32)
+    }
+
+    @Test("Content sits gap.xs under the description, inside the row")
+    @MainActor
+    func contentUnderTheDescription() throws {
+        func height(_ view: some View) throws -> Int { try #require(Rendered(view.frame(width: 390))).height }
+        let plain = try height(QeetrixListItem("GitHub", description: Text(verbatim: "priya")))
+        let withContent = try height(
+            QeetrixListItem("GitHub", description: Text(verbatim: "priya")).qeetrixListItemContent {
+                Color.clear.frame(height: 40)
+            })
+        #expect(withContent == plain + 4 + 40)
+        // The row style is public for rows the app draws itself.
+        _ = Text(verbatim: "A custom row").qeetrixListRow()
+    }
+
     @Test(".qx-table-row: Ember tint when selected, neutral tints when pressed or hovered")
     func backgrounds() {
         func fill(selected: Bool = false, pressed: Bool = false, hovered: Bool = false, enabled: Bool = true) -> QeetrixColor? {

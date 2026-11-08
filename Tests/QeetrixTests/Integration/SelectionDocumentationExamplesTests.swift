@@ -98,6 +98,24 @@ private struct AccordionExamples: View {
     }
 }
 
+/// Accordion.md: a summary under the title.
+private struct AccordionSummaryExample: View {
+    @State private var showsAdvanced = false
+
+    var body: some View {
+        QeetrixAccordionItem("Advanced", description: Text("6 digits · every 30 seconds · SHA-1"), isExpanded: $showsAdvanced) {
+            CodeSettings()
+        }
+    }
+}
+
+/// A stand-in for the app's code settings.
+private struct CodeSettings: View {
+    var body: some View {
+        QeetrixText("6 digits")
+    }
+}
+
 /// Accordion.md: any number of sections.
 private struct AccordionMultipleExamples: View {
     @State private var open: Set<Section> = [.tax]
@@ -169,6 +187,7 @@ struct SelectionDocumentationExamplesTests {
             #expect(ImageRenderer(content: SegmentedControlExamples().frame(width: 390).qeetrixThemeMode(theme)).cgImage != nil)
             #expect(ImageRenderer(content: AccordionExamples().frame(width: 390).qeetrixThemeMode(theme)).cgImage != nil)
             #expect(ImageRenderer(content: AccordionMultipleExamples().frame(width: 390).qeetrixThemeMode(theme)).cgImage != nil)
+            #expect(ImageRenderer(content: AccordionSummaryExample().frame(width: 390).qeetrixThemeMode(theme)).cgImage != nil)
             #expect(ImageRenderer(content: AvatarGroupExamples().frame(width: 390).qeetrixThemeMode(theme)).cgImage != nil)
             #expect(
                 ImageRenderer(content: PageIndicatorExamples().frame(width: 390, height: 300).qeetrixThemeMode(theme)).cgImage != nil)

@@ -61,6 +61,40 @@ struct PermissionPrimerTests {
         #expect((0..<wide.height).allSatisfy { wide.pixel(100, $0).a == 0 && wide.pixel(700, $0).a == 0 })
     }
 
+    @Test("Continue carries arrow-right and Open Settings external-link; the footnote sits gap.sm under the actions")
+    func iconsAndFootnote() throws {
+        #expect(QeetrixPermissionPrimerMetrics.continueIcon == .arrowRight)
+        #expect(QeetrixPermissionPrimerMetrics.openSettingsIcon == .externalLink)
+        func height(_ primer: QeetrixPermissionPrimer) throws -> Int {
+            try #require(Rendered(primer.frame(width: 390))).height
+        }
+        let primer = QeetrixPermissionPrimer(.notifications, title: "Approve sign-ins", message: "From this phone.", onContinue: {})
+        #expect(primer.footnoteText == nil)
+        let noted = primer.footnote(Text("Only sign-in requests."))
+        #expect(noted.footnoteText != nil)
+        // 8 pt under the actions, then body.sm's 16 pt line.
+        #expect(abs(try height(noted) - (try height(primer)) - (8 + 16)) <= 1)
+    }
+
+    @Test("A button's icon mirrors right to left where its use asks: the primer's arrows")
+    func arrowsMirror() throws {
+        func render(_ mirrors: Bool?, _ direction: LayoutDirection) throws -> Rendered {
+            let button = QeetrixButton(title: Text("Continue"), icon: .arrowRight, size: .lg, isFullWidth: true) {}
+                .environment(\.qeetrixButtonIconMirrors, mirrors)
+                .environment(\.layoutDirection, direction)
+                .environment(\.colorScheme, .light)
+                .frame(width: 300)
+            return try #require(Rendered(button))
+        }
+        func same(_ a: Rendered, _ b: Rendered) -> Bool {
+            a.width == b.width && a.height == b.height
+                && (0..<a.height).allSatisfy { y in (0..<a.width).allSatisfy { x in a.pixel(x, y) == b.pixel(x, y) } }
+        }
+        #expect(same(try render(true, .leftToRight), try render(nil, .leftToRight)), "Left to right, as drawn")
+        #expect(!same(try render(true, .rightToLeft), try render(nil, .rightToLeft)), "Right to left, the arrow turns")
+        #expect(!QeetrixIconName.arrowRight.mirrorsInRightToLeft, "By its name alone it wouldn't")
+    }
+
     @Test("Every kind renders in both statuses, with and without Not now, and the app's words")
     func renders() {
         for kind in QeetrixPermissionPrimerKind.allCases {

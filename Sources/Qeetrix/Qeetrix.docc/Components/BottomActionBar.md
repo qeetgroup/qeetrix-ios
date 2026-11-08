@@ -1,7 +1,7 @@
 # Bottom action bar
 
 A screen's main actions pinned to the bottom of the screen, with
-`qeetrixBottomActionBar(primary:secondary:)`.
+`qeetrixBottomActionBar(primary:secondary:)` or `qeetrixBottomActionBar(primary:tertiary:)`.
 
 ## Overview
 
@@ -17,17 +17,31 @@ ScrollView {
     secondary: QeetrixScreenAction("Save for later") { save() })
 ```
 
+```swift
+LinkPhoneExplainer()
+    .qeetrixBottomActionBar(
+        primary: QeetrixScreenAction("Continue") { next() },
+        tertiary: QeetrixScreenAction("Not now", tone: .neutral) { skip() })
+LinkedOutcome()
+    .qeetrixBottomActionBar(tertiary: QeetrixScreenAction("Done", tone: .neutral) { close() })
+```
+
 - **Actions.** At most one solid action, the `primary`, and one soft one, the `secondary` (design rules
   §7): the bar takes ``QeetrixScreenAction``s, not buttons, so it decides their emphasis and a screen
   can't end up with two primaries. Put anything else — Cancel, Learn more — in the screen. A destructive
   confirmation is the primary with `tone: .danger`. Both are `lg` ``QeetrixButton``s, the field height.
+- **A quiet action instead.** `qeetrixBottomActionBar(primary:tertiary:)` puts an `lg` ghost
+  ``QeetrixButton`` under the primary — "Continue" over "Not now", "Scan the code" over "Type the code
+  instead" — and without a primary holds the ghost action alone, for a quiet "Done" on an outcome
+  screen. Design rules §7 make anything that isn't the primary or the secondary a tertiary action; a
+  bar holds a soft secondary or a ghost tertiary, not both. Give a quiet one `tone: .neutral`.
 - **Placement.** Above the home indicator, and above the keyboard while it is open: the bar is a bottom
   safe-area inset of the view it modifies, and its surface runs under the home indicator.
 - **On a phone** the actions span the bar: side by side at equal widths, the secondary first, when both
   labels fit in half of it; stacked full width, the primary on top, when they don't — at large text
-  sizes, or with long labels. A full-width button keeps its label at the start and its icon at the end.
+  sizes, or with long labels. A full-width button centres its label, its icon at the end.
 - **On a tablet**, and at any regular width, they keep their own widths, at the end of the bar, as in
-  the web's footers.
+  the web's footers. A primary and a tertiary stay stacked there, at the wider one's width.
 - **Look.** `color.surface.default` with the page gutter (16 points at compact width, 32 at regular,
   page-header.css) and 12 points above and below the buttons, 8 points apart. While content runs
   beneath the bar, a 1-point `color.border.default` rule marks its top edge.
@@ -40,7 +54,7 @@ action itself: `isDisabled`, `isLoading`, `tone`.
 
 - The buttons are ``QeetrixButton``s: VoiceOver reads each by its title, a busy one as "Loading", a
   disabled one as dimmed. They are read in the order they are drawn — side by side, the secondary
-  first; stacked, the primary first.
+  first; stacked, the primary first. A tertiary is always under the primary, so read after it.
 - Each button is at least 44 points tall to the touch; the labels wrap at the accessibility sizes and
   the bar stacks them rather than truncating.
 - The rule appears over `motion.duration.fast`, at once with Reduce Motion. The layout mirrors in right

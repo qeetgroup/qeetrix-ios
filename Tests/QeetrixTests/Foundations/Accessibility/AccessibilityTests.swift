@@ -47,7 +47,7 @@ struct ContrastTests {
         pairs += Self.pairs([.textLink, .textLinkHover], [.bgBrandSubtle, .bgSelected], 4.5)
         pairs += Self.pairs(roleText, interactionFills, 4.5)
         pairs += Self.pairs([.textOnBrand, .iconOnBrand], [.bgBrandBold, .bgBrandBoldHover, .bgBrandBoldPressed], 4.5)
-        // A checked checkbox, radio or switch is the brand fill, at rest and hovered, on any surface (QTRX-187).
+        // A checked checkbox, radio or switch is the brand fill, at rest and hovered, on any surface.
         pairs += Self.pairs([.bgBrandBold, .bgBrandBoldHover], surfaces, 3)
         pairs += Self.pairs([.textOnBold], [.bgDangerBold, .bgDangerBoldHover, .bgDangerBoldPressed, .bgSuccessBold, .bgInfoBold], 4.5)
         pairs.append(Pair(foreground: .textOnWarning, background: [.bgWarningBold], minimum: 4.5))
@@ -127,7 +127,7 @@ struct ContrastTests {
             Pair(foreground: .iconDanger, background: [.bgDangerSubtle], minimum: 3),
         ] + newComponents
 
-    /// Pairs the components of QTRX-95 to QTRX-155 draw.
+    /// Pairs the components added after the first set draw.
     static let newComponents: [Pair] = {
         var pairs: [Pair] = []
         // Alert: its title and line, its icon, Dismiss and a ghost action on each tone's tint.
@@ -225,7 +225,7 @@ struct ContrastTests {
         "Rules show on every surface: border.subtle at least 1.2:1 on overlay, raised and default, border.default stronger",
         arguments: [QeetrixTheme.light, .dark])
     func rules(theme: QeetrixTheme) {
-        // contrast.test.ts, "rules and the brand hover" (QTRX-183): rules have no WCAG minimum, but must show.
+        // contrast.test.ts, "rules and the brand hover": rules have no WCAG minimum, but must show.
         func ratio(_ rule: QeetrixColor, _ surface: QeetrixColor) -> Double {
             Self.ratio(Pair(foreground: rule, background: [surface], minimum: 0), theme)
         }

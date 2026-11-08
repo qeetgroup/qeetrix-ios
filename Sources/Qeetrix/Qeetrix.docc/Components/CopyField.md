@@ -13,7 +13,7 @@ QeetrixCopyField("Client secret", value: secret, isSensitive: true, toast: $toas
 - **The field** (`layout: .field`, the default) is a ``QeetrixField``: the label in `label.sm`,
   `color.text.subtle`, above the read-only field box, then the description in `body.sm`. The box has no
   fill and the field's `color.border.strong` bottom line — what a read-only ``QeetrixTextField`` shows
-  (QTRX-175) — is at least `size.control.lg` tall, and holds the value `space.inset.md` from its start
+  — is at least `size.control.lg` tall, and holds the value `space.inset.md` from its start
   and a ghost, neutral `sm` ``QeetrixCopyButton`` `space.inset.xs` from its end, `space.gap.sm` apart.
 - **The value** is `code.sm` in `color.text.default`, `space.inset.xs` above and below. It reads left to
   right in every language, as a code does, and wraps rather than scrolls: a long URL breaks onto more

@@ -134,6 +134,47 @@ struct CopyButtonTests {
         #expect(shown == nil, "A failure is announced, never toasted")
     }
 
+    @Test("The public copy, from any trigger: the controls' entry, haptic, toast and announcement")
+    func publicCopy() {
+        let english = Locale(identifier: "en_US")
+        let recorder = CopyRecorder()
+        var played: [QeetrixFeedback] = []
+        var announced: [String] = []
+        var shown: QeetrixToast?
+        let binding = Binding(get: { shown }, set: { shown = $0 })
+        func copy(_ text: String, isSensitive: Bool, toast: Binding<QeetrixToast?>?) -> Bool {
+            QeetrixCopy.copy(
+                text, isSensitive: isSensitive, toast: toast, locale: english, writer: recorder.writer, now: copiedAt,
+                feedback: { played.append($0) }, announce: { announced.append($0) })
+        }
+
+        // A secret: local only and gone in 60 seconds, a light tap, the toast with its expiry line.
+        #expect(copy("482913", isSensitive: true, toast: binding))
+        #expect(recorder.entries.last == QeetrixCopyEntry("482913", isSensitive: true, copiedAt: copiedAt))
+        #expect(recorder.entries.last?.isLocalOnly == true && recorder.entries.last?.expiresAt == copiedAt.addingTimeInterval(60))
+        #if canImport(UIKit)
+            let options = recorder.entries.last?.pasteboardOptions ?? [:]
+            #expect(options[.localOnly] as? Bool == true)
+            #expect(options[.expirationDate] as? Date == copiedAt.addingTimeInterval(60))
+        #endif
+        #expect(played == [.lightImpact])
+        #expect(shown?.tone == .success && shown?.title == "Copied" && shown?.description == "Clears from the clipboard after 1 minute")
+        #expect(announced.isEmpty, "The toast announces itself")
+
+        // Plain text: stays, no expiry line; without a toast binding, Copied is announced.
+        shown = nil
+        #expect(copy("acme-user-0042", isSensitive: false, toast: binding))
+        #expect(recorder.entries.last?.expiresAt == nil && shown?.description == nil)
+        #expect(copy("acme-user-0042", isSensitive: false, toast: nil))
+        #expect(announced == ["Copied"])
+
+        // Refused: the error haptic and Couldn't copy, announced, never toasted.
+        recorder.accepts = false
+        shown = nil
+        #expect(!copy("482913", isSensitive: true, toast: binding))
+        #expect(played.last == .error && announced.last == "Couldn't copy" && shown == nil)
+    }
+
     @Test("copy, then check or circle-alert; on ghost buttons in icon.success or icon.danger (copy-button.css)")
     func icons() {
         #expect(QeetrixCopyState.allCases.map(\.rawValue) == ["idle", "copied", "failed"])

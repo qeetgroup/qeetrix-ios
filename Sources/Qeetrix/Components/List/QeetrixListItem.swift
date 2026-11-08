@@ -63,7 +63,6 @@ public struct QeetrixListItem<Leading: View, Trailing: View>: View {
     let control: QeetrixListItemControl<QeetrixListItemContent<Leading, Trailing>>
     let leading: Leading
     let trailing: Trailing
-    @Environment(\.colorScheme) private var colorScheme
 
     init(
         title: Text, description: Text?, metadata: Text?, accessory: QeetrixListItemAccessory, isSelected: Bool,
@@ -80,13 +79,7 @@ public struct QeetrixListItem<Leading: View, Trailing: View>: View {
     }
 
     public var body: some View {
-        row
-            // The row draws its own insets, so its tints reach the cell's edges.
-            .listRowInsets(EdgeInsets())
-            .listRowBackground(Rectangle().fill(QeetrixColor.surfaceRaised))
-            // §15: rows are ruled in border.subtle, edge to edge, as a table's are.
-            .listRowSeparatorTint(QeetrixColor.borderSubtle.color(for: colorScheme))
-            .alignmentGuide(.listRowSeparatorLeading) { $0[.leading] }
+        row.qeetrixListRow()
     }
 
     @ViewBuilder private var row: some View {
@@ -413,30 +406,54 @@ private struct QeetrixListItemButtonBody: View {
 // MARK: - The row's parts
 
 /// A row's 32 pt icon tile, for a ``QeetrixListItem``'s `leading` content — a `md` avatar's size, so a
-/// list of settings and a list of people line up. Drawn as the Timeline's marker (timeline.css
+/// list of settings and a list of people line up. With `monogram:` it holds one or two characters in
+/// place of the icon — an issuer's letter, a step's number — in `label.md` at weight 600 and
+/// `color.text.subtle`, cut to its first two. Drawn as the Timeline's marker (timeline.css
 /// `.qx-timeline-marker`): `color.bg.neutral.subtle` inside a 1 pt `color.border.subtle` edge, 4 pt
 /// corners (`radius.control`), and a 16 pt sharp icon in `color.icon.subtle` — `color.icon.danger` in a
 /// destructive row, `color.icon.disabled` in a disabled one. The tile grows with the icon at larger
 /// text sizes. Decorative: the row's text says what it is.
 public struct QeetrixListItemIcon: View {
-    let icon: QeetrixIconName
+    let icon: QeetrixIconName?
+    let monogram: String?
     @ScaledMetric(relativeTo: .body) private var side = QeetrixListItemMetrics.iconTile
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.qeetrixListItemIsDestructive) private var isDestructive
 
     public init(_ icon: QeetrixIconName) {
         self.icon = icon
+        monogram = nil
+    }
+
+    /// A tile with one or two characters — an issuer's letter where it has no logo, a step's number —
+    /// in place of the icon. Longer text is cut to its first two characters.
+    public init<S: StringProtocol>(monogram: S) {
+        icon = nil
+        self.monogram = String(monogram.prefix(2))
     }
 
     public var body: some View {
         let shape = RoundedRectangle(cornerRadius: QeetrixRadius.control)
-        QeetrixIcon(icon, size: .sm, shape: .sharp)
-            .foregroundStyle(color)
-            .frame(width: side, height: side)
+        mark
+            .frame(minWidth: side, minHeight: side)
             .background(QeetrixColor.bgNeutralSubtle, in: shape)
             // box-shadow: inset 0 0 0 border.width.default border.subtle
             .overlay { shape.strokeBorder(QeetrixColor.borderSubtle, lineWidth: QeetrixBorderWidth.default) }
             .accessibilityHidden(true)
+    }
+
+    @ViewBuilder private var mark: some View {
+        if let icon {
+            QeetrixIcon(icon, size: .sm, shape: .sharp).foregroundStyle(color)
+        } else {
+            // label.md at weight 600; the tile grows with it at large text sizes, so it is never clipped.
+            Text(verbatim: monogram ?? "")
+                .qeetrixType(QeetrixListItemMetrics.monogramType)
+                .foregroundStyle(isEnabled ? QeetrixColor.textSubtle : QeetrixColor.textDisabled)
+                .lineLimit(1)
+                .fixedSize()
+                .padding(QeetrixSpace.gapXs)
+        }
     }
 
     var color: QeetrixColor {
@@ -475,6 +492,7 @@ struct QeetrixListItemContent<Leading: View, Trailing: View>: View {
     let leading: Leading
     let trailing: Trailing
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.qeetrixListItemContent) private var content
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.qeetrixDensity) private var density
     @Environment(\.qeetrixListItemIsDestructive) private var isDestructive
@@ -488,12 +506,12 @@ struct QeetrixListItemContent<Leading: View, Trailing: View>: View {
                 // From the accessibility sizes the trailing content moves below the text instead of
                 // squeezing it, as qeetrix-android's row does from 150 %.
                 VStack(alignment: .leading, spacing: QeetrixSpace.gapSm) {
-                    text(isStacked: true)
+                    textAndContent(isStacked: true)
                     trailing
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             } else {
-                text(isStacked: isLarge)
+                textAndContent(isStacked: isLarge)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 trailing
             }
@@ -503,6 +521,18 @@ struct QeetrixListItemContent<Leading: View, Trailing: View>: View {
         .padding(.vertical, QeetrixListItemMetrics.blockPadding)
         .frame(maxWidth: .infinity, minHeight: QeetrixListItemMetrics.minimumHeight(density), alignment: .leading)
         .contentShape(Rectangle())
+    }
+
+    /// The text, and the app's content `space.gap.xs` under it.
+    @ViewBuilder private func textAndContent(isStacked: Bool) -> some View {
+        if let content {
+            VStack(alignment: .leading, spacing: QeetrixSpace.gapXs) {
+                text(isStacked: isStacked)
+                content
+            }
+        } else {
+            text(isStacked: isStacked)
+        }
     }
 
     private func text(isStacked: Bool) -> some View {
@@ -669,6 +699,16 @@ enum QeetrixListItemMetrics {
     /// A `md` avatar's side: a row's two lines (`label.md` and `body.sm`) are this tall.
     static let iconTile: CGFloat = 32
 
+    /// A monogram tile's letters: `label.md` at weight 600.
+    static var monogramType: QeetrixTypeSpec {
+        let tokens = QeetrixTextRole.labelMd.tokens
+        return QeetrixTypeSpec(
+            QeetrixTextRoleTokens(
+                family: tokens.family, size: tokens.size, weight: QeetrixTextWeight.semibold.fontWeight,
+                lineHeight: tokens.lineHeight, letterSpacing: tokens.letterSpacing, geometry: tokens.geometry),
+            scalesLike: QeetrixTextRole.labelMd.textStyle)
+    }
+
     /// The density's `size.row` — 32 / 40 / 48 pt — and never under the 44 pt touch target.
     static func minimumHeight(_ density: QeetrixDensity) -> CGFloat {
         max(density.sizeRow, QeetrixAccessibility.minimumTouchTarget)
@@ -712,7 +752,49 @@ extension EnvironmentValues {
     }
 }
 
+private struct QeetrixListItemContentKey: EnvironmentKey {
+    static var defaultValue: AnyView? { nil }
+}
+
+extension EnvironmentValues {
+    /// The view a ``QeetrixListItem`` shows under its description, set by `qeetrixListItemContent(_:)`.
+    var qeetrixListItemContent: AnyView? {
+        get { self[QeetrixListItemContentKey.self] }
+        set { self[QeetrixListItemContentKey.self] = newValue }
+    }
+}
+
+/// A list row's Qeetrix look: its own insets, `color.surface.raised` and a `color.border.subtle` separator.
+private struct QeetrixListRowModifier: ViewModifier {
+    @Environment(\.colorScheme) private var colorScheme
+
+    func body(content: Content) -> some View {
+        content
+            // The row draws its own insets, so its tints reach the cell's edges.
+            .listRowInsets(EdgeInsets())
+            .listRowBackground(Rectangle().fill(QeetrixColor.surfaceRaised))
+            // §15: rows are ruled in border.subtle, edge to edge, as a table's are.
+            .listRowSeparatorTint(QeetrixColor.borderSubtle.color(for: colorScheme))
+            .alignmentGuide(.listRowSeparatorLeading) { $0[.leading] }
+    }
+}
+
 extension View {
+    /// Shows `content` under a ``QeetrixListItem``'s description, `space.gap.xs` below it, inside the row's
+    /// padding: an authenticator's ``QeetrixOTPCode`` under the account, a progress bar under a file
+    ///. Apply it to the row. In a row that acts — a button or a link — the content is part of
+    /// the row's label, so put a control of its own there only in a row that only shows its content.
+    public func qeetrixListItemContent<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
+        environment(\.qeetrixListItemContent, AnyView(content()))
+    }
+
+    /// The look ``QeetrixListItem`` gives itself in a `List`, for a row the app draws itself: its own
+    /// insets (draw the page gutter in the row), `color.surface.raised`, and the list's separator in
+    /// `color.border.subtle`, edge to edge.
+    public func qeetrixListRow() -> some View {
+        modifier(QeetrixListRowModifier())
+    }
+
     /// Gives a `List` the Qeetrix look for ``QeetrixListItem`` rows: the plain style — square and ruled,
     /// as Qeetrix's tables are (design rules §3, §15) — on the page's `color.surface.canvas`. The list's
     /// own behaviours stay as they are.

@@ -28,6 +28,21 @@ struct CardPage: View {
                     QeetrixText("A card without a title is a plain group.")
                 }
             }
+            DemoSection("Rows, flush") {
+                QeetrixCard(title: Text("Settings")) {
+                    QeetrixListItem("AutoFill codes", accessory: .chevron) {
+                    } leading: {
+                        QeetrixListItemIcon(.key)
+                    }
+                    QeetrixListItem("Help and privacy", accessory: .chevron) {
+                    } leading: {
+                        QeetrixListItemIcon(.circleQuestionMark)
+                    }
+                }
+                .flushRows()
+                QeetrixText(
+                    "The rows meet the card's edges, ruled between; press one to see its tint reach them.", size: .sm, tone: .subtle)
+            }
             DemoSection("A danger zone") {
                 QeetrixCard(title: Text("Delete workspace"), description: Text("This can't be undone."), tone: .danger) {
                     QeetrixText("Every project, file and member is removed.")

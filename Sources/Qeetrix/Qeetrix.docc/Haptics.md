@@ -59,7 +59,7 @@ QeetrixFeedback.error.play()
   A change the app makes to the binding plays nothing, and neither does choosing the radio already
   chosen.
 - Copy (``QeetrixCopyButton``, ``QeetrixOTPCode``) plays ``QeetrixFeedback/lightImpact`` once the
-  text is on the pasteboard, as QTRX-140 and QTRX-108 ask (and Android does).
+  text is on the pasteboard, as Android does.
 - Swipe actions and pull to refresh are the system's, and the system plays their haptics as the swipe
   opens and the pull crosses its threshold; Qeetrix adds ``QeetrixFeedback/success`` or
   ``QeetrixFeedback/error`` when a refresh finishes (<doc:PullToRefresh>).
