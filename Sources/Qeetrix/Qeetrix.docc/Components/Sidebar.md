@@ -30,8 +30,8 @@ QeetrixNavigationScaffold("Qeet Auth", selection: $destination, items: [
 - **The current item** is marked as `@qeetrix/react` 0.4.0's sidebar marks it (design rules §11):
   `color.bg.neutral.subtle-hover` behind `color.text.default` at weight 600, the 3-point Ember bar
   (`border.width.accent`, `color.border.brand`) on its leading edge, and its icon in
-  `color.icon.brand`, filled where the icon has a filled drawing (`filledWhenCurrent`, on by default,
-  QTRX-168). In the tab bar the current tab is Ember and its icon filled too.
+  `color.icon.brand`, filled where the icon has a filled drawing (`filledWhenCurrent`, on by default).
+  In the tab bar the current tab is Ember and its icon filled too.
 - **Rows** (sidebar.css) run edge to edge on `color.surface.canvas`: 16 points from the leading edge,
   12 from the trailing, a 16-point icon in `color.icon.subtle`, 10 points to the title (`label.md`,
   `color.text.subtle`) and 10 more to the count (tabular `label.sm`, `color.text.subtlest`). A pressed

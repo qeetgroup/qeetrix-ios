@@ -119,6 +119,49 @@ struct BottomActionBarTests {
         #expect(close(QeetrixTheme.light.resolve(.bgBrandBold).bytes, image.pixel(800 - 32 - 4, 32)), "The primary at the 32 pt gutter")
     }
 
+    @Test("Compact: a ghost tertiary under the primary, both spanning the bar; or the tertiary alone")
+    func tertiary() throws {
+        let surface = QeetrixTheme.light.resolve(.surfaceDefault).bytes
+        let brand = QeetrixTheme.light.resolve(.bgBrandBold).bytes
+        func render(_ primary: QeetrixScreenAction?) throws -> Rendered {
+            let bar = QeetrixBottomActionBar(
+                primary: primary, secondary: nil, tertiary: QeetrixScreenAction("Not now", tone: .neutral) {}, showsRule: false
+            )
+            .frame(width: 390)
+            .environment(\.colorScheme, .light)
+            .environment(\.horizontalSizeClass, .compact)
+            return try #require(Rendered(bar))
+        }
+        let both = try render(QeetrixScreenAction("Continue") {})
+        #expect(both.height == 12 + 40 + 8 + 40 + 12, "Stacked")
+        #expect(close(brand, both.pixel(18, 32)) && close(brand, both.pixel(371, 32)), "The solid primary on top, across the bar")
+        #expect(close(surface, both.pixel(18, 80)) && close(surface, both.pixel(371, 80)), "The ghost under it has no fill")
+        #expect((16..<374).contains { !close(surface, both.pixel($0, 80)) }, "Its label is drawn")
+        let alone = try render(nil)
+        #expect(alone.height == 12 + 40 + 12, "A quiet Done on its own")
+        #expect((16..<374).contains { !close(surface, alone.pixel($0, 32)) })
+        #expect(!(16..<374).contains { close(brand, alone.pixel($0, 32)) }, "No solid action")
+    }
+
+    @Test("Regular: the primary and the tertiary stacked at the end, at the wider one's width")
+    func regularTertiary() throws {
+        let brand = QeetrixTheme.light.resolve(.bgBrandBold).bytes
+        func leadingBrand(_ tertiary: QeetrixScreenAction?) throws -> Int? {
+            let continueAction = QeetrixScreenAction("Continue") {}
+            let bar = QeetrixBottomActionBar(primary: continueAction, secondary: nil, tertiary: tertiary, showsRule: false)
+                .frame(width: 800)
+                .environment(\.colorScheme, .light)
+                .environment(\.horizontalSizeClass, .regular)
+            let image = try #require(Rendered(bar))
+            #expect(close(brand, image.pixel(800 - 32 - 4, 32)), "At the 32 pt gutter")
+            return (0..<800).first { close(brand, image.pixel($0, 32)) }
+        }
+        let alone = try #require(try leadingBrand(nil))
+        let over = try #require(try leadingBrand(QeetrixScreenAction("Type the code instead") {}))
+        #expect(over < alone - 20, "The primary takes the longer tertiary's width")
+        #expect(over > 400, "Not the whole bar")
+    }
+
     @Test("The modifier attaches to a scroll view and renders, light and dark")
     func attaches() {
         for scheme in [ColorScheme.light, .dark] {
@@ -132,6 +175,11 @@ struct BottomActionBarTests {
                 .frame(width: 390, height: 300)
                 .environment(\.colorScheme, scheme)
             #expect(ImageRenderer(content: danger).cgImage != nil)
+            let quiet = Text("Linked")
+                .qeetrixBottomActionBar(tertiary: QeetrixScreenAction("Done", tone: .neutral) {})
+                .frame(width: 390, height: 300)
+                .environment(\.colorScheme, scheme)
+            #expect(ImageRenderer(content: quiet).cgImage != nil)
         }
     }
 }

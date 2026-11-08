@@ -21,6 +21,15 @@ QeetrixAccordion(expanded: $open) {
 - **Trigger**: full width, at least `size.control.lg` tall — and at least 44 points — with the title in
   `title.sm` and `color.text.default`, then 12 points on a 16-point sharp `chevron-down` in
   `color.icon.subtle` that turns half a turn when open.
+- **Summary**: a section's optional `description` — today's choice while it's closed, "6 digits · every
+  30 seconds · SHA-1" — sits under the title in `body.sm`, `color.text.subtle`, 4 points inside the
+  trigger above and below, and stops short of the chevron, which stays on the title's first line.
+
+  ```swift
+  QeetrixAccordionItem("Advanced", description: Text("6 digits · every 30 seconds · SHA-1"), isExpanded: $showsAdvanced) {
+      CodeSettings()
+  }
+  ```
 - **Content**: set in `body.md` and `color.text.default`, with 16 points below it. It opens and closes
   by height over `motion.duration.normal` with `motion.easing.standard`, as the chevron turns.
 - **Disabled**, through `disabled(_:)` on a section or the whole accordion: the title in
@@ -65,8 +74,9 @@ DisclosureGroup("Retry policy", isExpanded: $showsRetries) {
 
 ### Accessibility
 
-VoiceOver reads each trigger as a heading of `headingLevel` (3 by default, as on the web) and a button,
-with the value "Expanded" or "Collapsed"; a closed section's content is hidden from it. Triggers are
+VoiceOver reads each trigger as a heading of `headingLevel` (3 by default, as on the web) and a button:
+its title, then its summary, with the value "Expanded" or "Collapsed"; a closed section's content is
+hidden from it. Triggers are
 44-point rows and their titles wrap at large text sizes. Under Reduce Motion the content opens and the
 chevron turns at once. Keyboard focus is the Ember frame inside the trigger. In right-to-left layouts
 the chevron sits on the left.

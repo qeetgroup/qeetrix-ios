@@ -5,6 +5,9 @@ struct AlertDialogPage: View {
     @State private var alert: QeetrixAlertDialog?
     @State private var result = "none"
     @State private var deletions = 0
+    @State private var issuer = "Acme"
+    @State private var accountName = "priya@acme.in"
+    @State private var renames = 0
 
     var body: some View {
         ComponentPage(
@@ -36,6 +39,27 @@ struct AlertDialogPage: View {
                             QeetrixDialogAction("Leave", role: .destructive) { result = "left" },
                         ])
                 }
+            }
+            DemoSection("Text fields") {
+                QeetrixButton("Rename account", variant: .soft) {
+                    alert = QeetrixAlertDialog(
+                        "Rename account",
+                        message: Text("Change how it appears in your list."),
+                        textFields: [
+                            QeetrixAlertTextField("Issuer", text: $issuer, contentType: .organizationName),
+                            QeetrixAlertTextField("Account name", text: $accountName, contentType: .username, isRequired: true),
+                        ],
+                        actions: [
+                            QeetrixDialogAction("Cancel", role: .cancel),
+                            QeetrixDialogAction("Save") {
+                                renames += 1
+                                result = "renamed \(renames): \(issuer), \(accountName)"
+                            },
+                        ])
+                }
+                QeetrixText(
+                    "Save waits for an account name; Return in the last field saves. Return with it empty closes the alert, as Cancel.",
+                    size: .sm, tone: .subtle)
             }
             DemoSection("A notice") {
                 QeetrixButton("Show a notice", variant: .ghost) {

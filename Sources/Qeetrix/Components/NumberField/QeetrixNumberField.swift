@@ -273,6 +273,8 @@ struct QeetrixNumberInput: View {
             .tint(QeetrixColor.borderFocus)
             .focused($isFocused)
             .qeetrixFieldControlAccessibility()
+            // The field's own 44 pt shape, so VoiceOver's frame for it is the field, not its line of text.
+            .qeetrixHitArea()
             if let endAdornment {
                 endAdornment.foregroundStyle(isEnabled ? QeetrixColor.textSubtle : QeetrixColor.textDisabled).accessibilityHidden(true)
             }

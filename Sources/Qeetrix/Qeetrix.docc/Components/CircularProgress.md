@@ -14,7 +14,7 @@ HStack(spacing: QeetrixSpace.gapLg) {
 ```
 
 - **Ring**: a 2-point line (spinner.css's) of the progress track — `color.border.default` in light,
-  `color.surface.sunken` in dark (QTRX-176) — with square ends, as the bar has.
+  `color.surface.sunken` in dark — with square ends, as the bar has.
 - **Indicator**: from twelve o'clock clockwise to `value`, in the tone's colour: `color.bg.brand.bold`
   while it runs (`brand`), `color.bg.success.bold` once done (`success`), `color.bg.danger.bold` if it
   failed (`danger`), and for `warning` — nearly out — `color.border.warning` in light and

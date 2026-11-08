@@ -78,12 +78,22 @@ private struct BottomActionBarExamples: View {
             Text("Member")
                 .qeetrixBottomActionBar(primary: QeetrixScreenAction("Pay ₹1,200", icon: .lock, isLoading: isPaying) { pay() })
                 .qeetrixBottomActionBar(primary: QeetrixScreenAction("Remove member", tone: .danger) { remove() })
+            // A ghost tertiary under the primary, or alone.
+            Text("Link this phone")
+                .qeetrixBottomActionBar(
+                    primary: QeetrixScreenAction("Continue") { next() },
+                    tertiary: QeetrixScreenAction("Not now", tone: .neutral) { skip() })
+            Text("Linked")
+                .qeetrixBottomActionBar(tertiary: QeetrixScreenAction("Done", tone: .neutral) { close() })
         }
     }
 
     func pay() {}
     func save() {}
     func remove() {}
+    func next() {}
+    func skip() {}
+    func close() {}
 }
 
 /// FullScreenForm.md, and the doc comments of QeetrixFullScreenForm and qeetrixFullScreenForm.

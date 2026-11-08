@@ -7,6 +7,34 @@
     @MainActor
     @Suite("Card snapshots")
     struct CardSnapshotTests {
+        @Test("Flush rows: a titled and an untitled card of list rows, ruled between")
+        func flushRows() {
+            assertSpecimen(
+                VStack(alignment: .leading, spacing: 16) {
+                    QeetrixCard(title: Text("Settings")) {
+                        QeetrixListItem("AutoFill codes", accessory: .chevron) {
+                        } leading: {
+                            QeetrixListItemIcon(.key)
+                        }
+                        QeetrixListItem("Help and privacy", accessory: .chevron) {
+                        } leading: {
+                            QeetrixListItemIcon(.circleQuestionMark)
+                        }
+                    }
+                    .flushRows()
+                    QeetrixCard {
+                        QeetrixListItem("Face ID", description: Text("Unlock Qeet ID with your face")) {
+                        } leading: {
+                            QeetrixListItemIcon(.scanFace)
+                        }
+                        QeetrixListItem("Notifications", accessory: .chevron) {}
+                        QeetrixListItem("Delete all accounts", role: .destructive) {}
+                    }
+                    .flushRows()
+                }
+            )
+        }
+
         @Test("Titled with actions and a footer, untitled, subdued, danger, and the selectable card")
         func variants() {
             assertSpecimen(

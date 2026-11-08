@@ -28,6 +28,23 @@ QeetrixCard(title: Text("Delete workspace"), tone: .danger) {
   border and the title in the danger colour; the rules inside stay neutral, and the title's words
   carry the meaning.
 
+### A card of rows
+
+A settings card groups tappable rows. `flushRows()` lays the body out as list rows, flush: no padding
+and no gap, so each ``QeetrixListItem`` meets the card's edges — its pressed tint and focus frame too,
+clipped to the corners — with a 1-point `color.border.subtle` rule between rows, edge to edge, and none
+above the first or below the last. The rows keep their own insets; a header's and a footer's rules stay.
+
+```swift
+QeetrixCard {
+    QeetrixListItem("AutoFill codes", accessory: .chevron) { openAutoFill() } leading: { QeetrixListItemIcon(.key) }
+    QeetrixListItem("Help and privacy", accessory: .chevron) { openHelp() } leading: {
+        QeetrixListItemIcon(.circleQuestionMark)
+    }
+}
+.flushRows()
+```
+
 ### A card that is the control
 
 ``QeetrixCardButtonStyle`` makes a whole card a button, with the selection look of the web's choice

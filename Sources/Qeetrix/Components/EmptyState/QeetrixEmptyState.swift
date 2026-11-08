@@ -37,11 +37,20 @@ public enum QeetrixEmptyStateTone: String, CaseIterable, Sendable {
     case neutral
     /// `color.icon.danger`: an error, such as a load that failed.
     case danger
+    /// `color.icon.success`: an outcome screen that went well — "Sign-in approved". Native only,
+    /// as on Android: the web's EmptyState has neutral and danger. The title says it, so the colour is never
+    /// the only sign.
+    case success
+    /// `color.icon.warning`: an outcome that needs a look — "Approve on your other phone". Native only, as
+    /// `success`.
+    case warning
 
     var iconColor: QeetrixColor {
         switch self {
         case .neutral: .iconSubtle
         case .danger: .iconDanger
+        case .success: .iconSuccess
+        case .warning: .iconWarning
         }
     }
 }
@@ -63,10 +72,24 @@ public enum QeetrixEmptyStateTone: String, CaseIterable, Sendable {
 /// actions wrap onto more rows, centred, and the text wraps at every size. The icon is decorative; with
 /// a `level` the title is a heading — set one when this is the screen's main message. For the loading,
 /// failure and empty states of one screen together, use ``QeetrixDataState``.
+///
+/// An outcome or lock screen can lead with an image instead of the icon — the app's icon on a Locked
+/// screen — and `centredInHeight()` puts the column in the middle of the screen:
+///
+/// ```swift
+/// QeetrixEmptyState(title: Text("Qeet ID is locked"), description: Text("Unlock to see your codes."), image: AppIconImage()) {
+///     QeetrixButton("Unlock", icon: .lockOpen) { unlock() }
+/// }
+/// .centredInHeight()
+/// ```
 public struct QeetrixEmptyState<Actions: View, Footer: View>: View {
     let title: Text
     let description: Text?
     let icon: QeetrixIconName?
+    /// The app's image in place of the icon: decorative.
+    let image: AnyView?
+    /// Centred in all the height it's offered.
+    private(set) var isCentredInHeight = false
     let size: QeetrixEmptyStateSize
     let tone: QeetrixEmptyStateTone
     let level: Int?
@@ -115,13 +138,37 @@ public struct QeetrixEmptyState<Actions: View, Footer: View>: View {
             actions: actions(), footer: footer())
     }
 
+    /// An empty state that leads with the app's image — its icon on a Locked screen — in place of the
+    /// icon, with actions and a footer. The image is decorative: hidden from VoiceOver.
+    ///
+    /// - Parameters:
+    ///   - title: What happened or what is missing, in a few words: "Qeet ID is locked".
+    ///   - description: One or two sentences: why, and what to do.
+    ///   - image: The image at the size it is drawn, such as `Image("AppIcon").resizable().frame(width: 64,
+    ///     height: 64)`; a template image takes `tone`'s colour.
+    ///   - size: `page` for a whole screen, `section` inside a card or list.
+    ///   - tone: The colour of a template image: `success` and `warning` for an outcome.
+    ///   - level: Makes the title a heading of this level (1–6) for VoiceOver.
+    ///   - actions: Buttons under the description, in a centred row that wraps: one primary at most.
+    ///   - footer: Under the actions in `body.sm`, `color.text.subtle`.
+    public init<Leading: View>(
+        title: Text, description: Text? = nil, image: Leading, size: QeetrixEmptyStateSize = .page,
+        tone: QeetrixEmptyStateTone = .neutral, level: Int? = nil, @ViewBuilder actions: () -> Actions,
+        @ViewBuilder footer: () -> Footer
+    ) {
+        self.init(
+            title: title, description: description, icon: nil, size: size, tone: tone, level: level, actions: actions(), footer: footer(),
+            image: AnyView(image))
+    }
+
     init(
         title: Text, description: Text?, icon: QeetrixIconName?, size: QeetrixEmptyStateSize, tone: QeetrixEmptyStateTone,
-        level: Int?, actions: Actions?, footer: Footer?
+        level: Int?, actions: Actions?, footer: Footer?, image: AnyView? = nil
     ) {
         self.title = title
         self.description = description
         self.icon = icon
+        self.image = image
         self.size = size
         self.tone = tone
         self.level = level.map { min(max($0, 1), 6) }
@@ -129,10 +176,26 @@ public struct QeetrixEmptyState<Actions: View, Footer: View>: View {
         self.footer = footer
     }
 
+    /// Centres the column in all the height it is offered — an outcome or lock screen, where the message
+    /// sits in the middle rather than at the top. In a scroll view, which offers no height, give
+    /// the empty state the screen's height as its minimum.
+    public func centredInHeight() -> Self {
+        var centred = self
+        centred.isCentredInHeight = true
+        return centred
+    }
+
     public var body: some View {
         // .qx-empty-state: a centred column, gap-sm apart.
         VStack(spacing: QeetrixSpace.gapSm) {
-            if let icon {
+            if let image {
+                image
+                    .foregroundStyle(tone.iconColor)
+                    // Decorative even when the app's view is an accessibility element of its own: nothing
+                    // of it reaches VoiceOver.
+                    .accessibilityRepresentation { EmptyView() }
+                    .padding(.bottom, QeetrixSpace.gapXs)
+            } else if let icon {
                 QeetrixIcon(icon, size: .lg, shape: .sharp)
                     .foregroundStyle(tone.iconColor)
                     .padding(.bottom, QeetrixSpace.gapXs)  // .qx-empty-state-icon: margin-block-end gap-xs
@@ -162,7 +225,7 @@ public struct QeetrixEmptyState<Actions: View, Footer: View>: View {
         .padding(.vertical, size.paddingBlock)
         .padding(.horizontal, QeetrixSpace.insetLg)
         .frame(maxWidth: QeetrixEmptyStateMetrics.maximumWidth)
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: isCentredInHeight ? .infinity : nil)
         .accessibilityElement(children: .contain)
     }
 
@@ -180,6 +243,16 @@ public struct QeetrixEmptyState<Actions: View, Footer: View>: View {
 }
 
 extension QeetrixEmptyState where Footer == EmptyView {
+    /// An empty state that leads with the app's image in place of the icon, with actions and no footer.
+    public init<Leading: View>(
+        title: Text, description: Text? = nil, image: Leading, size: QeetrixEmptyStateSize = .page,
+        tone: QeetrixEmptyStateTone = .neutral, level: Int? = nil, @ViewBuilder actions: () -> Actions
+    ) {
+        self.init(
+            title: title, description: description, icon: nil, size: size, tone: tone, level: level, actions: actions(), footer: nil,
+            image: AnyView(image))
+    }
+
     /// An empty state with actions and no footer.
     public init(
         title: Text, description: Text? = nil, icon: QeetrixIconName? = nil, size: QeetrixEmptyStateSize = .page,
@@ -212,6 +285,17 @@ extension QeetrixEmptyState where Footer == EmptyView {
 }
 
 extension QeetrixEmptyState where Actions == EmptyView, Footer == EmptyView {
+    /// An empty state that leads with the app's image in place of the icon, with neither actions nor a
+    /// footer.
+    public init<Leading: View>(
+        title: Text, description: Text? = nil, image: Leading, size: QeetrixEmptyStateSize = .page,
+        tone: QeetrixEmptyStateTone = .neutral, level: Int? = nil
+    ) {
+        self.init(
+            title: title, description: description, icon: nil, size: size, tone: tone, level: level, actions: nil, footer: nil,
+            image: AnyView(image))
+    }
+
     /// An empty state with neither actions nor a footer.
     public init(
         title: Text, description: Text? = nil, icon: QeetrixIconName? = nil, size: QeetrixEmptyStateSize = .page,

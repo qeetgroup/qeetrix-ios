@@ -19,7 +19,7 @@ struct TabsTests {
         #expect(tabs.map(\.id) == [.overview, .activity, .settings])
         #expect(tabs[1].icon == .bell && tabs[1].filledWhenSelected && tabs[1].badge == 3)
         #expect(tabs[2].isDisabled && !tabs[0].isDisabled)
-        // The selected tab shows its icon filled unless asked not to, as react 0.4.0 (QTRX-168).
+        // The selected tab shows its icon filled unless asked not to, as react 0.4.0.
         #expect(QeetrixTab("Settings", value: 1, icon: .settings).filledWhenSelected)
         #expect(!QeetrixTab("Settings", value: 1, icon: .settings, filledWhenSelected: false).filledWhenSelected)
         #expect(QeetrixTabsVariant.allCases.map(\.rawValue) == ["line", "contained"])

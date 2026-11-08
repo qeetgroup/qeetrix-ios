@@ -22,4 +22,5 @@ weighed, are in the git history (`git log -- Documentation/Decisions`).
 | 0015 | **Data display and content states** | Qeetrix presents, the app owns the data; rows and states go inside SwiftUI's own `List` and `Section`. |
 | 0016 | **Icon names are an open set** | `QeetrixIconName` is a struct, not an enum, so a new icon is not a breaking change; apps switch over it with a `default` case. |
 | 0017 | **Releases: a source package, SemVer from 0.1** | Released by Git tag (`X.Y.Z`, Swift's convention), on merge to `main` after approval ([releases.md](releases.md)). Before 1.0, a minor may break source. |
+| 0019 | **Components take catalogue icons only** | An app that needs an icon asks for its pin, as the native Qeet ID apps did, rather than passing its own image: every icon then comes in sharp and round, filled where upstream draws it, with its right-to-left meaning, and iOS and Android carry the same 88 names. |
 | 0018 | **Built from `@qeetrix/react`, `@qeetrix/tokens` and `@qeetrix/icons`** | The three npm packages, pinned and integrity-checked; tokens generated from the DTCG build; every component re-specified to its `@qeetrix/react` counterpart. |

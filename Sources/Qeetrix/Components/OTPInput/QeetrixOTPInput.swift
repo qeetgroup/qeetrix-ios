@@ -16,6 +16,16 @@ public enum QeetrixOTPInputSize: String, CaseIterable, Sendable {
     case lg
 }
 
+/// How ``QeetrixOTPInput``'s slots take the width (the name shared with qeetrix-android). Native only:
+/// the web's slots always share the container's width.
+public enum QeetrixOTPSlotWidth: String, CaseIterable, Sendable {
+    /// The slots share the container's width, as on the web (the default).
+    case fill
+    /// Each slot is as wide as it is tall, the slots at the leading edge: a short code, such as a
+    /// 2-digit number match. The label and error keep the container's width.
+    case square
+}
+
 /// A one-time code, one slot per character — `@qeetrix/react`'s OTPInput, in a Field when it has a
 /// label.
 ///
@@ -31,6 +41,11 @@ public enum QeetrixOTPInputSize: String, CaseIterable, Sendable {
 /// the danger frame — clear the code after a failed attempt. Typing moves on, deleting moves back, a
 /// paste or SMS AutoFill fills every slot, and `onValueComplete` runs when the code is full. VoiceOver
 /// reads one text field named by the label ("One-time code" without one).
+///
+/// For a number match: `qeetrixOTPSlotWidth(.square)` keeps two narrow slots at the leading
+/// edge, `qeetrixOTPAutoFill(false)` stops iOS offering SMS and authenticator codes over the number pad,
+/// `qeetrixOTPFocus(_:)` lets the screen open it focused, and `init(code:accessibilityLabel:…)` names an
+/// input whose label is drawn elsewhere.
 public struct QeetrixOTPInput: View {
     let context: QeetrixFieldContext?
     let isOptional: Bool
@@ -124,6 +139,29 @@ public struct QeetrixOTPInput: View {
         self.onValueComplete = onValueComplete
     }
 
+    /// A code without a visible label whose name VoiceOver reads: the screen draws its own label, as a
+    /// number match does. An error still shows under it.
+    public init(
+        code: Binding<String>,
+        accessibilityLabel: Text,
+        length: Int = 6,
+        groups: [Int] = [],
+        size: QeetrixOTPInputSize = .md,
+        validationType: QeetrixOTPValidationType = .numeric,
+        error: String? = nil,
+        onValueComplete: (@MainActor (String) -> Void)? = nil
+    ) {
+        context = QeetrixFieldContext(label: accessibilityLabel, error: error)
+        isOptional = false
+        isLabelHidden = true
+        self.code = code
+        self.length = max(1, length)
+        self.groups = groups
+        self.size = size
+        self.validationType = validationType
+        self.onValueComplete = onValueComplete
+    }
+
     public var body: some View {
         let field = QeetrixOTPField(
             code: code, length: length, groups: groups, size: size, validationType: validationType, onValueComplete: onValueComplete)
@@ -145,6 +183,9 @@ struct QeetrixOTPField: View {
     @State private var text = ""
     @FocusState private var isFocused: Bool
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.qeetrixOTPSlotWidth) private var slotWidth
+    @Environment(\.qeetrixOTPAutoFill) private var autoFill
+    @Environment(\.qeetrixOTPFocus) private var focus
     @Environment(\.qeetrixDensity) private var density
     @Environment(\.qeetrixFieldContext) private var context
 
@@ -153,7 +194,7 @@ struct QeetrixOTPField: View {
             .overlay {
                 // An empty prompt: without one the field would draw its label as a placeholder over the slots.
                 TextField(text: $text, prompt: Text(verbatim: "")) { context?.label ?? QeetrixStrings.oneTimeCode }
-                    .qeetrixTextInputTraits(.oneTimeCode(validationType))
+                    .qeetrixTextInputTraits(.oneTimeCode(validationType, autoFill: autoFill))
                     .focused($isFocused)
                     // The slots draw the code; the field itself shows nothing, caret included.
                     .foregroundStyle(.clear)
@@ -164,6 +205,25 @@ struct QeetrixOTPField: View {
             .contentShape(Rectangle())
             .onTapGesture { if isEnabled { isFocused = true } }
             .onAppear { text = code.wrappedValue }
+            // The app's focus binding, both ways: a number match opens focused.
+            .task {
+                // Focus set while the screen is still arriving (a push transition) doesn't take, and
+                // FocusState then reads back true though the field has no focus. So it is set once the screen
+                // has settled and set again a moment later, cleared first so the second request isn't
+                // dropped as no change; the UI test holds it to opening focused.
+                for delay in [350, 700] {
+                    try? await Task.sleep(for: .milliseconds(delay))
+                    guard focus?.wrappedValue == true else { return }
+                    isFocused = false
+                    isFocused = true
+                }
+            }
+            .onChange(of: focus?.wrappedValue) { _, wanted in
+                if let wanted, wanted != isFocused { isFocused = wanted }
+            }
+            .onChange(of: isFocused) { _, focused in
+                if let focus, focus.wrappedValue != focused { focus.wrappedValue = focused }
+            }
             .onChange(of: text) { _, newText in
                 let accepted = QeetrixOTPCode.accept(newText, previous: code.wrappedValue, length: length, validationType: validationType)
                 if accepted != newText { text = accepted }
@@ -207,12 +267,14 @@ struct QeetrixOTPField: View {
                         isEnabled: isEnabled, isReadOnly: false, isFocused: isFocused && index == active, isHovered: false,
                         isInvalid: context?.invalid ?? false),
                     type: QeetrixOTPMetrics.characterType(size),
-                    height: height)
+                    height: height,
+                    square: slotWidth == .square)
             }
         }
-        // A code reads left to right in every script; the row still spans its container.
+        // A code reads left to right in every script; the row still spans its container, square slots
+        // at its leading edge (the right in a right-to-left layout).
         .environment(\.layoutDirection, .leftToRight)
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityHidden(true)
     }
 }
@@ -222,6 +284,7 @@ private struct QeetrixOTPSlot: View {
     let state: QeetrixInputState
     let type: QeetrixTypeSpec
     let height: CGFloat
+    let square: Bool
 
     var body: some View {
         Text(verbatim: character.map(String.init) ?? "")
@@ -229,8 +292,11 @@ private struct QeetrixOTPSlot: View {
             .monospacedDigit()
             .minimumScaleFactor(0.5)
             .lineLimit(1)
-            // flex 1 1 0, at least the 24 pt minimum target.
-            .frame(minWidth: QeetrixSize.targetMin, maxWidth: .infinity, minHeight: height)
+            // flex 1 1 0, at least the 24 pt minimum target; square, as wide as tall.
+            .frame(
+                minWidth: square ? height : QeetrixSize.targetMin, maxWidth: square ? height : .infinity,
+                minHeight: height
+            )
             .qeetrixInputSurface(state)
     }
 }
@@ -249,7 +315,7 @@ enum QeetrixOTPMetrics {
     }
 }
 
-// A code's characters, on the public ``QeetrixOTPCode`` that shows a code (QTRX-108); `nonisolated`, as
+// A code's characters, on the public ``QeetrixOTPCode`` that shows a code; `nonisolated`, as
 // the number field's parser reads digits with them outside the main actor.
 extension QeetrixOTPCode {
     /// The code after an edit: only the `validationType` characters (digits from any script entered as 0–9), at most `length`
@@ -281,5 +347,55 @@ extension QeetrixOTPCode {
             scalar.properties.numericType == .decimal
         else { return nil }
         return character.wholeNumberValue
+    }
+}
+
+private struct QeetrixOTPSlotWidthKey: EnvironmentKey {
+    static let defaultValue: QeetrixOTPSlotWidth = .fill
+}
+
+private struct QeetrixOTPAutoFillKey: EnvironmentKey {
+    static let defaultValue = true
+}
+
+private struct QeetrixOTPFocusKey: EnvironmentKey {
+    static let defaultValue: Binding<Bool>? = nil
+}
+
+extension EnvironmentValues {
+    var qeetrixOTPSlotWidth: QeetrixOTPSlotWidth {
+        get { self[QeetrixOTPSlotWidthKey.self] }
+        set { self[QeetrixOTPSlotWidthKey.self] = newValue }
+    }
+
+    var qeetrixOTPAutoFill: Bool {
+        get { self[QeetrixOTPAutoFillKey.self] }
+        set { self[QeetrixOTPAutoFillKey.self] = newValue }
+    }
+
+    var qeetrixOTPFocus: Binding<Bool>? {
+        get { self[QeetrixOTPFocusKey.self] }
+        set { self[QeetrixOTPFocusKey.self] = newValue }
+    }
+}
+
+extension View {
+    /// How the ``QeetrixOTPInput``s inside take the width: `.square` keeps each slot as wide as it is tall,
+    /// at the leading edge, for a short code such as a 2-digit number match.
+    public func qeetrixOTPSlotWidth(_ width: QeetrixOTPSlotWidth) -> some View {
+        environment(\.qeetrixOTPSlotWidth, width)
+    }
+
+    /// Whether the ``QeetrixOTPInput``s inside offer one-time-code AutoFill (SMS and authenticator codes over
+    /// the keyboard). Pass `false` for a code that never arrives that way, such as a number match, so iOS
+    /// doesn't offer a code and a pasted one isn't cut to its first digits. Default `true`.
+    public func qeetrixOTPAutoFill(_ enabled: Bool) -> some View {
+        environment(\.qeetrixOTPAutoFill, enabled)
+    }
+
+    /// Binds the focus of the ``QeetrixOTPInput`` inside, both ways: set it `true` to open the keyboard — on
+    /// appear too — and read it to know when the person leaves the code.
+    public func qeetrixOTPFocus(_ isFocused: Binding<Bool>) -> some View {
+        environment(\.qeetrixOTPFocus, isFocused)
     }
 }

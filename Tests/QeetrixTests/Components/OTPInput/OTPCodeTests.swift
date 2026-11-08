@@ -124,6 +124,54 @@ struct OTPCodeTests {
         #expect(QeetrixOTPCodeSpeech.timeLeft(60, locale: english) == "1 minute left")
     }
 
+    @Test("With the app's action: no copy, the app's hint once shown, and the reveal hint while hidden")
+    func action() {
+        var filled: [String] = []
+        let code = QeetrixOTPCode("482913", periodStart: start, size: .md, isHidden: true, actionHint: Text(verbatim: "Fills the code")) {
+            filled.append($0)
+        }
+        #expect(code.validity == start...start.addingTimeInterval(30) && code.size == .md && code.isHidden)
+        #expect(code.toast == nil && code.onCopied == nil)
+        code.action?.run(code.code)
+        #expect(filled == ["482913"])
+        let window = start...start.addingTimeInterval(60)
+        #expect(QeetrixOTPCode("482913", validity: window, actionHint: Text(verbatim: "Fills")) { _ in }.validity == window)
+        #expect(QeetrixOTPCode("482913", periodStart: start).action == nil, "Without one, a tap copies")
+
+        let hint = Text(verbatim: "Fills the code")
+        #expect(QeetrixOTPCodeSpeech.hint(isShown: true, actionHint: hint) == hint)
+        #expect(QeetrixOTPCodeSpeech.hint(isShown: false, actionHint: hint) == QeetrixOTPCodeSpeech.revealHint)
+        #expect(QeetrixOTPCodeSpeech.hint(isShown: true, actionHint: nil) == QeetrixOTPCodeSpeech.copyHint)
+        #expect(QeetrixOTPCodeSpeech.hint(isShown: false, actionHint: nil) == QeetrixOTPCodeSpeech.revealHint)
+    }
+
+    @Test("With the app's action the code draws pixel for pixel as the copying code: groups, ring, seconds, warning, hidden")
+    func actionLooksTheSame() throws {
+        let window = start...start.addingTimeInterval(30)
+        func render(_ size: QeetrixOTPCodeSize, secondsIn: TimeInterval, isHidden: Bool, action: QeetrixOTPCodeAction?) throws -> Rendered {
+            let code = QeetrixOTPCode(
+                code: "48291375", validity: window, label: nil, size: size, isHidden: isHidden, toast: nil, onCopied: nil, action: action,
+                now: start.addingTimeInterval(secondsIn))
+            return try #require(Rendered(code.frame(width: 390).environment(\.colorScheme, .light)))
+        }
+        func differs(_ a: Rendered, _ b: Rendered) -> Bool {
+            guard a.width == b.width, a.height == b.height else { return true }
+            return (0..<a.height).contains { y in (0..<a.width).contains { x in a.pixel(x, y) != b.pixel(x, y) } }
+        }
+        let fill = QeetrixOTPCodeAction(hint: Text(verbatim: "Fills the code")) { _ in }
+        for size in QeetrixOTPCodeSize.allCases {
+            for (secondsIn, isHidden) in [(12.0, false), (27.0, false), (3.0, true)] {
+                let copying = try render(size, secondsIn: secondsIn, isHidden: isHidden, action: nil)
+                let acting = try render(size, secondsIn: secondsIn, isHidden: isHidden, action: fill)
+                #expect(!differs(copying, acting), "\(size) at \(secondsIn) s, hidden: \(isHidden)")
+            }
+        }
+        // The comparison sees a change: the last 5 seconds' warning tone.
+        #expect(
+            try differs(
+                render(.lg, secondsIn: 12, isHidden: false, action: fill), render(.lg, secondsIn: 27, isHidden: false, action: fill)))
+    }
+
     @Test("The input's code helpers still read digits from any script, now on QeetrixOTPCode")
     func inputHelpers() {
         #expect(QeetrixOTPCode.decimalDigit("٧") == 7)

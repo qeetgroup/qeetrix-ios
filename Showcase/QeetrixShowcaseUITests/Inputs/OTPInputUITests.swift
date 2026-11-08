@@ -43,4 +43,18 @@ final class OTPInputUITests: XCTestCase {
         XCTAssertTrue(standalone.exists)
         XCTAssertFalse(standalone.isEnabled)
     }
+
+    /// A number match opens focused on the number pad, two slots that take digits and no more.
+    @MainActor
+    func testANumberMatchOpensFocusedAndTakesTwoDigits() {
+        let app = Showcase.launch("otp-number-match")
+        let field = app.textFields["Number on your other device"]
+        XCTAssertTrue(field.waitForExistence(timeout: 5), "Named by its accessibility label")
+        XCTAssertTrue(field.waitForKeyboardFocus(), "Focused on appear, without a tap")
+        field.typeText("47")
+        XCTAssertEqual(field.value as? String, "47")
+        field.typeText("9")
+        XCTAssertEqual(field.value as? String, "47", "Two slots, two digits")
+        XCTAssertEqual(app.staticTexts["number-status"].label, "Entered 47")
+    }
 }

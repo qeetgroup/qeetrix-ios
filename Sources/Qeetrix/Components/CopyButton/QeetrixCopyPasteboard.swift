@@ -131,11 +131,57 @@ struct QeetrixCopySession: Equatable {
     }
 }
 
-/// The rules every Qeetrix copy follows — ``QeetrixCopyButton``, ``QeetrixCopyField`` and
-/// ``QeetrixOTPCode`` — apart from their views, so they can be tested.
-enum QeetrixCopy {
+/// Qeetrix's copy, for a trigger that isn't a Qeetrix control: a menu item, a swipe action, a keyboard
+/// shortcut. ``QeetrixCopyButton``, ``QeetrixCopyField`` and ``QeetrixOTPCode`` follow the same rules.
+///
+/// ```swift
+/// Button("Copy code") { QeetrixCopy.copy(account.code, isSensitive: true, toast: $toast) }
+/// ```
+public enum QeetrixCopy {
     /// copy-button.tsx `resetAfter`: "Copied" (or the failure) shows for 2000 ms.
     static let resetAfter = Duration.seconds(2)
+
+    /// Copies `text` as Qeetrix's copy controls do:
+    ///
+    /// - **The clipboard.** A secret (`isSensitive`: a one-time code, a key shown once) stays on this
+    ///   device, never on the universal clipboard, and the system removes it after 60 seconds. Plain text
+    ///   stays until something replaces it.
+    /// - **The haptic.** A light tap when it copied; the error haptic when the clipboard refused it.
+    /// - **The confirmation.** With the screen's toast binding, the "Copied" toast — for a secret with
+    ///   "Clears from the clipboard after 1 minute" — in Qeetrix's localised strings. Without one,
+    ///   VoiceOver announces "Copied". A failure is announced ("Couldn't copy"), never toasted.
+    ///
+    /// The text is never logged, announced or put in the toast.
+    ///
+    /// - Parameters:
+    ///   - text: What to copy.
+    ///   - isSensitive: Keeps a secret local to this device and removes it after 60 seconds.
+    ///   - toast: The binding the screen's `qeetrixToast(_:)` hosts, to confirm the copy with a toast.
+    ///   - locale: The locale of the toast's expiry line: the screen's, from `@Environment(\.locale)`.
+    /// - Returns: Whether the text is on the clipboard.
+    @MainActor
+    @discardableResult
+    public static func copy(
+        _ text: String, isSensitive: Bool = false, toast: Binding<QeetrixToast?>? = nil, locale: Locale = .autoupdatingCurrent
+    ) -> Bool {
+        copy(
+            text, isSensitive: isSensitive, toast: toast, locale: locale, writer: .system, now: Date(), feedback: { $0.play() },
+            announce: { AccessibilityNotification.Announcement($0).post() })
+    }
+
+    /// The public copy with its effects given, for tests.
+    @MainActor
+    static func copy(
+        _ text: String, isSensitive: Bool, toast: Binding<QeetrixToast?>?, locale: Locale, writer: QeetrixCopyWriter, now: Date,
+        feedback: (QeetrixFeedback) -> Void, announce: (String) -> Void
+    ) -> Bool {
+        let copied = writer.write(QeetrixCopyEntry(text, isSensitive: isSensitive, copiedAt: now))
+        feedback(copied ? .lightImpact : .error)
+        if let announcement = confirm(copied: copied ? text : nil, isSensitive: isSensitive, toast: toast, locale: locale) {
+            announce(announcement)
+        }
+        return copied
+    }
 
     /// Reads the value and writes it. Returns the text that was copied, or `nil` when reading threw or
     /// the writer refused it.

@@ -135,7 +135,7 @@ struct QeetrixSwitchTrack: View {
     var edge: QeetrixColor {
         if !isEnabled { return .borderDisabled }
         // `.qx-switch[data-invalid]` follows the checked and hover rules: an invalid switch keeps the
-        // danger edge on and hovered, round its Ember track (QTRX-161).
+        // danger edge on and hovered, round its Ember track.
         if isInvalid { return .borderDanger }
         if isOn { return isHovered ? .bgBrandBoldHover : .bgBrandBold }
         return isHovered ? .borderStrongHover : .borderStrong
@@ -144,7 +144,7 @@ struct QeetrixSwitchTrack: View {
     var thumbColor: QeetrixColor {
         if !isEnabled { return .iconDisabled }
         // `.qx-switch-thumb[data-checked]`: `color.icon.on-brand`, white on Ember in both schemes, as
-        // the checkbox's tick (QTRX-162).
+        // the checkbox's tick.
         return isOn ? .iconOnBrand : .iconSubtle
     }
 }

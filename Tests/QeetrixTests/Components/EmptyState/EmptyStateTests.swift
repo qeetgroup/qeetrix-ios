@@ -6,14 +6,54 @@ import Testing
 @MainActor
 @Suite("Empty state")
 struct EmptyStateTests {
-    @Test("Sizes and tones are @qeetrix/react's: page and section; neutral and danger")
+    @Test("Sizes and tones are @qeetrix/react's: page and section; neutral and danger, and natively success and warning")
     func names() {
         #expect(QeetrixEmptyStateSize.allCases.map(\.rawValue) == ["page", "section"])
         #expect(QeetrixEmptyStateSize.allCases.map(\.titleRole) == [.titleMd, .titleSm])
         #expect(QeetrixEmptyStateSize.allCases.map(\.paddingBlock) == [48, 24])
-        #expect(QeetrixEmptyStateTone.allCases.map(\.rawValue) == ["neutral", "danger"])
-        #expect(QeetrixEmptyStateTone.allCases.map(\.iconColor) == [.iconSubtle, .iconDanger])
+        #expect(QeetrixEmptyStateTone.allCases.map(\.rawValue) == ["neutral", "danger", "success", "warning"])
+        #expect(QeetrixEmptyStateTone.allCases.map(\.iconColor) == [.iconSubtle, .iconDanger, .iconSuccess, .iconWarning])
         #expect(QeetrixEmptyStateMetrics.maximumWidth == 480)
+    }
+
+    @Test("An image leads in place of the icon, 4 pt above the 8 pt gap")
+    func image() throws {
+        func height(_ view: some View) throws -> Int {
+            try #require(Rendered(view.frame(width: 390))).height
+        }
+        let title = try height(QeetrixEmptyState("Qeet ID is locked", size: .section))
+        let appIcon = Color.orange.frame(width: 64, height: 64)
+        let locked = QeetrixEmptyState(title: Text("Qeet ID is locked"), image: appIcon, size: .section)
+        #expect(try height(locked) == title + 64 + 4 + 8)
+        #expect(locked.image != nil && locked.icon == nil)
+        let withActions = QeetrixEmptyState(title: Text("Qeet ID is locked"), image: appIcon, size: .section) {
+            Color.blue.frame(width: 80, height: 32)
+        }
+        #expect(try height(withActions) == title + 64 + 4 + 8 + 8 + 8 + 32)
+        let withFooter = QeetrixEmptyState(title: Text("Qeet ID is locked"), image: appIcon, tone: .warning) {
+            Color.blue.frame(width: 80, height: 32)
+        } footer: {
+            Text("Face ID is off")
+        }
+        #expect(withFooter.tone == .warning && withFooter.image != nil)
+    }
+
+    @Test("centredInHeight puts the column in the middle of the height it's offered; by default it keeps its own")
+    func centredInHeight() throws {
+        let surface = Color.white
+        func render(_ state: QeetrixEmptyState<EmptyView, EmptyView>) throws -> Rendered {
+            try #require(Rendered(state.frame(width: 390, height: 800, alignment: .top).background(surface)))
+        }
+        let state = QeetrixEmptyState(title: Text("Sign-in approved"), image: Color.green.frame(width: 40, height: 40), tone: .success)
+        #expect(!state.isCentredInHeight && state.centredInHeight().isCentredInHeight)
+        // The 40 pt square: 48 pt from the top by default; centred, in the middle of the 800.
+        func top(_ image: Rendered) -> Int? {
+            (0..<image.height).first { y in image.pixel(195, y).g > 120 && image.pixel(195, y).r < 60 }
+        }
+        let atTop = try #require(top(try render(state)))
+        let centred = try #require(top(try render(state.centredInHeight())))
+        #expect(atTop == 48)
+        #expect(centred > 300 && centred < 400)
     }
 
     @Test("A page has 48 pt above and below, a section 24; the title's line is 24 pt in both")

@@ -17,17 +17,32 @@ Qeetrix never asks for a permission itself. The app reads the status from the fr
 (`AVCaptureDevice`, `CLLocationManager`, `UNUserNotificationCenter`, `PHPhotoLibrary`, `CNContactStore`),
 passes it in, and makes the request in `onContinue`:
 
-- **`notDetermined`**: **Continue** (`solid`), which leads to the system's alert. It says "Continue",
-  not "Allow", as Apple's guidelines ask: the system's alert is where the person allows it.
-- **`denied`**: iOS won't ask again, so **Open Settings** (`solid`) opens the app's page in Settings —
-  its notification settings for `.notifications` — unless `onOpenSettings` does something else.
-- **Not now** (`ghost`) in both, when there's an `onNotNow`.
+- **`notDetermined`**: **Continue** (`solid`, with `arrow-right`), which leads to the system's alert. It
+  says "Continue", not "Allow", as Apple's guidelines ask: the system's alert is where the person allows it.
+- **`denied`**: iOS won't ask again, so **Open Settings** (`solid`, with `external-link`) opens the app's
+  page in Settings — its notification settings for `.notifications` — unless `onOpenSettings` does
+  something else.
+- **Not now** (`ghost`, short and centred) in both, when there's an `onNotNow`.
 
 The layout is `@qeetrix/react`'s EmptyState (empty-state.css): centred and at most 480 points wide,
 the kind's 24-point sharp icon in `color.icon.subtle` (`camera`, `map-pin`, `bell`, `image`,
 `contact-round`), the title in `title.md`, the message in `body.md` and `color.text.subtle`, `space.gap.sm`
-apart, with `space.layout.lg` above and below. The actions stack full width, the primary on top, in
-`lg` — one solid action at most (design rules §7).
+apart, with `space.layout.lg` above and below. The actions are `lg` — one solid action at most (design
+rules §7): the primary full width with its icon in the trailing zone, as Qeet's full-width buttons
+carry one, and Not now short under it. The arrows point the way the layout reads, mirrored right to
+left.
+
+A footnote under the actions says what the permission is used for and what it isn't, centred in
+`body.sm` and `color.text.subtle`:
+
+```swift
+QeetrixPermissionPrimer(
+    .notifications, title: "Approve sign-ins from this phone",
+    message: "Qeet ID notifies you when you sign in somewhere new.",
+    onContinue: requestAuthorization, onNotNow: dismiss
+)
+.footnote(Text("Only sign-in requests. Nothing else, no marketing."))
+```
 
 Say in `message` what the app does with the permission, in a sentence or two, and why now. In a sheet:
 

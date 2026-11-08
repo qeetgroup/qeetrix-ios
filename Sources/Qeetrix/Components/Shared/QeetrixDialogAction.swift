@@ -52,6 +52,8 @@ extension QeetrixDialogAction {
 struct QeetrixDialogButtons<Presentation>: View {
     let actions: [QeetrixDialogAction]
     let presentation: Binding<Presentation?>
+    /// The action shown unavailable: an alert's confirming action while a required field is empty.
+    var unavailable: QeetrixDialogAction.ID?
 
     var body: some View {
         // By position: the added Cancel is a new value on every update, so its id is not stable.
@@ -61,6 +63,7 @@ struct QeetrixDialogButtons<Presentation>: View {
             } label: {
                 action.title
             }
+            .disabled(unavailable != nil && action.id == unavailable)
         }
     }
 }

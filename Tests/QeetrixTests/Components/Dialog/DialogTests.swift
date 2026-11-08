@@ -48,6 +48,51 @@ struct DialogTests {
         #expect(dialog.actions.count == 2)
     }
 
+    @Test("Text fields: up to two, the confirming action is the last that doesn't cancel, and waits for required fields")
+    func textFields() {
+        var issuer = "Acme"
+        var account = ""
+        let issuerField = QeetrixAlertTextField("Issuer", text: Binding(get: { issuer }, set: { issuer = $0 }))
+        #expect(issuerField.contentType == nil && !issuerField.isSecure && !issuerField.isRequired)
+        let accountField = QeetrixAlertTextField(
+            label: Text("Account name"), text: Binding(get: { account }, set: { account = $0 }), contentType: .username, isRequired: true)
+        let save = QeetrixDialogAction("Save")
+        let rename = QeetrixAlertDialog(
+            "Rename account", textFields: [issuerField, accountField], actions: [QeetrixDialogAction("Cancel", role: .cancel), save])
+        #expect(rename.textFields.count == 2)
+        #expect(rename.confirmingAction?.id == save.id)
+        #expect(!rename.isComplete, "The account name is required and empty")
+        account = "   "
+        #expect(!rename.isComplete, "Spaces aren't a value")
+        account = "priya@acme.in"
+        #expect(rename.isComplete)
+        issuer = ""
+        #expect(rename.isComplete, "The issuer isn't required")
+
+        let three = QeetrixAlertDialog(title: Text("Too many"), textFields: [issuerField, accountField, issuerField])
+        #expect(three.textFields.count == 2, "The system alert holds two")
+        #expect(three.confirmingAction == nil && three.isComplete)
+        #expect(QeetrixAlertDialog("Delete?").textFields.isEmpty)
+        let pin = QeetrixAlertTextField("PIN", text: .constant(""), contentType: .password, isSecure: true)
+        #expect(pin.isSecure && pin.contentType == .password)
+        #expect(
+            QeetrixTextContentType.allCases.map(\.rawValue) == [
+                "name", "organizationName", "username", "emailAddress", "url", "telephoneNumber", "password", "newPassword",
+            ])
+    }
+
+    #if os(iOS)
+        @Test("Each content type sets UIKit's type, the keyboard and the capitals")
+        func contentTypes() {
+            #expect(QeetrixTextContentType.username.uiContentType == .username)
+            #expect(QeetrixTextContentType.url.uiContentType == .URL && QeetrixTextContentType.url.keyboardType == .URL)
+            #expect(QeetrixTextContentType.emailAddress.keyboardType == .emailAddress)
+            #expect(QeetrixTextContentType.telephoneNumber.keyboardType == .phonePad)
+            #expect(QeetrixTextContentType.name.correctsSpelling && QeetrixTextContentType.organizationName.correctsSpelling)
+            #expect(!QeetrixTextContentType.newPassword.correctsSpelling && !QeetrixTextContentType.emailAddress.correctsSpelling)
+        }
+    #endif
+
     @Test("The modifiers attach without presenting")
     func attaches() {
         let view = Text("Content")

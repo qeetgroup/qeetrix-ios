@@ -127,13 +127,50 @@ struct ButtonTests {
         func rule(_ selector: String) -> String? {
             css.range(of: selector + " {").map { String(css[$0.upperBound...].prefix { $0 != "}" }) }
         }
-        // A solid or soft neutral button hovers and presses in graphite (QTRX-157).
+        // A solid or soft neutral button hovers and presses in graphite.
         let neutral = #".qx-button[data-tone="neutral"]:not([data-variant="ghost"])"#
         #expect(rule(neutral + ":hover:not([data-disabled])")?.contains("--qx-color-bg-neutral-bold-hover") == true)
         #expect(rule(neutral + ":active:not([data-disabled])")?.contains("--qx-color-bg-neutral-bold-pressed") == true)
-        // A pressed ghost danger button keeps the danger tint (QTRX-158).
+        // A pressed ghost danger button keeps the danger tint.
         let danger = #".qx-button[data-tone="danger"][data-variant="ghost"]:is(:hover, :active):not([data-disabled])"#
         #expect(rule(danger)?.contains("--qx-color-bg-danger-subtle") == true)
+    }
+
+    @Test("Full width: the label is centred on the whole button, with or without an icon, at every size and right to left")
+    func fullWidthCentresTheLabel() throws {
+        var offsets: [String] = []
+        for direction in [LayoutDirection.leftToRight, .rightToLeft] {
+            for size in QeetrixControlSize.allCases {
+                for icon in [nil, QeetrixIconName.arrowRight] {
+                    let view = QeetrixButton("Continue", icon: icon, size: size, isFullWidth: true) {}
+                        .frame(width: 300)
+                        .environment(\.colorScheme, .light)
+                        .environment(\.layoutDirection, direction)
+                    let image = try #require(Rendered(view))
+                    // The label's ink: the white letters on the Ember fill, away from the zone at the trailing end.
+                    let columns = direction == .leftToRight ? 0..<230 : 70..<300
+                    let ink = columns.filter { x in (0..<image.height).contains { image.pixel(x, $0).g > 180 } }
+                    let first = try #require(ink.first), last = try #require(ink.last)
+                    let offset = Double(first + last + 1) / 2 - 150
+                    if abs(offset) > 1 { offsets.append("\(direction) \(size) \(icon == nil ? "plain" : "icon"): \(offset)") }
+                }
+            }
+        }
+        #expect(offsets.isEmpty, "\(offsets)")
+    }
+
+    @Test("Full width keeps a plain button's ideal width; where it's tight the leading side gives way first")
+    func fullWidthIdealWidth() throws {
+        let plain = QeetrixButton("Type the key instead", icon: .keyboard) {}
+        let full = QeetrixButton("Type the key instead", icon: .keyboard, isFullWidth: true) {}
+        let ideal = try #require(ImageRenderer(content: plain.fixedSize()).cgImage?.width)
+        #expect(ImageRenderer(content: full.fixedSize()).cgImage?.width == ideal)
+        // Exactly the plain button's width: the label keeps the leading padding, as a plain one does.
+        let view = full.frame(width: CGFloat(ideal)).environment(\.colorScheme, .light)
+        let image = try #require(Rendered(view))
+        let ink = (0..<image.width).filter { x in (0..<image.height).contains { image.pixel(x, $0).g > 180 } }
+        let first = try #require(ink.first)
+        #expect(abs(first - Int(QeetrixButtonMetrics(size: .md, density: .default).padding)) <= 2, "label starts at \(first)")
     }
 
     @Test("A button with an icon keeps its height at the foot of a taller stack")

@@ -22,7 +22,9 @@ public enum QeetrixIconVariant: String, CaseIterable, Sendable {
 ///
 /// Icons are decorative unless given a label — hidden from VoiceOver, because the text beside them
 /// says what they mean. A labelled icon is read as an image with that label. Icons whose meaning has
-/// a direction (send, reply, undo, …) mirror in right-to-left layouts.
+/// a direction (send, reply, undo, …) mirror in right-to-left layouts. A physical arrow or link mark
+/// (`arrowRight`, `externalLink`, a chevron) keeps its direction unless its use gives it one: pass
+/// `mirrorsInRightToLeft: true` for an arrow that means "next" or "open", as qeetrix-android does.
 ///
 /// ```swift
 /// QeetrixIcon(.search)                                  // decorative
@@ -35,6 +37,8 @@ public struct QeetrixIcon: View {
     let variant: QeetrixIconVariant
     let label: Text?
     let scales: Bool
+    /// Whether the icon mirrors in right-to-left layouts: the use's choice, else the name's.
+    let mirrors: Bool
     @ScaledMetric private var scaledSide: CGFloat
     private let fixedSide: CGFloat
 
@@ -47,7 +51,25 @@ public struct QeetrixIcon: View {
         relativeTo textStyle: Font.TextStyle? = .body,
         label: Text? = nil
     ) {
+        self.init(
+            name, size: size, stroke: stroke, shape: shape, variant: variant, relativeTo: textStyle, label: label,
+            mirrorsInRightToLeft: name.mirrorsInRightToLeft)
+    }
+
+    /// An icon whose use decides whether it mirrors in right-to-left layouts: `true` for an arrow that means
+    /// "next" or "open", `false` to keep a directional drawing as it is.
+    public init(
+        _ name: QeetrixIconName,
+        size: QeetrixIconSize = .md,
+        stroke: QeetrixIconStroke = .regular,
+        shape: QeetrixIconShape = .round,
+        variant: QeetrixIconVariant = .outline,
+        relativeTo textStyle: Font.TextStyle? = .body,
+        label: Text? = nil,
+        mirrorsInRightToLeft: Bool
+    ) {
         self.name = name
+        mirrors = mirrorsInRightToLeft
         self.stroke = stroke
         self.shape = shape
         self.variant = variant
@@ -92,7 +114,7 @@ public struct QeetrixIcon: View {
             }
         }
         .frame(width: side, height: side)
-        .flipsForRightToLeftLayoutDirection(name.mirrorsInRightToLeft)
+        .flipsForRightToLeftLayoutDirection(mirrors)
 
         switch accessibility {
         case .hidden:

@@ -147,7 +147,7 @@ struct QeetrixProgressTrack: View {
     static let height: CGFloat = 4
 
     /// `--qx-progress-track`: `color.border.default` in light, `color.surface.sunken` in dark, so every
-    /// tone's indicator keeps 3:1 against it (QTRX-176).
+    /// tone's indicator keeps 3:1 against it.
     static func track(_ colorScheme: ColorScheme) -> QeetrixColor {
         colorScheme == .dark ? .surfaceSunken : .borderDefault
     }

@@ -39,17 +39,16 @@ final class AccessibilityAuditUITests: XCTestCase {
         audit(theme: "light", size: "UICTContentSizeCategoryAccessibilityXXXL", types: [.textClipped, .hitRegion], screens: 3)
     }
 
-    /// The audit's Dynamic Type check reports text in `List` rows and lazy grids as not scaling — system
-    /// text in a list footer included — so it is excluded there, and measured here instead: the same text,
+    /// The audit's Dynamic Type check reports text in `List` rows as not scaling — system text in a list
+    /// footer included — so it is excluded there, and measured here instead: the same text,
     /// launched at the default size and at Accessibility Large, must be at least a quarter taller at the
     /// larger. Text that doesn't scale stays the same height; an element's frame can include fixed
     /// padding (a list footer's), which keeps the ratio below the text's own (measured 1.43 there).
     @MainActor
     func testTextInListsAndGridsScales() {
         let cases: [(page: String, text: String)] = [
-            ("list-item", "asha@example.com"),  // a list row's description; its title is also an avatar's name
+            ("list-item", "admin@kaveri.in"),  // a List row's description; its title is also an avatar's name
             ("search", "search-submitted"),  // text in a list footer
-            ("description-list", "Mumbai"),  // a lazy grid's value
         ]
         for (page, text) in cases {
             let regular = height(of: text, on: page, size: "UICTContentSizeCategoryL")
@@ -90,7 +89,7 @@ final class AccessibilityAuditUITests: XCTestCase {
             XCTAssertTrue(app.navigationBars.firstMatch.waitForExistence(timeout: 10), "\(page) opens")
             for screen in 0..<screens {
                 let content = Self.contentArea(of: app)
-                var issues: [XCUIAccessibilityAuditIssue] = []
+                var failures: [(key: String, line: String)] = []
                 // The Dynamic Type check runs on its own, after the others. In the same call it re-lays out the
                 // text as it tries sizes, and the contrast check then measures a scrolled screen at the old
                 // positions: every heading failed contrast (Phase 7, TEST-2). Contrast alone was clean.
@@ -99,13 +98,17 @@ final class AccessibilityAuditUITests: XCTestCase {
                     var completed = false
                     // A busy simulator can end an audit with "Audit failed to complete in time": run it again.
                     for _ in 0..<2 where !completed {
-                        var found: [XCUIAccessibilityAuditIssue] = []
+                        var found: [(key: String, line: String)] = []
                         do {
                             try app.performAccessibilityAudit(for: pass) { issue in
-                                found.append(issue)
+                                // Judged now, where the audit measured it: an element's frame is read when it is
+                                // asked for, and after the Dynamic Type pass text under the bar had moved below it.
+                                if Self.exclusion(for: issue, on: page, content: content) == nil {
+                                    found.append(Self.failure(issue, on: page))
+                                }
                                 return true
                             }
-                            issues += found
+                            failures += found
                             completed = true
                         } catch {
                             continue
@@ -113,12 +116,8 @@ final class AccessibilityAuditUITests: XCTestCase {
                     }
                     XCTAssertTrue(completed, "The audit of \(page), screen \(screen + 1), completes")
                 }
-                for issue in issues where Self.exclusion(for: issue, on: page, content: content) == nil {
-                    let element = issue.element.map { "“\($0.label)” (\($0.elementType.rawValue)) at \($0.frame.integral)" } ?? "no element"
-                    let line = "\(page): \(issue.compactDescription) — \(element)"
-                    if reported.insert("\(page)|\(issue.auditType.rawValue)|\(issue.element?.label ?? "")").inserted {
-                        XCTFail(line)
-                    }
+                for failure in failures where reported.insert(failure.key).inserted {
+                    XCTFail(failure.line)
                 }
                 if screen < screens - 1 {
                     app.swipeUp()
@@ -127,6 +126,13 @@ final class AccessibilityAuditUITests: XCTestCase {
             }
             app.terminate()
         }
+    }
+
+    /// An issue as a failure message, and the key that reports it once per page.
+    @MainActor
+    private static func failure(_ issue: XCUIAccessibilityAuditIssue, on page: String) -> (key: String, line: String) {
+        let element = issue.element.map { "“\($0.label)” (\($0.elementType.rawValue)) at \($0.frame.integral)" } ?? "no element"
+        return ("\(page)|\(issue.auditType.rawValue)|\(issue.element?.label ?? "")", "\(page): \(issue.compactDescription) — \(element)")
     }
 
     /// Waits until two screenshots a quarter-second apart are identical, at most `timeout` seconds. A
@@ -175,12 +181,21 @@ final class AccessibilityAuditUITests: XCTestCase {
             return
                 "Drawn glyphs the audit reads as text: the steppers' + and −, which are the Increase and Decrease buttons, and the one-time-code cells, whose code is the field's value."
         }
-        if type == .dynamicType, ["list-item", "description-list", "search", "collection-patterns", "large-list"].contains(page) {
+        if type == .dynamicType, ["list-item", "search", "collection-patterns", "large-list"].contains(page) {
             return
-                "Text in a List or a lazy grid, system text included: the audit can't follow the size it sets into lazy content. testTextInListsAndGridsScales measures it scaling."
+                "Text in a List, system text included: the audit can't follow the size it sets into lazy content. testTextInListsAndGridsScales measures it scaling."
         }
         if type == .contrast || type == .textClipped, let frame = element?.frame, !content.contains(frame) {
             return "Under the navigation bar or off screen when measured: the audit reads colours from the screen."
+        }
+        if type == .contrast || type == .textClipped, page == "description-list", element?.elementType == .staticText {
+            return "A pair's VoiceOver element is an undrawn stand-in over the drawn term and value, which are hidden from "
+                + "VoiceOver; the audit samples the screen where the stand-in's text would be. The drawn colours are "
+                + "AccessibilityTests'."
+        }
+        if type == .contrast, page == "collection-patterns", label == "Show archived" {
+            return "The chip is its List row's only element, so its frame is the whole row and the audit samples the row's "
+                + "empty background. The chip's colours are measured on the chip page."
         }
         if type == .contrast, element == nil, page == "list-item" {
             return "The disabled row: in a diagnostic run the same issue resolved to its “Archived workspace” and “Read-only” text."
@@ -191,7 +206,8 @@ final class AccessibilityAuditUITests: XCTestCase {
         if type == .dynamicType, ["avatar", "list-item"].contains(page), (1...2).contains(label.count), label.allSatisfy(\.isUppercase) {
             return "Avatar initials: drawn to fit the avatar's fixed size, as on the web; the avatar's VoiceOver label is the name."
         }
-        if type == .hitRegion, [.staticText, .image].contains(element?.elementType) || (page == "spinner" && label.hasPrefix("Loading")) {
+        let isBusyIndicator = ["spinner", "data-state"].contains(page) && label.hasPrefix("Loading")
+        if type == .hitRegion, [.staticText, .image].contains(element?.elementType) || isBusyIndicator {
             return "Not a control: text, an image or a busy indicator has nothing to tap."
         }
         if type == .hitRegion, page == "textarea", element?.elementType == .textField {

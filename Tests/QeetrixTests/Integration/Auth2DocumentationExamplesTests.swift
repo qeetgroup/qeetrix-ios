@@ -43,6 +43,21 @@ private struct Step {
 
 private struct ComputedAccount {
     let code: String
+    let name = "Acme, priya@acme.in"
+    let window = Date.now...Date.now.addingTimeInterval(30)
+}
+
+/// A stand-in for an account's row in the app's list.
+private struct AccountRow: View {
+    let account: ComputedAccount
+
+    init(_ account: ComputedAccount) {
+        self.account = account
+    }
+
+    var body: some View {
+        QeetrixText(account.name)
+    }
 }
 
 private struct RecoveryCode {
@@ -85,6 +100,24 @@ private struct CopyButtonExamples: View {
     }
 }
 
+/// CopyButton.md and QeetrixCopy's doc comment: a copy from a menu. Rendering opens no menu, so
+/// nothing is copied.
+private struct CopyFromAnyTriggerExamples: View {
+    let account = ComputedAccount(code: "482913")
+    @State private var toast: QeetrixToast?
+
+    var body: some View {
+        VStack {
+            AccountRow(account)
+                .contextMenu {
+                    Button("Copy code") { QeetrixCopy.copy(account.code, isSensitive: true, toast: $toast) }
+                }
+            Button("Copy code") { QeetrixCopy.copy(account.code, isSensitive: true, toast: $toast) }
+        }
+        .qeetrixToast($toast)
+    }
+}
+
 /// CopyField.md and QeetrixCopyField's doc comment.
 private struct CopyFieldExamples: View {
     let acsURL = "https://id.qeet.in/saml/acme/acs"
@@ -120,9 +153,21 @@ private struct OTPCodeExamples: View {
         VStack {
             QeetrixOTPCode(account.code, periodStart: step.start, label: Text(verbatim: "Acme, priya@acme.in"), size: .md, toast: $toast)
             QeetrixOTPCode(recovery.code, validity: recovery.window, isHidden: true, toast: $toast)
+            // The app's action instead of the copy.
+            QeetrixOTPCode(
+                account.code, periodStart: step.start, label: Text(account.name), size: .md,
+                actionHint: Text("Fills the code")
+            ) { code in fill(code) }
+            QeetrixOTPCode(
+                account.code, validity: account.window, label: Text(account.name), size: .md,
+                actionHint: Text("Fills the code")
+            ) { code in fill(code) }
         }
         .qeetrixToast($toast)
     }
+
+    /// A stand-in for an AutoFill credential provider's completion.
+    private func fill(_ code: String) {}
 }
 
 /// OTPCode.md: the app computes the code and refreshes it.
@@ -144,6 +189,7 @@ struct Auth2DocumentationExamplesTests {
     func examplesRender() {
         for theme in [QeetrixThemeMode.light, .dark] {
             #expect(ImageRenderer(content: CopyButtonExamples().frame(width: 390).qeetrixThemeMode(theme)).cgImage != nil)
+            #expect(ImageRenderer(content: CopyFromAnyTriggerExamples().frame(width: 390).qeetrixThemeMode(theme)).cgImage != nil)
             #expect(ImageRenderer(content: CopyFieldExamples().frame(width: 390).qeetrixThemeMode(theme)).cgImage != nil)
             #expect(ImageRenderer(content: OTPCodeExamples().frame(width: 390).qeetrixThemeMode(theme)).cgImage != nil)
             #expect(ImageRenderer(content: OTPCodeRefreshExample().frame(width: 390).qeetrixThemeMode(theme)).cgImage != nil)

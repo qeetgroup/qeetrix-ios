@@ -26,7 +26,7 @@ struct CopyFieldTests {
         }
     }
 
-    @Test("The box is the read-only field: no fill and the border.strong line (QTRX-175); disabled, the disabled fill and line")
+    @Test("The box is the read-only field: no fill and the border.strong line; disabled, the disabled fill and line")
     func surface() {
         let readOnly = QeetrixCopyFieldSurface.state(isEnabled: true)
         #expect(readOnly.background == nil)

@@ -165,7 +165,7 @@ struct QeetrixRadioDisc: View {
     var border: QeetrixColor {
         if !isEnabled { return isSelected ? .iconDisabled : .borderDisabled }
         // `.qx-radio[data-invalid]` follows the checked and hover rules: a chosen invalid radio's 5 pt
-        // ring is the danger colour, hovered too (QTRX-161).
+        // ring is the danger colour, hovered too.
         if isInvalid { return .borderDanger }
         if isSelected { return isHovered ? .bgBrandBoldHover : .bgBrandBold }
         return isHovered ? .borderStrongHover : .borderStrong

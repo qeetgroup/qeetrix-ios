@@ -20,7 +20,7 @@ public struct QeetrixNavigationItem<Value: Hashable>: Identifiable {
     /// A count after the title: in the sidebar, tabular `label.sm` text; in the tab bar, the system badge.
     public let badge: Int?
     /// Draws the icon filled while the destination is current, where it has a filled drawing; on by
-    /// default, as the filled icon is part of the current mark (design rules §11; react 0.4.0, QTRX-168).
+    /// default, as the filled icon is part of the current mark (design rules §11; react 0.4.0).
     /// An icon without one keeps its outline, and the Ember bar marks the item.
     public let filledWhenCurrent: Bool
     /// A destination shown but not available, such as one outside the plan: greyed, and it can't be chosen.

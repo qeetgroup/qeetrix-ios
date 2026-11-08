@@ -10,51 +10,52 @@ final class ContentStateUITests: XCTestCase {
     @MainActor
     func testAnEmptyStateActionIsTheApps() {
         let app = Showcase.launch("empty-state")
-        let create = app.buttons["Create invoice"]
-        XCTAssertTrue(create.waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts["No invoices yet"].exists)
-        create.tap()
-        XCTAssertEqual(app.staticTexts["empty-created"].label, "Created: 1")
+        let add = app.buttons["Add account"]
+        XCTAssertTrue(add.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["No accounts yet"].exists)
+        add.tap()
+        XCTAssertEqual(app.staticTexts["empty-state-added"].label, "Added: 1")
     }
 
     @MainActor
     func testTheDataStateShowsOneBranchAndRetries() {
         let app = Showcase.launch("data-state")
-        let loading = app.descendants(matching: .any).matching(NSPredicate(format: "label == 'Loading'")).firstMatch
+        let loading = app.otherElements["Loading"]
         XCTAssertTrue(loading.waitForExistence(timeout: 5), "One element for the whole loading branch")
-        XCTAssertFalse(app.staticTexts["Asha Rao"].exists)
+        XCTAssertFalse(app.staticTexts["Priya Sharma · Qeet ID"].exists)
         app.buttons["Failed"].tap()
-        XCTAssertTrue(app.staticTexts["Couldn't load members."].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Couldn't load this"].waitForExistence(timeout: 5))
         app.buttons["Try again"].tap()
-        XCTAssertTrue(app.staticTexts["data-retries"].waitForLabel("Retries: 1"))
-        XCTAssertTrue(app.descendants(matching: .any)["data-content"].waitForExistence(timeout: 5), "The app moved to the content")
+        XCTAssertTrue(app.staticTexts["data-state-retries"].waitForLabel("Retries: 1"))
+        app.buttons["Offline"].tap()
+        XCTAssertTrue(app.staticTexts["You're offline"].waitForExistence(timeout: 5))
         app.buttons["Empty"].tap()
-        XCTAssertTrue(app.staticTexts["No members yet"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["No accounts yet"].waitForExistence(timeout: 5))
+        app.buttons["Loaded"].tap()
+        XCTAssertTrue(app.staticTexts["Priya Sharma · Qeet ID"].waitForExistence(timeout: 5))
     }
 
     @MainActor
     func testSkeletonsAreSilentAndTheirContainerSaysLoading() {
         let app = Showcase.launch("skeleton")
-        let container = app.descendants(matching: .any).matching(NSPredicate(format: "label == 'Loading members'")).firstMatch
-        container.scrollIntoView(in: app)
-        XCTAssertTrue(container.exists)
+        let container = app.otherElements["Loading accounts"]
+        XCTAssertTrue(container.waitForExistence(timeout: 5))
         XCTAssertEqual(app.images.count, 0, "No placeholder is exposed as an image")
     }
 
+    /// VoiceOver reads an event as one element — title, description, time — and the marker not at all.
     @MainActor
-    func testATimelineEventReadsAsOneWithItsMarkersMeaning() {
+    func testATimelineEventReadsAsOne() {
         let app = Showcase.launch("timeline")
-        let failed = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Payment failed'")).firstMatch
+        let failed = app.staticTexts["Directory sync failed, SAML certificate expired, Yesterday"]
         failed.scrollIntoView(in: app)
         XCTAssertTrue(failed.exists)
-        XCTAssertEqual(failed.label, "Payment failed, 12 Oct, The card was declined.")
-        XCTAssertEqual(failed.value as? String, "Failed")
     }
 
     @MainActor
     func testADescriptionItemReadsTermAndValueTogether() {
         let app = Showcase.launch("description-list")
-        XCTAssertTrue(app.staticTexts["Plan, Team, billed monthly"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts["Workspace, Qeet Design"].exists)
+        XCTAssertTrue(app.staticTexts["App, Qeet Pay console"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Phone, Not set"].exists, "An empty value is read as Not set, not as a dash")
     }
 }

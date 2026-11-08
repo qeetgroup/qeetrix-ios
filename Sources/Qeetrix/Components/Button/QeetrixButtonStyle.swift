@@ -151,7 +151,7 @@ struct QeetrixButtonColors: Equatable {
         case (.soft, .brand), (.solid, .neutral), (.soft, .neutral):
             // A solid or soft neutral button looks like soft, in every state:
             // `.qx-button[data-tone="neutral"]:not([data-variant="ghost"])` and its `:hover` and
-            // `:active` rules (QTRX-157).
+            // `:active` rules.
             return QeetrixButtonColors(
                 background: state == .pressed ? .bgNeutralBoldPressed : state == .hovered ? .bgNeutralBoldHover : .bgNeutralBold,
                 foreground: .textInverse)
@@ -164,7 +164,7 @@ struct QeetrixButtonColors: Equatable {
                 background: state == .pressed ? .bgBrandSubtlePressed : state == .hovered ? .bgBrandSubtle : nil, foreground: .textBrand)
         case (.ghost, .danger):
             // `.qx-button[data-tone="danger"][data-variant="ghost"]:is(:hover, :active)`: the danger
-            // tint, never the brand's; the tokens have no `bg.danger.subtle-pressed` (QTRX-158).
+            // tint, never the brand's; the tokens have no `bg.danger.subtle-pressed`.
             return QeetrixButtonColors(background: state == .resting ? nil : .bgDangerSubtle, foreground: .textDanger)
         case (.ghost, .neutral):
             switch state {
@@ -213,7 +213,8 @@ struct QeetrixButtonStyleBody: View {
                 // The web height is fixed; here larger text grows the button, keeping its room above
                 // and below the label.
                 .qeetrixControlBlockSize(metrics.height, type: metrics.type)
-                .frame(maxWidth: fillsWidth ? .infinity : nil, alignment: .leading)
+                // Full width centres the label on the button (design rules §7).
+                .frame(maxWidth: fillsWidth ? .infinity : nil, alignment: fillsWidth ? .center : .leading)
         }
     }
 
@@ -244,11 +245,22 @@ private struct QeetrixButtonFillsWidthKey: EnvironmentKey {
     static let defaultValue = false
 }
 
+private struct QeetrixButtonIconMirrorsKey: EnvironmentKey {
+    static let defaultValue: Bool? = nil
+}
+
 extension EnvironmentValues {
     /// Text buttons stretch to the width they are offered — set by `isFullWidth`, and by
     /// ``QeetrixFormActions`` on compact width, where actions stack full width.
     var qeetrixButtonFillsWidth: Bool {
         get { self[QeetrixButtonFillsWidthKey.self] }
         set { self[QeetrixButtonFillsWidthKey.self] = newValue }
+    }
+
+    /// Whether a button's icon mirrors in right-to-left layouts, where its use gives it a direction — the
+    /// arrow on a "Continue"; `nil` leaves it to the icon's name.
+    var qeetrixButtonIconMirrors: Bool? {
+        get { self[QeetrixButtonIconMirrorsKey.self] }
+        set { self[QeetrixButtonIconMirrorsKey.self] = newValue }
     }
 }

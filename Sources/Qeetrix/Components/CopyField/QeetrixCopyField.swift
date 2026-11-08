@@ -33,7 +33,7 @@ public enum QeetrixCopyFieldWrap: String, CaseIterable, Sendable {
 ///
 /// - **`field`** (copy-field.css): a ``QeetrixField`` — the label in `label.sm`, `color.text.subtle`, the
 ///   description in `body.sm` under it — round the read-only field box: no fill and the field's
-///   `color.border.strong` bottom line (QTRX-175), at least `size.control.lg` tall, with the value
+///   `color.border.strong` bottom line, at least `size.control.lg` tall, with the value
 ///   `space.inset.md` from its start and a neutral ghost `sm` ``QeetrixCopyButton`` `space.inset.xs` from
 ///   its end.
 /// - **`row`**: the label and the value side by side as a ``QeetrixDescriptionItem`` lays them out — and,

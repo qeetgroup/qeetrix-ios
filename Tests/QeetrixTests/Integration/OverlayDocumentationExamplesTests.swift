@@ -76,6 +76,8 @@ private struct NavigationExamples: View {
 private struct OverlayExamples: View {
     @State private var alert: QeetrixAlertDialog?
     @State private var share: QeetrixConfirmationDialog?
+    @State private var issuer = "Acme"
+    @State private var accountName = "priya@acme.in"
     @State private var isEditing = false
     @State private var draft = ""
     @State private var showsRoles = false
@@ -91,6 +93,17 @@ private struct OverlayExamples: View {
                     actions: [QeetrixDialogAction("Delete", role: .destructive) { deleteWorkspace() }])
             }
             .qeetrixAlertDialog($alert)
+
+            // AlertDialog.md and QeetrixAlertDialog's doc comment: text fields.
+            QeetrixButton("Rename account", variant: .soft) {
+                alert = QeetrixAlertDialog(
+                    "Rename account",
+                    textFields: [
+                        QeetrixAlertTextField("Issuer", text: $issuer),
+                        QeetrixAlertTextField("Account name", text: $accountName, isRequired: true),
+                    ],
+                    actions: [QeetrixDialogAction("Cancel", role: .cancel), QeetrixDialogAction("Save") { save() }])
+            }
 
             QeetrixButton("Share report", variant: .soft) {
                 share = QeetrixConfirmationDialog(

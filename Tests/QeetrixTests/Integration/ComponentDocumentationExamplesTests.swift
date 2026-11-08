@@ -75,11 +75,27 @@ private struct CardExamples: View {
                 }
             }
             .buttonStyle(.qeetrixCard(isSelected: plan == chosen))
+            // A card of rows.
+            QeetrixCard {
+                QeetrixListItem("AutoFill codes", accessory: .chevron) {
+                    openAutoFill()
+                } leading: {
+                    QeetrixListItemIcon(.key)
+                }
+                QeetrixListItem("Help and privacy", accessory: .chevron) {
+                    openHelp()
+                } leading: {
+                    QeetrixListItemIcon(.circleQuestionMark)
+                }
+            }
+            .flushRows()
         }
     }
 
     func upgrade() {}
     func choose(_ plan: String) {}
+    func openAutoFill() {}
+    func openHelp() {}
 }
 
 /// Button.md and IconButton.md.

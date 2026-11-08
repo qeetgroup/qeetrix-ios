@@ -27,6 +27,30 @@ QeetrixButton("Delete workspace", tone: .danger) {
   not "OK"). Keep it to two or three actions; for a choice among more, use a
   ``QeetrixConfirmationDialog``.
 
+### Text fields
+
+One or two ``QeetrixAlertTextField``s ask for a short value the iOS way — renaming an account, naming a
+new folder:
+
+```swift
+alert = QeetrixAlertDialog(
+    "Rename account",
+    textFields: [
+        QeetrixAlertTextField("Issuer", text: $issuer),
+        QeetrixAlertTextField("Account name", text: $accountName, isRequired: true),
+    ],
+    actions: [QeetrixDialogAction("Cancel", role: .cancel), QeetrixDialogAction("Save") { save() }])
+```
+
+- Each field edits the app's own text through its binding. Its label is the placeholder and its name for
+  VoiceOver; `contentType` (``QeetrixTextContentType``) sets the keyboard and AutoFill, and `isSecure`
+  shows dots.
+- The confirming action — the last that doesn't cancel — is unavailable while a required field is empty
+  or only spaces. Return in the last field runs it, once the required fields are filled. With one still
+  empty, Return is the system alert's own: it closes the alert as Cancel, and nothing is saved.
+- The system alert holds two fields; a third and later aren't shown. For more, or for help text and
+  errors, use a sheet.
+
 An alert interrupts. For an outcome that needs no decision, use a ``QeetrixToast``; for a problem with
 what someone typed, show it at the field. A confirmation records intent; it does not authorise: the code
 that performs the action still checks that it is allowed.
@@ -41,8 +65,8 @@ Switch Control and Voice Control work with it as with any system alert.
 The web's Dialog is drawn by Qeetrix — `color.surface.overlay`, `shadow.modal`, a 3-point intent line on
 top, red for destructive and amber for a warning, the actions end-aligned with Cancel first and initial
 focus on it. On iOS the system draws the alert (ADR 0014), in its own font and material, places its
-buttons and their focus, and only the tint reaches it. For a dialog with fields or longer content, use a
-sheet with an `intent` (``QeetrixSheetContent``).
+buttons and their focus, and only the tint reaches it. For more than two fields, help text and errors
+or longer content, use a sheet with an `intent` (``QeetrixSheetContent``).
 
 On the web: [Dialog on ui.qeet.in](https://ui.qeet.in/components/dialog/).
 
@@ -51,3 +75,8 @@ On the web: [Dialog on ui.qeet.in](https://ui.qeet.in/components/dialog/).
 ### Actions
 
 - ``QeetrixDialogAction``
+
+### Text fields
+
+- ``QeetrixAlertTextField``
+- ``QeetrixTextContentType``

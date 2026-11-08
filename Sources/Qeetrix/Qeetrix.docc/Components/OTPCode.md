@@ -25,6 +25,20 @@ QeetrixOTPCode(recovery.code, validity: recovery.window, isHidden: true, toast: 
   shows it, the next copies it, and the next code starts hidden again.
 - **Six and eight digits; 30 and 60 seconds.** `period` is 30 seconds by default.
 
+### The app's action instead of the copy
+
+Where a tap on a code means something else, give `action` and `actionHint`: a tap runs the action with
+the code instead of copying it — no clipboard, no toast, no haptic. In an AutoFill credential provider,
+the picker fills the code the system asked for:
+
+```swift
+QeetrixOTPCode(account.code, periodStart: step.start, label: Text(account.name), size: .md,
+               actionHint: Text("Fills the code")) { code in fill(code) }
+```
+
+The code looks the same: the groups, the ring, the seconds and the warning tone. With `isHidden` the
+first tap still shows the code, and the next runs the action. Any confirmation is the app's to give.
+
 ### Qeetrix doesn't compute the code
 
 Qeetrix only shows a code. The app generates it — TOTP, RFC 6238, from the secret it keeps in the
@@ -44,8 +58,9 @@ The code is marked `privacySensitive()` and is never logged, announced as an eve
 ### Accessibility
 
 - VoiceOver reads one button: the `label` (whose code it is), the digits one by one, then the time left —
-  "Acme, priya@acme.in, 4 8 2 9 1 3, 12 seconds left" — with "Copies the code" as its hint. Hidden, it
-  reads "Code hidden" and "Shows the code". The time left updates while VoiceOver is on the code.
+  "Acme, priya@acme.in, 4 8 2 9 1 3, 12 seconds left" — with "Copies the code" as its hint, or the
+  `actionHint` given with an action. Hidden, it reads "Code hidden" and "Shows the code". The time left
+  updates while VoiceOver is on the code.
 - The touch target is at least 44 points, extended without moving layout. With Full Keyboard Access the
   focus frame is drawn round the code.
 - The code scales with Dynamic Type. Where it doesn't fit, the time moves under the code, then the groups

@@ -30,6 +30,19 @@ public enum QeetrixCardTone: String, CaseIterable, Sendable {
 ///
 /// A titled card is read by VoiceOver with its title as a heading of `headingLevel`, so the page sets
 /// the outline. For a card that is itself the control, use ``QeetrixCardButtonStyle``.
+///
+/// For a group of tappable rows — a settings card — `flushRows()` lays the body out as list rows, flush
+/// with the card's edges and ruled between:
+///
+/// ```swift
+/// QeetrixCard {
+///     QeetrixListItem("AutoFill codes", accessory: .chevron) { openAutoFill() } leading: { QeetrixListItemIcon(.key) }
+///     QeetrixListItem("Help and privacy", accessory: .chevron) { openHelp() } leading: {
+///         QeetrixListItemIcon(.circleQuestionMark)
+///     }
+/// }
+/// .flushRows()
+/// ```
 public struct QeetrixCard<Content: View, Actions: View, Footer: View>: View {
     let title: Text?
     let description: Text?
@@ -39,6 +52,8 @@ public struct QeetrixCard<Content: View, Actions: View, Footer: View>: View {
     let content: Content
     let actions: Actions?
     let footer: Footer?
+    /// The body as flush list rows.
+    private(set) var isFlushRows = false
 
     public init(
         title: Text? = nil,
@@ -73,7 +88,7 @@ public struct QeetrixCard<Content: View, Actions: View, Footer: View>: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .foregroundStyle(QeetrixColor.textDefault)
-        .background(variant == .subdued ? QeetrixColor.surfaceSunken : QeetrixColor.surfaceRaised, in: shape)
+        .background(surface, in: shape)
         .clipShape(shape)
         .overlay {
             shape.strokeBorder(
@@ -83,9 +98,24 @@ public struct QeetrixCard<Content: View, Actions: View, Footer: View>: View {
 
     var hasHeader: Bool { title != nil || description != nil || actions != nil }
 
+    /// Lays the body out as list rows, flush: no padding and no gap, so the rows meet the
+    /// card's edges — their pressed tint and focus frame too, clipped to its corners — with a 1 pt
+    /// `color.border.subtle` rule between them, edge to edge, and none above the first row or below the
+    /// last. Put ``QeetrixListItem``s in the body: they keep their own insets. A header's and a footer's
+    /// rules stay.
+    public func flushRows() -> Self {
+        var flush = self
+        flush.isFlushRows = true
+        return flush
+    }
+
+    private var surface: QeetrixColor {
+        variant == .subdued ? .surfaceSunken : .surfaceRaised
+    }
+
     /// The body, ruled off from a header above it. A body with nothing in it is left out, and the
     /// header's rule with it, so a header-only card ends at its header and a footer's own rule is the
-    /// only one under it (`.qx-card-body:empty`, `.qx-card-header:is(:last-child, …)`, QTRX-174).
+    /// only one under it (`.qx-card-body:empty`, `.qx-card-header:is(:last-child, …)`).
     @ViewBuilder private var bodySection: some View {
         if #available(iOS 18, macOS 15, *) {
             Group(subviews: content) { subviews in
@@ -99,12 +129,24 @@ public struct QeetrixCard<Content: View, Actions: View, Footer: View>: View {
     private func cardBody(_ content: some View) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             if hasHeader { QeetrixCardRule() }
-            VStack(alignment: .leading, spacing: QeetrixSpace.gapMd) {
-                content
+            if isFlushRows {
+                // Each row on the card's surface, 1 pt apart over border.subtle: the rules fall between
+                // rows only. A group's modifiers apply to each of its views.
+                VStack(alignment: .leading, spacing: QeetrixBorderWidth.default) {
+                    Group { content }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(surface)
+                }
+                .background(QeetrixColor.borderSubtle)
+                .qeetrixTypeEnvironment(QeetrixTypeSpec(.bodyMd))
+            } else {
+                VStack(alignment: .leading, spacing: QeetrixSpace.gapMd) {
+                    content
+                }
+                .qeetrixTypeEnvironment(QeetrixTypeSpec(.bodyMd))
+                .padding(QeetrixSpace.insetLg)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .qeetrixTypeEnvironment(QeetrixTypeSpec(.bodyMd))
-            .padding(QeetrixSpace.insetLg)
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 
