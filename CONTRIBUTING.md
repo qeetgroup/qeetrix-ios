@@ -113,15 +113,16 @@ Git tag, so releasing means tagging a verified commit:
 
 ```mermaid
 flowchart LR
-    A["📬 Pull request<br/>develop → main"] --> B["version.yml<br/>raises the patch"]
+    A["⬆️ Raise the version<br/>on develop"] --> B["📬 Pull request<br/>develop → main"]
     B --> C["✅ Merge"]
-    C --> D["release.yml<br/>every gate"]
+    C --> D["release.yml<br/>new version?"]
     D --> E{"👤 Approve"}
     E --> F["🏷️ Tag X.Y.Z<br/>and GitHub Release"]
 ```
 
-- **The version is in the pull request's diff.** `version.yml` raises the patch when the library changes; raise the
-  minor or major by hand. Docs, tests and CI changes need no new version.
+- **The version is in the pull request's diff.** When the library changes, raise `VERSION` on develop (the next patch,
+  or a minor or major) before the develop → main pull request; its Version check fails until it's raised. Docs, tests
+  and CI changes need no new version.
 - **The CHANGELOG entry** (`## [X.Y.Z] — YYYY-MM-DD`) becomes the GitHub Release's notes.
 - **A bad release** is marked withdrawn with **Actions › Rollback**, and the fix is a new version.
 

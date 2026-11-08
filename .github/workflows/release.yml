@@ -4,10 +4,10 @@ name: Release
 # published by its Git tag (Swift Package Manager resolves the tag straight from this repository), so releasing means
 # tagging a verified commit.
 #
-#   1. Open a pull request into main. version.yml raises the patch in VERSION when the library changes; raise the
-#      minor or major by hand. Date the CHANGELOG entry (## [X.Y.Z] — YYYY-MM-DD): it becomes the release notes.
-#   2. Merge to main. The gate checks the version is new and runs every Mac-host gate (Scripts/check.sh). The iOS
-#      Simulator tests ran on the pull request, where main's protection requires them.
+#   1. Raise VERSION on develop when the library changes, then open the develop → main pull request; its Version check
+#      fails until it's raised. Date the CHANGELOG entry (## [X.Y.Z] — YYYY-MM-DD): it becomes the release notes.
+#   2. Merge to main. The gate checks the version is new and builds the bill of materials. It runs no checks: every
+#      gate, the iOS Simulator tests included, passed in develop's CI on this commit, as main's protection requires.
 #   3. The publish job waits for an approver in the `release` environment. Once approved it tags X.Y.Z (Swift's tag
 #      convention, no v prefix) and opens a
 #      GitHub Release with the bill of materials attached.
@@ -31,7 +31,7 @@ env:
 
 jobs:
   gate:
-    name: New version, and every gate passes
+    name: New version
     runs-on: xcode-27
     timeout-minutes: 60
     outputs:
@@ -71,12 +71,11 @@ jobs:
           echo "$version is new — releasing."
           echo "release=true" >> "$GITHUB_OUTPUT"
 
+      # No gate runs here: develop's CI already passed every one on this commit (main takes develop only, on an
+      # up-to-date branch). Xcode is for the bill of materials.
       - if: steps.version.outputs.release == 'true'
         name: Select Xcode
         run: sudo xcode-select -s "/Applications/Xcode_${XCODE_VERSION}.app"
-      - if: steps.version.outputs.release == 'true'
-        name: Every Mac-host gate
-        run: Scripts/check.sh
       - if: steps.version.outputs.release == 'true'
         name: Bill of materials
         env:

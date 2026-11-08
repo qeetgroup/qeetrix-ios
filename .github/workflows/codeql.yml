@@ -6,9 +6,12 @@ name: CodeQL
 # runner image ("Bad CPU type in executable", with or without Rosetta), and the library has no network, storage or
 # credential code for the Swift queries to look at.
 on:
+  # On develop only, as CI: every push to it and every pull request into it, so main isn't analysed again after a
+  # merge. The weekly run analyses main, which keeps the Security tab's alerts for it current.
   push:
-    branches: [main]
+    branches: [develop]
   pull_request:
+    branches: [develop]
   schedule:
     - cron: "0 5 * * 1"
   workflow_dispatch:

@@ -37,9 +37,9 @@ Xcode 27.1 (Swift 6.4) with an iOS Simulator runtime. Nothing else.
 ## Release
 
 ```text
-1  pull request develop → main; version.yml raises the patch in VERSION if the library changed (docs-only: no new version)
+1  raise VERSION on develop if the library changed (docs-only: no new version); pull request develop → main
 2  date the CHANGELOG entry: ## [X.Y.Z] — YYYY-MM-DD
-3  merge; release.yml runs every Mac-host gate and builds the bill of materials
+3  merge; release.yml builds the bill of materials (no gate runs again: they passed in develop's CI)
 4  approve: Actions › Release › Review deployments › Approve
 5  it tags X.Y.Z (no v) and opens the GitHub Release
 ```
