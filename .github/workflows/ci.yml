@@ -45,16 +45,19 @@ jobs:
       # resources, and the library's tests on the Mac host (Scripts/check.sh).
       - name: Lint and tests
         run: Scripts/check.sh
-      # A change may not break source compatibility with what it goes into (develop for a pull request, main for
-      # develop itself), unless VERSION raises the major version (the minor while 0.x). SwiftPM checks the baseline
-      # out of a copy of the repository that carries only local branches, so the target branch is fetched into one.
-      - name: Source compatibility with the target branch
+      # A change may not break source compatibility with the last release, what apps have, unless VERSION raises the
+      # major version over it (the minor while 0.x): a break waits for a version that may carry it. The release's tag
+      # is the baseline (fetch-depth 0 brings the tags; SwiftPM's copy of the repository keeps them).
+      - name: Source compatibility with the last release
         if: github.event_name != 'schedule'
-        env:
-          BASE_REF: ${{ github.base_ref || 'main' }}
         run: |
-          git fetch origin "$BASE_REF:pull-base-ref"
-          Scripts/api-compat.sh pull-base-ref
+          baseline=$(git tag --list --sort=-version:refname '[0-9]*.[0-9]*.[0-9]*' | head -1)
+          if [ -z "$baseline" ]; then
+            echo "No release yet: nothing to stay compatible with."
+            exit 0
+          fi
+          echo "The last release: $baseline"
+          Scripts/api-compat.sh "$baseline"
 
   ios:
     name: iOS tests
