@@ -5,7 +5,9 @@ and versions follow [Semantic Versioning](https://semver.org/) as [docs/releases
 
 ## [Unreleased]
 
-`VERSION` is `0.2.0`: these are additions, and one is source-breaking, which before 1.0 takes a minor release
+## [0.2.0] — 2026-11-08
+
+Additions, and one source-breaking change, which before 1.0 takes a minor release
 ([docs/releases.md](docs/releases.md)).
 
 ### ⚠️ Breaking
@@ -140,5 +142,6 @@ The first version. Built from `@qeetrix/react` 0.4.0, `@qeetrix/tokens` 0.0.13 a
 
 The phase-by-phase notes from before 4 November 2026 are in the git history (`git log -p -- CHANGELOG.md`).
 
-[Unreleased]: https://github.com/qeetgroup/qeetrix-ios/compare/0.1.0...HEAD
+[Unreleased]: https://github.com/qeetgroup/qeetrix-ios/compare/0.2.0...HEAD
+[0.2.0]: https://github.com/qeetgroup/qeetrix-ios/releases/tag/0.2.0
 [0.1.0]: https://github.com/qeetgroup/qeetrix-ios/releases/tag/0.1.0
