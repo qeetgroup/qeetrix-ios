@@ -154,7 +154,7 @@
   
   .qx-stat-label {
     font: var(--qx-typography-label-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-label-sm-font-geometry);
     color: var(--qx-color-text-subtle);
     grid-column: 1 / -1;
   }
@@ -162,7 +162,7 @@
   .qx-stat-value {
     margin: var(--qx-space-gap-xs) 0 0;
     font: var(--qx-typography-heading-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-heading);
+    font-variation-settings: "GEOM" var(--qx-typography-heading-sm-font-geometry);
     font-variant-numeric: tabular-nums;
     grid-column: 1;
   }
@@ -210,7 +210,7 @@
   
   .qx-stat-note {
     font: var(--qx-typography-body-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-sm-font-geometry);
     color: var(--qx-color-text-subtlest);
     grid-column: 1 / -1;
     margin: 2px 0 0;

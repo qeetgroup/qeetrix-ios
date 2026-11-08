@@ -54,7 +54,7 @@ struct PublicAPITests {
 
     @Test("Public token types are usable without @testable")
     func tokenTypes() throws {
-        #expect(QeetrixColor.allCases.count == 109)
+        #expect(QeetrixColor.allCases.count == 110)
         #expect(QeetrixShadow.allCases.contains(.modal))
         #expect(QeetrixTextRole.bodyMd.tokens.family == .sans)
         #expect(QeetrixTextRole.allCases.count == 18)

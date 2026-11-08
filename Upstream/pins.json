@@ -3,7 +3,7 @@
   "tokens": {
     "package": "@qeetrix/tokens",
     "licence": "MIT",
-    "version": "0.0.13",
+    "version": "0.0.15",
     "files": {
       "package/dist/dtcg/": "Upstream/qeetrix-tokens/dtcg/",
       "package/dist/tokens.css": "Upstream/qeetrix-tokens/tokens.css",
@@ -35,7 +35,7 @@
   "icons": {
     "package": "@qeetrix/icons",
     "licence": "MIT AND ISC",
-    "version": "2.1.0",
+    "version": "2.1.2",
     "licenseDestination": "Sources/Qeetrix/Resources/Licenses/qeetrix-icons-LICENSE.txt",
     "icons": [
       "archive",
@@ -131,7 +131,7 @@
   "react": {
     "package": "@qeetrix/react",
     "licence": "MIT",
-    "version": "0.4.0",
+    "version": "0.5.1",
     "$comment": "The component manifest (dist/manifest.json) and the families iOS implements: their compiled CSS is kept as the reference for each component's parts, metrics and states (ADR 0018), so a version bump shows exactly what changed on the web.",
     "families": [
       "accordion",

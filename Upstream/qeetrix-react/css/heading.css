@@ -5,62 +5,63 @@
 @layer qx.components {
   .qx-heading {
     font: var(--qx-typography-heading-lg);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-heading);
+    font-variation-settings: "GEOM" var(--qx-typography-heading-lg-font-geometry);
     color: var(--qx-color-text-default);
     margin: 0;
-  }
-  
-  .qx-heading[data-size^="display"] {
-    font-variation-settings: "GEOM" var(--qx-font-geometry-display);
   }
   
   .qx-heading[data-size="display-lg"] {
     font-size: var(--qx-typography-display-lg-font-size);
     line-height: var(--qx-typography-display-lg-line-height);
+    font-variation-settings: "GEOM" var(--qx-typography-display-lg-font-geometry);
   }
   
   .qx-heading[data-size="display-md"] {
     font-size: var(--qx-typography-display-md-font-size);
     line-height: var(--qx-typography-display-md-line-height);
+    font-variation-settings: "GEOM" var(--qx-typography-display-md-font-geometry);
   }
   
   .qx-heading[data-size="display-sm"] {
     font-size: var(--qx-typography-display-sm-font-size);
     line-height: var(--qx-typography-display-sm-line-height);
+    font-variation-settings: "GEOM" var(--qx-typography-display-sm-font-geometry);
   }
   
   .qx-heading[data-size="heading-lg"] {
     font-size: var(--qx-typography-heading-lg-font-size);
     line-height: var(--qx-typography-heading-lg-line-height);
+    font-variation-settings: "GEOM" var(--qx-typography-heading-lg-font-geometry);
   }
   
   .qx-heading[data-size="heading-md"] {
     font-size: var(--qx-typography-heading-md-font-size);
     line-height: var(--qx-typography-heading-md-line-height);
+    font-variation-settings: "GEOM" var(--qx-typography-heading-md-font-geometry);
   }
   
   .qx-heading[data-size="heading-sm"] {
     font-size: var(--qx-typography-heading-sm-font-size);
     line-height: var(--qx-typography-heading-sm-line-height);
+    font-variation-settings: "GEOM" var(--qx-typography-heading-sm-font-geometry);
   }
   
   .qx-heading[data-size="title-lg"] {
     font-size: var(--qx-typography-title-lg-font-size);
     line-height: var(--qx-typography-title-lg-line-height);
+    font-variation-settings: "GEOM" var(--qx-typography-title-lg-font-geometry);
   }
   
   .qx-heading[data-size="title-md"] {
     font-size: var(--qx-typography-title-md-font-size);
     line-height: var(--qx-typography-title-md-line-height);
+    font-variation-settings: "GEOM" var(--qx-typography-title-md-font-geometry);
   }
   
   .qx-heading[data-size="title-sm"] {
     font-size: var(--qx-typography-title-sm-font-size);
     line-height: var(--qx-typography-title-sm-line-height);
-  }
-  
-  .qx-heading[data-size^="display-"] {
-    font-variation-settings: "GEOM" var(--qx-font-geometry-display);
+    font-variation-settings: "GEOM" var(--qx-typography-title-sm-font-geometry);
   }
   
   .qx-heading[data-tone="subtle"] {

@@ -2,7 +2,7 @@
   "font": {
     "family": {
       "$type": "fontFamily",
-      "$description": "Font families by role.",
+      "$description": "Font families by role. `sans` and `heading` are Qeet Sans; `indic` and `cjk` are the Noto faces of the Indian scripts, and of Japanese and Chinese. `text` is one stack for text in any language Qeet products ship — Qeet Sans, then each script's face, then the platforms' fonts, with the generic families only at its end — so no product chains stacks.",
       "heading": {
         "$value": "{primitive.font.family.qeet-sans}"
       },
@@ -14,6 +14,12 @@
       },
       "indic": {
         "$value": "{primitive.font.family.noto-indic}"
+      },
+      "cjk": {
+        "$value": "{primitive.font.family.noto-cjk}"
+      },
+      "text": {
+        "$value": "{primitive.font.family.multilingual}"
       }
     },
     "geometry": {

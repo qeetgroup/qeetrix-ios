@@ -73,7 +73,7 @@ Put only the card's content in its label — a title and short copy, never other
 
 ### Platform differences
 
-- **Selectable cards** are iOS only: `@qeetrix/react` 0.4.0 has no whole-card target yet (its spec
+- **Selectable cards** are iOS only: `@qeetrix/react` 0.5.1 has no whole-card target yet (its spec
   names a future SelectionCard). The look follows the web's choice tiles.
 - **Tables** run edge to edge in a web card's body; iOS has no Qeetrix table yet.
 

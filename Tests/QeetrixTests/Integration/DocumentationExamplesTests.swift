@@ -115,8 +115,8 @@ struct DocumentationExamplesTests {
     @Test("GettingStarted.md — provenance example")
     func provenance() throws {
         let provenance = try QeetrixProvenance.bundled()
-        #expect(provenance.tokens.version == "0.0.13")
-        #expect(provenance.components.version == "0.4.0")
+        #expect(provenance.tokens.version == "0.0.15")
+        #expect(provenance.components.version == "0.5.1")
     }
 
     @Test("Migrating.md — a switch over icon names, with the default case it now needs")

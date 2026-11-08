@@ -5,7 +5,7 @@
 @layer qx.components {
   .qx-text {
     font: var(--qx-typography-body-md);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-md-font-geometry);
     margin: 0;
   }
   

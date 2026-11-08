@@ -2,11 +2,11 @@
 
 # Token coverage
 
-Source: `@qeetrix/tokens@0.0.13` (git `4483f96`), its DTCG build resolved by
+Source: `@qeetrix/tokens@0.0.15` (git `3826870`), its DTCG build resolved by
 `qeetrix.resolver.json`: colour schemes `light`, `dark`, densities `default`, `comfortable`, `compact`.
 Every value is checked against the package's pre-resolved `light.tokens.json` and `dark.tokens.json` and against `tokens.css`.
 
-194 tokens are generated as Swift; 145 are not. The rule is in
+195 tokens are generated as Swift; 149 are not. The rule is in
 [`Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift`](../Tools/QeetrixGen/Sources/QeetrixGenCore/Tokens/Scope.swift);
 every value is listed in [`token-values.json`](token-values.json).
 
@@ -14,7 +14,7 @@ every value is listed in [`token-values.json`](token-values.json).
 
 | Swift | Tokens | Follows | Paths |
 |:--|--:|:--|:--|
-| `QeetrixColor` | 109 | colorScheme | `color.surface.*`, `color.bg.*`, `color.text.*`, `color.icon.*`, `color.border.*`, `color.overlay.*`, `color.selection`, `color.dataviz.*`, `color.code.*` |
+| `QeetrixColor` | 110 | colorScheme | `color.surface.*`, `color.bg.*`, `color.text.*`, `color.icon.*`, `color.border.*`, `color.overlay.*`, `color.selection`, `color.dataviz.*`, `color.code.*` |
 | `QeetrixShadow` | 5 | colorScheme | `shadow.raised`, `shadow.raised-hover`, `shadow.overlay`, `shadow.modal`, `shadow.inset` |
 | `QeetrixTextRole` | 18 | — | `typography.display.*`, `typography.heading.*`, `typography.title.*`, `typography.body.*`, `typography.label.*`, `typography.code.*` |
 | `QeetrixFontWeight` | 3 | — | `primitive.font.*` |
@@ -36,8 +36,8 @@ every value is listed in [`token-values.json`](token-values.json).
 
 | Reason | Tokens | Examples |
 |:--|--:|:--|
-| Primitive — not exposed. The semantic tokens carry the decision; product code never reads a raw palette or scale value. | 119 | `primitive.color.graphite.0`, `primitive.color.graphite.25`, `primitive.color.graphite.50`, … |
-| Resolved into each typography role; the bundled faces are QeetrixFontFamily. Indic scripts fall back through CoreText's system cascade, as on the web without Noto Sans. | 4 | `font.family.heading`, `font.family.sans`, `font.family.mono`, … |
+| Primitive — not exposed. The semantic tokens carry the decision; product code never reads a raw palette or scale value. | 121 | `primitive.color.graphite.0`, `primitive.color.graphite.25`, `primitive.color.graphite.50`, … |
+| Resolved into each typography role; the bundled faces are QeetrixFontFamily. Indic scripts fall back through CoreText's system cascade, as on the web without Noto Sans. | 6 | `font.family.heading`, `font.family.sans`, `font.family.mono`, … |
 | Web stacking order. SwiftUI zIndex only orders siblings, and the system presents overlays, so a global scale has no meaning. | 10 | `z.base`, `z.sticky`, `z.dropdown`, … |
 | Web window size classes. iOS lays out by its own size classes (horizontalSizeClass), which the system sets. | 4 | `breakpoint.medium`, `breakpoint.expanded`, `breakpoint.large`, … |
 | Geometry of a component iOS does not implement (sidebar, tour, command palette, timeline). | 8 | `component.sidebar.width.expanded`, `component.sidebar.width.collapsed`, `component.sidebar.width.mobile`, … |

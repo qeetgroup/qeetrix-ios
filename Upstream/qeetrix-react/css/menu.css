@@ -55,7 +55,7 @@
     padding-block: calc((var(--qx-size-control-md) - var(--qx-menu-item-line)) / 2);
     padding-inline: var(--qx-space-inset-md);
     font: var(--qx-typography-body-md);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-md-font-geometry);
     cursor: default;
     -webkit-user-select: none;
     user-select: none;
@@ -156,7 +156,7 @@
   
   .qx-menu-item-description {
     font: var(--qx-typography-body-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-sm-font-geometry);
     color: var(--qx-color-text-subtle);
   }
   
@@ -167,7 +167,7 @@
   .qx-menu-group-label {
     padding: 8px var(--qx-space-inset-md) 4px;
     font: var(--qx-typography-label-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-label-sm-font-geometry);
     color: var(--qx-color-text-subtle);
   }
   

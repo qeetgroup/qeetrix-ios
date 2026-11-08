@@ -20,7 +20,7 @@ pages and showcase pages, and the release of the `Qeetrix` package by Git tag.
 
 ## Consumes
 
-`@qeetrix/tokens` 0.0.13, `@qeetrix/react` 0.4.0 and `@qeetrix/icons` 2.1.0, pinned and integrity-checked in
+`@qeetrix/tokens` 0.0.15, `@qeetrix/react` 0.5.1 and `@qeetrix/icons` 2.1.2, pinned and integrity-checked in
 `Upstream/`. No runtime dependency; swift-snapshot-testing for tests only.
 
 ## Rules that the build enforces

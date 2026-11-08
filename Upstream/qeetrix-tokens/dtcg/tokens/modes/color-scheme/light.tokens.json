@@ -98,6 +98,23 @@
         "subtle": {
           "$value": "{primitive.color.red.100}"
         },
+        "subtle-pressed": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.9183, 0.0221, 17.245],
+            "hex": "#f3dedf"
+          },
+          "$extensions": {
+            "in.qeet.qeetrix": {
+              "derivation": {
+                "mix": "{primitive.color.graphite.1000}",
+                "amount": 0.04,
+                "over": "{primitive.color.red.100}",
+                "space": "oklab"
+              }
+            }
+          }
+        },
         "bold": {
           "$value": "{primitive.color.red.700}"
         },

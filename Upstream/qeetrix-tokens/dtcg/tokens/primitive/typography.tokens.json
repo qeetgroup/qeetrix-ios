@@ -3,7 +3,7 @@
     "font": {
       "family": {
         "$type": "fontFamily",
-        "$description": "Qeet Sans is Cal Sans v2's variable font: one family for headings and interface text, its letter style set per role through the GEOM axis. Fira Code is the code face; Noto Sans covers the Indic scripts Qeet products serve.",
+        "$description": "Qeet Sans is Cal Sans v2's variable font: one family for headings and interface text, its letter style set per role through the GEOM axis. Fira Code is the code face. Noto Sans covers the Indian scripts Qeet products serve, Noto Sans JP and SC Japanese and Chinese. `multilingual` is all of them in one stack: Qeet Sans, each script's Noto face, the platforms' Japanese and Chinese fonts, then the generic families only at the end, so no product has to chain stacks.",
         "qeet-sans": {
           "$value": ["Qeet Sans", "ui-sans-serif", "system-ui", "sans-serif"]
         },
@@ -20,6 +20,45 @@
             "Noto Sans Kannada",
             "Noto Sans Gujarati",
             "Noto Sans Gurmukhi",
+            "Noto Sans Malayalam",
+            "Noto Sans Oriya",
+            "ui-sans-serif",
+            "system-ui",
+            "sans-serif"
+          ]
+        },
+        "noto-cjk": {
+          "$value": [
+            "Noto Sans JP",
+            "Noto Sans SC",
+            "Hiragino Sans",
+            "PingFang SC",
+            "Yu Gothic UI",
+            "Microsoft YaHei UI",
+            "ui-sans-serif",
+            "system-ui",
+            "sans-serif"
+          ]
+        },
+        "multilingual": {
+          "$value": [
+            "Qeet Sans",
+            "Noto Sans",
+            "Noto Sans Devanagari",
+            "Noto Sans Bengali",
+            "Noto Sans Tamil",
+            "Noto Sans Telugu",
+            "Noto Sans Kannada",
+            "Noto Sans Gujarati",
+            "Noto Sans Gurmukhi",
+            "Noto Sans Malayalam",
+            "Noto Sans Oriya",
+            "Noto Sans JP",
+            "Noto Sans SC",
+            "Hiragino Sans",
+            "PingFang SC",
+            "Yu Gothic UI",
+            "Microsoft YaHei UI",
             "ui-sans-serif",
             "system-ui",
             "sans-serif"

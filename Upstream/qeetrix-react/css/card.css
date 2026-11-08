@@ -41,7 +41,7 @@
   
   .qx-card-description {
     font: var(--qx-typography-body-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-sm-font-geometry);
     color: var(--qx-color-text-subtle);
     margin: 0;
   }
@@ -57,7 +57,7 @@
     min-inline-size: 0;
     padding: var(--qx-space-inset-lg);
     font: var(--qx-typography-body-md);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-md-font-geometry);
     flex: 1;
   }
   

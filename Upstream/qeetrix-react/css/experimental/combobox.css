@@ -15,7 +15,7 @@
     box-shadow: inset 0 calc(-1 * var(--qx-border-width-default)) 0 var(--qx-color-border-strong);
     color: var(--qx-color-text-default);
     font: var(--qx-typography-body-md);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-md-font-geometry);
     cursor: text;
     transition-property: background-color;
     transition-duration: var(--qx-motion-duration-fast);
@@ -100,7 +100,7 @@
     border-radius: var(--qx-radius-chip);
     background: var(--qx-color-surface-default);
     font: var(--qx-typography-label-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-label-sm-font-geometry);
     cursor: default;
     outline: 0;
     align-items: center;
@@ -207,7 +207,7 @@
     gap: var(--qx-space-gap-sm);
     padding: var(--qx-space-inset-sm) var(--qx-space-inset-md);
     font: var(--qx-typography-body-md);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-md-font-geometry);
     color: var(--qx-color-text-subtle);
     display: flex;
   }
@@ -222,7 +222,7 @@
     min-block-size: var(--qx-size-control-md);
     padding: 4px var(--qx-space-inset-md);
     font: var(--qx-typography-body-md);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-md-font-geometry);
     cursor: default;
     -webkit-user-select: none;
     user-select: none;
@@ -283,7 +283,7 @@
   .qx-combobox-group-label {
     padding: 8px var(--qx-space-inset-md) 4px;
     font: var(--qx-typography-label-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-label-sm-font-geometry);
     color: var(--qx-color-text-subtle);
   }
   

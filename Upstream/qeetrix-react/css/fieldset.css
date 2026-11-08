@@ -21,7 +21,7 @@
   
   .qx-fieldset-legend {
     font: var(--qx-typography-title-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-heading);
+    font-variation-settings: "GEOM" var(--qx-typography-title-sm-font-geometry);
     color: var(--qx-color-text-default);
     padding: 0;
   }
@@ -32,7 +32,7 @@
   
   .qx-fieldset-description {
     font: var(--qx-typography-body-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-sm-font-geometry);
     color: var(--qx-color-text-subtle);
     margin: 0;
   }

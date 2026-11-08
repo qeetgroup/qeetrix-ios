@@ -14,7 +14,7 @@
   
   .qx-field-label {
     font: var(--qx-typography-label-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-label-sm-font-geometry);
     color: var(--qx-color-text-subtle);
   }
   
@@ -50,7 +50,7 @@
   
   .qx-field-description {
     font: var(--qx-typography-body-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-sm-font-geometry);
     color: var(--qx-color-text-subtle);
     margin: 0;
   }
@@ -63,7 +63,7 @@
     align-items: flex-start;
     gap: var(--qx-space-gap-xs);
     font: var(--qx-typography-body-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-sm-font-geometry);
     color: var(--qx-color-text-danger);
     display: flex;
   }
@@ -85,7 +85,7 @@
     inline-size: fit-content;
     min-block-size: var(--qx-size-target-min);
     font: var(--qx-typography-body-md);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-md-font-geometry);
     color: var(--qx-color-text-default);
     cursor: pointer;
     padding-block: 2px;
@@ -103,7 +103,7 @@
   
   .qx-choice-description {
     font: var(--qx-typography-body-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-sm-font-geometry);
     color: var(--qx-color-text-subtle);
     margin: 0;
     padding-inline-start: 24px;
@@ -145,9 +145,17 @@
     display: inline-grid;
   }
   
+  .qx-choice-group[data-variant="tile"] {
+    --qx-choice-tile-min: 8rem;
+  }
+  
+  .qx-choice-group[data-variant="tile"]:has(.qx-choice-icon, .qx-choice-description) {
+    --qx-choice-tile-min: 12rem;
+  }
+  
   .qx-choice-group[data-variant="tile"] .qx-choice-group-options {
     grid-template-columns: repeat(auto-fill,
-          minmax(max(12rem,
+          minmax(max(var(--qx-choice-tile-min),
               calc((100% - (var(--qx-choice-columns) - 1) * var(--qx-space-gap-sm)) /
                 var(--qx-choice-columns))),
             1fr));

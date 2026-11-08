@@ -25,7 +25,7 @@
   
   .qx-sidebar-title {
     font: var(--qx-typography-title-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-heading);
+    font-variation-settings: "GEOM" var(--qx-typography-title-sm-font-geometry);
     color: var(--qx-color-text-default);
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -35,7 +35,7 @@
   .qx-sidebar-empty {
     padding: var(--qx-space-gap-sm) var(--qx-space-inset-lg);
     font: var(--qx-typography-body-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-body-sm-font-geometry);
     color: var(--qx-color-text-subtle);
     margin: 0;
   }
@@ -71,7 +71,7 @@
     padding: 0 var(--qx-space-inset-lg) 6px;
     font: var(--qx-typography-label-caps);
     letter-spacing: var(--qx-typography-label-caps-letter-spacing);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-label-caps-font-geometry);
     color: var(--qx-color-text-subtlest);
     text-transform: uppercase;
     white-space: nowrap;
@@ -93,7 +93,7 @@
     padding-inline: var(--qx-space-inset-lg) var(--qx-space-inset-md);
     color: var(--qx-color-text-subtle);
     font: var(--qx-typography-label-md);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-label-md-font-geometry);
     text-align: start;
     white-space: nowrap;
     cursor: pointer;
@@ -179,7 +179,7 @@
   .qx-sidebar-badge {
     block-size: 1lh;
     font: var(--qx-typography-label-sm);
-    font-variation-settings: "GEOM" var(--qx-font-geometry-body);
+    font-variation-settings: "GEOM" var(--qx-typography-label-sm-font-geometry);
     font-variant-numeric: tabular-nums;
     color: var(--qx-color-text-subtlest);
     flex: none;
