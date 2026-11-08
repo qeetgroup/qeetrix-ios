@@ -19,16 +19,18 @@ Scripts/check.sh
 
 ```mermaid
 flowchart LR
-    A["🌿 Branch"] --> B["✍️ Change<br/>with a test"]
+    A["🌿 Branch from develop"] --> B["✍️ Change<br/>with a test"]
     B --> C["Scripts/check.sh"]
     C -- "draws differently?" --> D["📸 Compare the snapshots<br/>with local baselines"]
-    C --> E["📬 Pull request<br/>with the template"]
+    C --> E["📬 Pull request into develop<br/>with the template"]
     D --> E
     E --> F["🤖 CI passes"]
     F --> G["👀 Review"]
     G --> H["✅ Merge"]
 ```
 
+- **Pull requests go into `develop`.** Only `develop` goes into `main`, through a `develop` → `main` pull request the
+  maintainer opens; `main` refuses anything else.
 - **One topic per pull request.** Fill in the template's checklist.
 - **A source-breaking API change** fails CI (`Scripts/api-compat.sh`). Make it additive and deprecate the old name,
   or raise the major version in `VERSION` (the minor while 0.x).
