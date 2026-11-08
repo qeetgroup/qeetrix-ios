@@ -6,19 +6,22 @@ import Testing
 
 @Suite("Icons")
 struct IconTests {
-    @Test("Names are the pinned @qeetrix/icons 2.1.0 names")
+    @Test("Names are the pinned @qeetrix/icons 2.1 names")
     func names() throws {
         let pins = try Repository.json("Upstream/pins.json") as? [String: Any]
         let pinned = (pins?["icons"] as? [String: Any])?["icons"] as? [String] ?? []
         #expect(QeetrixIconName.allCases.map(\.rawValue).sorted() == pinned.sorted())
-        #expect(QeetrixIconName.allCases.count == 88)
+        #expect(QeetrixIconName.allCases.count == 100)
         #expect(QeetrixIconName(rawValue: "chevron-right") == .chevronRight)
         #expect(QeetrixIconName(rawValue: "file-spreadsheet") == .fileSpreadsheet)
     }
 
     @Test("Drawings exist for every shape and variant the manifest lists")
     func drawings() throws {
-        let manifest = try Repository.json("Upstream/qeetrix-icons/icons.json") as? [[String: Any]] ?? []
+        // The snapshot holds every icon in the package; the core catalogue is the pinned ones.
+        let core = Set(QeetrixIconName.allCases.map(\.rawValue))
+        let manifest = (try Repository.json("Upstream/qeetrix-icons/icons.json") as? [[String: Any]] ?? [])
+            .filter { core.contains($0["name"] as? String ?? "") }
         #expect(manifest.count == QeetrixIconName.allCases.count)
         for entry in manifest {
             let name = try #require(QeetrixIconName(rawValue: entry["name"] as? String ?? ""))
@@ -44,6 +47,20 @@ struct IconTests {
         for raw in names {
             let name = try #require(QeetrixIconName(rawValue: raw), "\(raw) is not in the catalogue")
             #expect(name.drawing(.sharp, .outline) != nil, "\(raw) has no sharp outline")
+        }
+    }
+
+    @Test("The Qeet ID screens' icons are there, sharp, and none mirrors, as on Android")
+    func qeetIDScreens() throws {
+        let names = [
+            "qr-code", "clipboard-paste", "arrow-left-right", "bell-ring", "bot-off", "download", "globe", "laptop",
+            "monitor", "rotate-ccw", "shield-alert", "sparkles",
+        ]
+        for raw in names {
+            let name = try #require(QeetrixIconName(rawValue: raw), "\(raw) is not in the catalogue")
+            #expect(name.drawing(.sharp, .outline) != nil, "\(raw) has no sharp outline")
+            // A two-way arrow reads the same either way: upstream marks arrow-left-right "preserve".
+            #expect(name.mirrorsInRightToLeft == false, "\(raw) mirrors")
         }
     }
 

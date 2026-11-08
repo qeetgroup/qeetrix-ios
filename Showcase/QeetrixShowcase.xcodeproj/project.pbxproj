@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5E0C1A000000000000000010 /* Qeetrix in Frameworks */ = {isa = PBXBuildFile; productRef = 5E0C1A000000000000000011 /* Qeetrix */; };
+		5E0C1A000000000000000012 /* QeetrixIconsExtended in Frameworks */ = {isa = PBXBuildFile; productRef = 5E0C1A000000000000000013 /* QeetrixIconsExtended */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5E0C1A000000000000000010 /* Qeetrix in Frameworks */,
+				5E0C1A000000000000000012 /* QeetrixIconsExtended in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,6 +98,7 @@
 			name = QeetrixShowcase;
 			packageProductDependencies = (
 				5E0C1A000000000000000011 /* Qeetrix */,
+				5E0C1A000000000000000013 /* QeetrixIconsExtended */,
 			);
 			productName = QeetrixShowcase;
 			productReference = 5E0C1A000000000000000020 /* QeetrixShowcase.app */;
@@ -374,6 +377,10 @@
 		5E0C1A000000000000000011 /* Qeetrix */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Qeetrix;
+		};
+		5E0C1A000000000000000013 /* QeetrixIconsExtended */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = QeetrixIconsExtended;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

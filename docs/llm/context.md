@@ -6,7 +6,7 @@ GitHub.
 
 ## Identity
 
-`Qeetrix` — Qeet Group's design system for SwiftUI: the Qeetrix tokens, light and dark themes, fonts, 88 icons and 71
+`Qeetrix` — Qeet Group's design system for SwiftUI: the Qeetrix tokens, light and dark themes, fonts, 1,863 icons and 71
 components, as native iOS. One Swift package with one module, iOS 17 or later, Swift 6.4 (Xcode 27.1), **no runtime
 dependencies**. Released by Git tag through Swift Package Manager. Public, MIT-licensed.
 
@@ -35,7 +35,7 @@ qeet-context (L0)  →  Qeetrix design system  →  @qeetrix/tokens · @qeetrix/
 
 ## Key numbers
 
-71 components · 109 colour roles · 18 text roles · 88 icons · about 650 library tests · 109 showcase UI tests.
+71 components · 109 colour roles · 18 text roles · 1,863 icons (100 core, 1,763 in QeetrixIconsExtended) · about 650 library tests · 109 showcase UI tests.
 
 ## Where to read next
 

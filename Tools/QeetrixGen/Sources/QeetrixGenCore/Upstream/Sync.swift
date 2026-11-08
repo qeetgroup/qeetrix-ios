@@ -9,8 +9,9 @@ import Foundation
 ///   and the fonts: the TTFs the package ships for native platforms, each checked against the sha256
 ///   and size `fonts/native.json` gives it, and against the full WOFF2 it was made from (the web
 ///   loads per-script subsets of that WOFF2).
-/// - `@qeetrix/icons`: the pinned icons' entries from its JSON manifest (`dist/manifest.json`) and
-///   the SVG file of every drawing each entry lists (`dist/svg/<shape>-<variant>/<id>.svg`), verbatim.
+/// - `@qeetrix/icons`: icons' entries from its JSON manifest (`dist/manifest.json`) and the SVG file of
+///   every drawing each entry lists (`dist/svg/<shape>-<variant>/<id>.svg`), verbatim: the pinned core
+///   icons, and with `extended` every other icon the package publishes.
 /// - `@qeetrix/react`: its component manifest (`dist/manifest.json`) and the compiled CSS of every
 ///   family iOS implements — the reference for each component's parts, metrics and states.
 ///
@@ -124,8 +125,18 @@ public struct UpstreamSync {
         let iconManifestPath = "package/dist/manifest.json"
         let manifest = try OrderedJSON.parse(try icons.file(iconManifestPath), context: iconManifestPath)
         guard let entries = manifest["icons"]?.arrayValue else { throw GeneratorError("\(iconManifestPath): no icons array.") }
+        // The core pins must exist; with `extended`, every icon the package publishes is taken.
+        let published = entries.compactMap { $0["name"]?.stringValue }
+        for name in names where !published.contains(name) {
+            if let renamed = entries.first(where: { $0["aliases"]?.arrayValue?.contains(.string(name)) == true })?["name"]?.stringValue {
+                throw GeneratorError("\(iconsName)@\(iconsVersion) renamed \"\(name)\" to \"\(renamed)\": update Upstream/pins.json.")
+            }
+            throw GeneratorError("\(iconsName)@\(iconsVersion) has no icon named \"\(name)\".")
+        }
+        let extendedCatalogue = iconsPin["extended"] == .bool(true)
+        let wanted = extendedCatalogue ? published : names
         var selected: [OrderedJSON] = []
-        for name in names {
+        for name in wanted {
             guard let entry = entries.first(where: { $0["name"]?.stringValue == name }) else {
                 if let renamed = entries.first(where: { $0["aliases"]?.arrayValue?.contains(.string(name)) == true })?["name"]?.stringValue
                 {
@@ -161,7 +172,8 @@ public struct UpstreamSync {
             // their notice (MIT, with Lucide's ISC and Feather's MIT).
             staged.append((destination, iconLicense))
         }
-        log("✓ \(iconsName)@\(iconsVersion) — \(names.count) icons")
+        let more = extendedCatalogue ? ", \(wanted.count - names.count) more in the extended catalogue" : ""
+        log("✓ \(iconsName)@\(iconsVersion) — \(names.count) core icons\(more)")
 
         // @qeetrix/react
         let (reactPin, reactName, reactVersion) = try pin("react")

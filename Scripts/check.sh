@@ -13,4 +13,5 @@ step "Compiler warnings";          Scripts/warnings.sh
 step "Dependencies and licences";  Scripts/dependencies.sh
 step "Resources";                  Scripts/resources.sh
 step "Library tests (Mac host)";   swift test
+step "Extended icons' size";       Scripts/icon-budget.sh
 printf '\n✓ All host gates passed.\n'

@@ -1,0 +1,5 @@
+<svg fill="none" stroke="currentColor" stroke-linecap="square" stroke-linejoin="miter" stroke-miterlimit="4" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <rect height="5" width="8" x="14" y="17"/>
+  <path d="M10 20H2V3H8.983L11.008 6H22V10.5"/>
+  <path d="M20 17v-2a2 2 0 1 0-4 0v2"/>
+</svg>

@@ -5,6 +5,33 @@ and versions follow [Semantic Versioning](https://semver.org/) as [docs/releases
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-11-08
+
+Additions, a minor release ([docs/releases.md](docs/releases.md)). Built from `@qeetrix/react` 0.5.1, `@qeetrix/tokens`
+0.0.15 and `@qeetrix/icons` 2.1.2.
+
+### Added
+
+- **Every `@qeetrix/icons` icon** (2.1.2: 1,863 in outline, 775 of them filled too), by its upstream name, in sharp and
+  round, mirrored in right to left as upstream says ([docs/icons.md](docs/icons.md), decision 0020).
+  - **`QeetrixIconsExtended`**, a new optional product in this package: the 1,763 icons beyond the core set, as
+    `QeetrixIconName` members (`.alarmClock`), and `QeetrixIconName.extendedCases`. An app that doesn't add it compiles
+    none of them; one that does links only the icons it names. `Scripts/icon-budget.sh` checks that in CI, against a
+    budget of 4 KiB per icon.
+  - **12 more core icons** the Qeet ID screens draw, so iOS carries the same 100 names as Qeetrix for Android:
+    `arrowLeftRight`, `bellRing`, `botOff`, `clipboardPaste`, `download`, `globe`, `laptop`, `monitor`, `qrCode`,
+    `rotateCcw`, `shieldAlert` and `sparkles`, filled for `bellRing`, `laptop`, `monitor`, `shieldAlert` and
+    `sparkles`. None mirrors in right to left: upstream marks every one, the two-way `arrowLeftRight` included, as
+    reading the same either way.
+- **The showcase's Icons page**: every icon, core and extended, searchable by name.
+
+### Changed
+
+- **Icon drawings are compact path strings** decoded the first time an icon is drawn, instead of generated path code:
+  the core icons' generated source is 152 KB instead of 554 KB, and the drawings are unchanged.
+- **`QeetrixIconName` compares by raw value**, and `mirrorsInRightToLeft` is a stored property; neither changes how it
+  is used.
+
 ## [0.2.0] — 2026-11-08
 
 Additions, and two source-breaking ones, which before 1.0 take a minor release

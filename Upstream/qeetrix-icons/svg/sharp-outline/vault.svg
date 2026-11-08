@@ -1,0 +1,12 @@
+<svg fill="none" stroke="currentColor" stroke-linecap="square" stroke-linejoin="miter" stroke-miterlimit="4" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <rect height="18" width="18" x="3" y="3"/>
+  <rect fill="currentColor" height="1" width="1" x="7" y="7"/>
+  <path d="m7.9 7.9 2.7 2.7"/>
+  <rect fill="currentColor" height="1" width="1" x="16" y="7"/>
+  <path d="m13.4 10.6 2.7-2.7"/>
+  <rect fill="currentColor" height="1" width="1" x="7" y="16"/>
+  <path d="m7.9 16.1 2.7-2.7"/>
+  <rect fill="currentColor" height="1" width="1" x="16" y="16"/>
+  <path d="m13.4 13.4 2.7 2.7"/>
+  <circle cx="12" cy="12" r="2"/>
+</svg>

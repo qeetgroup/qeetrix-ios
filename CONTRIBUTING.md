@@ -46,14 +46,14 @@ flowchart LR
 | `Scripts/check.sh` | Every Mac-host gate: the generator's tests, upstream lock and drift, `swift-format`, compiler warnings, dependencies, resources, the library's tests |
 | `swift test` | The library's tests on the Mac host |
 | `Scripts/lint.sh` | `swift-format`, strict |
-| `xcodebuild test -scheme Qeetrix -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"` | The library's tests on the iOS Simulator |
+| `xcodebuild test -scheme Qeetrix-Package -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)"` | The library's tests on the iOS Simulator |
 
 **Snapshots, API and docs**
 
 | Command | What it does |
 |:--|:--|
-| `TEST_RUNNER_SNAPSHOT_TESTING_RECORD=all xcodebuild test -scheme Qeetrix -only-testing:QeetrixSnapshotTests -destination …` | Record the snapshot baselines on a commit you trust. They stay on your machine. |
-| `xcodebuild test -scheme Qeetrix -only-testing:QeetrixSnapshotTests -destination …` | Compare your change with them |
+| `TEST_RUNNER_SNAPSHOT_TESTING_RECORD=all xcodebuild test -scheme Qeetrix-Package -only-testing:QeetrixSnapshotTests -destination …` | Record the snapshot baselines on a commit you trust. They stay on your machine. |
+| `xcodebuild test -scheme Qeetrix-Package -only-testing:QeetrixSnapshotTests -destination …` | Compare your change with them |
 | `Scripts/api-compat.sh origin/main` | No source-breaking change against `main` |
 | `Scripts/docs.sh` | The DocC documentation, warnings as errors |
 

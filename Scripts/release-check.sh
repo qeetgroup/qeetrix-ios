@@ -79,11 +79,11 @@ sim=$(Scripts/ci-simulator.sh 2>/dev/null)
 if [ -z "$sim" ]; then
     record "NOT RUN" "iOS gates" "no iOS simulator available"
 else
-    gate "Library tests on iOS" ios-tests xcodebuild test -scheme Qeetrix -only-testing:QeetrixTests \
+    gate "Library tests on iOS" ios-tests xcodebuild test -scheme Qeetrix-Package -only-testing:QeetrixTests \
         -destination "platform=iOS Simulator,id=$sim" -derivedDataPath .build/xcode
     if [ -n "$(find Tests/QeetrixSnapshotTests/__Snapshots__ -name '*.png' 2>/dev/null | head -n 1)" ]; then
         gate "Snapshot tests against local baselines (never recorded)" snapshots env TEST_RUNNER_SNAPSHOT_TESTING_RECORD=never \
-            xcodebuild test -scheme Qeetrix -only-testing:QeetrixSnapshotTests \
+            xcodebuild test -scheme Qeetrix-Package -only-testing:QeetrixSnapshotTests \
             -destination "platform=iOS Simulator,id=$sim" -derivedDataPath .build/xcode
     else
         record "NOT RUN" "Snapshot tests" "no local baselines (ADR 0013): record them on the previous release first"

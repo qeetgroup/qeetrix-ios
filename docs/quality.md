@@ -37,6 +37,8 @@ flowchart LR
 | **Platform** | The deployment target or the Swift version an app needs rises | A minor release before 1.0, a major after |
 
 - **Adding an icon is not breaking:** `QeetrixIconName` is an open set, so apps switch over it with a `default` case.
+- **Extended icons cost only what an app names:** `Scripts/icon-budget.sh` (in `Scripts/check.sh`) builds a program
+  with none and with twenty, and fails if the linker keeps any other icon or the twenty grow it past 4 KiB each.
 - **A deliberate break** needs a new major version (a new minor while 0.x): raise it in `VERSION`, and list the
   break in the CHANGELOG.
 

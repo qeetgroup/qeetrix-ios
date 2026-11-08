@@ -35,8 +35,19 @@ Qeetrix's own components follow the icon rules of the design (design rules §16)
 Not every icon has every drawing. Ask ``QeetrixIconName/hasDrawing(_:_:)``; a missing drawing falls back
 to the outline.
 
-The names are `@qeetrix/icons`' names, which are Lucide's. The library carries the icons its components
-and the showcase use (``QeetrixIconName``), not the whole catalogue.
+The names are `@qeetrix/icons`' names, which are Lucide's. `Qeetrix` carries the icons its components and
+the showcase use (``QeetrixIconName/allCases``). Every other `@qeetrix/icons` icon is in the optional
+`QeetrixIconsExtended` product of the same package, by the same kind of name:
+
+```swift
+import QeetrixIconsExtended
+
+QeetrixIcon(.alarmClock)
+QeetrixEmptyState("No reminders", icon: .alarmClock)
+```
+
+An app that doesn't add that product compiles none of it; one that does links only the icons it names.
+`QeetrixIconName.extendedCases` lists them all, for an icon picker, and links every one.
 
 The set grows, so ``QeetrixIconName`` is an open set of names, not an enum: adding an icon never
 breaks your code. A `switch` over icon names needs a `default` case.

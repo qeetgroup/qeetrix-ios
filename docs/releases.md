@@ -57,7 +57,8 @@ it to `Package.swift`:
 ```
 
 Then add the `Qeetrix` product to your target. Nothing else is needed at build time: no account, token, Node.js, web
-packages or generator.
+packages or generator. The optional `QeetrixIconsExtended` product, in the same package and so always the same version,
+adds every other `@qeetrix/icons` icon ([icons.md](icons.md)).
 
 ## ↩️ When a release is bad
 
