@@ -30,7 +30,7 @@ qeet-context (L0)  →  Qeetrix design system  →  @qeetrix/tokens · @qeetrix/
 - **Native first:** components wrap the system controls and presentations, so VoiceOver, Full Keyboard Access and
   AutoFill behave as iOS users expect.
 - **The app owns state:** values, selections and presentations come in as bindings. No global state.
-- **A stable API:** Swift's source-compatibility check on every pull request. Only a new major version (a new minor
+- **A stable API:** Swift's source-compatibility check in every CI run on develop. Only a new major version (a new minor
   while 0.x) may break it.
 
 ## Key numbers
