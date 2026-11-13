@@ -7,8 +7,9 @@ How Qeetrix for iOS is checked, what it promises about its API, and what is stil
 
 ```mermaid
 flowchart LR
-    P["📬 Pull request"] --> C["Build and test<br/>Mac host"]
-    P -->|"into main"| D["iOS tests<br/>Simulator and DocC"]
+    L["💻 Local gate<br/>tests, Simulator, DocC, API"] --> P["📬 Pull request"]
+    P --> C["Verify<br/>lock, format, warnings, dependencies"]
+    P -->|"into main"| D["Release gate<br/>from develop, version"]
     C --> G{"All pass?"}
     D --> G
     G -->|"yes"| OK["✅ Can merge"]

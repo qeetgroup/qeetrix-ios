@@ -39,18 +39,18 @@ Xcode 27.1 (Swift 6.4) with an iOS Simulator runtime. Nothing else.
 ```text
 1  raise VERSION on develop if the library changed (docs-only: no new version); pull request develop → main
 2  date the CHANGELOG entry: ## [X.Y.Z] — YYYY-MM-DD
-3  merge; release.yml builds the bill of materials (no gate runs again: they passed in develop's CI)
+3  merge; release.yml builds the bill of materials (no gate runs again: Verify passed on the pull request)
 4  approve: Actions › Release › Review deployments › Approve
 5  it tags X.Y.Z (no v) and opens the GitHub Release
 ```
 
 A bad release: **Actions › Rollback**, then a new patch. Details: [../releases.md](../releases.md).
 
-## When CI fails
+## When a check fails
 
 | Symptom | Usually | Do |
 |---|---|---|
 | `xcode-select: invalid developer directory` | The runner image no longer carries `XCODE_VERSION` | Pick a version the `xcode-27` image lists, re-verify locally, update the pin |
 | `Scripts/verify.sh` fails | A generated or upstream file was edited by hand | Run `Scripts/generate.sh` |
 | The source-compatibility step fails | A source-breaking change | Make it additive (deprecate the old API), or raise the major version in `VERSION` (the minor while 0.x) |
-| A simulator test can't start | A stuck simulator | Re-run the failed job |
+| A simulator test can't start | A stuck simulator | Run the Simulator tests again |

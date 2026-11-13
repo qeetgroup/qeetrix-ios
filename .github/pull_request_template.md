@@ -32,6 +32,6 @@
 
 ## 🚀 Release (pull requests into `main` only)
 
-- [ ] `VERSION` is the version to release, raised on develop when the library changes. The Version check fails until
+- [ ] `VERSION` is the version to release, raised on develop when the library changes. The Release gate fails until
       it's raised.
 - [ ] The CHANGELOG has an entry for that version, dated

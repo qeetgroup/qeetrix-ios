@@ -20,11 +20,11 @@ Scripts/check.sh
 ```mermaid
 flowchart LR
     A["🌿 Branch from develop"] --> B["✍️ Change<br/>with a test"]
-    B --> C["Scripts/check.sh"]
+    B --> C["💻 The local gate"]
     C -- "draws differently?" --> D["📸 Compare the snapshots<br/>with local baselines"]
     C --> E["📬 Pull request into develop<br/>with the template"]
     D --> E
-    E --> F["🤖 CI passes"]
+    E --> F["🤖 Verify passes"]
     F --> G["👀 Review"]
     G --> H["✅ Merge"]
 ```
@@ -32,10 +32,27 @@ flowchart LR
 - **Pull requests go into `develop`.** Only `develop` goes into `main`, through a `develop` → `main` pull request the
   maintainer opens; `main` refuses anything else.
 - **One topic per pull request.** Fill in the template's checklist.
-- **A source-breaking API change** fails CI (`Scripts/api-compat.sh`). Make it additive and deprecate the old name,
+- **A source-breaking API change** fails the local gate (`Scripts/api-compat.sh`). Make it additive and deprecate the old name,
   or raise the major version in `VERSION` (the minor while 0.x).
 - **Mirror cross-platform changes** (naming, colour conversion, token scope) in qeetrix-android, or record the
   difference in [docs/llm/boundaries.md](docs/llm/boundaries.md).
+
+## 💻 Before you push
+
+CI runs only Verify: the upstream lock, `swift-format`, a build with no compiler warnings, and the dependencies. The
+tests, the iOS Simulator, DocC and source compatibility run on your Mac before every push. Run them all, and say so in
+the pull request:
+
+```sh
+Scripts/check.sh \
+  && xcodebuild test -scheme Qeetrix-Package -only-testing:QeetrixTests \
+       -destination "platform=iOS Simulator,id=$(Scripts/ci-simulator.sh)" \
+  && Scripts/docs.sh \
+  && Scripts/api-compat.sh "$(git tag --list --sort=-version:refname '[0-9]*.[0-9]*.[0-9]*' | head -1)"
+```
+
+A change under `Upstream/` also runs `Scripts/sync-upstream.sh --check`; a change to a component's interaction runs
+the showcase's UI tests (below).
 
 ## ⌨️ Commands
 
@@ -121,7 +138,7 @@ flowchart LR
 ```
 
 - **The version is in the pull request's diff.** When the library changes, raise `VERSION` on develop (the next patch,
-  or a minor or major) before the develop → main pull request; its Version check fails until it's raised. Docs, tests
+  or a minor or major) before the develop → main pull request; its Release gate fails until it's raised. Docs, tests
   and CI changes need no new version.
 - **The CHANGELOG entry** (`## [X.Y.Z] — YYYY-MM-DD`) becomes the GitHub Release's notes.
 - **A bad release** is marked withdrawn with **Actions › Rollback**, and the fix is a new version.
@@ -132,7 +149,7 @@ Details: [docs/releases.md](docs/releases.md).
 
 - **Swift 6, strict concurrency,** and **no compiler warnings** (`Scripts/warnings.sh`).
 - **`swift-format`**, strict (`Scripts/lint.sh`).
-- **Every public declaration documented** in DocC, which CI builds with warnings as errors.
+- **Every public declaration documented** in DocC, which the local gate builds with warnings as errors.
 - **No literal colours, durations or fonts.** Use the tokens. A size the tokens don't name comes from the component's
   CSS, with the CSS beside it.
 - **No new runtime dependency.** A test-only one needs its entry in `Tools/dependency-allowlist.json`.

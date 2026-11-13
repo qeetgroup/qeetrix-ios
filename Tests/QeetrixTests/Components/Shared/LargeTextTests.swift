@@ -56,7 +56,7 @@ struct LargeTextTests {
     }
 
     // iOS only: on the Mac host SwiftUI draws a `Menu` as a native pop-up button, which keeps its label to one line
-    // whatever the label asks, so the measurement means nothing there. It runs in CI's iOS tests.
+    // whatever the label asks, so the measurement means nothing there. It runs in the iOS Simulator tests.
     #if os(iOS)
         @Test("At the accessibility sizes the select's value wraps instead of being cut to one line")
         func selectWraps() throws {

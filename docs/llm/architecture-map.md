@@ -51,7 +51,7 @@
 | DocC | `Scripts/docs.sh` |
 | Every release gate, the bill of materials | `Scripts/release-check.sh`, `Scripts/sbom.sh` |
 | A simulator for CI | `Scripts/ci-simulator.sh` |
-| CI | `.github/workflows/ci.yml` (on develop: Build and test; iOS tests on every push) |
-| Release | `.github/workflows/version.yml`, `release.yml`, `rollback.yml` |
-| Code scanning, updates | `.github/workflows/codeql.yml`, `.github/dependabot.yml` |
+| CI | `.github/workflows/ci.yml` (Verify, on pull requests into develop or main); the tests run locally, CONTRIBUTING.md |
+| Release | `.github/workflows/release-gate.yml`, `release.yml`, `sync-develop.yml`, `rollback.yml` |
+| Code scanning, updates | `.github/workflows/codeql.yml` (weekly), `.github/dependabot.yml` (monthly) |
 | Hosted documentation (Swift Package Index) | `.spi.yml` |

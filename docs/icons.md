@@ -36,7 +36,7 @@ time the icon is drawn: the library itself compiles no icon, and each one is com
 names it. (A stored `static let` wouldn't do: Swift marks every public symbol a library defines as one the linker must
 keep, so all 1,763 icons would ship in every app.)
 
-**Budget:** 4 KiB per extended icon an app uses. `Scripts/icon-budget.sh` (part of `Scripts/check.sh`, in CI) builds
+**Budget:** 4 KiB per extended icon an app uses. `Scripts/icon-budget.sh` (part of `Scripts/check.sh`, the local gate) builds
 `Tools/IconBudget` in release twice — one core icon, then twenty extended ones as well — and fails unless the first
 program carries no extended icon's drawings, the second exactly the twenty, and the second is no more than 20 × 4 KiB
 larger. Naming `QeetrixIconName.extendedCases` keeps every icon, so an app that draws fixed icons names them instead.

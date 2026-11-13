@@ -4,10 +4,11 @@ name: Release
 # published by its Git tag (Swift Package Manager resolves the tag straight from this repository), so releasing means
 # tagging a verified commit.
 #
-#   1. Raise VERSION on develop when the library changes, then open the develop → main pull request; its Version check
+#   1. Raise VERSION on develop when the library changes, then open the develop → main pull request; its Release gate
 #      fails until it's raised. Date the CHANGELOG entry (## [X.Y.Z] — YYYY-MM-DD): it becomes the release notes.
-#   2. Merge to main. The gate checks the version is new and builds the bill of materials. It runs no checks: every
-#      gate, the iOS Simulator tests included, passed in develop's CI on this commit, as main's protection requires.
+#   2. Merge to main. The gate checks the version is new and builds the bill of materials. It runs no checks: Verify
+#      passed on the pull request, as main's protection requires, and the tests, the iOS Simulator's included, ran
+#      locally before the push.
 #   3. The publish job waits for an approver in the `release` environment. Once approved it tags X.Y.Z (Swift's tag
 #      convention, no v prefix) and opens a
 #      GitHub Release with the bill of materials attached.
@@ -71,7 +72,7 @@ jobs:
           echo "$version is new — releasing."
           echo "release=true" >> "$GITHUB_OUTPUT"
 
-      # No gate runs here: develop's CI already passed every one on this commit (main takes develop only, on an
+      # No gate runs here: Verify passed on the develop → main pull request (main takes develop only, on an
       # up-to-date branch). Xcode is for the bill of materials.
       - if: steps.version.outputs.release == 'true'
         name: Select Xcode
