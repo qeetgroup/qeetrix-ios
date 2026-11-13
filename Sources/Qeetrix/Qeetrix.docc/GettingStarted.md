@@ -9,11 +9,11 @@ In Xcode, choose **File › Add Package Dependencies…**, enter the repository 
 library to your app target. In a package manifest, take a version and its patches:
 
 ```swift
-.package(url: "https://github.com/qeetgroup/qeetrix-ios.git", .upToNextMinor(from: "0.1.0"))
+.package(url: "https://github.com/qeetgroup/qeetrix-ios.git", .upToNextMinor(from: "0.3.0"))
 ```
 
-Qeetrix requires iOS 17 and has no dependencies of its own. <doc:Installing> covers versions,
-requirements and access to the private repository.
+Qeetrix requires iOS 17 and has no dependencies of its own. <doc:Installing> covers versions
+and requirements.
 
 ## Set the theme once, at the root
 

@@ -4,11 +4,9 @@ Add Qeetrix by version, take its fixes, and know what each version promises.
 
 ## Overview
 
-Qeetrix is a Swift package, distributed from source through the private repository
-`github.com/qeetgroup/qeetrix-ios`. Its releases are Git tags in Semantic Versioning form.
-
-> Note: No version has been tagged yet. The first candidate, 0.1.0-rc.1, is prepared but unreleased.
-> Until it is tagged, the package can only be added by branch or revision, for evaluation.
+Qeetrix is a Swift package, distributed from source through its public repository
+`github.com/qeetgroup/qeetrix-ios`. Its releases are Git tags in Semantic Versioning form, the bare
+version with no `v` (`0.3.0`).
 
 ### Add the package
 
@@ -18,17 +16,17 @@ you want, and add the `Qeetrix` library to your app target. In a package manifes
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/qeetgroup/qeetrix-ios.git", .upToNextMinor(from: "0.1.0"))
+    .package(url: "https://github.com/qeetgroup/qeetrix-ios.git", .upToNextMinor(from: "0.3.0"))
 ],
 targets: [
     .target(name: "App", dependencies: [.product(name: "Qeetrix", package: "qeetrix-ios")])
 ]
 ```
 
-To try a release candidate, pin it exactly — `exact: "0.1.0-rc.1"` — since SwiftPM never picks a
+To try a release candidate, pin it exactly — `exact: "0.4.0-rc.1"`, say — since SwiftPM never picks a
 pre-release on its own.
 
-Your account, and any CI that builds the app, needs read access to the repository.
+The repository is public: no account, token or credential is needed, in Xcode or in CI.
 
 ### Requirements
 
@@ -39,9 +37,9 @@ Your account, and any CI that builds the app, needs read access to the repositor
 
 ### What versions promise
 
-Before 1.0, a minor version (0.1 to 0.2) may break source, always with a migration note; a patch
-(0.1.0 to 0.1.1) never does. That is why the rule above is **up to next minor**: `from: "0.1.0"` alone
-would accept 0.2 and its breaks. From 1.0, standard Semantic Versioning applies.
+Before 1.0, a minor version (0.3 to 0.4) may break source, always with a migration note; a patch
+(0.3.0 to 0.3.1) never does. That is why the rule above is **up to next minor**: `from: "0.3.0"` alone
+would accept 0.4 and its breaks. From 1.0, standard Semantic Versioning applies.
 
 Only source compatibility is promised; the package isn't distributed as a binary.
 

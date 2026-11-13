@@ -5,6 +5,17 @@ and versions follow [Semantic Versioning](https://semver.org/) as [docs/releases
 
 ## [Unreleased]
 
+## [0.3.1] — 2026-11-13
+
+A patch: the DocC catalogue's install guides, for the release Qeetrix is now. No code changed.
+
+### Fixed
+
+- **Getting started and Installing add the package from 0.3.0**, not 0.1.0: `.upToNextMinor(from: "0.1.0")` only
+  ever resolves 0.1.x, so an app following the guides got a release two versions old.
+- **The repository is public**: Installing, Getting started and Troubleshooting no longer ask for an account with
+  read access, or a CI credential, and Installing no longer says that no version is tagged yet.
+
 ## [0.3.0] — 2026-11-08
 
 Additions, a minor release ([docs/releases.md](docs/releases.md)). Built from `@qeetrix/react` 0.5.1, `@qeetrix/tokens`
@@ -176,6 +187,8 @@ The first version. Built from `@qeetrix/react` 0.4.0, `@qeetrix/tokens` 0.0.13 a
 
 The phase-by-phase notes from before 4 November 2026 are in the git history (`git log -p -- CHANGELOG.md`).
 
-[Unreleased]: https://github.com/qeetgroup/qeetrix-ios/compare/0.2.0...HEAD
+[Unreleased]: https://github.com/qeetgroup/qeetrix-ios/compare/0.3.1...HEAD
+[0.3.1]: https://github.com/qeetgroup/qeetrix-ios/releases/tag/0.3.1
+[0.3.0]: https://github.com/qeetgroup/qeetrix-ios/releases/tag/0.3.0
 [0.2.0]: https://github.com/qeetgroup/qeetrix-ios/releases/tag/0.2.0
 [0.1.0]: https://github.com/qeetgroup/qeetrix-ios/releases/tag/0.1.0
