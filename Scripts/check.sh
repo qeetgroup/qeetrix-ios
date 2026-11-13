@@ -1,7 +1,7 @@
 #!/bin/sh
-# Every gate that runs on the Mac without a simulator, in the order CI runs them. Stops at the first
-# failure. The iOS gates — library, snapshot and UI tests on the Simulator, and the DocC build — are in
-# CONTRIBUTING.md and .github/workflows/ci.yml.
+# Every gate that runs on the Mac without a simulator. Stops at the first failure. CI's Verify runs four of them
+# (upstream lock, formatting, warnings, dependencies); the rest, and the iOS gates (the library's tests on the
+# Simulator, DocC, source compatibility), are the local gate in CONTRIBUTING.md, "Before you push".
 set -eu
 root=$(cd "$(dirname "$0")/.." && pwd)
 cd "$root"

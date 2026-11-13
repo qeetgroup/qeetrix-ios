@@ -33,12 +33,12 @@ flowchart LR
 ```
 
 1. **Raise the version, then the pull request into `main`.** When a change ships (`Sources/`, `Package.swift`,
-   `Upstream/`), raise `VERSION` on develop: the next patch, or a minor or major. The pull request's Version check fails
+   `Upstream/`), raise `VERSION` on develop: the next patch, or a minor or major. The pull request's Release gate fails
    until it's raised. Date the CHANGELOG entry
    (`## [X.Y.Z] — YYYY-MM-DD`): it becomes the release notes. A docs, tests or CI change needs no new version.
 2. **Merge.** `release.yml` checks the version isn't tagged yet, that the `release` environment has a required
-   reviewer, and that the CHANGELOG has the entry, then builds the bill of materials. It runs no checks: every gate,
-   the iOS Simulator tests included, passed in develop's CI on the commit merged.
+   reviewer, and that the CHANGELOG has the entry, then builds the bill of materials. It runs no checks: Verify passed
+   on the pull request, and the tests, the iOS Simulator's included, ran locally before the push.
 3. **Approve.** The publish job waits: **Actions › Release › Review deployments › Approve**.
 4. **Tag and release.** It tags the verified commit `X.Y.Z` and opens a GitHub Release with the CHANGELOG entry and the
    CycloneDX bill of materials. A `-rc.N` version is marked as a pre-release.

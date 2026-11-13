@@ -1,29 +1,39 @@
-name: Version
+name: Release gate
 
-# A develop → main pull request that changes what ships must raise `VERSION`. Raise it on develop, in an ordinary
-# commit, before opening the pull request: the next patch, or a minor or major by hand (a breaking API change before 1.0
-# needs a minor, docs/releases.md). This check fails, naming the next patch, until it's raised. A version not yet
-# released on main, or a pull request that changes nothing that ships (docs, tests, CI, the showcase), needs none. Nothing
-# commits for you: main requires CI on the pull request's last commit, and a commit pushed by a workflow gets no CI run
-# of its own.
-#
-# It never checks out the pull request's code: it reads files through the GitHub API.
+# A develop → main pull request releases. Besides Verify, main requires this one check on it:
+#   - the change comes from this repository's develop (feature branches, forks and Dependabot go into develop);
+#   - a pull request that changes what ships (Sources/, Package.swift, Upstream/) raises VERSION: the next patch, or a
+#     minor or major by hand (a breaking API change before 1.0 needs a minor, docs/releases.md).
+# Raise it on develop, in an ordinary commit, before opening the pull request: nothing commits for you. It never checks
+# out the pull request's code: it reads files through the GitHub API.
 on:
   pull_request:
     branches: [main]
-    types: [opened, synchronize, reopened]
+    # edited: a pull request whose base is changed to main is checked again.
+    types: [opened, reopened, synchronize, edited]
 
 permissions:
   contents: read
   pull-requests: read
 
 jobs:
-  raised:
-    name: Version is raised
+  gate:
+    name: Release gate
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - name: The version is raised when the pull request ships something
+      - name: the change comes from develop
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+        run: |
+          set -euo pipefail
+          if [ "$HEAD_REPO:$HEAD_REF" != "$GITHUB_REPOSITORY:develop" ]; then
+            echo "::error::main takes develop only, and this comes from $HEAD_REPO:$HEAD_REF. Open the pull request into develop."
+            exit 1
+          fi
+
+      - name: the version is raised when the pull request ships something
         env:
           GH_TOKEN: ${{ github.token }}
           BASE: ${{ github.base_ref }}

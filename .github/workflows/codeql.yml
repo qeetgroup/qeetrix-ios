@@ -1,17 +1,11 @@
 name: CodeQL
 
 # GitHub's code scanning of these workflows: finds security problems such as untrusted input in a run step. Results
-# appear in the repository's Security tab. Runs on every pull request, on main after each merge, and weekly for new
-# queries. The Swift code isn't scanned: CodeQL's Swift build tracer can't start a package build on the xcode-27
+# appear in the repository's Security tab. Weekly on main (what's released) and on request, so it adds no minutes to
+# every change. The Swift code isn't scanned: CodeQL's Swift build tracer can't start a package build on the xcode-27
 # runner image ("Bad CPU type in executable", with or without Rosetta), and the library has no network, storage or
 # credential code for the Swift queries to look at.
 on:
-  # On develop only, as CI: every push to it and every pull request into it, so main isn't analysed again after a
-  # merge. The weekly run analyses main, which keeps the Security tab's alerts for it current.
-  push:
-    branches: [develop]
-  pull_request:
-    branches: [develop]
   schedule:
     - cron: "0 5 * * 1"
   workflow_dispatch:

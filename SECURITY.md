@@ -20,7 +20,7 @@ flowchart LR
     S --> L[("Upstream/upstream.lock.json<br/>sha256 of every file")]
     L --> C{"Scripts/verify.sh<br/>in every CI run"}
     C -->|"a locked file changed"| F["❌ Build fails"]
-    W["🗓️ Weekly CI job"] -->|"re-fetches and compares"| L
+    W["🔁 sync-upstream.sh --check<br/>before an upstream change"] -->|"re-fetches and compares"| L
 ```
 
 - **Upstream packages** are pinned by version in `Upstream/pins.json`. Each bundled font must also match the checksum
