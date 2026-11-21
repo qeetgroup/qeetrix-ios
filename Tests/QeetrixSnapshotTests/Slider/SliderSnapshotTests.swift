@@ -31,5 +31,18 @@
                 }
             )
         }
+
+        @Test("Named for VoiceOver only: the control alone, with the value, and with bounds and an error")
+        func accessibilityOnlyLabel() {
+            assertSpecimen(
+                VStack(alignment: .leading, spacing: 16) {
+                    QeetrixSlider(value: .constant(1.5), accessibilityLabel: Text("Zoom"), in: 1...3, step: 0.05)
+                    QeetrixSlider(value: .constant(1.5), accessibilityLabel: Text("Zoom"), in: 1...3, step: 0.05, showsValue: true)
+                    QeetrixSlider(
+                        range: .constant(200...800), accessibilityLabel: Text("Price"), in: 0...1_000, step: 50, showsBounds: true,
+                        error: "Choose a smaller range")
+                }
+            )
+        }
     }
 #endif

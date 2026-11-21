@@ -29,5 +29,24 @@
                 }
             )
         }
+
+        @Test("Tiles: icons and lines, chosen, a disabled option, two columns, an error, and icons in rows")
+        func tiles() {
+            let photo = [
+                QeetrixOption("Everyone", value: 1, description: Text("Anyone with your number"), icon: .users),
+                QeetrixOption("My contacts", value: 2, description: Text("People in your phone's contacts"), icon: .contactRound),
+                QeetrixOption("Nobody", value: 3, description: Text("Only you see it"), icon: .eyeOff, isDisabled: true),
+            ]
+            let languages = ["English", "हिन्दी", "বাংলা", "తెలుగు"].enumerated().map { QeetrixOption($0.element, value: $0.offset) }
+            assertSpecimen(
+                VStack(alignment: .leading, spacing: 16) {
+                    QeetrixRadioGroup("Who can see your photo", selection: .constant(2), options: photo, variant: .tile)
+                    QeetrixRadioGroup("Language", selection: .constant(1), options: languages, variant: .tile, columns: 2)
+                    QeetrixRadioGroup(
+                        "Language", selection: .constant(9), options: languages, error: "Choose a language", variant: .tile, columns: 2)
+                    QeetrixRadioGroup("Who can see your photo", selection: .constant(1), options: photo)
+                }
+            )
+        }
     }
 #endif

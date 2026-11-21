@@ -30,5 +30,29 @@
                 }
             )
         }
+
+        @Test("Without a visible label: off, on, mixed, disabled and in an invalid group, the box alone beside a card's words")
+        func bare() {
+            let mixed: [Binding<Bool>] = [.constant(true), .constant(false)]
+            let label = Text("Also report Meera")
+            assertSpecimen(
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack(spacing: 16) {
+                        QeetrixCheckbox(isOn: .constant(false), accessibilityLabel: label)
+                        QeetrixCheckbox(isOn: .constant(true), accessibilityLabel: label)
+                        QeetrixCheckbox(sources: mixed, isOn: \.self, accessibilityLabel: Text("All"))
+                        QeetrixCheckbox(isOn: .constant(true), accessibilityLabel: label).disabled(true)
+                        QeetrixCheckbox(isOn: .constant(false), accessibilityLabel: label).environment(\.qeetrixGroupIsInvalid, true)
+                    }
+                    HStack(alignment: .top, spacing: QeetrixSpace.gapMd) {
+                        QeetrixCheckbox(isOn: .constant(true), accessibilityLabel: label)
+                        VStack(alignment: .leading, spacing: QeetrixSpace.gapXs) {
+                            Text("Also report Meera").qeetrixTextStyle(.bodyMd, weight: .medium)
+                            Text("We'll look at the last 20 messages.").qeetrixTextStyle(.bodySm).foregroundStyle(QeetrixColor.textSubtle)
+                        }
+                    }
+                }
+            )
+        }
     }
 #endif

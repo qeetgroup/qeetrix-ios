@@ -118,7 +118,38 @@ struct SliderTests {
             #expect(elements.map(\.role) == ["AXSlider", "AXStaticText", "AXSlider", "AXSlider"])
             #expect(elements.map(\.text) == ["Discount", "Up to half.", "Budget, minimum", "Budget, maximum"])
         }
+
+        @Test("A slider labelled for VoiceOver only: its thumbs are named by the label, and nothing else is read")
+        func accessibilityOnlyLabel() {
+            let view = VStack {
+                QeetrixSlider(value: .constant(1.5), accessibilityLabel: Text("Zoom"), in: 1...3, step: 0.05)
+                QeetrixSlider(range: .constant(200...800), accessibilityLabel: Text("Price"), in: 0...1_000, step: 50)
+            }
+            let elements = ListsAccessibilityTree.elements(of: view)
+            #expect(elements.map(\.role) == ["AXSlider", "AXSlider", "AXSlider"], "\(elements)")
+            #expect(elements.map(\.text) == ["Zoom", "Price, minimum", "Price, maximum"])
+            #expect(elements.first?.value == "1.5")
+        }
     #endif
+
+    @Test("A slider labelled for VoiceOver only is the 44 pt control alone; with the value, the header is back")
+    func accessibilityOnlyLabelHeight() throws {
+        func height(_ view: some View) throws -> Int {
+            let renderer = ImageRenderer(content: view)
+            renderer.proposedSize = ProposedViewSize(width: 300, height: nil)
+            renderer.scale = 1
+            return try #require(renderer.cgImage).height
+        }
+        let bare = try height(QeetrixSlider(value: .constant(1.5), accessibilityLabel: Text("Zoom"), in: 1...3, step: 0.05))
+        #expect(bare == Int(QeetrixAccessibility.minimumTouchTarget))
+        #expect(try height(QeetrixSlider(range: .constant(2...8), accessibilityLabel: Text("Price"), in: 0...10)) == bare)
+        // The labelled slider adds its label's line and the 4 pt gap above the same control.
+        let labelled = try height(QeetrixSlider("Zoom", value: .constant(1.5), in: 1...3, step: 0.05))
+        #expect(labelled > bare + Int(QeetrixSpace.gapXs))
+        // The value brings the header back, at the same height as the labelled slider's.
+        let valued = try height(QeetrixSlider(value: .constant(1.5), accessibilityLabel: Text("Zoom"), in: 1...3, showsValue: true))
+        #expect(valued == labelled)
+    }
 
     @Test("It renders one value and a range, with the value and bounds, an error, disabled and right to left")
     func renders() {
@@ -128,6 +159,7 @@ struct SliderTests {
             AnyView(QeetrixSlider("Threshold", value: .constant(0.4), in: 0...1, step: 0.05, format: .percent, error: "Too low")),
             AnyView(QeetrixSlider("Discount", value: .constant(20)).disabled(true)),
             AnyView(QeetrixSlider("Budget", range: .constant(20...60), showsValue: true).environment(\.layoutDirection, .rightToLeft)),
+            AnyView(QeetrixSlider(value: .constant(1.5), accessibilityLabel: Text("Zoom"), in: 1...3, showsBounds: true, error: "Too far")),
         ]
         for view in views {
             #expect(ImageRenderer(content: view.frame(width: 390)).cgImage != nil)

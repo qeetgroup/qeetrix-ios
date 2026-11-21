@@ -32,6 +32,24 @@ QeetrixSlider(
     description: Text("Alert when usage passes this share of the quota."))
 ```
 
+### Named for VoiceOver only
+
+A slider between two icons, or under a heading that names it, has no label of its own, as
+`@qeetrix/react`'s Slider with an `aria-label`. VoiceOver reads the thumb by `accessibilityLabel`, with
+its value; a range's thumbs are named after it:
+
+```swift
+HStack(spacing: QeetrixSpace.gapSm) {
+    QeetrixIcon(.zoomOut, size: .md)
+    QeetrixSlider(value: $zoom, accessibilityLabel: Text("Zoom"), in: 1...3, step: 0.05)
+    QeetrixIcon(.zoomIn, size: .md)
+}
+```
+
+The two magnifiers are in the optional `QeetrixIconsExtended` product. Without `showsValue` there is no
+header, so the slider is the 44-point control alone. `showsBounds`,
+the description and the error show under it as they do with a label.
+
 ### Why Qeetrix draws it
 
 SwiftUI's `Slider` takes a tint and nothing else: its round white thumb with a shadow, its rounded

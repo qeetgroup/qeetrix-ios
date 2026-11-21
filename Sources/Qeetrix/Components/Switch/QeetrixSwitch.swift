@@ -6,6 +6,7 @@ import SwiftUI
 /// ```swift
 /// QeetrixSwitch("Auto-renew", isOn: $autoRenew)
 /// QeetrixSwitch("Two-step sign-in", isOn: $twoStep, description: Text("A code by SMS at each sign-in."))
+/// QeetrixSwitch(isOn: $faceID, accessibilityLabel: Text("Unlock with Face ID"))
 /// ```
 ///
 /// Off: the `color.bg.input` track with a `color.border.strong` edge and the graphite thumb on the start
@@ -13,21 +14,31 @@ import SwiftUI
 /// `motion.duration.normal`, not at all under Reduce Motion. The label follows the switch, 8 pt away,
 /// and the whole row toggles it, with ``QeetrixFeedback/selection`` feedback. VoiceOver reads it as the
 /// system's switch. A setting that waits for a Save step is a ``QeetrixCheckbox`` instead.
+///
+/// ``init(isOn:accessibilityLabel:)`` draws the track alone, for the end of a row that lays out its own
+/// title.
 public struct QeetrixSwitch<Label: View>: View {
     let isOn: Binding<Bool>
     let description: Text?
+    let isLabelHidden: Bool
     let label: Label
 
     public init(isOn: Binding<Bool>, description: Text? = nil, @ViewBuilder label: () -> Label) {
+        self.init(isOn: isOn, description: description, isLabelHidden: false, label: label)
+    }
+
+    init(isOn: Binding<Bool>, description: Text?, isLabelHidden: Bool, @ViewBuilder label: () -> Label) {
         self.isOn = isOn
         self.description = description
+        self.isLabelHidden = isLabelHidden
         self.label = label()
     }
 
     public var body: some View {
         Toggle(isOn: isOn) { label }
-            .toggleStyle(QeetrixSwitchToggleStyle(description: description))
-            .layoutValue(key: QeetrixSelectionRowKey.self, value: true)
+            .toggleStyle(QeetrixSwitchToggleStyle(description: description, isLabelHidden: isLabelHidden))
+            // A bare switch sits in its own row, so a fieldset spaces it as it spaces any field.
+            .layoutValue(key: QeetrixSelectionRowKey.self, value: !isLabelHidden)
     }
 }
 
@@ -39,22 +50,39 @@ extension QeetrixSwitch where Label == Text {
     public init<S: StringProtocol>(_ title: S, isOn: Binding<Bool>, description: Text? = nil) {
         self.init(isOn: isOn, description: description) { Text(title) }
     }
+
+    /// A switch with no visible label, for the end of a row that draws its own title and note, as
+    /// `@qeetrix/react`'s Switch with an `aria-label`. VoiceOver reads it as the system's switch named
+    /// `accessibilityLabel`.
+    ///
+    /// It is laid out at the track's 32 × 18 pt and never stretches. A tap anywhere in the 44 × 44 pt
+    /// round it toggles it, and that area doesn't move the layout, so the row keeps the web's height and
+    /// the text beside it keeps its width. The feedback and the Reduce Motion behaviour are the labelled
+    /// switch's.
+    public init(isOn: Binding<Bool>, accessibilityLabel: Text) {
+        self.init(isOn: isOn, description: nil, isLabelHidden: true) { accessibilityLabel }
+    }
 }
 
 /// The Qeetrix switch look for any `Toggle`.
+///
+/// The style can't read `.labelsHidden()` on iOS 17, so a toggle in this style always draws its label.
+/// For a switch without one, use ``QeetrixSwitch/init(isOn:accessibilityLabel:)``.
 public struct QeetrixSwitchToggleStyle: ToggleStyle {
     let description: Text?
+    let isLabelHidden: Bool
 
     public init() {
-        description = nil
+        self.init(description: nil)
     }
 
-    init(description: Text?) {
+    init(description: Text?, isLabelHidden: Bool = false) {
         self.description = description
+        self.isLabelHidden = isLabelHidden
     }
 
     public func makeBody(configuration: Configuration) -> some View {
-        QeetrixSwitchBody(configuration: configuration, description: description)
+        QeetrixSwitchBody(configuration: configuration, description: description, isLabelHidden: isLabelHidden)
     }
 }
 
@@ -66,6 +94,7 @@ extension ToggleStyle where Self == QeetrixSwitchToggleStyle {
 struct QeetrixSwitchBody: View {
     let configuration: ToggleStyleConfiguration
     let description: Text?
+    var isLabelHidden = false
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.isFocused) private var isFocused
     @Environment(\.qeetrixGroupIsInvalid) private var isInvalid
@@ -74,23 +103,33 @@ struct QeetrixSwitchBody: View {
     @State private var changes = 0
 
     var body: some View {
-        QeetrixChoiceRow(description: description, isEnabled: isEnabled) {
-            QeetrixSwitchTrack(
-                isOn: configuration.isOn, isHovered: isHovered, isEnabled: isEnabled, isInvalid: isInvalid, isFocused: isFocused)
-        } label: {
-            configuration.label
+        control
+            .onTapGesture {
+                guard isEnabled else { return }
+                configuration.isOn.toggle()
+                changes += 1
+            }
+            .onHover { isHovered = $0 }
+            .accessibilityRepresentation {
+                Toggle(isOn: QeetrixFeedback.counting(configuration.$isOn, in: $changes)) { configuration.label }
+            }
+            .accessibilityHint(description ?? Text(verbatim: ""))
+            .qeetrixFeedback(.selection, trigger: changes)
+    }
+
+    @ViewBuilder private var control: some View {
+        let track = QeetrixSwitchTrack(
+            isOn: configuration.isOn, isHovered: isHovered, isEnabled: isEnabled, isInvalid: isInvalid, isFocused: isFocused)
+        if isLabelHidden {
+            // The track's own size; the 44 pt target round it doesn't take part in layout.
+            track.qeetrixHitArea()
+        } else {
+            QeetrixChoiceRow(description: description, isEnabled: isEnabled) {
+                track
+            } label: {
+                configuration.label
+            }
         }
-        .onTapGesture {
-            guard isEnabled else { return }
-            configuration.isOn.toggle()
-            changes += 1
-        }
-        .onHover { isHovered = $0 }
-        .accessibilityRepresentation {
-            Toggle(isOn: QeetrixFeedback.counting(configuration.$isOn, in: $changes)) { configuration.label }
-        }
-        .accessibilityHint(description ?? Text(verbatim: ""))
-        .qeetrixFeedback(.selection, trigger: changes)
     }
 }
 

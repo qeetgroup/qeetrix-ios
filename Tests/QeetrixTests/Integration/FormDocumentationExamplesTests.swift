@@ -8,6 +8,7 @@ import Testing
 // they use. iOS-only modifiers are guarded so the file also builds on the Mac host.
 
 private enum Plan: Hashable { case monthly, yearly }
+private enum Audience: Hashable { case everyone, contacts }
 
 private struct Channel: Identifiable {
     let id: String
@@ -21,6 +22,10 @@ private struct ChoiceExamples: View {
     @State private var city = ""
     @State private var notes = ""
     @State private var receipts = true
+    @State private var alsoReport = false
+    @State private var photo = Audience.contacts
+    @State private var language = "en"
+    let languages = [QeetrixOption("English", value: "en"), QeetrixOption("हिन्दी", value: "hi")]
     @State private var channels = [Channel(id: "Email", isOn: true), Channel(id: "SMS", isOn: false)]
     @State private var cycle = Plan.monthly
     @State private var country: String? = nil
@@ -38,6 +43,16 @@ private struct ChoiceExamples: View {
             QeetrixTextarea("Notes", text: $notes, prompt: Text("e.g. Deliver after 5 pm"), rows: 4)
             QeetrixCheckbox("Email me receipts", isOn: $receipts, description: Text("One email per invoice."))
             QeetrixCheckbox("All channels", sources: $channels, isOn: \.isOn)
+            HStack(alignment: .top, spacing: QeetrixSpace.gapMd) {
+                QeetrixCheckbox(isOn: $alsoReport, accessibilityLabel: Text("Also report Meera"))
+                VStack(alignment: .leading, spacing: QeetrixSpace.gapXs) {
+                    Text("Also report Meera")
+                        .qeetrixTextStyle(.bodyMd, weight: .medium)
+                    Text("We'll look at the last 20 messages.")
+                        .qeetrixTextStyle(.bodySm)
+                        .foregroundStyle(QeetrixColor.textSubtle)
+                }
+            }
             QeetrixRadioGroup(
                 "Billing cycle", selection: $cycle,
                 options: [
@@ -48,6 +63,14 @@ private struct ChoiceExamples: View {
                 "Billing cycle", selection: $cycle,
                 options: [QeetrixOption("Monthly", value: Plan.monthly), QeetrixOption("Yearly", value: Plan.yearly)],
                 orientation: .horizontal)
+            QeetrixRadioGroup(
+                "Who can see your photo", selection: $photo,
+                options: [
+                    QeetrixOption("Everyone", value: Audience.everyone, description: Text("Anyone with your number"), icon: .users),
+                    QeetrixOption("My contacts", value: Audience.contacts, icon: .contactRound),
+                ],
+                variant: .tile)
+            QeetrixRadioGroup("Language", selection: $language, options: languages, variant: .tile, columns: 2)
             QeetrixSelect("Country", selection: $country, options: countries, placeholder: Text("Choose a country"))
         }
     }

@@ -219,6 +219,83 @@ struct ButtonTests {
         #expect(plain.height == 32 && icon.height == 32)
     }
 
+    @Test("An icon of the app's own gets the zone a named icon gets: the same pixels, at every size, full width and right to left")
+    func customIcon() throws {
+        func same(_ one: some View, _ other: some View) throws -> Bool {
+            let first = try #require(Rendered(one.environment(\.colorScheme, .light)))
+            let second = try #require(Rendered(other.environment(\.colorScheme, .light)))
+            guard first.width == second.width, first.height == second.height else { return false }
+            for y in 0..<first.height {
+                for x in 0..<first.width where first.pixel(x, y) != second.pixel(x, y) { return false }
+            }
+            return true
+        }
+        for size in QeetrixControlSize.allCases {
+            let iconSize = QeetrixButtonStyle.iconSize(for: size)
+            for variant in QeetrixButtonVariant.allCases {
+                let named = QeetrixButton("Export", icon: .share2, variant: variant, size: size) {}
+                let custom = QeetrixButton("Export", variant: variant, size: size) {
+                } icon: {
+                    QeetrixIcon(.share2, size: iconSize, shape: .sharp)
+                }
+                #expect(try same(named, custom), "\(size) \(variant)")
+            }
+            let fullNamed = QeetrixButton("Continue", icon: .arrowRight, size: size, isFullWidth: true) {}.frame(width: 300)
+            let fullCustom = QeetrixButton("Continue", size: size, isFullWidth: true) {
+            } icon: {
+                QeetrixIcon(.arrowRight, size: iconSize, shape: .sharp)
+            }
+            #expect(try same(fullNamed, fullCustom.frame(width: 300)), "full width \(size)")
+            #expect(
+                try same(
+                    fullNamed.environment(\.layoutDirection, .rightToLeft),
+                    fullCustom.frame(width: 300).environment(\.layoutDirection, .rightToLeft)), "right to left \(size)")
+            // Icon buttons: the drawing centred in the square, as a named icon is.
+            let iconNamed = QeetrixIconButton(.x, label: "Close", variant: .soft, size: size) {}
+            let iconCustom = QeetrixIconButton(label: "Close", variant: .soft, size: size) {
+            } icon: {
+                QeetrixIcon(.x, size: iconSize, shape: .sharp)
+            }
+            #expect(try same(iconNamed, iconCustom), "icon button \(size)")
+        }
+    }
+
+    @Test("A turned icon keeps its drawing in the zone: the x turned 45° reads as a plus")
+    func customIconTurned() throws {
+        let button = QeetrixButton("Hang up", tone: .danger) {
+        } icon: {
+            QeetrixIcon(.x, size: .sm).rotationEffect(.degrees(45))
+        }
+        let image = try #require(Rendered(button.environment(\.colorScheme, .light)))
+        // The 16 pt icon box ends 10 pt (the zone padding) from the trailing edge.
+        let centre = (x: image.width - 10 - 8, y: image.height / 2)
+        func isLight(_ x: Int, _ y: Int) -> Bool { image.pixel(x, y).g > 150 }
+        let vertical = (-6...6).filter { dy in (-1...1).contains { isLight(centre.x + $0, centre.y + dy) } }.count
+        let horizontal = (-6...6).filter { dx in (-1...1).contains { isLight(centre.x + dx, centre.y + $0) } }.count
+        #expect(vertical >= 9 && horizontal >= 9, "vertical \(vertical), horizontal \(horizontal)")
+        #expect(!isLight(centre.x - 5, centre.y - 5) && !isLight(centre.x + 5, centre.y + 5), "no diagonal left")
+    }
+
+    @Test("While loading, the spinner takes a custom icon's place, as it takes a named one's")
+    func customIconLoading() throws {
+        let named = try #require(Rendered(QeetrixButton("Hang up", icon: .x, size: .lg, isLoading: true) {}))
+        let custom = try #require(
+            Rendered(
+                QeetrixButton("Hang up", size: .lg, isLoading: true) {
+                } icon: {
+                    QeetrixIcon(.x, size: .md).rotationEffect(.degrees(135))
+                }))
+        #expect((custom.width, custom.height) == (named.width, named.height))
+        let iconNamed = try #require(Rendered(QeetrixIconButton(.x, label: "Hang up", isLoading: true) {}))
+        let iconCustom = try #require(
+            Rendered(
+                QeetrixIconButton(label: "Hang up", isLoading: true) {
+                } icon: {
+                    QeetrixIcon(.x, size: .sm)
+                }))
+        #expect((iconCustom.width, iconCustom.height) == (iconNamed.width, iconNamed.height))
+    }
+
     @Test("A solid button fills with Ember, corners 4 pt")
     func rendersEmber() throws {
         let image = try #require(Rendered(QeetrixButton("Save") {}.environment(\.colorScheme, .light)))

@@ -23,6 +23,23 @@
             )
         }
 
+        @Test("Large: the prompt at body size, a value with an affix, an error, read-only, disabled and compact")
+        func large() {
+            assertSpecimen(
+                VStack(alignment: .leading, spacing: 16) {
+                    QeetrixTextField(
+                        "Phone number", text: .constant(""), prompt: Text("10-digit mobile number"), startAdornment: Text("+91"), size: .lg)
+                    QeetrixTextField("Phone number", text: .constant("98765 43210"), startAdornment: Text("+91"), size: .lg)
+                    QeetrixTextField("Your name", text: .constant("Meera"), error: "Enter the name your contacts know", size: .lg)
+                    QeetrixTextField(
+                        "Phone number", text: .constant("98765 43210"), startAdornment: Text("+91"), size: .lg, isReadOnly: true)
+                    QeetrixTextField("Your name", text: .constant("Meera"), size: .lg).disabled(true)
+                    QeetrixTextField("Your name", text: .constant(""), prompt: Text("As your contacts know you"), size: .lg)
+                        .qeetrixDensity(.compact)
+                }
+            )
+        }
+
         @Test("The input box in every state: rest, hover, focus, invalid, focused and invalid, read-only, disabled")
         func surfaces() {
             let states: [(String, QeetrixInputState)] = [

@@ -18,9 +18,22 @@ import SwiftUI
 /// busy ("Loading"). `isFullWidth` stretches it to its container (forms, compact width) and centres
 /// the label on the whole button; an icon keeps its zone at the end, and the leading side keeps as much
 /// room as the zone takes, so the label is centred with or without one.
+///
+/// For a drawing that isn't a ``QeetrixIconName`` — a turned icon, an app's own mark — the `icon`
+/// closure puts any view in the zone, with the same padding, rule, colour, centring and spinner:
+///
+/// ```swift
+/// QeetrixButton("Hang up and report", variant: .soft, tone: .neutral, size: .lg, isFullWidth: true) {
+///     hangUp()
+/// } icon: {
+///     QeetrixIcon(.phone, size: .md, variant: .filled).rotationEffect(.degrees(135))
+/// }
+/// ```
 public struct QeetrixButton: View {
     let title: Text
     let icon: QeetrixIconName?
+    /// The app's own drawing for the zone, in place of `icon`.
+    var customIcon: AnyView?
     let variant: QeetrixButtonVariant
     let tone: QeetrixButtonTone
     let size: QeetrixControlSize
@@ -81,12 +94,68 @@ public struct QeetrixButton: View {
         self.action = action
     }
 
+    /// A button with a localised title and a drawing of the app's own in the icon zone.
+    public init<Icon: View>(
+        _ titleKey: LocalizedStringKey,
+        variant: QeetrixButtonVariant = .solid,
+        tone: QeetrixButtonTone = .brand,
+        size: QeetrixControlSize = .md,
+        isLoading: Bool = false,
+        isFullWidth: Bool = false,
+        action: @escaping @MainActor () -> Void,
+        @ViewBuilder icon: () -> Icon
+    ) {
+        self.init(
+            title: Text(titleKey), variant: variant, tone: tone, size: size, isLoading: isLoading, isFullWidth: isFullWidth,
+            action: action, icon: icon)
+    }
+
+    /// A button with a title shown as given, without localisation, and a drawing of the app's own in the
+    /// icon zone.
+    public init<S: StringProtocol, Icon: View>(
+        _ title: S,
+        variant: QeetrixButtonVariant = .solid,
+        tone: QeetrixButtonTone = .brand,
+        size: QeetrixControlSize = .md,
+        isLoading: Bool = false,
+        isFullWidth: Bool = false,
+        action: @escaping @MainActor () -> Void,
+        @ViewBuilder icon: () -> Icon
+    ) {
+        self.init(
+            title: Text(title), variant: variant, tone: tone, size: size, isLoading: isLoading, isFullWidth: isFullWidth,
+            action: action, icon: icon)
+    }
+
+    /// A button with a `Text` title and a drawing of the app's own in the icon zone.
+    ///
+    /// The view gets the zone exactly as a named icon does: the zone's padding either side, the rule
+    /// before it, the label's colour as its foreground style, a box the size of the control size's icon
+    /// (``QeetrixButtonStyle/iconSize(for:)``, scaled with Dynamic Type) to be centred in, and the
+    /// full-width centring. Draw it at that icon size, as a ``QeetrixIcon`` is. While `isLoading` is true
+    /// the spinner takes its place.
+    public init<Icon: View>(
+        title: Text,
+        variant: QeetrixButtonVariant = .solid,
+        tone: QeetrixButtonTone = .brand,
+        size: QeetrixControlSize = .md,
+        isLoading: Bool = false,
+        isFullWidth: Bool = false,
+        action: @escaping @MainActor () -> Void,
+        @ViewBuilder icon: () -> Icon
+    ) {
+        self.init(
+            title: title, icon: nil, variant: variant, tone: tone, size: size, isLoading: isLoading, isFullWidth: isFullWidth,
+            action: action)
+        customIcon = AnyView(icon())
+    }
+
     public var body: some View {
-        let hasZone = icon != nil || isLoading
+        let hasZone = icon != nil || customIcon != nil || isLoading
         Button {
             if !isLoading { action() }
         } label: {
-            QeetrixButtonLabel(title: title, icon: icon, size: size, isLoading: isLoading)
+            QeetrixButtonLabel(title: title, icon: icon, customIcon: customIcon, size: size, isLoading: isLoading)
         }
         .buttonStyle(QeetrixButtonStyle(variant, tone: tone, size: size, layout: hasZone ? .textWithZone : .text, isLoading: isLoading))
         .transformEnvironment(\.qeetrixButtonFillsWidth) { if isFullWidth { $0 = true } }
@@ -101,6 +170,8 @@ public struct QeetrixButton: View {
 struct QeetrixButtonLabel: View {
     let title: Text
     let icon: QeetrixIconName?
+    /// The app's drawing in place of `icon`.
+    let customIcon: AnyView?
     let size: QeetrixControlSize
     let isLoading: Bool
     @Environment(\.qeetrixDensity) private var density
@@ -111,9 +182,10 @@ struct QeetrixButtonLabel: View {
     /// The rule's opacity: the label colour at 55% (button.css `.qx-button-zone::before`).
     static let ruleOpacity = 0.55
 
-    init(title: Text, icon: QeetrixIconName?, size: QeetrixControlSize, isLoading: Bool) {
+    init(title: Text, icon: QeetrixIconName?, customIcon: AnyView? = nil, size: QeetrixControlSize, isLoading: Bool) {
         self.title = title
         self.icon = icon
+        self.customIcon = customIcon
         self.size = size
         self.isLoading = isLoading
         _iconSide = ScaledMetric(wrappedValue: QeetrixButtonStyle.iconSize(for: size).points, relativeTo: .body)
@@ -121,7 +193,7 @@ struct QeetrixButtonLabel: View {
 
     var body: some View {
         let metrics = QeetrixButtonMetrics(size: size, density: density)
-        let hasZone = icon != nil || isLoading
+        let hasZone = icon != nil || customIcon != nil || isLoading
         Group {
             if fillsWidth {
                 // Full width: the label is centred on the whole button. The zone's span (the gap, its
@@ -159,6 +231,8 @@ struct QeetrixButtonLabel: View {
                 // The spinner is drawn at its token size; it grows with the icon box it stands in for.
                 QeetrixSpinner(size: metrics.spinnerSize, isDecorative: true)
                     .scaleEffect(scale)
+            } else if let customIcon {
+                customIcon
             } else if let icon {
                 QeetrixIcon(
                     icon, size: metrics.iconSize, shape: .sharp, mirrorsInRightToLeft: iconMirrors ?? icon.mirrorsInRightToLeft)

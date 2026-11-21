@@ -39,13 +39,31 @@ QeetrixSegmentedControl(
     size: .sm)
 ```
 
+### Across its container
+
+`isFullWidth` spreads the control across its container, as the web's `fullWidth`: every segment takes
+an equal share of the width, whatever its label, with the label centred in it. A label too long for its
+share is truncated on one line rather than wrapped, so the control keeps its height on a small phone;
+at the accessibility text sizes it wraps again.
+
+```swift
+QeetrixSegmentedControl(
+    "Who sees it", selection: $audience,
+    options: [
+        QeetrixOption("Everyone", value: Audience.everyone),
+        QeetrixOption("My contacts", value: Audience.contacts),
+        QeetrixOption("Nobody", value: Audience.nobody),
+    ],
+    size: .sm, isFullWidth: true)
+```
+
 ### Accessibility
 
 The label names the control for VoiceOver and isn't shown. Each segment is a button that is selected or
 not, with its option's description as the hint, and VoiceOver says "selected" when one is chosen. Every
 segment is at least 44 points wide, and its target extends to 44 points tall without moving layout.
 Labels scale with Dynamic Type and Bold Text and, at the largest sizes, wrap rather than truncate; every
-segment stays as tall as the tallest. Colour changes take `motion.duration.fast`, none under Reduce
+segment stays as tall as the tallest. VoiceOver reads a truncated label in full. Colour changes take `motion.duration.fast`, none under Reduce
 Motion. Right to left, the first option is on the right. Keyboard focus is the Ember frame inside the
 segment, with the surface-coloured gap.
 
@@ -63,6 +81,8 @@ segment, with the surface-coloured gap.
   does.
 - **Touch.** A held touch shows the hover tint; the web has no pressed state.
 - **Icons.** The web's toggles can show icons; this control shows labels only.
-- **Width.** Each segment is at least 44 points wide; the web's can be narrower.
+- **Width.** Each segment is at least 44 points wide; the web's can be narrower. Full width, the
+  segments share the width equally and a narrow share can be under 44 points, as on the web; the
+  target still extends to 44 points tall.
 
 On the web: [Toggle group on ui.qeet.in](https://ui.qeet.in/components/toggle-group/).

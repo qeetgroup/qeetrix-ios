@@ -50,7 +50,7 @@ in `Package.swift`:
 
 ```swift
 // Before 1.0 a minor version may break source, so take patches only.
-.package(url: "https://github.com/qeetgroup/qeetrix-ios.git", .upToNextMinor(from: "0.3.0"))
+.package(url: "https://github.com/qeetgroup/qeetrix-ios.git", .upToNextMinor(from: "0.4.0"))
 ```
 
 Add the `Qeetrix` product to your target, set the theme once at the root, and build from the components:

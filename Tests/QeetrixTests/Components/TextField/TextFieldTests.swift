@@ -92,4 +92,51 @@ struct TextFieldTests {
             #expect(ImageRenderer(content: field.frame(width: 300)).cgImage != nil)
         }
     }
+
+    @Test("Sizes are @qeetrix/react's InputSize; lg's value is title.lg's size and line at body's weight and letters")
+    func largeType() {
+        #expect(QeetrixInputSize.allCases.map(\.rawValue) == ["md", "lg"])
+        #expect(QeetrixInputMetrics.textType(.md) == QeetrixTypeSpec(.bodyMd))
+        let large = QeetrixInputMetrics.textType(.lg)
+        let title = QeetrixTextRole.titleLg.tokens
+        #expect(large.tokens.size == title.size && large.tokens.lineHeight == title.lineHeight)
+        #expect(large.tokens.weight == QeetrixTextRole.bodyMd.tokens.weight, "regular, not title.lg's 600")
+        #expect(large.tokens.geometry == QeetrixTextRole.bodyMd.tokens.geometry, "the body letter style")
+        #expect(large.tokens.letterSpacing == 0)
+        #expect(large.textStyle == QeetrixTextRole.titleLg.textStyle)
+    }
+
+    @Test("A large field is 16 pt taller than md at every density: the one-time code's lg slot height")
+    func largeHeight() throws {
+        for density in QeetrixDensity.allCases {
+            func height(_ view: some View) throws -> Int {
+                try #require(Rendered(view.frame(width: 300).qeetrixDensity(density))).height
+            }
+            let medium = try height(QeetrixTextField("Phone number", text: .constant(""), isLabelHidden: true))
+            let large = try height(QeetrixTextField("Phone number", text: .constant(""), size: .lg, isLabelHidden: true))
+            let code = try height(QeetrixOTPInput(code: .constant(""), accessibilityLabel: Text("Code"), size: .lg))
+            #expect(large == medium + 16, "\(density)")
+            #expect(large == code, "\(density): as tall as OTPInput lg")
+        }
+    }
+
+    @Test("At lg the value and its affix are drawn in the large type")
+    func largeValue() throws {
+        func inkHeight(_ size: QeetrixInputSize) throws -> Int {
+            let field = QeetrixTextField(
+                "Phone number", text: .constant("98765 43210"), startAdornment: Text("+91"), size: size, isReadOnly: true,
+                isLabelHidden: true
+            )
+            .frame(width: 300)
+            .foregroundStyle(.black)
+            .environment(\.colorScheme, .light)
+            let image = try #require(Rendered(field))
+            let rows = (0..<image.height).filter { y in (0..<image.width).contains { image.pixel($0, y).r < 100 } }
+            return (rows.last ?? 0) - (rows.first ?? 0) + 1
+        }
+        let medium = try inkHeight(.md)
+        let large = try inkHeight(.lg)
+        // 20 pt figures against 14 pt ones.
+        #expect(Double(large) > Double(medium) * 1.3, "\(medium) → \(large)")
+    }
 }

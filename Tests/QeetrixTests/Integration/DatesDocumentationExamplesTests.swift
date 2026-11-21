@@ -1,4 +1,5 @@
 import Qeetrix  // public API only, as a reader of the documentation would write it
+import QeetrixIconsExtended
 import SwiftUI
 import Testing
 
@@ -99,6 +100,7 @@ private struct SliderExamples: View {
     @State private var discount = 20.0
     @State private var budget = 10_000.0...40_000.0
     @State private var threshold = 0.4
+    @State private var zoom = 1.0
 
     var body: some View {
         VStack {
@@ -108,6 +110,11 @@ private struct SliderExamples: View {
             QeetrixSlider(
                 "Alert threshold", value: $threshold, in: 0...1, step: 0.05, format: .percent, showsValue: true,
                 description: Text("Alert when usage passes this share of the quota."))
+            HStack(spacing: QeetrixSpace.gapSm) {
+                QeetrixIcon(.zoomOut, size: .md)
+                QeetrixSlider(value: $zoom, accessibilityLabel: Text("Zoom"), in: 1...3, step: 0.05)
+                QeetrixIcon(.zoomIn, size: .md)
+            }
         }
     }
 }

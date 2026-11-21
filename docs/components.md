@@ -6,20 +6,21 @@ will carry the iOS pages.
 
 | Group | Component | API | `@qeetrix/react` |
 |:--|:--|:--|:--|
-| 👆 Actions | Button | `QeetrixButton`, `.buttonStyle(.qeetrix())` | Button |
-| 👆 Actions | Icon button | `QeetrixIconButton` | IconButton |
+| 👆 Actions | Button | `QeetrixButton` (a named `icon`, or any view in the `icon` closure), `.buttonStyle(.qeetrix())` | Button |
+| 👆 Actions | Icon button | `QeetrixIconButton` (a named icon, or any view in the `icon` closure) | IconButton |
+| 👆 Actions | Link | `QeetrixLink`, `AttributedString.qeetrixLinks()`, `.qeetrixLinkTone(_:)` | Link |
 | 👆 Actions | Copy button and field | `QeetrixCopyButton`, `QeetrixCopyField` | CopyButton, CopyField |
-| 👆 Actions | Segmented control | `QeetrixSegmentedControl` | ToggleGroup (segmented) |
+| 👆 Actions | Segmented control | `QeetrixSegmentedControl` (`isFullWidth`) | ToggleGroup (segmented, `fullWidth`) |
 | 👆 Actions | Bottom action bar | `.qeetrixBottomActionBar(primary:secondary:)`, `QeetrixScreenAction` | — (iOS only) |
 | 👆 Actions | Haptics | `QeetrixFeedback`, `.qeetrixFeedback(_:trigger:)` | — (iOS only) |
 | ✍️ Forms | Field | `QeetrixField` | Field |
 | ✍️ Forms | Fieldset | `QeetrixFieldset` | Fieldset |
-| ✍️ Forms | Text field | `QeetrixTextField` | TextField, Input |
+| ✍️ Forms | Text field | `QeetrixTextField` (`size: .lg` for a step's one value) | TextField, Input |
 | ✍️ Forms | Textarea | `QeetrixTextarea` | Textarea |
 | ✍️ Forms | Password input | `QeetrixPasswordInput` | PasswordInput |
 | ✍️ Forms | OTP input | `QeetrixOTPInput` | OTPInput |
 | ✍️ Forms | Checkbox | `QeetrixCheckbox`, `.toggleStyle(.qeetrixCheckbox)` | Checkbox |
-| ✍️ Forms | Radio group | `QeetrixRadioGroup`, `QeetrixOption` | RadioGroup |
+| ✍️ Forms | Radio group | `QeetrixRadioGroup` (rows or `variant: .tile` in `columns`), `QeetrixOption` | RadioGroup |
 | ✍️ Forms | Switch | `QeetrixSwitch`, `.toggleStyle(.qeetrixSwitch)` | Switch |
 | ✍️ Forms | Select | `QeetrixSelect`, `QeetrixOption` | Select |
 | ✍️ Forms | Searchable picker | `QeetrixCombobox` | Combobox |

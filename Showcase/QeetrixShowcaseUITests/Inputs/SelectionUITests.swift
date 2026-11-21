@@ -30,6 +30,22 @@ final class CheckboxUITests: XCTestCase {
         app.switches["Push"].tap()
         XCTAssertEqual(app.staticTexts["channels-on"].label, "On: Push")
     }
+
+    @MainActor
+    func testABareCheckboxIsTheBoxAloneNamedForVoiceOver() {
+        let app = Showcase.launch("checkbox")
+        let report = app.switches["Also report Meera"]
+        report.scrollIntoView(in: app)
+        XCTAssertEqual(report.value as? String, "1")
+        // The element's frame is its 44 pt target, centred on the 16 pt box (whose layout size the library's
+        // tests check): VoiceOver's frame is where a tap lands.
+        XCTAssertEqual(report.frame.size, CGSize(width: 44, height: 44))
+        report.tap()
+        XCTAssertEqual(report.value as? String, "0")
+        // A tap 5 pt under the box, where the card has nothing else, is still inside its 44 pt target.
+        report.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).withOffset(CGVector(dx: 0, dy: 13)).tap()
+        XCTAssertEqual(report.value as? String, "1")
+    }
 }
 
 final class RadioGroupUITests: XCTestCase {
@@ -53,6 +69,35 @@ final class RadioGroupUITests: XCTestCase {
         XCTAssertTrue(team.isSelected, "Choosing the selected one again keeps it")
         XCTAssertEqual(app.staticTexts["plan-selected"].label, "Selected: Team")
         XCTAssertFalse(app.buttons["Enterprise"].isEnabled)
+    }
+
+    @MainActor
+    func testATileIsOneSelectableButtonWithItsDescription() {
+        let app = Showcase.launch("radio-group")
+        let everyone = app.buttons["Everyone"]
+        everyone.scrollIntoView(in: app)
+        XCTAssertFalse(everyone.isSelected)
+        XCTAssertTrue(app.buttons["My contacts"].isSelected)
+        XCTAssertGreaterThanOrEqual(everyone.frame.height, 60, "A tile with an icon: 36 pt and 12 pt above and below")
+        everyone.tap()
+        XCTAssertTrue(everyone.isSelected)
+        XCTAssertFalse(app.buttons["My contacts"].isSelected)
+        XCTAssertEqual(app.staticTexts["photo-selected"].label, "Photo: everyone")
+    }
+
+    @MainActor
+    func testTilesInTwoColumnsShareTheWidth() {
+        let app = Showcase.launch("radio-group")
+        let english = app.buttons["English"]
+        let hindi = app.buttons["हिन्दी"]
+        hindi.scrollIntoView(in: app)
+        XCTAssertTrue(english.isSelected)
+        XCTAssertEqual(english.frame.width, hindi.frame.width, accuracy: 0.5)
+        XCTAssertEqual(english.frame.minY, hindi.frame.minY, accuracy: 0.5, "Side by side")
+        XCTAssertEqual(hindi.frame.minX - english.frame.maxX, 8, accuracy: 0.5, "space.gap.sm between the columns")
+        hindi.tap()
+        XCTAssertTrue(hindi.isSelected)
+        XCTAssertFalse(english.isSelected)
     }
 }
 

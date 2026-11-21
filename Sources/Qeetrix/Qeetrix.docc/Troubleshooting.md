@@ -6,8 +6,9 @@ Problems an app can meet when it adds Qeetrix, and what to do about them.
 
 ### Xcode can't fetch the package
 
-The repository is private. Sign in to GitHub in Xcode (**Settings › Accounts**) with an account that has
-read access. A CI system needs a read-only credential for the repository.
+The repository is public, so no account or credential is involved. Check the URL ends in
+`qeetrix-ios.git`, and that the version rule starts from a released tag, such as `0.3.0`: tags are the
+bare version, with no `v`. Qeetrix needs Swift 6, so Xcode 27.1 or later.
 
 ### Text isn't in Qeet Sans
 

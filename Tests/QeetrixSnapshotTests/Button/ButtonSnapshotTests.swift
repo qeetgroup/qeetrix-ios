@@ -66,5 +66,30 @@
                 }
             )
         }
+
+        @Test("An icon of the app's own: a turned icon in the zone, full width, loading, and in an icon button")
+        func customIcon() {
+            let hangUp = QeetrixIcon(.x, size: .md).rotationEffect(.degrees(45))
+            assertSpecimen(
+                VStack(alignment: .leading, spacing: 12) {
+                    QeetrixButton("Hang up and report", variant: .soft, tone: .neutral, size: .lg, isFullWidth: true) {
+                    } icon: {
+                        hangUp
+                    }
+                    QeetrixButton("Hang up", tone: .danger) {
+                    } icon: {
+                        QeetrixIcon(.x, size: .sm).rotationEffect(.degrees(45))
+                    }
+                    QeetrixButton("Hang up", tone: .danger, isLoading: true) {
+                    } icon: {
+                        QeetrixIcon(.x, size: .sm)
+                    }
+                    QeetrixIconButton(label: "Hang up", variant: .solid, tone: .danger) {
+                    } icon: {
+                        QeetrixIcon(.x, size: .sm).rotationEffect(.degrees(45))
+                    }
+                }
+            )
+        }
     }
 #endif

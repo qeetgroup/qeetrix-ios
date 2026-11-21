@@ -46,6 +46,18 @@ pages and showcase pages, and the release of the `Qeetrix` package by Git tag.
 - **Complete:** tests that fail without the behaviour, a snapshot test, a DocC page and a showcase page, in
   `Sources/Qeetrix/Components/<Family>/`.
 
+## Platform differences on record
+
+Where iOS can't match `@qeetrix/react` or Qeetrix for Android exactly; each component's DocC page has the detail.
+
+- **Accessibility-only labels** are an initialiser (`QeetrixSwitch(isOn:accessibilityLabel:)`, the checkbox's and the
+  slider's), not `.labelsHidden()`: a custom `ToggleStyle` can't read it on iOS 17. Android names a bare control with a
+  content description. The 44 pt target spills round the drawn control without moving layout, and is the frame
+  VoiceOver and XCUITest report.
+- **Link underline**: 3 pt under the baseline from iOS 18 (a text renderer); iOS 17 draws the font's own underline.
+  Links inside a sentence are the system's: its underline position, its pressed look, the words as the target.
+- **Full-width segments** share the width equally, even below 44 pt wide; the target stays 44 pt tall.
+
 ## Rules of the repository
 
 - **Snapshot baselines stay on the maintainer's machine.** They aren't committed and CI doesn't compare them.

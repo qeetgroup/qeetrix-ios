@@ -1,5 +1,15 @@
 import SwiftUI
 
+/// A text field's size, as `@qeetrix/react`'s `InputSize`.
+public enum QeetrixInputSize: String, CaseIterable, Sendable {
+    /// `size.control.lg` tall with the value in `body.md`: the one height every form shares. The default.
+    case md
+    /// 16 pt taller, the value and its affixes at `title.lg`'s size in regular weight with tabular figures,
+    /// the prompt in `body.md`, as the one-time code's `lg`. Only for the one value a sign-up or
+    /// verification step asks for — a phone number, a name — never a sign-in email or password.
+    case lg
+}
+
 /// A single-line text field with its label, help text and error: `@qeetrix/react`'s TextField (a
 /// Field around an Input), the default way to build a form row.
 ///
@@ -18,6 +28,12 @@ import SwiftUI
 ///
 /// It wraps SwiftUI's `TextField`, so text input traits apply as usual: `.textContentType(_:)`,
 /// `.keyboardType(_:)`, `.submitLabel(_:)`, `.onSubmit`.
+///
+/// `size: .lg` is the large field for the one value a step asks for:
+///
+/// ```swift
+/// QeetrixTextField("Phone number", text: $number, prompt: Text("10-digit mobile number"), startAdornment: Text("+91"), size: .lg)
+/// ```
 public struct QeetrixTextField: View {
     let context: QeetrixFieldContext
     let isOptional: Bool
@@ -28,6 +44,8 @@ public struct QeetrixTextField: View {
     let startAdornment: Text?
     let endAdornment: Text?
     let isReadOnly: Bool
+    /// `md`, or the large field.
+    var size = QeetrixInputSize.md
 
     public init(
         _ titleKey: LocalizedStringKey,
@@ -94,10 +112,81 @@ public struct QeetrixTextField: View {
         self.isReadOnly = isReadOnly
     }
 
+    /// A text field with a localised label, at a size.
+    public init(
+        _ titleKey: LocalizedStringKey,
+        text: Binding<String>,
+        prompt: Text? = nil,
+        description: Text? = nil,
+        error: String? = nil,
+        icon: QeetrixIconName? = nil,
+        startAdornment: Text? = nil,
+        endAdornment: Text? = nil,
+        size: QeetrixInputSize,
+        isRequired: Bool = false,
+        isOptional: Bool = false,
+        isReadOnly: Bool = false,
+        isLabelHidden: Bool = false
+    ) {
+        self.init(
+            label: Text(titleKey), text: text, prompt: prompt, description: description, error: error, icon: icon,
+            startAdornment: startAdornment, endAdornment: endAdornment, size: size, isRequired: isRequired, isOptional: isOptional,
+            isReadOnly: isReadOnly, isLabelHidden: isLabelHidden)
+    }
+
+    /// A text field with a label shown as given, without localisation, at a size.
+    public init<S: StringProtocol>(
+        _ title: S,
+        text: Binding<String>,
+        prompt: Text? = nil,
+        description: Text? = nil,
+        error: String? = nil,
+        icon: QeetrixIconName? = nil,
+        startAdornment: Text? = nil,
+        endAdornment: Text? = nil,
+        size: QeetrixInputSize,
+        isRequired: Bool = false,
+        isOptional: Bool = false,
+        isReadOnly: Bool = false,
+        isLabelHidden: Bool = false
+    ) {
+        self.init(
+            label: Text(title), text: text, prompt: prompt, description: description, error: error, icon: icon,
+            startAdornment: startAdornment, endAdornment: endAdornment, size: size, isRequired: isRequired, isOptional: isOptional,
+            isReadOnly: isReadOnly, isLabelHidden: isLabelHidden)
+    }
+
+    /// A text field with a `Text` label, at a size: ``QeetrixInputSize/md``, every form's field, or
+    /// ``QeetrixInputSize/lg``, 16 pt taller with the value at `title.lg`'s size, for the one value a
+    /// sign-up or verification step asks for. The box, label, description, error, icon, affixes, focus,
+    /// read-only and disabled states are the same at both sizes.
+    public init(
+        label: Text,
+        text: Binding<String>,
+        prompt: Text? = nil,
+        description: Text? = nil,
+        error: String? = nil,
+        icon: QeetrixIconName? = nil,
+        startAdornment: Text? = nil,
+        endAdornment: Text? = nil,
+        size: QeetrixInputSize,
+        isRequired: Bool = false,
+        isOptional: Bool = false,
+        isReadOnly: Bool = false,
+        isLabelHidden: Bool = false
+    ) {
+        self.init(
+            label: label, text: text, prompt: prompt, description: description, error: error, icon: icon, startAdornment: startAdornment,
+            endAdornment: endAdornment, isRequired: isRequired, isOptional: isOptional, isReadOnly: isReadOnly, isLabelHidden: isLabelHidden
+        )
+        self.size = size
+    }
+
     public var body: some View {
         QeetrixFieldLayout(context: context, isOptional: isOptional, isLabelHidden: isLabelHidden) {
             QeetrixTextInput(
-                text: text, prompt: prompt, icon: icon, startAdornment: startAdornment, endAdornment: endAdornment, isReadOnly: isReadOnly)
+                text: text, prompt: prompt, icon: icon, startAdornment: startAdornment, endAdornment: endAdornment, isReadOnly: isReadOnly,
+                size: size)
         }
     }
 }
@@ -110,14 +199,19 @@ struct QeetrixTextInput: View {
     var startAdornment: Text?
     var endAdornment: Text?
     let isReadOnly: Bool
+    var size = QeetrixInputSize.md
 
     @FocusState private var isFocused: Bool
     @State private var isHovered = false
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.qeetrixDensity) private var density
     @Environment(\.qeetrixFieldContext) private var context
+    @Environment(\.legibilityWeight) private var legibilityWeight
+    /// The prompt's size at `lg`: `body.md`, scaled as body text is.
+    @ScaledMetric(relativeTo: .body) private var promptSize = QeetrixTextRole.bodyMd.tokens.size
 
     var body: some View {
+        let type = QeetrixInputMetrics.textType(size)
         let state = QeetrixInputState(
             isEnabled: isEnabled, isReadOnly: isReadOnly, isFocused: isFocused, isHovered: isHovered, isInvalid: context?.invalid ?? false)
         HStack(spacing: QeetrixInputMetrics.gap) {
@@ -133,9 +227,11 @@ struct QeetrixTextInput: View {
                 endAdornment.foregroundStyle(isEnabled ? QeetrixColor.textSubtle : QeetrixColor.textDisabled).accessibilityHidden(true)
             }
         }
-        .qeetrixTypeEnvironment(QeetrixInputMetrics.textType)
+        // At lg the value and the affixes share the large type, in tabular figures (input.css).
+        .modifier(QeetrixTabularFigures(isOn: size == .lg))
+        .qeetrixTypeEnvironment(type)
         .padding(.horizontal, QeetrixInputMetrics.padding)
-        .qeetrixControlBlockSize(QeetrixInputMetrics.height(density), type: QeetrixInputMetrics.textType)
+        .qeetrixControlBlockSize(QeetrixInputMetrics.height(density, size: size), type: type)
         .qeetrixInputSurface(state)
         // A 44 pt target: a tap on the padding, or just outside a short field, focuses it.
         .qeetrixHitArea()
@@ -157,12 +253,34 @@ struct QeetrixTextInput: View {
                 .qeetrixFieldControlAccessibility()
                 .accessibilityValue(Text(verbatim: text.wrappedValue))
         } else {
-            TextField(text: text, prompt: (prompt ?? Text(verbatim: "")).foregroundStyle(QeetrixInputMetrics.placeholder)) {
+            TextField(text: text, prompt: promptText) {
                 context?.label ?? Text(verbatim: "")
             }
             .tint(QeetrixColor.borderFocus)
             .focused($isFocused)
             .qeetrixFieldControlAccessibility()
+        }
+    }
+
+    /// The prompt in `color.text.subtlest`; at `lg`, in `body.md` rather than the value's large type
+    /// (`.qx-input[data-size="lg"] > .qx-input-control::placeholder`).
+    private var promptText: Text {
+        let prompt = (prompt ?? Text(verbatim: "")).foregroundStyle(QeetrixInputMetrics.placeholder)
+        guard size == .lg else { return prompt }
+        let body = QeetrixTextMetrics(role: .bodyMd, size: promptSize, legibilityWeight: legibilityWeight)
+        return prompt.font(body.font)
+    }
+}
+
+/// Tabular figures for the text inside, when on.
+private struct QeetrixTabularFigures: ViewModifier {
+    let isOn: Bool
+
+    func body(content: Content) -> some View {
+        if isOn {
+            content.monospacedDigit()
+        } else {
+            content
         }
     }
 }

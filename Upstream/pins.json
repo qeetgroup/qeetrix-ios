@@ -160,6 +160,7 @@
       "fieldset",
       "heading",
       "input",
+      "link",
       "menu",
       "popover",
       "progress",

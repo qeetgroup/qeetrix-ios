@@ -11,6 +11,13 @@ struct RadioGroupPage: View {
     @State private var plan: Plan? = nil
     @State private var billing = "monthly"
     @State private var size = "m"
+    @State private var photo = "contacts"
+    @State private var language = "en"
+
+    private static let languages = [
+        ("en", "English"), ("hi", "हिन्दी"), ("bn", "বাংলা"), ("te", "తెలుగు"), ("mr", "मराठी"),
+        ("ta", "தமிழ்"), ("gu", "ગુજરાતી"), ("kn", "ಕನ್ನಡ"), ("ml", "മലയാളം"), ("pa", "ਪੰਜਾਬੀ"),
+    ]
 
     var body: some View {
         ComponentPage(
@@ -41,6 +48,26 @@ struct RadioGroupPage: View {
                     "Size", selection: $size,
                     options: [QeetrixOption("S", value: "s"), QeetrixOption("M", value: "m"), QeetrixOption("L", value: "l")],
                     orientation: .horizontal)
+            }
+            DemoSection("Tiles, with an icon and a line") {
+                QeetrixRadioGroup(
+                    "Who can see your photo", selection: $photo,
+                    options: [
+                        QeetrixOption("Everyone", value: "everyone", description: Text("Anyone with your number"), icon: .users),
+                        QeetrixOption(
+                            "My contacts", value: "contacts", description: Text("People in your phone's contacts"), icon: .contactRound),
+                        QeetrixOption("Nobody", value: "nobody", description: Text("Only you see it"), icon: .eyeOff),
+                    ],
+                    variant: .tile)
+                QeetrixText("Photo: \(photo)", size: .sm, tone: .subtle)
+                    .accessibilityIdentifier("photo-selected")
+            }
+            DemoSection("Tiles in two columns") {
+                // Each language in its own script.
+                QeetrixRadioGroup(
+                    "Language", selection: $language,
+                    options: Self.languages.map { QeetrixOption($0.1, value: $0.0) },
+                    variant: .tile, columns: 2)
             }
         }
     }

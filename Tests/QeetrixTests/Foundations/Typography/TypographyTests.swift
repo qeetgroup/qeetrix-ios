@@ -189,6 +189,52 @@ struct TypographyTests {
         #expect(QeetrixComponentType.fixed(.labelSm).textStyle == nil, "Fixed text never scales")
     }
 
+    @Test("An app's role at another weight: the role's line and scaling at that weight, one step heavier with Bold Text")
+    @MainActor
+    func publicWeight() throws {
+        func image(_ view: some View) throws -> Rendered {
+            try #require(Rendered(view.foregroundStyle(.black).background(.white)))
+        }
+        func ink(_ image: Rendered) -> Int {
+            var inked = 0
+            for y in 0..<image.height {
+                for x in 0..<image.width where image.pixel(x, y).r < 128 { inked += 1 }
+            }
+            return inked
+        }
+        func same(_ one: Rendered, _ other: Rendered) -> Bool {
+            guard one.width == other.width, one.height == other.height else { return false }
+            for y in 0..<one.height {
+                for x in 0..<one.width where one.pixel(x, y) != other.pixel(x, y) { return false }
+            }
+            return true
+        }
+        let role = try image(Text("Cancel").qeetrixTextStyle(.titleLg))
+        let regular = try image(Text("Cancel").qeetrixTextStyle(.titleLg, weight: .regular))
+        // title.lg is 20/28: a line is 28 pt tall at any weight, the half-leading included.
+        #expect(abs(role.height - 28) <= 1, "\(role.height)")
+        #expect(regular.height == role.height)
+        #expect(ink(regular) < ink(role), "400 draws lighter than the role's 600")
+        // At the role's own weight it is the role, pixel for pixel.
+        #expect(same(try image(Text("Cancel").qeetrixTextStyle(.titleLg, weight: .semibold)), role))
+        // Bold Text draws one step heavier than the weight asked for: regular as medium.
+        let bold = try image(Text("Cancel").qeetrixTextStyle(.titleLg, weight: .regular).environment(\.legibilityWeight, .bold))
+        #expect(same(bold, try image(Text("Cancel").qeetrixTextStyle(.titleLg, weight: .medium))))
+        #expect(!same(bold, regular))
+        // A body role at semibold keeps body.md's 20 pt line and A11y letters, heavier than the role.
+        let name = try image(Text("Meera").qeetrixTextStyle(.bodyMd, weight: .semibold))
+        let body = try image(Text("Meera").qeetrixTextStyle(.bodyMd))
+        #expect(name.height == body.height)
+        #expect(ink(name) > ink(body))
+        // Dynamic Type scales it along the role's text style, as it scales the role.
+        let largeRegular = try image(Text("Cancel").qeetrixTextStyle(.titleLg, weight: .regular).dynamicTypeSize(.accessibility3))
+        let largeRole = try image(Text("Cancel").qeetrixTextStyle(.titleLg).dynamicTypeSize(.accessibility3))
+        #expect(largeRegular.height == largeRole.height)
+        #if os(iOS)
+            #expect(largeRegular.height > regular.height)
+        #endif
+    }
+
     @Test("Styled text renders with ink")
     @MainActor
     func renders() throws {

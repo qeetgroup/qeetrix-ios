@@ -1,4 +1,5 @@
 import Qeetrix  // public API only, as a reader of the documentation would write it
+import QeetrixIconsExtended
 import SwiftUI
 import Testing
 
@@ -116,6 +117,16 @@ private struct ActionExamples: View {
                 QeetrixIconButton(.x, label: "Close", tone: .neutral, size: .sm) { dismiss() }
                 QeetrixIconButton(.share2, label: "Share", variant: .soft) { share() }
             }
+            QeetrixButton("Hang up and report", variant: .soft, tone: .neutral, size: .lg, isFullWidth: true) {
+                hangUp()
+            } icon: {
+                QeetrixIcon(.phone, size: .md, variant: .filled).rotationEffect(.degrees(135))
+            }
+            QeetrixIconButton(label: "Hang up", variant: .solid, tone: .danger) {
+                hangUp()
+            } icon: {
+                QeetrixIcon(.phone, size: .sm, variant: .filled).rotationEffect(.degrees(135))
+            }
         }
     }
 
@@ -125,6 +136,31 @@ private struct ActionExamples: View {
     func cancel() {}
     func dismiss() {}
     func share() {}
+    func hangUp() {}
+}
+
+/// Link.md.
+private struct LinkExamples: View {
+    let privacyURL = URL(string: "https://qeet.in/privacy")!
+
+    var body: some View {
+        let consent = AttributedString(
+            localized: "By tapping Agree and continue, you accept the [Terms of Service](https://qeet.in/terms).")
+
+        VStack {
+            QeetrixLink("Change number") { goBack() }
+                .qeetrixTextStyle(.bodySm)
+            QeetrixLink("Read in another language", icon: .globe) { showLanguages() }
+            QeetrixLink("Privacy Policy", destination: privacyURL, tone: .subtle)
+            Text(consent.qeetrixLinks())
+                .qeetrixTextStyle(.bodySm)
+                .foregroundStyle(QeetrixColor.textSubtle)
+                .qeetrixLinkTone()
+        }
+    }
+
+    func goBack() {}
+    func showLanguages() {}
 }
 
 /// Switch.md.
@@ -132,12 +168,24 @@ private struct SwitchExamples: View {
     @State private var autoRenew = true
     @State private var twoStep = false
     @State private var wifi = true
+    @State private var faceID = true
 
     var body: some View {
         VStack {
             VStack(spacing: 0) {
                 QeetrixSwitch("Auto-renew", isOn: $autoRenew)
                 QeetrixSwitch("Two-step sign-in", isOn: $twoStep, description: Text("A code by SMS at each sign-in."))
+            }
+            HStack(spacing: QeetrixSpace.gapMd) {
+                VStack(alignment: .leading, spacing: QeetrixSpace.gapXs) {
+                    Text("Unlock with Face ID")
+                        .qeetrixTextStyle(.bodyMd)
+                    Text("Asks for your face before it shows a code.")
+                        .qeetrixTextStyle(.bodySm)
+                        .foregroundStyle(QeetrixColor.textSubtle)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                QeetrixSwitch(isOn: $faceID, accessibilityLabel: Text("Unlock with Face ID"))
             }
             Toggle("Wi-Fi", isOn: $wifi)
                 .toggleStyle(.qeetrixSwitch)
@@ -151,6 +199,7 @@ private struct TextFieldExamples: View {
     @State private var email = ""
     @State private var amount = ""
     @State private var query = ""
+    @State private var number = ""
     let emailError: String? = "Enter a work email"
 
     var body: some View {
@@ -168,6 +217,10 @@ private struct TextFieldExamples: View {
             #endif
             QeetrixTextField("Amount", text: $amount, startAdornment: Text("₹"))
             QeetrixTextField("Search", text: $query, icon: .search, isLabelHidden: true)
+            QeetrixTextField("Phone number", text: $number, prompt: Text("10-digit mobile number"), startAdornment: Text("+91"), size: .lg)
+                #if os(iOS)
+                    .keyboardType(.phonePad)
+                #endif
         }
     }
 }
@@ -184,6 +237,7 @@ struct ComponentDocumentationExamplesTests {
                 ImageRenderer(content: NavigationStack { ActionExamples() }.frame(width: 390, height: 400).qeetrixThemeMode(theme)).cgImage
                     != nil)
             #expect(ImageRenderer(content: SwitchExamples().frame(width: 390).qeetrixThemeMode(theme)).cgImage != nil)
+            #expect(ImageRenderer(content: LinkExamples().frame(width: 390).qeetrixThemeMode(theme)).cgImage != nil)
             #expect(ImageRenderer(content: TextFieldExamples().frame(width: 390).qeetrixThemeMode(theme)).cgImage != nil)
         }
     }

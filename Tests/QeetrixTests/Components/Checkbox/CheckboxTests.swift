@@ -64,4 +64,58 @@ struct CheckboxTests {
         #expect(
             ImageRenderer(content: Toggle("Email", isOn: .constant(true)).toggleStyle(.qeetrixCheckbox).frame(width: 300)).cgImage != nil)
     }
+
+    @Test("A bare checkbox is the box's 16 × 16 pt at any width offered, and takes a tap 44 pt round it")
+    func bareSize() throws {
+        func size(_ view: some View) throws -> (Int, Int) {
+            let renderer = ImageRenderer(content: view)
+            renderer.proposedSize = ProposedViewSize(width: 300, height: 100)
+            renderer.scale = 1
+            let image = try #require(renderer.cgImage)
+            return (image.width, image.height)
+        }
+        struct Item { var isOn: Bool }
+        let items: Binding<[Item]> = .constant([Item(isOn: true), Item(isOn: false)])
+        #expect(try size(QeetrixCheckbox(isOn: .constant(true), accessibilityLabel: Text("Also report Meera"))) == (16, 16))
+        #expect(try size(QeetrixCheckbox(isOn: .constant(false), accessibilityLabel: Text("Also report Meera")).disabled(true)) == (16, 16))
+        #expect(try size(QeetrixCheckbox(sources: items, isOn: \.isOn, accessibilityLabel: Text("All channels"))) == (16, 16))
+        // The labelled checkbox is a row: it takes the width it's offered.
+        #expect(try size(QeetrixCheckbox("Also report Meera", isOn: .constant(true))).0 == 300)
+        // The hit area spills 14 pt past each edge, without moving layout.
+        let box = CGRect(x: 0, y: 0, width: QeetrixCheckboxBox.side, height: QeetrixCheckboxBox.side)
+        #expect(QeetrixHitArea().path(in: box).boundingRect == CGRect(x: -14, y: -14, width: 44, height: 44))
+    }
+
+    @Test("A bare checkbox draws as the labelled one's box: Ember when checked, the danger edge in an invalid group")
+    func bareDrawn() throws {
+        let label = Text("Also report Meera")
+        let checked = try #require(
+            Rendered(QeetrixCheckbox(isOn: .constant(true), accessibilityLabel: label).environment(\.colorScheme, .light)))
+        #expect(close(QeetrixTheme.light.resolve(.bgBrandBold).bytes, checked.pixel(2, 8)))
+        let invalid = try #require(
+            Rendered(
+                QeetrixCheckbox(isOn: .constant(false), accessibilityLabel: label).environment(\.qeetrixGroupIsInvalid, true)
+                    .environment(\.colorScheme, .light)))
+        #expect(close(QeetrixTheme.light.resolve(.borderDanger).bytes, invalid.pixel(0, 8), tolerance: 40))
+        #expect(close(QeetrixTheme.light.resolve(.bgInput).bytes, invalid.pixel(8, 8)))
+    }
+
+    #if os(macOS)
+        @Test("A bare checkbox is read as the system's toggle, named by its accessibility label, with its state")
+        func bareAccessibility() {
+            struct Item { var isOn: Bool }
+            let label = Text("Also report Meera")
+            let on = ListsAccessibilityTree.elements(of: QeetrixCheckbox(isOn: .constant(true), accessibilityLabel: label))
+            #expect(on.map(\.text) == ["Also report Meera"], "\(on)")
+            #expect(on.map(\.role) == ["AXCheckBox"])
+            #expect(on.map(\.value) == ["1"])
+            let off = ListsAccessibilityTree.elements(of: QeetrixCheckbox(isOn: .constant(false), accessibilityLabel: label))
+            #expect(off.map(\.value) == ["0"])
+            let items: Binding<[Item]> = .constant([Item(isOn: true), Item(isOn: false)])
+            let mixed = ListsAccessibilityTree.elements(
+                of: QeetrixCheckbox(sources: items, isOn: \.isOn, accessibilityLabel: Text("All channels")))
+            #expect(mixed.map(\.text) == ["All channels"], "\(mixed)")
+            #expect(mixed.map(\.value) == ["2"], "Mixed, as the system reports a partly checked toggle")
+        }
+    #endif
 }

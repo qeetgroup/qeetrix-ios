@@ -57,6 +57,7 @@ private struct Snippets: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isPresented = false
     @State private var isExpanded = false
+    private let name = "Meera"
 
     var body: some View {
         VStack {
@@ -79,6 +80,8 @@ private struct Snippets: View {
                 .qeetrixShadow(.overlay, fill: .surfaceOverlay, in: RoundedRectangle(cornerRadius: QeetrixRadius.overlay))
             Text("Sign in to Qeet").qeetrixTextStyle(.displaySm)
             Text("We sent a code to your phone.").qeetrixTextStyle(.bodyMd)
+            Text("Cancel").qeetrixTextStyle(.titleLg, weight: .regular)
+            Text(name).qeetrixTextStyle(.bodyMd, weight: .semibold)
             Text("Panel")
                 .padding(QeetrixSpace.insetLg)
                 .qeetrixShadow(.overlay, fill: .surfaceOverlay, in: RoundedRectangle(cornerRadius: QeetrixRadius.overlay))

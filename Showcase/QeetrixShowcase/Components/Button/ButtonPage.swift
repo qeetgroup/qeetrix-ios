@@ -1,4 +1,5 @@
 import Qeetrix
+import QeetrixIconsExtended
 import SwiftUI
 
 struct ButtonPage: View {
@@ -66,6 +67,23 @@ struct ButtonPage: View {
             }
             DemoSection("Full width") {
                 QeetrixButton("Continue with passkey", icon: .lock, size: .lg, isFullWidth: true) {}
+            }
+            DemoSection("An icon of your own") {
+                // The call-end sign: the filled phone, turned 135°, in the zone a named icon takes.
+                QeetrixButton("Hang up and report", variant: .soft, tone: .neutral, size: .lg, isFullWidth: true) {
+                } icon: {
+                    QeetrixIcon(.phone, size: .md, variant: .filled).rotationEffect(.degrees(135))
+                }
+                FlowLayout {
+                    QeetrixButton("Hang up", tone: .danger) {
+                    } icon: {
+                        QeetrixIcon(.phone, size: .sm, variant: .filled).rotationEffect(.degrees(135))
+                    }
+                    QeetrixIconButton(label: "Hang up", variant: .solid, tone: .danger) {
+                    } icon: {
+                        QeetrixIcon(.phone, size: .sm, variant: .filled).rotationEffect(.degrees(135))
+                    }
+                }
             }
             DemoSection("The style on native controls") {
                 FlowLayout {
