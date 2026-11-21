@@ -19,6 +19,15 @@ HStack {
 - **States** as ``QeetrixButton``: hover and press tints, disabled, a spinner in place of the icon while
   loading, the Ember focus frame inside the edge.
 
+For a drawing a ``QeetrixIconName`` can't name, the `icon` closure puts any view in the square, centred,
+in the button's colour; draw it at ``QeetrixButtonStyle/iconSize(for:)``:
+
+```swift
+QeetrixIconButton(label: "Hang up", variant: .solid, tone: .danger) { hangUp() } icon: {
+    QeetrixIcon(.phone, size: .sm, variant: .filled).rotationEffect(.degrees(135))
+}
+```
+
 ### Accessibility
 
 - VoiceOver reads the label; the type makes it mandatory.

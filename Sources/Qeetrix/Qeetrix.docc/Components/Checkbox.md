@@ -22,14 +22,39 @@ QeetrixCheckbox("All channels", sources: $channels, isOn: \.isOn)
 
 Settings that apply at once use ``QeetrixSwitch``; a checkbox is for choices a Save step confirms.
 
+### Beside words the screen lays out
+
+A card that sets its own title and note puts the checkbox beside them alone, as `@qeetrix/react`'s
+Checkbox with an `aria-label`. ``QeetrixCheckbox/init(isOn:accessibilityLabel:)`` draws only the box,
+and VoiceOver reads the label:
+
+```swift
+HStack(alignment: .top, spacing: QeetrixSpace.gapMd) {
+    QeetrixCheckbox(isOn: $alsoReport, accessibilityLabel: Text("Also report Meera"))
+    VStack(alignment: .leading, spacing: QeetrixSpace.gapXs) {
+        Text("Also report Meera")
+            .qeetrixTextStyle(.bodyMd, weight: .medium)
+        Text("We'll look at the last 20 messages.")
+            .qeetrixTextStyle(.bodySm)
+            .foregroundStyle(QeetrixColor.textSubtle)
+    }
+}
+```
+
+The checkbox is laid out at the box's 16 × 16 points and doesn't stretch. Its 44-point target spills
+round the box without moving the layout. Checked, invalid and disabled look as they do with a label;
+``QeetrixCheckbox/init(sources:isOn:accessibilityLabel:)`` is the mixed parent without one.
+
 ### Any toggle, the Qeetrix style
 
-`.toggleStyle(.qeetrixCheckbox)` gives any `Toggle` the same look.
+`.toggleStyle(.qeetrixCheckbox)` gives any `Toggle` the same look. The style can't read
+`.labelsHidden()` on iOS 17, so it always draws the label. For a checkbox without a visible label,
+use ``QeetrixCheckbox/init(isOn:accessibilityLabel:)``.
 
 ### Accessibility
 
 VoiceOver reads it as the system's toggle — its label, whether it's on, and its description as the
-hint. The row is a 44-point target.
+hint. The row is a 44-point target, and so is the area round a bare checkbox.
 
 ### Platform differences
 

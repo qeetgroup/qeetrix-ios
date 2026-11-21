@@ -36,5 +36,28 @@
                 }
             )
         }
+
+        @Test("Full width: equal shares at each size, a long label truncated, and right to left")
+        func fullWidth() {
+            let audience = [
+                QeetrixOption("Everyone", value: 0), QeetrixOption("My contacts", value: 1), QeetrixOption("Nobody", value: 2),
+            ]
+            assertSpecimen(
+                VStack(alignment: .leading, spacing: 16) {
+                    ForEach(QeetrixControlSize.allCases, id: \.self) { size in
+                        QeetrixSegmentedControl("Who sees it", selection: .constant(1), options: audience, size: size, isFullWidth: true)
+                    }
+                    QeetrixSegmentedControl(
+                        "Who sees it", selection: .constant(0),
+                        options: [
+                            QeetrixOption("All", value: 0), QeetrixOption("Everyone in my contacts", value: 1),
+                            QeetrixOption("Nobody at all, not even me", value: 2),
+                        ],
+                        isFullWidth: true)
+                    QeetrixSegmentedControl("Who sees it", selection: .constant(0), options: audience, isFullWidth: true)
+                        .environment(\.layoutDirection, .rightToLeft)
+                }
+            )
+        }
     }
 #endif

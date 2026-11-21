@@ -86,4 +86,23 @@ enum QeetrixInputMetrics {
     static func height(_ density: QeetrixDensity) -> CGFloat {
         density.sizeControlLg
     }
+
+    /// `.qx-input[data-size="lg"]`: `calc(size.control.lg + 16px)`, as the one-time code's lg.
+    static let largeExtra: CGFloat = 16
+
+    static func height(_ density: QeetrixDensity, size: QeetrixInputSize) -> CGFloat {
+        density.sizeControlLg + (size == .lg ? largeExtra : 0)
+    }
+
+    /// The value's type: `body.md`; at `lg`, `title.lg`'s size and line height at `body.md`'s weight, in the
+    /// body letter style (`font-weight: body.md`, `GEOM` `font.geometry.body`).
+    static func textType(_ size: QeetrixInputSize) -> QeetrixTypeSpec {
+        guard size == .lg else { return textType }
+        let title = QeetrixTextRole.titleLg.tokens
+        return QeetrixTypeSpec(
+            QeetrixTextRoleTokens(
+                family: title.family, size: title.size, weight: QeetrixTextRole.bodyMd.tokens.weight, lineHeight: title.lineHeight,
+                letterSpacing: title.letterSpacing, geometry: .body),
+            scalesLike: QeetrixTextRole.titleLg.textStyle)
+    }
 }

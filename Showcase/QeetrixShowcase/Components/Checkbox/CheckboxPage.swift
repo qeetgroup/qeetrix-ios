@@ -10,6 +10,7 @@ struct CheckboxPage: View {
     @State private var terms = false
     @State private var channels = [Channel(id: "Email", isOn: true), Channel(id: "Push", isOn: false), Channel(id: "SMS", isOn: false)]
     @State private var remember = true
+    @State private var alsoReport = true
 
     var body: some View {
         ComponentPage(
@@ -36,6 +37,23 @@ struct CheckboxPage: View {
                 }
                 QeetrixText("On: \(channels.filter(\.isOn).map(\.id).joined(separator: ", "))", size: .sm, tone: .subtle)
                     .accessibilityIdentifier("channels-on")
+            }
+            DemoSection("Beside the screen's own words") {
+                // The card lays out its own title and note; the checkbox is the box alone, named for VoiceOver.
+                HStack(alignment: .top, spacing: QeetrixSpace.gapMd) {
+                    QeetrixCheckbox(isOn: $alsoReport, accessibilityLabel: Text("Also report Meera"))
+                    VStack(alignment: .leading, spacing: QeetrixSpace.gapXs) {
+                        Text("Also report Meera")
+                            .qeetrixTextStyle(.bodyMd, weight: .medium)
+                            .foregroundStyle(QeetrixColor.textDefault)
+                        Text("We'll look at the last 20 messages.")
+                            .qeetrixTextStyle(.bodySm)
+                            .foregroundStyle(QeetrixColor.textSubtle)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .padding(QeetrixSpace.insetMd)
+                .background(QeetrixColor.surfaceRaised, in: RoundedRectangle(cornerRadius: QeetrixRadius.surface))
             }
             DemoSection("The style on a native Toggle") {
                 Toggle("Remember this device", isOn: $remember)

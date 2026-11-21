@@ -29,6 +29,22 @@ Text("Sign in to Qeet").qeetrixTextStyle(.displaySm)
 Text("We sent a code to your phone.").qeetrixTextStyle(.bodyMd)
 ```
 
+## A role at another weight
+
+The web sets a role with its type class and the weight on its own (`qx-type-title-lg` with
+`font-medium`). `.qeetrixTextStyle(_:weight:)` does the same: the role's family, size, line height,
+tracking and letter style, at a weight of the token scale (``QeetrixFontWeight/regular``,
+``QeetrixFontWeight/medium``, ``QeetrixFontWeight/semibold``):
+
+```swift
+Text("Cancel").qeetrixTextStyle(.titleLg, weight: .regular)
+Text(name).qeetrixTextStyle(.bodyMd, weight: .semibold)
+```
+
+It scales with Dynamic Type along the role's system style, and Bold Text draws it one step heavier
+than the weight given, as it does the role. ``QeetrixText`` has a `weight` of its own for the body
+sizes.
+
 ## Dynamic Type and Bold Text
 
 A role scales with the user's text size along the curve of the system style in the table, up to the

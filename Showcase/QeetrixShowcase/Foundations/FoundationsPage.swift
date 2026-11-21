@@ -145,7 +145,13 @@ struct FoundationsPage: View {
                         .qeetrixTextStyle(role)
                         .foregroundStyle(QeetrixColor.textDefault)
                 }
+                // A role at another weight, as the web's type class with font-medium.
+                caption("A role at another weight")
+                Text("titleLg at 400 — Cancel").qeetrixTextStyle(.titleLg, weight: .regular)
+                Text("bodyMd at 600 — Meera Iyer").qeetrixTextStyle(.bodyMd, weight: .semibold)
+                Text("labelMd at 400 — Last seen today").qeetrixTextStyle(.labelMd, weight: .regular)
             }
+            .foregroundStyle(QeetrixColor.textDefault)
             .dynamicTypeSize(typeSize)
         }
     }

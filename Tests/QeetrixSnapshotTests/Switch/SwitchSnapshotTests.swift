@@ -24,5 +24,28 @@
                 }
             )
         }
+
+        @Test("Without a visible label: off, on and disabled, the track alone at the end of a settings row")
+        func bare() {
+            let label = Text("Unlock with Face ID")
+            assertSpecimen(
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack(spacing: 16) {
+                        QeetrixSwitch(isOn: .constant(false), accessibilityLabel: label)
+                        QeetrixSwitch(isOn: .constant(true), accessibilityLabel: label)
+                        QeetrixSwitch(isOn: .constant(true), accessibilityLabel: label).disabled(true)
+                    }
+                    HStack(spacing: QeetrixSpace.gapMd) {
+                        VStack(alignment: .leading, spacing: QeetrixSpace.gapXs) {
+                            Text("Unlock with Face ID").qeetrixTextStyle(.bodyMd)
+                            Text("Asks for your face before it shows a code.").qeetrixTextStyle(.bodySm)
+                                .foregroundStyle(QeetrixColor.textSubtle)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        QeetrixSwitch(isOn: .constant(true), accessibilityLabel: label)
+                    }
+                }
+            )
+        }
     }
 #endif

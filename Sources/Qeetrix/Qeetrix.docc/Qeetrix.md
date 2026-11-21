@@ -67,6 +67,7 @@ struct Greeting: View {
 
 - ``QeetrixButton``
 - ``QeetrixIconButton``
+- ``QeetrixLink``
 - ``QeetrixSegmentedControl``
 - <doc:BottomActionBar>
 - ``QeetrixCopyButton``

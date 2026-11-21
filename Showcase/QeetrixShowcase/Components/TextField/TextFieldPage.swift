@@ -6,6 +6,8 @@ struct TextFieldPage: View {
     @State private var amount = ""
     @State private var subdomain = "acme"
     @State private var checked = false
+    @State private var phone = ""
+    @State private var name = "Meera"
 
     var body: some View {
         ComponentPage(
@@ -29,6 +31,15 @@ struct TextFieldPage: View {
                     QeetrixText(checked && emailError == nil ? "Looks good." : "", size: .sm, tone: .success)
                         .accessibilityIdentifier("email-status")
                 }
+            }
+            DemoSection("Large, for the one value a step asks for") {
+                QeetrixTextField(
+                    "Phone number", text: $phone, prompt: Text("10-digit mobile number"), startAdornment: Text("+91"), size: .lg
+                )
+                .keyboardType(.phonePad)
+                .textContentType(.telephoneNumber)
+                QeetrixTextField("Your name", text: $name, description: Text("Your contacts see it."), size: .lg)
+                    .textContentType(.name)
             }
             DemoSection("An icon and affixes") {
                 QeetrixTextField("Search", text: .constant(""), prompt: Text("e.g. INV-0042"), icon: .search)

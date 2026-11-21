@@ -21,7 +21,7 @@ final class AccessibilityAuditUITests: XCTestCase {
         "radio-group", "select", "number-field", "form-patterns", "avatar", "badge", "text", "list-item", "search",
         "description-list", "chip", "timeline", "collection-patterns", "large-list", "progress", "spinner", "skeleton", "empty-state",
         "data-state", "toast", "alert-dialog", "confirmation-dialog", "sheet", "popover", "menu", "overlay-patterns", "tabs",
-        "app-navigation", "card", "separator", "accordion",
+        "app-navigation", "card", "separator", "accordion", "link",
     ]
 
     @MainActor

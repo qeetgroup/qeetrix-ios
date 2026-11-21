@@ -21,6 +21,7 @@ enum ShowcaseCatalog {
         ShowcaseEntry("avatar", "Avatar", .dataDisplay) { AvatarPage() },
         ShowcaseEntry("badge", "Badge", .dataDisplay) { BadgePage() },
         ShowcaseEntry("text", "Text", .dataDisplay) { TextPage() },
+        ShowcaseEntry("link", "Link", .actions) { LinkPage() },
         ShowcaseEntry("heading", "Heading", .dataDisplay) { HeadingPage() },
         ShowcaseEntry("search", "Search and filter", .dataDisplay) { SearchPage() },
         ShowcaseEntry("collection-patterns", "Collection patterns", .dataDisplay) { CollectionPatternsPage() },

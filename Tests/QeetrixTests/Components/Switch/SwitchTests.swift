@@ -63,4 +63,36 @@ struct SwitchTests {
             ImageRenderer(content: Toggle("Wi-Fi", isOn: .constant(false)).toggleStyle(.qeetrixSwitch).frame(width: 300)).cgImage != nil)
         #expect(ImageRenderer(content: QeetrixSwitch("Auto-renew", isOn: .constant(true)).disabled(true).frame(width: 300)).cgImage != nil)
     }
+
+    @Test("A bare switch is the track's 32 × 18 pt at any width offered, and takes a tap 44 pt round it")
+    func bareSize() throws {
+        func size(_ view: some View) throws -> (Int, Int) {
+            let renderer = ImageRenderer(content: view)
+            renderer.proposedSize = ProposedViewSize(width: 300, height: 100)
+            renderer.scale = 1
+            let image = try #require(renderer.cgImage)
+            return (image.width, image.height)
+        }
+        #expect(try size(QeetrixSwitch(isOn: .constant(true), accessibilityLabel: Text("Unlock with Face ID"))) == (32, 18))
+        #expect(try size(QeetrixSwitch(isOn: .constant(false), accessibilityLabel: Text("Unlock with Face ID")).disabled(true)) == (32, 18))
+        // The labelled switch is a row: it takes the width it's offered.
+        #expect(try size(QeetrixSwitch("Unlock with Face ID", isOn: .constant(true))).0 == 300)
+        // The hit area spills 6 pt past each side and 13 pt above and below, without moving layout.
+        let track = CGRect(x: 0, y: 0, width: QeetrixSwitchTrack.width, height: QeetrixSwitchTrack.height)
+        #expect(QeetrixHitArea().path(in: track).boundingRect == CGRect(x: -6, y: -13, width: 44, height: 44))
+    }
+
+    #if os(macOS)
+        @Test("A bare switch is read as the system's switch, named by its accessibility label, with its state")
+        func bareAccessibility() {
+            func bare(_ isOn: Bool) -> some View { QeetrixSwitch(isOn: .constant(isOn), accessibilityLabel: Text("Unlock with Face ID")) }
+            let on = ListsAccessibilityTree.elements(of: bare(true))
+            #expect(on.map(\.text) == ["Unlock with Face ID"], "\(on)")
+            #expect(on.map(\.value) == ["1"])
+            // The Mac draws the representation as its checkbox; iOS reads the same Toggle as a switch.
+            #expect(on.map(\.role) == ["AXCheckBox"])
+            let off = ListsAccessibilityTree.elements(of: bare(false))
+            #expect(off.map(\.value) == ["0"])
+        }
+    #endif
 }

@@ -1,4 +1,5 @@
 import Qeetrix
+import QeetrixIconsExtended
 import SwiftUI
 
 struct SliderPage: View {
@@ -6,6 +7,7 @@ struct SliderPage: View {
     @State private var budget = 10_000.0...40_000.0
     @State private var threshold = 0.4
     @State private var volume = 60.0
+    @State private var zoom = 1.0
 
     var body: some View {
         ComponentPage(
@@ -24,6 +26,14 @@ struct SliderPage: View {
                     showsBounds: true
                 )
                 .environment(\.locale, Locale(identifier: "en_IN"))
+            }
+            DemoSection("Named for VoiceOver only") {
+                // A crop screen's zoom: the control alone between two magnifiers, nothing above the track.
+                HStack(spacing: QeetrixSpace.gapSm) {
+                    QeetrixIcon(.zoomOut, size: .md).foregroundStyle(QeetrixColor.iconSubtle)
+                    QeetrixSlider(value: $zoom, accessibilityLabel: Text("Zoom"), in: 1...3, step: 0.05)
+                    QeetrixIcon(.zoomIn, size: .md).foregroundStyle(QeetrixColor.iconSubtle)
+                }
             }
             DemoSection("A percentage, with help and an error") {
                 QeetrixSlider(

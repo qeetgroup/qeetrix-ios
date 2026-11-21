@@ -10,6 +10,7 @@ import Testing
 private enum Status: Hashable { case open, closed }
 private enum Filter: Hashable { case all, pending }
 private enum Scheme: Hashable { case light, dark, system }
+private enum Audience: Hashable { case everyone, contacts, nobody }
 private enum Section: Hashable { case tax, numbering, reminders }
 
 /// Chip.md.
@@ -49,6 +50,7 @@ private struct ChipExamples: View {
 private struct SegmentedControlExamples: View {
     @State private var filter = Filter.all
     @State private var scheme = Scheme.system
+    @State private var audience = Audience.contacts
 
     var body: some View {
         VStack {
@@ -66,6 +68,14 @@ private struct SegmentedControlExamples: View {
                     QeetrixOption("System", value: Scheme.system),
                 ],
                 size: .sm)
+            QeetrixSegmentedControl(
+                "Who sees it", selection: $audience,
+                options: [
+                    QeetrixOption("Everyone", value: Audience.everyone),
+                    QeetrixOption("My contacts", value: Audience.contacts),
+                    QeetrixOption("Nobody", value: Audience.nobody),
+                ],
+                size: .sm, isFullWidth: true)
         }
     }
 }

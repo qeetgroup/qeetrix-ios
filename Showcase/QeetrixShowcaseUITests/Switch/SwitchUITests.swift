@@ -20,6 +20,22 @@ final class SwitchUITests: XCTestCase {
     }
 
     @MainActor
+    func testABareSwitchIsTheTrackAloneNamedForVoiceOver() {
+        let app = Showcase.launch("switch")
+        let faceID = app.switches["Unlock with Face ID"]
+        faceID.scrollIntoView(in: app)
+        XCTAssertEqual(faceID.value as? String, "1")
+        // The element's frame is its 44 pt target, centred on the 32 × 18 pt track (whose layout size the
+        // library's tests check): VoiceOver's frame is where a tap lands.
+        XCTAssertEqual(faceID.frame.size, CGSize(width: 44, height: 44))
+        faceID.tap()
+        XCTAssertEqual(faceID.value as? String, "0")
+        // A tap 9 pt under the track's edge is still inside its 44 pt target.
+        faceID.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).withOffset(CGVector(dx: 0, dy: 18)).tap()
+        XCTAssertEqual(faceID.value as? String, "1")
+    }
+
+    @MainActor
     func testADisabledSwitchDoesNotToggle() {
         let app = Showcase.launch("switch")
         let managed = app.switches["Managed by your organisation"]

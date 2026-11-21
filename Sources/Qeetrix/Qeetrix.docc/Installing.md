@@ -16,7 +16,7 @@ you want, and add the `Qeetrix` library to your app target. In a package manifes
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/qeetgroup/qeetrix-ios.git", .upToNextMinor(from: "0.3.0"))
+    .package(url: "https://github.com/qeetgroup/qeetrix-ios.git", .upToNextMinor(from: "0.4.0"))
 ],
 targets: [
     .target(name: "App", dependencies: [.product(name: "Qeetrix", package: "qeetrix-ios")])

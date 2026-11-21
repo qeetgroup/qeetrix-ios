@@ -5,14 +5,71 @@ and versions follow [Semantic Versioning](https://semver.org/) as [docs/releases
 
 ## [Unreleased]
 
-## [0.3.1] — 2026-11-13
+## [0.4.0] — 2026-11-21
 
-A patch: the DocC catalogue's install guides, for the release Qeetrix is now. No code changed.
+Additions, a minor release ([docs/releases.md](docs/releases.md)). Built from `@qeetrix/react` 0.5.1, `@qeetrix/tokens`
+0.0.15 and `@qeetrix/icons` 2.1.2. It also carries the install guides' fixes prepared as 0.3.1, which was never
+released on its own.
+
+### Added
+
+- **A bare switch for the end of a row**: `QeetrixSwitch(isOn:accessibilityLabel:)` draws the track alone, as
+  `@qeetrix/react`'s Switch with an `aria-label`. VoiceOver reads it as the system's switch with that name. It is laid
+  out at the track's 32 × 18 pt, never stretches, and takes a tap anywhere in the 44 pt round it without that area
+  moving the layout, so a settings row keeps the web's height and its text keeps its width. The feedback and Reduce
+  Motion behaviour are the labelled switch's. The showcase's switch page has a row ending with one.
+- **A role at another weight**: `.qeetrixTextStyle(_:weight:)` sets text in a typography role at a weight of the token
+  scale, as the web sets a type class and `font-medium` apart: `Text("Cancel").qeetrixTextStyle(.titleLg, weight:
+  .regular)`. The family, size, line height, half-leading, tracking and letter style stay the role's; it scales with
+  Dynamic Type along the role's text style, and Bold Text draws it one step heavier than the weight given. The
+  Typography article and the showcase's Foundations page show it.
+- **A bare checkbox beside a screen's own words**: `QeetrixCheckbox(isOn:accessibilityLabel:)`, and
+  `QeetrixCheckbox(sources:isOn:accessibilityLabel:)` for a mixed parent, draw the box alone, as `@qeetrix/react`'s
+  Checkbox with an `aria-label`. VoiceOver reads it as the system's toggle with that name. It is laid out at the box's
+  16 × 16 pt, never stretches, and takes a tap anywhere in the 44 pt round it without that area moving the layout.
+  Checked, mixed, invalid and disabled look as they do with a label, and the selection feedback is the same. The
+  showcase's checkbox page has a card with one.
+- **A slider named for VoiceOver only**: `QeetrixSlider(value:accessibilityLabel:in:…)` and
+  `QeetrixSlider(range:accessibilityLabel:in:…)` draw no label, as `@qeetrix/react`'s Slider with an `aria-label`:
+  without `showsValue` the slider is the 44 pt control alone. VoiceOver reads the thumb by the label with its value (a
+  range's as "Price, minimum" and "Price, maximum"); the bounds, the description and the error show as before. The
+  showcase's slider page has a zoom slider between two magnifiers.
+- **A text link**, `QeetrixLink`, as `@qeetrix/react`'s Link (link.css, now pinned from `@qeetrix/react` 0.5.1): an
+  action in place (`QeetrixLink("Change number") { … }`, read by VoiceOver as a button) or a `destination` opened
+  through `openURL` (read as a link). It takes the font round it, in `color.text.link` underlined 1 pt with the
+  underline 3 pt under the baseline; pressed, `color.text.link-hover` with a 2 pt underline. `QeetrixLinkTone` gives
+  the `subtle` and `inherit` tones, an optional leading icon is 16 pt, and it is a 44 pt target without changing the
+  line's layout. Inside a sentence, `AttributedString.qeetrixLinks()` underlines a localised string's Markdown links
+  and `.qeetrixLinkTone(_:)` colours them. iOS 17 draws the underline at the font's own position. A new showcase page.
+- **A full-width segmented control**: `QeetrixSegmentedControl(…, isFullWidth: true)` spreads the control across its
+  container in equal segments, as the web's `fullWidth`: each label centred in its share and truncated on one line when
+  the share is too narrow, wrapped at the accessibility text sizes. Heights, colours, focus, haptics and VoiceOver are
+  the control's as before. The showcase's segmented control page has "Who sees it" across the row.
+- **Radio group tiles and columns**: `QeetrixRadioGroup(…, variant: .tile, columns: 2)`, as `@qeetrix/react`'s
+  `<RadioGroup variant="tile" columns={2}>` (field.css). Each option is a box 12 pt in on `color.surface.default` with
+  a 1 pt `color.border.subtle` edge; chosen, `color.bg.selected` with a 2 pt `color.border.brand` edge. Inside: the
+  option's icon in a 36 pt box, the title at `title.sm`'s weight with the description under it, and the radio at the
+  end on the title's first line. Up to `columns` equal columns share the width 8 pt apart, every tile in a row as tall
+  as the tallest, and fewer where a tile would be under the web's 128 pt (192 pt once an option has an icon or a
+  description). VoiceOver reads each tile as a selectable button
+  with its description, and choosing plays the selection feedback. `QeetrixChoiceVariant` is new, and
+  `QeetrixOption` takes an `icon`, which the row form draws too (16 pt before the title). The showcase's radio group
+  page has photo tiles and ten languages in two columns.
+- **A custom icon in a button**: `QeetrixButton` and `QeetrixIconButton` take any view in an `icon` closure, such as
+  the phone turned 135° for hang up. It gets the zone a named icon gets: the padding, the rule, the label's colour,
+  the icon box scaled with Dynamic Type, the full-width centring, and the spinner in its place while loading. The
+  showcase's button page has "Hang up and report".
+- **A large text field**: `QeetrixTextField(…, size: .lg)` and `QeetrixInputSize`, as `@qeetrix/react`'s Input
+  `size="lg"`, for the one value a sign-up or verification step asks for. It is `size.control.lg` + 16 pt tall (56 pt
+  at the default density), as `QeetrixOTPInput`'s `lg`; the value and its affixes are at `title.lg`'s size in regular
+  weight, with the body letter style and tabular figures, and the prompt stays `body.md`. Everything else is the
+  default field's. The showcase's text field page has a phone number and a name.
 
 ### Fixed
 
-- **Getting started and Installing add the package from 0.3.0**, not 0.1.0: `.upToNextMinor(from: "0.1.0")` only
-  ever resolves 0.1.x, so an app following the guides got a release two versions old.
+- **Getting started and Installing add the package from 0.4.0**, not 0.1.0: `.upToNextMinor(from: "0.1.0")` only
+  ever resolves 0.1.x, so an app following the guides got a release three versions old. README and
+  [docs/releases.md](docs/releases.md) install 0.4.0 too.
 - **The repository is public**: Installing, Getting started and Troubleshooting no longer ask for an account with
   read access, or a CI credential, and Installing no longer says that no version is tagged yet.
 
@@ -187,8 +244,8 @@ The first version. Built from `@qeetrix/react` 0.4.0, `@qeetrix/tokens` 0.0.13 a
 
 The phase-by-phase notes from before 4 November 2026 are in the git history (`git log -p -- CHANGELOG.md`).
 
-[Unreleased]: https://github.com/qeetgroup/qeetrix-ios/compare/0.3.1...HEAD
-[0.3.1]: https://github.com/qeetgroup/qeetrix-ios/releases/tag/0.3.1
+[Unreleased]: https://github.com/qeetgroup/qeetrix-ios/compare/0.4.0...HEAD
+[0.4.0]: https://github.com/qeetgroup/qeetrix-ios/releases/tag/0.4.0
 [0.3.0]: https://github.com/qeetgroup/qeetrix-ios/releases/tag/0.3.0
 [0.2.0]: https://github.com/qeetgroup/qeetrix-ios/releases/tag/0.2.0
 [0.1.0]: https://github.com/qeetgroup/qeetrix-ios/releases/tag/0.1.0

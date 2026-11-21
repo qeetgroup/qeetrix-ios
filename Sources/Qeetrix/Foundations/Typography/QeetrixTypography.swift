@@ -222,6 +222,24 @@ extension View {
         modifier(QeetrixTextStyleModifier(spec: QeetrixTypeSpec(role)))
     }
 
+    /// Sets text in a Qeetrix typography role at another weight, as the web sets a type class and a
+    /// weight on their own (`qx-type-title-lg` with `font-medium`).
+    ///
+    /// ```swift
+    /// Text("Cancel").qeetrixTextStyle(.titleLg, weight: .regular)
+    /// Text(name).qeetrixTextStyle(.bodyMd, weight: .semibold)
+    /// ```
+    ///
+    /// Everything but the weight is the role's: the family, size, line height, half-leading, tracking
+    /// and letter style. It scales with Dynamic Type along the role's ``QeetrixTextRole/textStyle``, and
+    /// Bold Text draws it one step heavier than `weight` (``QeetrixFontWeight/bolder(in:)``), as it does
+    /// the role. The weights are the token scale's: ``QeetrixFontWeight/regular``,
+    /// ``QeetrixFontWeight/medium`` and ``QeetrixFontWeight/semibold``. A weight past the font's range is
+    /// drawn at the nearest it has, as CSS does: Qeet Sans and Fira Code reach 700.
+    public func qeetrixTextStyle(_ role: QeetrixTextRole, weight: QeetrixFontWeight) -> some View {
+        modifier(QeetrixTextStyleModifier(spec: QeetrixTypeSpec(role, weight: weight)))
+    }
+
     /// Sets text in a type specification — a role, or a role at another weight.
     func qeetrixType(_ spec: QeetrixTypeSpec) -> some View {
         modifier(QeetrixTextStyleModifier(spec: spec))

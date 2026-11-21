@@ -35,6 +35,25 @@ QeetrixTextField("Search", text: $query, icon: .search, isLabelHidden: true)
 Keyboard type, content type, autocapitalisation, submit label and `onSubmit` apply as they do to any
 `TextField`.
 
+### A large field
+
+A sign-up or verification step that asks for one value — a phone number, a name, a date of birth —
+uses the large field, `size: .lg`, as `@qeetrix/react`'s Input `size="lg"`:
+
+```swift
+QeetrixTextField("Phone number", text: $number, prompt: Text("10-digit mobile number"), startAdornment: Text("+91"), size: .lg)
+    .keyboardType(.phonePad)
+```
+
+It is 16 points taller than the default (`size.control.lg` + 16: 56 points at the default density, 48
+compact, 60 comfortable), as tall as ``QeetrixOTPInput`` at `lg`. The value and its affixes are at
+`title.lg`'s size, 20 points, in regular weight with the body letter style and tabular figures; the
+prompt stays `body.md`. The box, label, description, error, icon, focus and invalid frames, read-only
+and disabled are those of the default size, and it scales with Dynamic Type the same way.
+
+Use it only for that step's one field. A sign-in email or password is the default size, with an `lg`
+``QeetrixButton``.
+
 ### Accessibility
 
 - VoiceOver reads the field by its label — with "Required" for a required field — its value, its

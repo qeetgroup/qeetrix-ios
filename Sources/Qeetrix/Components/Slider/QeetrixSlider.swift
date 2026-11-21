@@ -45,6 +45,7 @@ public struct QeetrixSliderFormat: Hashable, Sendable {
 /// QeetrixSlider("Discount", value: $discount, in: 0...50, step: 5, showsValue: true)
 /// QeetrixSlider(
 ///     "Budget", range: $budget, in: 0...100_000, step: 500, format: .currency("INR", fractionDigits: 0...0), showsBounds: true)
+/// QeetrixSlider(value: $zoom, accessibilityLabel: Text("Zoom"), in: 1...3, step: 0.05)
 /// ```
 ///
 /// The label (the field label's look) is at the start of the header and, with `showsValue`, the value in
@@ -57,7 +58,8 @@ public struct QeetrixSliderFormat: Hashable, Sendable {
 ///
 /// The control is 44 pt tall and each thumb a 44 pt target: a drag anywhere on it moves the nearest
 /// thumb, and a tap moves it there; a range's thumbs never cross. Values snap to `step` from the
-/// minimum. VoiceOver reads each thumb as adjustable, by the label — a range's as "Budget, minimum" and
+/// minimum. ``init(value:accessibilityLabel:in:step:largeStep:format:showsValue:showsBounds:description:error:onEditingChanged:)``
+/// names it for VoiceOver only, and the slider is then the control alone. VoiceOver reads each thumb as adjustable, by the label — a range's as "Budget, minimum" and
 /// "Budget, maximum" — with its value written by `format`; swiping up or down moves it a step, or by
 /// `largeStep` when the slider has more than 20 steps. A hardware keyboard steps with the arrow keys,
 /// takes `largeStep` with Page Up and Page Down, and jumps to the ends with Home and End. In right-to-left
@@ -74,6 +76,8 @@ public struct QeetrixSlider: View {
     let showsValue: Bool
     let showsBounds: Bool
     let onEditingChanged: (Bool) -> Void
+    /// The label names the thumbs for VoiceOver only, and isn't drawn.
+    var isLabelHidden = false
     @Environment(\.locale) private var locale
     @Environment(\.isEnabled) private var isEnabled
 
@@ -155,6 +159,32 @@ public struct QeetrixSlider: View {
         self.onEditingChanged = onEditingChanged
     }
 
+    /// A slider for one value with no visible label, as `@qeetrix/react`'s Slider with an `aria-label`:
+    /// a zoom slider between two icons, or one under a heading that names it.
+    ///
+    /// VoiceOver reads the thumb by `accessibilityLabel`, with its value. Without `showsValue` there is no
+    /// header, so the slider is the 44 pt control alone, with `showsBounds` and the description or error
+    /// under it as usual. The other parameters are the labelled slider's
+    /// (``init(label:value:in:step:largeStep:format:showsValue:showsBounds:description:error:onEditingChanged:)``).
+    public init(
+        value: Binding<Double>,
+        accessibilityLabel: Text,
+        in bounds: ClosedRange<Double> = 0...100,
+        step: Double = 1,
+        largeStep: Double? = nil,
+        format: QeetrixSliderFormat = .number,
+        showsValue: Bool = false,
+        showsBounds: Bool = false,
+        description: Text? = nil,
+        error: String? = nil,
+        onEditingChanged: @escaping (Bool) -> Void = { _ in }
+    ) {
+        self.init(
+            label: accessibilityLabel, value: value, in: bounds, step: step, largeStep: largeStep, format: format, showsValue: showsValue,
+            showsBounds: showsBounds, description: description, error: error, onEditingChanged: onEditingChanged)
+        isLabelHidden = true
+    }
+
     /// A slider for a range with a localised label.
     public init(
         _ titleKey: LocalizedStringKey,
@@ -219,24 +249,51 @@ public struct QeetrixSlider: View {
         self.onEditingChanged = onEditingChanged
     }
 
+    /// A slider for a range with no visible label. VoiceOver names the thumbs after `accessibilityLabel`
+    /// ("Price, minimum" and "Price, maximum"); the rest is the one-value form's
+    /// (``init(value:accessibilityLabel:in:step:largeStep:format:showsValue:showsBounds:description:error:onEditingChanged:)``).
+    public init(
+        range: Binding<ClosedRange<Double>>,
+        accessibilityLabel: Text,
+        in bounds: ClosedRange<Double> = 0...100,
+        step: Double = 1,
+        largeStep: Double? = nil,
+        format: QeetrixSliderFormat = .number,
+        showsValue: Bool = false,
+        showsBounds: Bool = false,
+        description: Text? = nil,
+        error: String? = nil,
+        onEditingChanged: @escaping (Bool) -> Void = { _ in }
+    ) {
+        self.init(
+            label: accessibilityLabel, range: range, in: bounds, step: step, largeStep: largeStep, format: format, showsValue: showsValue,
+            showsBounds: showsBounds, description: description, error: error, onEditingChanged: onEditingChanged)
+        isLabelHidden = true
+    }
+
     public var body: some View {
         let written = values.map { format.string($0, locale: locale) }
         QeetrixFieldLayout(context: context, isOptional: false, isLabelHidden: true) {
             VStack(alignment: .leading, spacing: QeetrixSpace.gapXs) {
-                // `.qx-slider-header`: the label at the start, the value at the end, on one baseline.
-                HStack(alignment: .firstTextBaseline, spacing: QeetrixSpace.gapMd) {
-                    QeetrixFieldLabel(label: context.label, isOptional: false)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    if showsValue {
-                        Text(verbatim: written.joined(separator: " – "))
-                            .qeetrixTextStyle(.labelSm)
-                            .monospacedDigit()
-                            .foregroundStyle(isEnabled ? QeetrixColor.textDefault : QeetrixColor.textDisabled)
-                            .fixedSize(horizontal: false, vertical: true)
+                // `.qx-slider-header`: the label at the start, the value at the end, on one baseline. With
+                // neither, as the web renders no header, the control is the slider's first line.
+                if !isLabelHidden || showsValue {
+                    HStack(alignment: .firstTextBaseline, spacing: QeetrixSpace.gapMd) {
+                        if !isLabelHidden {
+                            QeetrixFieldLabel(label: context.label, isOptional: false)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        if showsValue {
+                            Text(verbatim: written.joined(separator: " – "))
+                                .qeetrixTextStyle(.labelSm)
+                                .monospacedDigit()
+                                .foregroundStyle(isEnabled ? QeetrixColor.textDefault : QeetrixColor.textDisabled)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
                     }
+                    // The thumbs say the label and the value.
+                    .accessibilityHidden(true)
                 }
-                // The thumbs say the label and the value.
-                .accessibilityHidden(true)
                 QeetrixSliderControl(
                     values: values, model: model, names: names, spoken: written, set: set, onEditingChanged: onEditingChanged)
                 if showsBounds {

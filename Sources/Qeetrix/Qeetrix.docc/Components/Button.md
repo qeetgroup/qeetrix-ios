@@ -37,6 +37,26 @@ VStack(alignment: .leading) {
 
 Write labels as verbs ("Create invoice"), and don't disable without saying why nearby.
 
+### An icon of your own
+
+For a drawing a ``QeetrixIconName`` can't name — the call-end sign is the phone, filled and turned
+135° — the `icon` closure puts any view in the zone, as the web's Button takes its `icon` as a
+component:
+
+```swift
+QeetrixButton("Hang up and report", variant: .soft, tone: .neutral, size: .lg, isFullWidth: true) {
+    hangUp()
+} icon: {
+    QeetrixIcon(.phone, size: .md, variant: .filled).rotationEffect(.degrees(135))
+}
+```
+
+The view gets the zone exactly as a named icon does: the padding either side, the rule before it, the
+label's colour, a box the size of the control size's icon to be centred in, scaled with Dynamic Type,
+and the full-width centring. Draw it at ``QeetrixButtonStyle/iconSize(for:)`` — 16 points, 20 at `lg`
+— as a named icon is drawn. While `isLoading` is true the spinner takes its place. ``QeetrixIconButton``
+takes the same closure. `.phone` is in the optional `QeetrixIconsExtended` product.
+
 ### Any control, the Qeetrix style
 
 ``QeetrixButtonStyle`` gives the same treatment to any SwiftUI control that takes a button style:

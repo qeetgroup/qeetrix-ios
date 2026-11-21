@@ -95,4 +95,63 @@ struct SegmentedControlTests {
         let disabled = QeetrixSegmentedControl("Theme", selection: .constant(Scheme.light), options: options).disabled(true)
         #expect(ImageRenderer(content: disabled).cgImage != nil)
     }
+
+    private enum Audience: Hashable { case everyone, contacts, nobody }
+
+    private func audience(_ chosen: Audience, width: CGFloat, labels: [String] = ["Everyone", "My contacts", "Nobody"]) -> some View {
+        QeetrixSegmentedControl(
+            "Who sees it", selection: .constant(chosen),
+            options: zip(labels, [Audience.everyone, .contacts, .nobody]).map { QeetrixOption($0.0, value: $0.1) }, isFullWidth: true
+        )
+        .frame(width: width)
+        .environment(\.colorScheme, .light)
+    }
+
+    @Test("Full width: three equal segments across 300 pt, whatever their labels, the rules between them")
+    func fullWidthShares() throws {
+        let graphite = QeetrixTheme.light.resolve(.bgNeutralBold).bytes
+        // 300 − 2 × 1 pt edge − 2 × 1 pt rule = 296: three shares of 98.7 pt, from x = 1, 100.7 and 200.3.
+        let middle = try #require(Rendered(audience(.contacts, width: 300)))
+        #expect(middle.width == 300 && middle.height == 32)
+        #expect(close(graphite, middle.pixel(103, 16)) && close(graphite, middle.pixel(197, 16)), "the middle share is chosen")
+        #expect(middle.pixel(97, 16).a == 0 && middle.pixel(203, 16).a == 0, "its neighbours are clear")
+        // A short label's segment is as wide as a long one's.
+        let short = try #require(Rendered(audience(.everyone, width: 300, labels: ["All", "Everyone in my contacts", "No"])))
+        #expect(close(graphite, short.pixel(96, 16)))
+        #expect(short.pixel(104, 16).a == 0)
+        // Right to left, the first share is on the right.
+        let mirrored = try #require(Rendered(audience(.everyone, width: 300).environment(\.layoutDirection, .rightToLeft)))
+        #expect(close(graphite, mirrored.pixel(296, 16)) && mirrored.pixel(4, 16).a == 0)
+    }
+
+    @Test("Full width: a share too narrow truncates its label on one line; the control keeps control.md's height")
+    func fullWidthTruncates() throws {
+        let narrow = try #require(Rendered(audience(.everyone, width: 180, labels: ["Everyone", "Only my contacts", "Nobody at all"])))
+        #expect(narrow.width == 180 && narrow.height == 32)
+        // Without full width, the same labels at the same width wrap instead.
+        let wrapping = QeetrixSegmentedControl(
+            "Who sees it", selection: .constant(Audience.everyone),
+            options: [
+                QeetrixOption("Everyone", value: Audience.everyone), QeetrixOption("Only my contacts", value: .contacts),
+                QeetrixOption("Nobody at all", value: .nobody),
+            ]
+        )
+        .frame(width: 180)
+        #expect(try #require(Rendered(wrapping.fixedSize(horizontal: false, vertical: true))).height > 32)
+    }
+
+    @Test("Full width keeps the sizes' heights and the densities'")
+    func fullWidthSizes() throws {
+        for size in QeetrixControlSize.allCases {
+            for density in QeetrixDensity.allCases {
+                let view = QeetrixSegmentedControl(
+                    "Theme", selection: .constant(Scheme.dark), options: options, size: size, isFullWidth: true
+                )
+                .frame(width: 320)
+                .qeetrixDensity(density)
+                let image = try #require(Rendered(view))
+                #expect(CGFloat(image.height) == density.controlHeight(size), "\(size) \(density)")
+            }
+        }
+    }
 }
